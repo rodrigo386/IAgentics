@@ -17,7 +17,7 @@ Decisões tomadas com o Rodrigo nesta conversa:
 | Cobrança | **Assinatura do acervo** (não compra por curso), via **Asaas** (Pix/cartão/boleto, cobrança recorrente) |
 | Vídeos | **YouTube não listado** no lançamento; risco de compartilhamento de link aceito. Aula guarda `provider + video_id` para migrar a Panda/Mux trocando dados, não código |
 | Onde vive | Mesmo repo/deploy do site, rota `/app` |
-| Backend | Supabase (o mesmo projeto que já recebe leads do site): Postgres + Auth + RLS |
+| Backend | Supabase: Postgres + Auth + RLS, em projeto **dedicado `iagentics-plataforma`**. (A conta conectada não contém o projeto de leads do site — os existentes são de outro contexto financeiro; misturar seria errado.) |
 | Catálogo | Exclusivo do online — NÃO herda os 9 cursos do site institucional |
 | Conteúdo | Em gravação; lançar com curso-demonstração realista e estrutura pronta para receber o real |
 | Admin | **Admin completo** desejado — fica para o Ciclo 3, com modelo de dados já preparado |
