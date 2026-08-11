@@ -1,6 +1,31 @@
 # Plataforma online de cursos — IAgentics Academy
 
 Data: 2026-08-11 · Status: aprovado em conversa, aguardando revisão final
+
+> **REVISÃO 2026-08-11 (pivô de infraestrutura, decidido pelo Rodrigo durante a
+> execução):** banco e hospedagem no **Railway**; código no GitHub
+> (`rodrigo386/IAgentics`). O que muda em relação ao texto abaixo:
+>
+> - **Supabase sai por inteiro.** O projeto `iagentics-plataforma` criado na
+>   Task 1 fica órfão (custo zero; apagar quando o Rodrigo quiser).
+> - **Banco:** Postgres do Railway, acessado SOMENTE pelo servidor Next
+>   (Drizzle + node-postgres). O navegador nunca fala com o banco.
+> - **RLS deixa de ser o mecanismo** — sem PostgREST não há API direta a
+>   proteger. A autorização vive na camada de dados do servidor
+>   (`temAcesso(userId)` + funções que recebem `userId` explícito). A
+>   separação `lesson_media` continua: defesa em profundidade e troca de
+>   provedor de vídeo continuam valendo.
+> - **Auth:** Auth.js (next-auth v5) com Credentials — e-mail + senha
+>   (bcryptjs), sessão JWT em cookie. Tabela `users` própria substitui
+>   `auth.users`/`profiles`. **Link mágico migrou para o Ciclo 2** (exige
+>   e-mail transacional, que já era do Ciclo 2 com Resend).
+> - **Testes:** o script de RLS vira teste de integração da camada de
+>   autorização (vitest contra o Postgres real). O resto mantém.
+> - **Hospedagem:** deploy no Railway a partir do GitHub, na etapa final do
+>   Ciclo 1.
+>
+> O produto (rotas, telas, catálogo, player, progresso, assinatura manual,
+> erros) permanece exatamente como especificado abaixo.
 Escopo deste spec: **Ciclo 1 — núcleo do aluno**. Ciclos 2 e 3 estão delimitados ao final e terão specs próprios.
 
 ## Contexto e decisões de produto
