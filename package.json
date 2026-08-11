@@ -9,12 +9,17 @@
     "lint": "next lint",
     "video": "remotion studio",
     "video:render": "remotion render abertura-marca out/abertura-marca.mp4",
-    "video:render:vertical": "remotion render abertura-marca-vertical out/abertura-marca-vertical.mp4"
+    "video:render:vertical": "remotion render abertura-marca-vertical out/abertura-marca-vertical.mp4",
+    "test:unit": "vitest run",
+    "test:rls": "node scripts/rls.test.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",
     "@remotion/google-fonts": "^4.0.508",
     "@remotion/player": "^4.0.508",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
     "gsap": "^3.13.0",
     "motion": "^12.23.12",
     "next": "^15.5.4",
@@ -24,6 +29,7 @@
     "simple-icons": "^16.28.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@remotion/cli": "^4.0.508",
     "@remotion/tailwind-v4": "^4.0.508",
     "@tailwindcss/postcss": "^4.1.13",
@@ -31,6 +37,7 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.10"
   }
 }
