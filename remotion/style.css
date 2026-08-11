@@ -1,0 +1,19 @@
+/**
+ * O CSS do vídeo é o CSS do site. Não há uma segunda paleta aqui.
+ *
+ * Importar app/globals.css significa que as composições recebem os mesmos tokens de
+ * marca (--brand-violet, --brand-ink, --brand-paper), as mesmas classes utilitárias
+ * (bg-brand-ink, text-brand-paper) e as mesmas travas de forma. Se o violeta mudar
+ * no site, muda no vídeo na mesma edição - que é o ponto de manter o Remotion dentro
+ * deste repositório em vez de num projeto separado.
+ */
+@import "../app/globals.css";
+
+/**
+ * Detecção de conteúdo explícita. O Tailwind v4 descobre as fontes sozinho a partir
+ * da pasta do CSS raiz, que é app/. A pasta remotion/ fica fora dela, então sem estas
+ * duas linhas as classes usadas só nas composições não seriam geradas - e falhariam
+ * em silêncio, que é o pior modo de falhar.
+ */
+@source "../remotion";
+@source "../components";

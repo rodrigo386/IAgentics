@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="IAgentics Nexo">
+  <title>IAgentics Nexo</title>
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="8" y1="8" x2="56" y2="56">
+      <stop offset="0" stop-color="#7B5EED"/>
+      <stop offset="1" stop-color="#397CEF"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="22" stroke="url(#g)" stroke-width="5" fill="none"
+          stroke-linecap="round" stroke-dasharray="108 30.2" transform="rotate(-58 32 32)"/>
+  <g stroke="url(#g)" stroke-width="2.8" stroke-linecap="round" fill="none">
+    <line x1="32" y1="35" x2="32" y2="24"/>
+    <line x1="32" y1="35" x2="23" y2="41"/>
+    <line x1="32" y1="35" x2="41" y2="41"/>
+  </g>
+  <g fill="url(#g)">
+    <circle cx="32" cy="35" r="4.6"/>
+    <circle cx="32" cy="23" r="3"/>
+    <circle cx="22.2" cy="41.5" r="3"/>
+    <circle cx="41.8" cy="41.5" r="3"/>
+  </g>
+</svg>

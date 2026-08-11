@@ -1,0 +1,843 @@
+@import "tailwindcss";
+
+/* Class-based dark variant so the page supports BOTH system preference and a manual
+   toggle. The <html> class is set by the inline script in layout.tsx before paint. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   IAGENTICS BRAND TOKENS
+   Source of truth: Cores_IAgentics.pdf (see /public/brand-colors-reference.pdf)
+   The eight official values, verbatim:
+     #7607E8  #8426EA  #6020EE  #6C66F3  #6693F8  #55AFED  #131723  #F8F8F8
+
+   COLOR CONSISTENCY LOCK
+   One accent identity for the whole page: the brand violet #7607E8.
+   It is used as a FILL only. Measured contrast:
+     #7607E8 fill + #F8F8F8 text ....... 6.73:1  (AA pass)
+     #7607E8 text on #131723 ........... 2.54:1  (FAILS - never use as text on ink)
+   So accent TEXT resolves per mode via --accent-text:
+     light: #7607E8 on #F8F8F8 ......... 6.73:1  (AA pass)
+     dark:  #6693F8 on #131723 ......... 6.09:1  (AA pass)
+   Both are official brand values, so the identity holds while contrast stays legal.
+
+   SHAPE CONSISTENCY LOCK (documented two-tier rule, applied everywhere)
+     Surfaces / panels / images / inputs .... radius 0  (--radius-surface)
+     Interactive controls (buttons, pills) .. full round (--radius-control)
+   The pill echoes the perfect circles in the IAgentics mark.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Official brand ramp, unmodified */
+  --brand-violet: #7607e8;
+  --brand-violet-light: #8426ea;
+  --brand-indigo: #6020ee;
+  --brand-periwinkle: #6c66f3;
+  --brand-blue: #6693f8;
+  --brand-sky: #55afed;
+  --brand-ink: #131723;
+  --brand-paper: #f8f8f8;
+
+  /* Semantic tokens - LIGHT */
+  --bg: var(--brand-paper);
+  --surface: #fcfcfd;
+  --fg: var(--brand-ink);
+  --fg-muted: #5a6070; /* 5.96:1 on --bg */
+  --fg-subtle: #767c8c;
+  --line: rgb(19 23 35 / 0.14);
+  --line-strong: rgb(19 23 35 / 0.28);
+
+  --accent: var(--brand-violet);
+  --accent-hover: var(--brand-indigo);
+  --accent-on: var(--brand-paper);
+  --accent-text: var(--brand-violet); /* 6.73:1 on --bg */
+
+  --shadow-tint: 19 23 35;
+
+  /* Shape lock */
+  --radius-surface: 0px;
+  --radius-control: 9999px;
+
+  /* Z-index scale - the only allowed layers */
+  --z-grain: 60;
+  --z-nav: 50;
+  --z-overlay: 40;
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg: var(--brand-ink);
+  --surface: #1a1f2e;
+  --fg: var(--brand-paper);
+  --fg-muted: #8b93a8; /* 5.87:1 on --bg */
+  --fg-subtle: #6b7385;
+  --line: rgb(248 248 248 / 0.14);
+  --line-strong: rgb(248 248 248 / 0.3);
+
+  --accent: var(--brand-violet);
+  --accent-hover: var(--brand-violet-light);
+  --accent-on: var(--brand-paper);
+  --accent-text: var(--brand-blue); /* 6.09:1 on --bg */
+
+  --shadow-tint: 0 0 0;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-on: var(--accent-on);
+  --color-accent-text: var(--accent-text);
+
+  --color-brand-violet: var(--brand-violet);
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-periwinkle: var(--brand-periwinkle);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-sky: var(--brand-sky);
+  /* Fixed brand constants that must NOT flip with the theme: trademarked partner
+     plates and copy set over photographs stay the same value in both modes. */
+  --color-brand-paper: var(--brand-paper);
+  --color-brand-ink: var(--brand-ink);
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --radius-surface: var(--radius-surface);
+  --radius-control: var(--radius-control);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevents horizontal bleed from the pinned sections */
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-on);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 3px;
+  }
+
+  /* Numerals are tabular everywhere so figures line up across the page */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  /* The official lockup is a white PNG on transparency. Using it as a mask lets it
+     render in ANY token color (so it themes correctly) while staying pixel-exact to
+     the supplied asset. No tracing, no hand-rolled reproduction of the logo. */
+  .brand-lockup {
+    -webkit-mask-image: url("/iagentics-lockup.png");
+    mask-image: url("/iagentics-lockup.png");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+    background-color: currentColor;
+  }
+
+}
+
+/* ---------------------------------------------------------------------------
+   ENTRY MOTION - CSS ONLY, RESILIENT BY DEFAULT
+
+   Every entry animation below uses `backwards`/`both` fill, so the element's RESTING
+   state is the visible one and the hidden state exists only while the animation runs.
+   Consequences that matter:
+     - No JavaScript is required to see any content. If JS fails or is slow, the page
+       still renders complete. Motion's initial={{opacity:0}} would SSR a blank page.
+     - The H1 is in the static HTML, so it can serve as the LCP element.
+     - Transform and opacity only, off the main thread.
+   Reduced motion and browsers without scroll-driven animations simply get the final
+   state with no transition.
+--------------------------------------------------------------------------- */
+
+@keyframes hero-line-in {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line {
+    animation: hero-line-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .hero-fade {
+    animation: hero-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  /* Scroll-driven reveal. Where `view()` is unsupported the rule never applies and
+     the element is simply visible - no load-time flash, no invisible content. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 30%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   CINEMATIC HERO - physical materials
+
+   Adapted from the "cinematic landing hero" concept to the IAgentics identity:
+   the concept's #162C6D blue becomes a deep tint of the brand violet #7607E8
+   over the brand ink #131723, so the accent lock still holds.
+
+   The card is a dark surface in BOTH themes, exactly like the bento cells. That
+   is a component treatment, not a section that flips theme.
+
+   Corners stay square: the page's shape lock is sharp surfaces + pill controls,
+   so the card grows by clip-path rather than by morphing a radius.
+--------------------------------------------------------------------------- */
+
+.cinehero-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+}
+
+.cinehero-card {
+  background: linear-gradient(145deg, #2a1264 0%, #0d1017 100%);
+  border: 1px solid rgb(255 255 255 / 0.06);
+  box-shadow:
+    0 40px 100px -20px rgb(0 0 0 / 0.9),
+    0 20px 40px -20px rgb(0 0 0 / 0.8),
+    inset 0 1px 2px rgb(255 255 255 / 0.14),
+    inset 0 -2px 4px rgb(0 0 0 / 0.8);
+}
+
+/* Cursor-tracked sheen. Driven by CSS custom properties written outside React. */
+.cinehero-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    760px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(118 7 232 / 0.16) 0%,
+    transparent 42%
+  );
+}
+
+/* The "platform" plate that the agents attach to. */
+.cinehero-frame {
+  box-shadow:
+    0 40px 80px -15px rgb(0 0 0 / 0.9),
+    0 15px 25px -5px rgb(0 0 0 / 0.7),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+/* Reads as physical glass sitting ABOVE the plate, so it stays legible where it
+   straddles the photograph. Weaker values than these disappear over the image. */
+.cinehero-chip {
+  background: linear-gradient(
+    135deg,
+    rgb(38 20 84 / 0.72) 0%,
+    rgb(13 16 23 / 0.66) 100%
+  );
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.16),
+    0 24px 48px -12px rgb(0 0 0 / 0.9),
+    inset 0 1px 1px rgb(255 255 255 / 0.22),
+    inset 0 -1px 1px rgb(0 0 0 / 0.5);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cinehero-chip {
+    background: #1b1430;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Silver gradient type, for the brand name on the dark card only. */
+.cinehero-silver {
+  background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateZ(0); /* avoids the WebKit background-clip clipping bug */
+  filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.8)) drop-shadow(0 4px 8px rgb(0 0 0 / 0.6));
+}
+
+/* Cinematic mode is switched on from JS, and only at lg with motion allowed.
+   Everything below is the ENHANCEMENT layer: without it the hero is a normal,
+   fully visible stacked section, which is what no-JS and mobile users get. */
+.cinehero-on .cinehero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+/* The copy layer fills the frame as a column: value prop centred, partner strip
+   parked at the bottom edge. Centring is done by the inner wrapper, not here. */
+.cinehero-on .cinehero-copy {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ---------------------------------------------------------------------------
+   AGENT GRAPH - the hero's visual
+
+   The IAgentics mark is itself a node graph, so this is the brand's own language
+   drawn at scale rather than invented decoration. It also states the product
+   architecture without a sentence of explanation: five agents attached to the
+   platform the client already runs.
+
+   Entry only, never a loop. `backwards` fill means the RESTING state is the fully
+   drawn graph, so it is complete with no JS and static under reduced motion.
+--------------------------------------------------------------------------- */
+
+@keyframes graph-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+}
+
+@keyframes graph-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.graph-line {
+  stroke-dasharray: 100;
+}
+
+.graph-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .graph-line {
+    animation: graph-draw 1.1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .graph-node {
+    animation: graph-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   HERO GRAPH - height cap on short viewports
+
+   The hero is a single-screen composition and the graph is by far its tallest
+   element. Measured before this rule: at 1440x900 the whole hero came to exactly
+   900px with 15px to spare, and at 1280x800 it came to 846px against an 800px
+   viewport - so on that very common laptop the partner band sat BELOW the fold.
+
+   Width is the only lever, because the graph is a square: capping max-width caps
+   its height. The rule is scoped by height, not by width, since a 1280px-wide
+   window on a tall monitor has no problem to solve.
+--------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) and (max-height: 850px) {
+  .hero-graph {
+    max-width: 420px;
+  }
+}
+
+/* 720p windows need one more step: at 420px the band was still clipped by ~10px.
+   360px is the floor - below it the five 128px labels start to touch each other. */
+@media (min-width: 1024px) and (max-height: 780px) {
+  .hero-graph {
+    max-width: 360px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   FORMATOS DO ACADEMY - tipografia vazada
+
+   Os quatro nomes ficam contornados em repouso e o da vez se preenche. O traço
+   usa --fg CHEIO, não uma versão apagada: texto vazado já é o limite do que dá
+   para ler, e um traço fraco por cima disso seria decoração ilegível. A 100px
+   de corpo, 1,5px de traço é sólido.
+
+   `paint-order: stroke fill` faz o traço ser desenhado ANTES do preenchimento,
+   então no estado ativo ele não come as bordas da letra por dentro.
+
+   O nome ativo preenche em --accent-text, que resolve por tema (violeta no
+   claro, azul no escuro) e passa AA nos dois.
+--------------------------------------------------------------------------- */
+
+.format-name {
+  -webkit-text-stroke: 1.5px var(--fg);
+  paint-order: stroke fill;
+}
+
+.format-name.is-active {
+  -webkit-text-stroke-width: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes format-body-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+  }
+
+  .format-body {
+    animation: format-body-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   MARQUEE - fileiras que correm, na página do Academy
+
+   O site atual da Academy usa isto em três lugares e o time pediu para manter.
+   Vale registrar por que ele volta depois de ter saído da home: lá o marquee
+   mostrava Microsoft e Oracle DUAS VEZES na mesma tela, porque cinco placas
+   largas cabiam inteiras na largura - a cópia necessária ao laço aparecia junto
+   com a original. Aqui as fileiras são mais longas que a tela, então em nenhum
+   momento a mesma marca aparece duas vezes.
+
+   COMO O LAÇO FECHA SEM COSTURA: a trilha tem o conteúdo DUAS vezes e anda até
+   -50%, que é exatamente onde a segunda cópia começa. No instante em que salta
+   de volta para 0, o pixel sob o olho é idêntico. Qualquer outro valor pula.
+
+   A cópia duplicada leva aria-hidden no componente, senão um leitor de tela
+   anuncia sete clientes catorze vezes.
+
+   Para na passagem do cursor e no foco de teclado, e não existe sob
+   prefers-reduced-motion - conteúdo que se move sozinho é exatamente o caso que
+   a preferência cobre.
+--------------------------------------------------------------------------- */
+
+@keyframes marquee-run {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  /* Esfumaça as bordas para a fileira entrar e sair em vez de ser cortada. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    animation: marquee-run var(--marquee-duration, 40s) linear infinite;
+  }
+
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   ASSURANCE BAND - the data sentence, directly under the cover
+
+   Two grounds, because one would fail. In light the band is brand ink and the
+   type is brand paper: a solid block that stops the eye between the cover and
+   the index. In dark the PAGE is already brand ink, so the same rule would draw
+   an invisible band; there it lifts to --surface, which reads as a raised panel
+   against the page.
+
+   Measured contrast of the type against each ground:
+     light: #F8F8F8 on #131723 ....... 16.84:1
+     dark:  #F8F8F8 on #1A1F2E ....... 15.46:1
+   Both clear AAA, which is the right bar for the one sentence on the page that
+   has to survive being skimmed.
+
+   THE FILL IS NOT ENOUGH IN DARK, and measuring caught it. Band against page:
+     light: #131723 on #F8F8F8 ....... 16.84:1  - the block reads on its own
+     dark:  #1A1F2E on #131723 .......  1.09:1  - the block is invisible
+   Dark-on-dark cannot separate by fill; there is no value near brand ink that
+   would. So the band is bounded by hairlines instead, and the edges rather than
+   the fill are what make it a block.
+
+   THE TWO RULES CARRY DIFFERENT LOADS, so they are not the same strength.
+   In light the fill already separates at 16.84:1 and the rule is a refinement,
+   so it stays quiet. In dark the rule is the ONLY thing that makes the band
+   perceivable, which puts it under WCAG 1.4.11's 3:1 floor for a non-text
+   boundary - at 0.28 alpha it measured 2.99:1 and failed. Hence 0.42 there.
+--------------------------------------------------------------------------- */
+
+.assurance-band {
+  background-color: var(--brand-ink);
+  color: var(--brand-paper);
+  /* Decorative here: the fill is doing the separating. */
+  border-top: 1px solid rgb(248 248 248 / 0.28);
+  border-bottom: 1px solid rgb(248 248 248 / 0.28);
+}
+
+.dark .assurance-band {
+  background-color: var(--surface);
+  /* Load-bearing here: this rule IS the band's edge. */
+  border-color: rgb(248 248 248 / 0.42);
+}
+
+/* ---------------------------------------------------------------------------
+   NEXO COVER VIDEO - same height cap, harsher arithmetic
+
+   The clip is 9:16, so every pixel of width costs 1.78 pixels of height. At
+   380px it stands 676px tall, which is exactly the usable height of the cover
+   at 1440x900 once py-20 is removed - no margin at all. On shorter laptops it
+   would push the cover's own CTA under the fold, so it steps down with the
+   viewport instead.
+
+   Width is again the only lever available, because the aspect is fixed.
+--------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) and (max-height: 900px) {
+  .cover-video {
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 1024px) and (max-height: 800px) {
+  .cover-video {
+    max-width: 270px;
+  }
+}
+
+/* Em janelas baixas o manifesto do hero encolhe para continuar dentro da dobra.
+   Faixa que corre fora da primeira tela não dá movimento a tela nenhuma.
+
+   O segundo degrau existe por causa de 1366x768, onde a capa passava por 15px -
+   o suficiente para o manifesto sair de cena. Medido, não estimado. */
+@media (max-height: 850px) {
+  .hero-manifesto span {
+    font-size: 1.125rem;
+  }
+  .hero-manifesto .marquee {
+    padding-block: 0.75rem;
+  }
+}
+
+@media (max-height: 800px) {
+  .academy-cover {
+    padding-block: 2rem;
+  }
+  .hero-manifesto {
+    margin-top: 1.75rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   EXECUTION CYCLE - the graph running a job, one agent at a time
+
+   The entry animation above draws the graph once and stops. This loop is what
+   happens afterwards: Nexo hands a task to an agent, the agent works it, the
+   result comes back, and the next agent takes its turn. It is the product's
+   own sentence - "agentes que assumem o trabalho operacional" - stated as
+   motion instead of a claim.
+
+   HOW THE TIMING WORKS. One 7.5s cycle covers all five agents, so each gets a
+   1.5s turn = 20% of the cycle. Every element runs the SAME 7.5s keyframes,
+   with the action packed into the first ~16% and dead-still for the rest; the
+   turn is then chosen purely by `animation-delay: i * 1.5s`. That is why all
+   three elements of one agent (pulse, core, ping) share one delay - the phase
+   difference is baked into the keyframes, not into the delays, so they can
+   never drift out of sync with each other.
+
+   The hub ring is the exception: it runs a 1.5s loop offset by 1.125s, which
+   is exactly when a return pulse lands. One short animation therefore fires
+   once per agent, for all five, without knowing anything about them.
+
+   RESTING STATE. Every looping element is invisible or muted at 0%, and the
+   whole block sits inside prefers-reduced-motion: no-preference. With reduced
+   motion, or with no JS at all, the graph is the finished still image it was
+   before - nothing here is load-bearing.
+
+   All five lines carry pathLength=100 from the component, so one dash geometry
+   works on every line regardless of its real length.
+--------------------------------------------------------------------------- */
+
+.agent-pulse,
+.agent-core,
+.agent-ping,
+.hub-ring {
+  opacity: 0;
+}
+
+.agent-core,
+.agent-ping,
+.hub-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* The Nexo tile hides the first ~38% of every line and the node circle hides the last
+   ~10%, so only the middle half of the travel is ever on screen. The dash is sized
+   against that visible band, not against the whole line - a shorter comet spends most
+   of its trip behind opaque geometry and reads as a flicker. */
+.agent-pulse {
+  stroke-dasharray: 16 84;
+}
+
+/* Resting colour of the label; the loop lifts it to --fg on the agent's turn. */
+.agent-label {
+  color: var(--fg-muted);
+}
+
+/* The task travels out to the agent, waits while it works, and carries the
+   result back. Both ends vanish behind opaque geometry - the Nexo tile at one
+   end, the node circle at the other - so it reads as entering and leaving. */
+@keyframes agent-pulse {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  1% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  /* arrives at the agent */
+  7% {
+    stroke-dashoffset: -84;
+    opacity: 1;
+  }
+  /* waits there while the agent works - the core is lit across this stretch */
+  13% {
+    stroke-dashoffset: -84;
+    opacity: 1;
+  }
+  /* carries the result home */
+  19% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  20%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* The agent lights up while it holds the task. A separate circle rather than a
+   restyled node: the node already owns a transform for its entry pop, and two
+   animations fighting over one transform is the bug this file keeps re-learning. */
+@keyframes agent-core {
+  0%,
+  6% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  8%,
+  13% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  16%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes agent-ping {
+  0%,
+  6% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  7% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  16%,
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+@keyframes agent-label {
+  0%,
+  5% {
+    color: var(--fg-muted);
+  }
+  8%,
+  13% {
+    color: var(--fg);
+  }
+  17%,
+  100% {
+    color: var(--fg-muted);
+  }
+}
+
+/* Fires once per returning result - five times per lap, from one 1.5s loop.
+   0% MUST be invisible: `backwards` fill holds this frame throughout the delay, so a
+   ring that starts at opacity 0.5 would sit frozen around the tile until the first
+   lap begins. It happens to be covered by the icon at that radius, which is exactly
+   the kind of accident that breaks the day someone resizes the tile. */
+@keyframes hub-receive {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  10% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .agent-pulse {
+    animation: agent-pulse 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite backwards;
+  }
+
+  .agent-core {
+    animation: agent-core 7.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite backwards;
+  }
+
+  .agent-ping {
+    animation: agent-ping 7.5s cubic-bezier(0.16, 1, 0.3, 1) infinite backwards;
+  }
+
+  .agent-label {
+    animation: agent-label 7.5s ease-in-out infinite backwards;
+  }
+
+  .hub-ring {
+    animation: hub-receive 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.125s infinite
+      backwards;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   COVER AURORA - abstract field for the Nexo cover
+
+   Built from the official brand ramp rather than a generated picture: an image
+   generator kept returning off-palette results, and a gradient made from the brand's
+   own values is on-brand by construction, weighs nothing and follows the theme.
+
+   Anchored to the right so it never sits under the headline, and kept low enough in
+   opacity that body copy over it still clears AA in both modes.
+--------------------------------------------------------------------------- */
+
+.cover-aurora {
+  position: absolute;
+  inset: -25% -15% auto -15%;
+  height: 135%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      closest-side at 74% 24%,
+      rgb(118 7 232 / 0.14),
+      transparent
+    ),
+    radial-gradient(closest-side at 90% 52%, rgb(96 32 238 / 0.1), transparent),
+    radial-gradient(closest-side at 60% 6%, rgb(85 175 237 / 0.07), transparent);
+}
+
+.dark .cover-aurora {
+  background:
+    radial-gradient(
+      closest-side at 74% 24%,
+      rgb(118 7 232 / 0.42),
+      transparent
+    ),
+    radial-gradient(closest-side at 90% 52%, rgb(96 32 238 / 0.28), transparent),
+    radial-gradient(closest-side at 60% 6%, rgb(85 175 237 / 0.16), transparent);
+}
+
+/* Fine grain over the field, so it reads as a printed ground rather than a CSS blur.
+   Fixed and pointer-events:none, never on a scrolling container. */
+.cover-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+}
