@@ -64,7 +64,7 @@ Regras de negócio na camada `lib/admin/` (nunca na UI):
 - Dois gráficos SVG server-rendered, mesma escala temporal: **cadastros por semana** e **atividade por semana** (`lesson_progress.updated_at`). Barras com `<title>`, eixo com valores, tabela acessível oculta com os números.
 - **Conclusão por curso** (publicados): começaram · concluíram tudo · %.
 - **Funil por aula** (`?curso=slug`): uma linha por aula na ordem, barra de quantos concluíram — a queda entre aulas é a informação.
-- **CSV** por bloco: `GET /admin/metricas/csv?bloco=...&periodo=...` com `exigirAdmin()`, `Content-Disposition: attachment`, separador `;`, BOM UTF-8.
+- **CSV** por bloco: `GET /admin/metricas-csv?bloco=...&periodo=...` com `exigirAdmin()`, `Content-Disposition: attachment`, separador `;`, BOM UTF-8.
 
 ## Alunos
 
