@@ -22,7 +22,11 @@ COPY . .
 # linhas abaixo gravam na imagem o que o builder viu — hash do fonte, ambiente e
 # tamanho do artefato — para inspeção via ssh.
 RUN md5sum app/page.tsx app/layout.tsx middleware.ts > /diag-fontes.txt && env | sort > /diag-env.txt
-RUN npm run build
+# O builder do Railway injeta OTEL_*/TRACEPARENT no ambiente de build (tracing
+# para um socket local do builder). Com esses vars presentes, o `next build`
+# remoto produzia uma rota raiz diferente da que o MESMO fonte gera em qualquer
+# outro ambiente (provado por hash na instrumentação acima). Build roda sem eles.
+RUN env -u OTEL_EXPORTER_OTLP_TRACES_ENDPOINT -u OTEL_EXPORTER_OTLP_TRACES_PROTOCOL -u OTEL_TRACES_EXPORTER -u OTEL_TRACE_PARENT -u TRACEPARENT npm run build
 RUN wc -c .next/server/app/page.js .next/server/app/app/page.js >> /diag-fontes.txt
 
 # O Railway injeta PORT; o next start respeita a variável.
