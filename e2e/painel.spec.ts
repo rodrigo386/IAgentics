@@ -25,10 +25,15 @@ test("painel mostra o catálogo completo publicado, com capas", async ({ page })
   await expect(page.getByTestId("card-curso")).toHaveCount(9);
 
   // Toda capa renderizada de verdade (imagem carregada, não alt quebrado).
-  const capas = page.getByTestId("card-curso").locator("img");
+  // Rola até cada cartão antes de medir: as capas são lazy e um cartão fora
+  // da viewport legitimamente nunca carrega — o teste imita o olho, não o DOM.
+  const cards = page.getByTestId("card-curso");
   for (let i = 0; i < 9; i++) {
+    await cards.nth(i).scrollIntoViewIfNeeded();
     await expect
-      .poll(async () => capas.nth(i).evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+      .poll(async () =>
+        cards.nth(i).locator("img").evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0),
+      )
       .toBe(true);
   }
 });

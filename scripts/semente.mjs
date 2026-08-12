@@ -29,7 +29,7 @@ try {
       "fundamentos-ia-copilot",
       "Fundamentos de IA com Copilot",
       "Domine o Microsoft Copilot para acelerar tarefas do dia a dia com IA generativa.",
-      "/plataforma/cursos/copilot-course.png",
+      "/plataforma/cursos/copilot-course.jpg",
       "Iniciante",
       6,
       true,
@@ -207,7 +207,7 @@ try {
       titulo: "Fundamentos de IA aplicado aos Negócios",
       descricao:
         "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
-      capa_url: "/plataforma/cursos/fundamentos-ia-negocios.png",
+      capa_url: "/plataforma/cursos/fundamentos-ia-negocios.jpg",
       nivel: "Iniciante",
       carga_horas: 8,
       ordem: 2,
@@ -217,7 +217,7 @@ try {
       titulo: "Imersão de Assistentes de IA para Negócios",
       descricao:
         "Crie assistentes de IA sob medida para aumentar a produtividade da sua equipe.",
-      capa_url: "/plataforma/cursos/imersao-assistentes-ia.png",
+      capa_url: "/plataforma/cursos/imersao-assistentes-ia.jpg",
       nivel: "Intermediário",
       carga_horas: 16,
       ordem: 3,
@@ -227,7 +227,7 @@ try {
       titulo: "Imersão de Análise de Dados com IA",
       descricao:
         "Transforme dados em decisões estratégicas com o poder da IA aplicada à análise.",
-      capa_url: "/plataforma/cursos/imersao-analise-dados-ia.png",
+      capa_url: "/plataforma/cursos/imersao-analise-dados-ia.jpg",
       nivel: "Intermediário",
       carga_horas: 16,
       ordem: 4,
@@ -237,7 +237,7 @@ try {
       titulo: "Lean Thinking — do mapeamento à automação",
       descricao:
         "Mapeie processos, elimine desperdícios e automatize com IA seguindo princípios Lean.",
-      capa_url: "/plataforma/cursos/lean-thinking-course.png",
+      capa_url: "/plataforma/cursos/lean-thinking-course.jpg",
       nivel: "Intermediário",
       carga_horas: 20,
       ordem: 5,
@@ -247,7 +247,7 @@ try {
       titulo: "Imersão de Transformação Digital nos Negócios",
       descricao:
         "Lidere a jornada de transformação digital da sua empresa com metodologias de vanguarda.",
-      capa_url: "/plataforma/cursos/transformacao-digital-course.png",
+      capa_url: "/plataforma/cursos/transformacao-digital-course.jpg",
       nivel: "Avançado",
       carga_horas: 20,
       ordem: 6,
@@ -257,7 +257,7 @@ try {
       titulo: "Design Thinking aplicado com IA",
       descricao:
         "Combine Design Thinking e IA para criar soluções centradas no usuário com mais velocidade.",
-      capa_url: "/plataforma/cursos/design-thinking-ia-course.png",
+      capa_url: "/plataforma/cursos/design-thinking-ia-course.jpg",
       nivel: "Intermediário",
       carga_horas: 12,
       ordem: 7,
@@ -267,7 +267,7 @@ try {
       titulo: "Imersão de Spend Management com IA",
       descricao:
         "Otimize gastos corporativos e a cadeia de suprimentos com agentes de IA especializados.",
-      capa_url: "/plataforma/cursos/spend-management-course.png",
+      capa_url: "/plataforma/cursos/spend-management-course.jpg",
       nivel: "Avançado",
       carga_horas: 16,
       ordem: 8,
@@ -277,7 +277,7 @@ try {
       titulo: "Neurociência & Produtividade",
       descricao:
         "Como produzir com eficácia na tríade Pessoas, Processos e Tecnologia à luz da neurociência.",
-      capa_url: "/plataforma/cursos/neurociencia-produtividade-course.png",
+      capa_url: "/plataforma/cursos/neurociencia-produtividade-course.jpg",
       nivel: "Intermediário",
       carga_horas: 12,
       ordem: 9,
