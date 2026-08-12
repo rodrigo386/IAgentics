@@ -14,7 +14,15 @@ export default async function PaginaCriarConta({ searchParams }: { searchParams:
       </Suspense>
       <p className="text-sm text-fg-muted">
         {t.jaTem}{" "}
-        <Link href="/app/entrar" className="text-accent-text underline-offset-4 hover:underline">
+        {/* Preserva o destino de volta (funil do /planos): sem isto, quem
+            veio do /planos com ?voltar=/planos e clica em "Entrar" em vez de
+            criar conta perdia o retorno e caía no /app genérico depois de
+            logar — FormEntrar/entrarAction já leem e propagam "voltar" do
+            querystring, só faltava esta página repassar. */}
+        <Link
+          href={voltar ? `/app/entrar?voltar=${encodeURIComponent(voltar)}` : "/app/entrar"}
+          className="text-accent-text underline-offset-4 hover:underline"
+        >
           {t.entrar}
         </Link>
       </p>
