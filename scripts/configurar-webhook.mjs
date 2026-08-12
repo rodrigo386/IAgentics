@@ -14,6 +14,7 @@ if (existsSync(".env.local")) {
 
 const base = process.argv[2];
 if (!base) { console.error("uso: node scripts/configurar-webhook.mjs <url-base-do-site>"); process.exit(1); }
+try { new URL(base); } catch { console.error("uso: node scripts/configurar-webhook.mjs <url-base-com-https://>"); process.exit(1); }
 const chave = process.env.ASAAS;
 const token = process.env.ASAAS_WEBHOOK_TOKEN;
 if (!chave || !token) { console.error("faltam ASAAS e/ou ASAAS_WEBHOOK_TOKEN no ambiente"); process.exit(1); }
@@ -32,12 +33,20 @@ const corpo = {
   authToken: token,
 };
 
-const lista = await (await fetch("https://api.asaas.com/v3/webhooks", { headers: cabecalhos })).json();
-const existente = (lista.data ?? []).find((w) => w.url === url);
+let dados = [];
+let offset = 0;
+let hasMore = true;
+while (hasMore) {
+  const lista = await (await fetch(`https://api.asaas.com/v3/webhooks?limit=100&offset=${offset}`, { headers: cabecalhos })).json();
+  dados = dados.concat(lista.data ?? []);
+  hasMore = lista.hasMore ?? false;
+  offset += (lista.data ?? []).length;
+}
+const existente = dados.find((w) => w.url === url);
 const resposta = await fetch(`https://api.asaas.com/v3/webhooks${existente ? `/${existente.id}` : ""}`, {
   method: existente ? "PUT" : "POST",
   headers: cabecalhos,
   body: JSON.stringify(corpo),
 });
-if (!resposta.ok) { console.error("falhou:", resposta.status, await resposta.text()); process.exit(1); }
+if (!resposta.ok) { const corpo = (await resposta.text()).replaceAll(token, "[token]").replaceAll(chave, "[chave]"); console.error("falhou:", resposta.status, corpo); process.exit(1); }
 console.log(`webhook ${existente ? "atualizado" : "criado"}: ${url}`);
