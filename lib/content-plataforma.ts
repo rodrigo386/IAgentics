@@ -38,6 +38,15 @@ export const plataforma = {
     catalogo: "Cursos",
     seloAssine: "Assine para acessar",
     ctaAssinar: "Assinar agora",
+    /* Redesign editorial: trilhos por estado do aluno + hero. */
+    emAndamento: "Em andamento",
+    formacoes: "Formações",
+    concluidos: "Concluídos",
+    emGravacao: "Em gravação",
+    continuarAula: (titulo: string) => `Continuar: ${titulo}`,
+    boasVindas: "Bem-vindo à Academy",
+    boasVindasTexto: "Escolha uma formação e comece agora — seu progresso fica salvo aqui.",
+    cursoConcluido: "Curso concluído",
     horas: "h",
   },
   curso: {
@@ -60,6 +69,7 @@ export const plataforma = {
     videoFalhou: "O vídeo não carregou.",
     recarregar: "Recarregar",
     aulasDoCurso: "Aulas do curso",
+    aulaDe: (x: number, y: number) => `Aula ${x} de ${y}`,
   },
   conta: {
     titulo: "Sua conta",
