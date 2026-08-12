@@ -44,9 +44,9 @@ São 4 chamadas HTTP (criar cliente, criar assinatura, listar cobranças, regist
 
 - Rota top-level fora do middleware (`matcher` cobre só `/app` e `/admin`), logo pública por construção.
 - Visual: design system do site (violeta #7607E8 só em preenchimento, superfícies radius 0, controles pill, mesma tipografia das landings).
-- Conteúdo: preço em destaque (**R$ 39,90/mês**), benefícios — acesso total ao acervo (as 9 formações e as que chegarem), aulas novas conforme saem da gravação, assista no seu ritmo, cancele quando quiser — e a grade de capas dos 9 cursos publicados — consulta o catálogo real via função nova `buscarCatalogoPublico()` em `lib/plataforma/dados.ts` (só cursos `publicado = true`, sem userId, sem progresso; o `buscarCatalogo` atual exige aluno logado).
+- Conteúdo: preço em destaque (**R$ 39,90/mês**), benefícios — acesso total ao acervo (as 9 formações e as que chegarem), aulas novas conforme saem da gravação, assista no seu ritmo, cancele quando quiser — e a grade de capas dos 9 cursos publicados — consulta o catálogo real via o `buscarCatalogo()` existente em `lib/plataforma/dados.ts` (verificado: já não recebe userId e já filtra `publicado = true`; nenhuma função nova é necessária).
 - CTA único **"Assinar agora"**:
-  - Visitante → `/app/criar-conta?voltar=/app/assinar` (o parâmetro `voltar` já existe e já é sanitizado).
+  - Visitante → `/app/criar-conta?voltar=/app/assinar`. Verificado no código: o `voltar` sanitizado existe hoje só em `/app/entrar` — este ciclo adiciona o mesmo tratamento (regex `/^\/(?!\/)/`, fallback `/app`) à página e à action de criar conta.
   - Aluno logado sem acesso → `/app/assinar`.
   - Aluno logado com acesso (`temAcesso` true) → o CTA vira o aviso "Você já é assinante" com link para `/app`.
 - Copy nasce no bloco `planos` de `lib/content-plataforma.ts`; strings exatas definidas no plano de implementação, rascunhadas sem inventar números que não temos (nunca "PMEs", pt-BR).
