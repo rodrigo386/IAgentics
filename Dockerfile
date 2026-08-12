@@ -20,6 +20,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY . .
+# O artefato viaja como next-build/ (nome não-ignorado por nenhum dos três
+# arquivos de ignore) e vira .next aqui dentro.
+RUN rm -rf .next && mv next-build .next
 
 # O Railway injeta PORT; o next start respeita a variável.
 CMD ["npx", "next", "start"]
