@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
 import { contaAtiva, temAcesso } from "@/lib/plataforma/dados";
@@ -9,6 +9,33 @@ import { validarCpf } from "./cpf";
 import { clienteAsaas, type ClienteAsaas } from "./cliente";
 
 export type ResultadoAssinar = { ok: true; url: string } | { ok: false; erro: string };
+
+/** Mutex em processo, por userId (fix round 2, F1 — substitui o db.transaction
+ *  + pg_advisory_xact_lock do fix round 1). Aquela versão segurava uma conexão
+ *  do pool de Postgres (max: 5, COMPARTILHADO com o site inteiro) durante as
+ *  chamadas HTTP ao Asaas: 5 assinaturas concorrentes batendo num Asaas lento
+ *  esgotariam o pool e travariam TODO o site, não só a contratação. Este mutex
+ *  serializa só as chamadas de iniciarAssinatura pro MESMO userId, em memória,
+ *  sem prender conexão de banco nenhuma — cada chamada encadeia no promise
+ *  anterior do mesmo userId e a entrada é limpa quando a fila esvazia.
+ *  Vale porque o deploy é instância única (Railway, 1 container); escalando
+ *  horizontalmente isto vira 1 mutex por processo e não serializa mais nada
+ *  sozinho — precisaria virar lock distribuído. Nesse cenário, a auto-cura via
+ *  listarAssinaturasDoCliente (Reuso 2 abaixo) é a rede de segurança residual:
+ *  mesmo se duas instâncias criarem duas assinaturas ACTIVE pro mesmo usuário,
+ *  a próxima chamada acha a órfã antes de criar uma terceira. */
+const filaPorUsuario = new Map<string, Promise<unknown>>();
+
+function comLockDoUsuario<T>(userId: string, fn: () => Promise<T>): Promise<T> {
+  const anterior = filaPorUsuario.get(userId) ?? Promise.resolve();
+  const resultado = anterior.then(fn, fn); // roda fn após a fila, mesmo se a chamada anterior rejeitou
+  const semRejeicao = resultado.catch(() => undefined); // a fila em si nunca fica travada rejeitada
+  filaPorUsuario.set(userId, semRejeicao);
+  semRejeicao.finally(() => {
+    if (filaPorUsuario.get(userId) === semRejeicao) filaPorUsuario.delete(userId); // limpa se ninguém entrou na fila depois
+  });
+  return resultado;
+}
 
 /** Contratação: cria cliente + assinatura no Asaas e devolve a URL da fatura
  *  hospedada. O webhook (lib/asaas/webhook.ts) é quem ativa depois do pagamento.
@@ -26,26 +53,16 @@ export async function iniciarAssinatura(
   const usuario = await buscarUsuario(userId);
   if (!usuario) return { ok: false, erro: t.erroGenerico };
 
-  try {
-    return await db.transaction(async (tx) => {
-      // Lock por usuário (fix round, Critical 1): sem isto, duas chamadas
-      // concorrentes de iniciarAssinatura pro MESMO userId (duplo clique, aba
-      // duplicada) leem "nenhuma pendente" ao mesmo tempo e cada uma cria
-      // customer + assinatura REAIS no Asaas — cobrança duplicada. A segunda
-      // chamada bloqueia aqui até a primeira commitar; ao acordar, relê a
-      // última linha (já com a pendente da primeira) e cai no Reuso 1 abaixo.
-      // Custo aceito: prende uma conexão do pool durante as chamadas HTTP ao
-      // Asaas — fluxo curto, por usuário, não é hot path.
-      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${"assinar:" + userId}))`);
-
+  return comLockDoUsuario(userId, async () => {
+    try {
       // Reuso 1: pendente OU inadimplente já têm assinatura viva no Asaas.
-      // (Fix round, Critical 2: só "pendente" disparava aqui — um retry com a
-      // última linha "inadimplente" caía direto no Reuso 2 e criava uma
-      // SEGUNDA assinatura ativa no Asaas sem cancelar a original, que
-      // continuava cobrando. "inadimplente" = venceu mas segue cobrável, tem
-      // a mesma fatura em aberto que "pendente" tem.) Volta pra MESMA fatura
-      // em vez de criar uma duplicata (clique repetido no botão).
-      const [ultima] = await tx
+      // ("inadimplente" = venceu mas segue cobrável, tem a mesma fatura em
+      // aberto que "pendente" tem — sem isto, um retry sobre uma inadimplente
+      // criaria uma SEGUNDA assinatura ativa no Asaas sem cancelar a original,
+      // que continuava cobrando.) Volta pra MESMA fatura em vez de criar uma
+      // duplicata (clique repetido no botão / segunda chamada que esperou o
+      // lock acima).
+      const [ultima] = await db
         .select({ status: subscriptions.status, asaasSubscriptionId: subscriptions.asaasSubscriptionId })
         .from(subscriptions)
         .where(eq(subscriptions.userId, userId))
@@ -60,7 +77,7 @@ export async function iniciarAssinatura(
       }
 
       // Reuso 2: cliente Asaas já criado em tentativa/assinatura anterior.
-      const [comCliente] = await tx
+      const [comCliente] = await db
         .select({ id: subscriptions.asaasCustomerId })
         .from(subscriptions)
         .where(and(eq(subscriptions.userId, userId), isNotNull(subscriptions.asaasCustomerId)))
@@ -70,22 +87,22 @@ export async function iniciarAssinatura(
       let customerId: string;
       if (comCliente?.id) {
         customerId = comCliente.id;
-        // Auto-cura de órfã (fix round, Important 1 — e defesa extra do
-        // Critical 2): um insert que falhasse logo depois de criarAssinatura
-        // numa tentativa anterior deixaria uma assinatura ACTIVE no Asaas sem
-        // NENHUMA linha aqui. Sem checar isto, o retry criaria uma SEGUNDA
-        // cobrança — e se a órfã fosse paga, o webhook não teria userId
-        // nenhum pra casar o pagamento (dinheiro entra, acesso não libera).
-        // Antes de criar outra assinatura, procura essa órfã pelo customer e,
-        // achando fatura em aberto, insere a linha pendente que faltou e
-        // devolve a fatura dela. Só cria assinatura nova se nada for achado.
+        // Auto-cura de órfã: um insert que falhasse logo depois de
+        // criarAssinatura numa tentativa anterior deixaria uma assinatura
+        // ACTIVE no Asaas sem NENHUMA linha aqui. Sem checar isto, o retry
+        // criaria uma SEGUNDA cobrança — e se a órfã fosse paga, o webhook não
+        // teria userId nenhum pra casar o pagamento (dinheiro entra, acesso
+        // não libera). Antes de criar outra assinatura, procura essa órfã
+        // pelo customer e, achando fatura em aberto, insere a linha pendente
+        // que faltou e devolve a fatura dela. Só cria assinatura nova se nada
+        // for achado.
         const ativas = (await cliente.listarAssinaturasDoCliente(customerId)).filter((a) => a.status === "ACTIVE");
         for (const ativa of ativas) {
           const aberta = (await cliente.listarCobrancas(ativa.id)).find(
             (c) => (c.status === "PENDING" || c.status === "OVERDUE") && c.invoiceUrl,
           );
           if (aberta) {
-            await tx.insert(subscriptions).values({
+            await db.insert(subscriptions).values({
               userId,
               status: "pendente",
               asaasCustomerId: customerId,
@@ -103,7 +120,7 @@ export async function iniciarAssinatura(
 
       // Linha nova, nunca update — o histórico de status é o mesmo padrão do
       // liberar/revogar do admin, e temAcesso lê sempre a linha mais recente.
-      await tx.insert(subscriptions).values({
+      await db.insert(subscriptions).values({
         userId,
         status: "pendente",
         asaasCustomerId: customerId,
@@ -113,9 +130,9 @@ export async function iniciarAssinatura(
       const [cobranca] = await cliente.listarCobrancas(assinatura.id);
       if (!cobranca?.invoiceUrl) return { ok: false, erro: t.erroGenerico };
       return { ok: true, url: cobranca.invoiceUrl };
-    });
-  } catch (e) {
-    console.error("iniciarAssinatura", e); // detalhe só no servidor; a tela vê o genérico
-    return { ok: false, erro: t.erroGenerico };
-  }
+    } catch (e) {
+      console.error("iniciarAssinatura", e); // detalhe só no servidor; a tela vê o genérico
+      return { ok: false, erro: t.erroGenerico };
+    }
+  });
 }

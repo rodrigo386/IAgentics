@@ -2,12 +2,15 @@ import "server-only"; // a chave de produção nunca pode vazar para bundle de c
 
 const BASE = "https://api.asaas.com/v3";
 
-/** Mascara qualquer sequência de 11 dígitos (formato de CPF) antes de logar.
- *  Fix round (Important 2): o endpoint /customers valida o CPF e pode ecoá-lo
- *  de volta na mensagem de erro — sem isto, um CPF que a Task 2 nunca deixa
- *  persistir nem logar aqui vazaria mesmo assim, dentro do corpo de erro. */
+/** Mascara CPF antes de logar: sequência de 11 dígitos crus E o formato
+ *  pontuado usual (000.000.000-00, e parcialmente pontuado). Fix round
+ *  (Important 2, endurecido no round 2 — F2): o endpoint /customers valida o
+ *  CPF e pode ecoá-lo de volta na mensagem de erro; a primeira versão só
+ *  cobria dígitos crus e não pegava o formato do próprio CPF de teste do
+ *  brief ("529.982.247-25") — sem a segunda regex, ele vazaria no log mesmo
+ *  nunca sendo persistido (constraint da Task 2). */
 export function redigirCpfs(texto: string): string {
-  return texto.replace(/\d{11}/g, "[cpf-redigido]");
+  return texto.replace(/\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g, "[cpf-redigido]").replace(/\d{11}/g, "[cpf-redigido]");
 }
 
 async function chamar(caminho: string, init?: RequestInit): Promise<any> {

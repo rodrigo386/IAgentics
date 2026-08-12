@@ -10,23 +10,30 @@ const prefixo = `teste-asaas-${Date.now()}`;
 const CPF_VALIDO = "529.982.247-25";
 
 /** Fake do contrato ClienteAsaas: registra chamadas, devolve IDs/URLs fixos.
- *  `falhar: true` simula a API fora do ar (toda chamada lança). */
+ *  `falhar: true` simula a API fora do ar (toda chamada lança). `delayMs`
+ *  (fix round 2, F3) cede o event loop dentro de criarCliente/criarAssinatura
+ *  — sem isto, um fake 100% síncrono nunca abre uma janela de corrida real
+ *  pro teste de concorrência, mesmo com o mutex desligado. */
 function fakeAsaas(
   opts: {
     falhar?: boolean;
     cobrancas?: Array<{ id: string; status: string; invoiceUrl: string; dueDate: string }>;
     assinaturasDoCliente?: Array<{ id: string; status: string }>;
+    delayMs?: number;
   } = {},
 ) {
   const chamadas: string[] = [];
+  const ceder = () => (opts.delayMs ? new Promise((r) => setTimeout(r, opts.delayMs)) : Promise.resolve());
   const cliente: ClienteAsaas = {
     async criarCliente() {
       chamadas.push("criarCliente");
+      await ceder();
       if (opts.falhar) throw new Error("asaas 500");
       return { id: "cus_teste_1" };
     },
     async criarAssinatura() {
       chamadas.push("criarAssinatura");
+      await ceder();
       if (opts.falhar) throw new Error("asaas 500");
       return { id: "sub_teste_1" };
     },
@@ -117,18 +124,19 @@ describe.skipIf(!process.env.DATABASE_URL)("iniciarAssinatura", () => {
   });
 
   // --- Fix round (review da Task 4): Critical 1, Critical 2, Important 1 ---
+  // --- Fix round 2: F1 (mutex em processo), F3 (teste de corrida endurecido) ---
 
-  it("concorrência: duas chamadas simultâneas pro mesmo usuário criam só 1 assinatura", async () => {
+  it("concorrência: 5 chamadas simultâneas pro mesmo usuário criam só 1 assinatura", async () => {
     const userId = await criarAluno("concorrente");
-    const { cliente, chamadas } = fakeAsaas();
-    const [r1, r2] = await Promise.all([
-      iniciarAssinatura(userId, CPF_VALIDO, cliente),
-      iniciarAssinatura(userId, CPF_VALIDO, cliente),
-    ]);
-    // As duas terminam ok — uma cria, a outra reusa a mesma fatura (o lock
-    // por userId serializa; a segunda relê a linha pendente já commitada).
-    expect(r1).toEqual({ ok: true, url: "https://asaas.example/i/pay_teste_1" });
-    expect(r2).toEqual({ ok: true, url: "https://asaas.example/i/pay_teste_1" });
+    // delayMs abre a janela de corrida: sem ele, o fake resolve tudo no mesmo
+    // microtask e o teste passa mesmo com o mutex desligado (não prova nada).
+    const { cliente, chamadas } = fakeAsaas({ delayMs: 10 });
+    const resultados = await Promise.all(
+      Array.from({ length: 5 }, () => iniciarAssinatura(userId, CPF_VALIDO, cliente)),
+    );
+    // Todas terminam ok — uma cria, as outras reusam a mesma fatura (o mutex
+    // por userId serializa; quem espera relê a linha pendente já inserida).
+    for (const r of resultados) expect(r).toEqual({ ok: true, url: "https://asaas.example/i/pay_teste_1" });
     expect(await db.select().from(subscriptions).where(eq(subscriptions.userId, userId))).toHaveLength(1);
     expect(chamadas.filter((c) => c === "criarAssinatura")).toHaveLength(1);
     expect(chamadas.filter((c) => c === "criarCliente")).toHaveLength(1);
