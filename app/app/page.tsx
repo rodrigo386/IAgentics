@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { CardCurso } from "@/components/plataforma/CardCurso";
 import { plataforma } from "@/lib/content-plataforma";
+import { destinoCta } from "@/lib/admin/configuracoes";
 import { buscarCatalogo, buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 import type { Aula, Curso } from "@/lib/plataforma/tipos";
@@ -18,10 +19,11 @@ export default async function Painel() {
   // Fonte de verdade única: temAcesso(userId) de dados.ts, não uma comparação
   // local reimplementada (subscriptions guarda histórico; "ativa"/"manual" só
   // conta na linha mais recente, e só dados.ts sabe fazer essa checagem direito).
-  const [catalogo, concluidas, temAcesso] = await Promise.all([
+  const [catalogo, concluidas, temAcesso, destino] = await Promise.all([
     buscarCatalogo(),
     buscarConcluidas(userId),
     verificarAcesso(userId),
+    destinoCta(),
   ]);
 
   // Índice de cada curso do catálogo, para derivar pct e "próxima aula" por curso.
@@ -83,7 +85,7 @@ export default async function Painel() {
         <section className="mb-10 flex flex-col items-start gap-4 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-fg">{plataforma.painel.seloAssine}</p>
           <a
-            href="/academy#contato"
+            href={destino}
             className="rounded-control bg-accent px-6 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
           >
             {plataforma.painel.ctaAssinar}

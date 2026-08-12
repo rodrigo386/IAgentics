@@ -190,4 +190,17 @@ export const admin = {
     },
     exportarCsv: "Exportar CSV",
   },
+  configuracoes: {
+    titulo: "Configurações",
+    campos: {
+      ctaDestino: "Destino do botão de venda (URL)",
+      avisoTopo: "Aviso no topo da área do aluno (vazio = sem aviso)",
+      emailContato: "E-mail de contato",
+    },
+    salvar: "Salvar",
+    salvo: "Salvo.",
+    erros: {
+      urlInvalida: "Informe uma URL válida (comece com / ou https://)",
+    },
+  },
 } as const;

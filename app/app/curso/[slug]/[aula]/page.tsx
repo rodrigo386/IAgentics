@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
 import { PlayerAula } from "@/components/plataforma/PlayerAula";
 import { plataforma } from "@/lib/content-plataforma";
+import { destinoCta } from "@/lib/admin/configuracoes";
 import { buscarConcluidas, buscarCurso, buscarMidia, podeVerAula } from "@/lib/plataforma/dados";
 
 export default async function PaginaAula({
@@ -39,7 +40,11 @@ export default async function PaginaAula({
   // assinante não deve ver CTA pedindo pra assinar de novo. podeVerAula
   // decide isso SEM tocar em lesson_media; só se ela liberar é que
   // buscarMidia é chamada para saber se o vídeo já existe.
-  const [concluidas, podeVer] = await Promise.all([buscarConcluidas(userId), podeVerAula(userId, aula.id)]);
+  const [concluidas, podeVer, destino] = await Promise.all([
+    buscarConcluidas(userId),
+    podeVerAula(userId, aula.id),
+    destinoCta(),
+  ]);
   const midia = podeVer ? await buscarMidia(userId, aula.id) : null;
 
   const t = plataforma.aula;
@@ -54,7 +59,7 @@ export default async function PaginaAula({
             <h2 className="text-xl font-medium leading-snug tracking-[-0.02em]">{t.bloqueadaTitulo}</h2>
             <p className="max-w-[45ch] text-brand-paper/80">{t.bloqueadaTexto}</p>
             <a
-              href="/academy#contato"
+              href={destino}
               className="rounded-control bg-accent px-6 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
             >
               {t.bloqueadaCta}

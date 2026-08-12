@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
 import { plataforma } from "@/lib/content-plataforma";
+import { destinoCta } from "@/lib/admin/configuracoes";
 import { buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 
@@ -18,7 +19,11 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
   const curso = await buscarCurso(slug);
   if (!curso) notFound();
 
-  const [concluidas, temAcesso] = await Promise.all([buscarConcluidas(userId), verificarAcesso(userId)]);
+  const [concluidas, temAcesso, destino] = await Promise.all([
+    buscarConcluidas(userId),
+    verificarAcesso(userId),
+    destinoCta(),
+  ]);
 
   const aulaIds = curso.modulos.flatMap((m) => m.aulas.map((a) => a.id));
   const progresso = derivarProgresso(aulaIds, concluidas);
@@ -73,7 +78,7 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
         <section className="flex flex-col items-start gap-4 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-fg">{plataforma.painel.seloAssine}</p>
           <a
-            href="/academy#contato"
+            href={destino}
             className="rounded-control bg-accent px-6 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
           >
             {plataforma.painel.ctaAssinar}
