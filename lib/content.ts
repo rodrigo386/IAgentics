@@ -209,7 +209,7 @@ export const academy = {
      * padrão dos quadros de mídia do /nexo.
      */
     appLabel: "Acessar plataforma",
-    appHref: null as string | null,
+    appHref: "/app" as string | null,
   },
 
   /** Apoiadores. No site atual passam em marquee, repetidos 3x. */
