@@ -53,7 +53,7 @@ Mobile empilha: player → ações → índice. Estados existentes intactos na c
 ## Técnica
 
 - **Zero dependência nova, zero migração.** Server Components + CSS do design system: violeta `#7607E8` só preenchimento, superfícies radius 0, controles pill, tokens (`bg-bg`, `bg-surface`, `border-line`, `text-fg*`, `text-accent-text`, `bg-accent`). Transições só `hover`/`focus`, respeitando `prefers-reduced-motion`. Funciona nos dois temas.
-- **Camada de dados**: única adição é `buscarUltimaAula(userId)` em `lib/plataforma/dados.ts` — join `lesson_progress → lessons → modules → courses`, `order by lesson_progress.updated_at desc limit 1`, filtrando `courses.publicado = true`; recebe `userId` explícito (padrão de segurança das irmãs). Devolve `{ cursoSlug, aulaSlug, aulaTitulo, cursoId } | null`. `temAcesso`, travas, actions e anel de progresso não mudam.
+- **Camada de dados**: única adição é `buscarUltimaAula(userId)` em `lib/plataforma/dados.ts` — join `lesson_progress → lessons → modules → courses`, `order by lesson_progress.updated_at desc limit 1`, filtrando `courses.publicado = true`; recebe `userId` explícito (padrão de segurança das irmãs). Devolve `{ cursoSlug } | null` — só o curso da última atividade; o painel já carrega os índices de todos os cursos e deriva a próxima aula com `proximaAula()` existente (devolver aula/título daqui duplicaria essa lógica). `temAcesso`, travas, actions e anel de progresso não mudam.
 - As rotas já são dinâmicas (layout de `/app` é `force-dynamic`) — sem risco novo de prerender no build do Railway.
 
 ## Conteúdo (`lib/content-plataforma.ts`)
