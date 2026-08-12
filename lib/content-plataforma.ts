@@ -55,6 +55,7 @@ export const plataforma = {
     bloqueadaCta: "Falar com a IAgentics",
     videoFalhou: "O vídeo não carregou.",
     recarregar: "Recarregar",
+    aulasDoCurso: "Aulas do curso",
   },
   conta: {
     titulo: "Sua conta",
