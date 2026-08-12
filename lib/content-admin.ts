@@ -62,4 +62,40 @@ export const admin = {
       jaSemAcesso: "Este aluno já não tem acesso.",
     },
   },
+  metricas: {
+    titulo: "Métricas",
+    periodo: {
+      rotulo: "Período",
+      "7": "7 dias",
+      "30": "30 dias",
+      "90": "90 dias",
+      tudo: "Tudo",
+    },
+    cartoes: {
+      alunosTotais: "Alunos totais",
+      novos: "Novos alunos",
+      assinaturasAtivas: "Assinaturas ativas",
+      alunosAtivos: "Alunos ativos",
+      aulasConcluidas: "Aulas concluídas",
+    },
+    graficos: {
+      cadastros: "Cadastros por semana",
+      atividade: "Atividade por semana",
+    },
+    semDados: "Sem dados para este período.",
+    conclusao: {
+      titulo: "Conclusão por curso",
+      curso: "Curso",
+      comecaram: "Começaram",
+      concluiram: "Concluíram",
+      percentual: "%",
+      vazio: "Nenhum curso publicado ainda.",
+    },
+    funil: {
+      titulo: "Funil de conclusão",
+      vazio: "Este curso ainda não tem aulas.",
+      semCurso: "Nenhum curso publicado ainda.",
+    },
+    exportarCsv: "Exportar CSV",
+  },
 } as const;

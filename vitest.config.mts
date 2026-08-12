@@ -19,6 +19,16 @@ export default defineConfig({
     include: ["lib/**/*.test.ts"],
     exclude: [...configDefaults.exclude, "scripts/**"],
     environment: "node",
+    // Todo arquivo aqui é integração contra o MESMO Postgres real (nunca mock).
+    // Cada suíte já se isola por prefixo em queries ESCOPADAS (like/eq no seu
+    // próprio prefixo) — mas lib/admin/metricas.test.ts precisa também de
+    // contagens GLOBAIS (resumo/seriesSemanais/conclusaoPorCurso não têm
+    // parâmetro de escopo, de propósito, porque o dashboard real também não
+    // tem). Rodar arquivos de teste em paralelo (padrão do vitest) intercala
+    // os inserts de outro arquivo nas asserções por delta deste, inflando a
+    // contagem. Um arquivo de cada vez fecha essa corrida sem exigir que toda
+    // função agregada global ganhe um parâmetro de escopo só para teste.
+    fileParallelism: false,
     server: {
       // Por padrão o vitest externaliza deps de node_modules (carregadas pelo Node
       // puro, ignorando resolve.alias abaixo). lib/admin/sessao.ts importa "@/auth",
