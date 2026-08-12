@@ -79,4 +79,15 @@ export const plataforma = {
     statusCancelada: "Cancelada",
     statusNenhuma: "Sem assinatura",
   },
+  assinar: {
+    titulo: "Assinar a Academy",
+    resumo:
+      "Plano mensal de R$ 39,90 com acesso total ao acervo. O pagamento acontece na página segura do Asaas — Pix, cartão ou boleto.",
+    cpf: "CPF",
+    cpfAjuda: "Usado só para emitir a cobrança no Asaas. Não fica guardado aqui.",
+    botao: "Ir para o pagamento",
+    cpfInvalido: "CPF inválido. Confira os números e tente de novo.",
+    jaAssinante: "Você já é assinante.",
+    erroGenerico: "Não foi possível iniciar o pagamento. Tente novamente em instantes.",
+  },
 } as const;
