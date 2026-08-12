@@ -37,6 +37,38 @@
 **Interfaces:**
 - Produces: `db` (Drizzle/node-postgres) + tabelas `users`, `courses`, `modules`, `lessons`, `lesson_media`, `subscriptions`, `lesson_progress` no Postgres do Railway; script `npm run db:migrar`.
 
+- [ ] **Step 0: Postgres local de desenvolvimento** (decisão do Rodrigo: seguir sem o Railway por ora; a URL chega depois)
+
+Sem Postgres nem Docker na máquina. Usar `embedded-postgres` (binários oficiais do PostgreSQL baixados pelo npm; nada de instalação de sistema):
+
+```bash
+npm i -D embedded-postgres
+mkdir -p .dev && printf '.dev/\n' >> .gitignore
+```
+
+`scripts/db-local.mjs` (start/stop; dados em `.dev/postgres-data`, porta 54329):
+
+```js
+import EmbeddedPostgres from "embedded-postgres";
+const pg = new EmbeddedPostgres({
+  databaseDir: ".dev/postgres-data",
+  user: "postgres", password: "local-dev", port: 54329, persistent: true,
+});
+const cmd = process.argv[2];
+if (cmd === "start") {
+  const fs = await import("fs");
+  if (!fs.existsSync(".dev/postgres-data/PG_VERSION")) await pg.initialise();
+  await pg.start();
+  try { await pg.createDatabase("plataforma"); } catch { /* já existe */ }
+  console.log("postgres local em 127.0.0.1:54329/plataforma");
+} else if (cmd === "stop") { await pg.stop(); console.log("parado"); }
+else { console.error("uso: node scripts/db-local.mjs start|stop"); process.exit(1); }
+```
+
+Scripts npm: `"db:local": "node scripts/db-local.mjs start"`, `"db:local:stop": "node scripts/db-local.mjs stop"`.
+`.env.local`: `DATABASE_URL=postgresql://postgres:local-dev@127.0.0.1:54329/plataforma`.
+QUANDO a URL do Railway chegar: trocar a linha no `.env.local` (ou manter a local para dev e usar a do Railway só em produção/Task 9) e rodar `npm run db:migrar && node scripts/semente.mjs` contra ela.
+
 - [ ] **Step 1: Limpeza da v1 + deps**
 
 ```bash
