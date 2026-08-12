@@ -28,4 +28,4 @@ export type Curso = {
 
 export type CursoComIndice = Curso & { modulos: Modulo[] };
 
-export type StatusAssinatura = "manual" | "ativa" | "inadimplente" | "cancelada" | null;
+export type StatusAssinatura = "manual" | "ativa" | "inadimplente" | "cancelada" | "pendente" | null;

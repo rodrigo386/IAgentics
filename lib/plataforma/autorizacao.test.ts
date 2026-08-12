@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessons, modules, subscriptions, users } from "@/lib/db/schema";
 import {
+  buscarAssinatura,
   buscarCatalogo,
   buscarConcluidas,
   buscarCurso,
@@ -31,6 +32,9 @@ let userCancelada: { id: string };
 // temAcesso/buscarMidia/podeGravarProgresso têm que negar mesmo assim, sem
 // esperar o JWT expirar (auth() sozinho não enxerga isso).
 let userDesativado: { id: string };
+// Ciclo Asaas: linha "pendente" (assinatura criada, fatura ainda não paga) —
+// por construção NÃO dá acesso: pendente ∉ ('ativa','manual').
+let userPendente: { id: string };
 let aulaGratuita: { id: string };
 let aulaPaga: { id: string };
 let aulaSemMidia: { id: string };
@@ -78,6 +82,12 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .returning({ id: users.id });
     await db.insert(subscriptions).values({ userId: userDesativado.id, status: "manual" });
     await db.update(users).set({ ativo: false }).where(eq(users.id, userDesativado.id));
+
+    [userPendente] = await db
+      .insert(users)
+      .values({ nome: "Teste pendente", email: `${prefixo}-pendente@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    await db.insert(subscriptions).values({ userId: userPendente.id, status: "pendente" });
 
     const [cursoPublicado] = await db
       .insert(courses)
@@ -168,6 +178,14 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     expect(await temAcesso(userDesativado.id)).toBe(false);
     const midia = await buscarMidia(userDesativado.id, aulaPaga.id);
     expect(midia).toBeNull();
+  });
+
+  it("assinatura pendente não dá acesso", async () => {
+    expect(await temAcesso(userPendente.id)).toBe(false);
+  });
+
+  it("buscarAssinatura devolve o status pendente", async () => {
+    expect(await buscarAssinatura(userPendente.id)).toBe("pendente");
   });
 
   it("mídia de curso não publicado não sai nem para assinante", async () => {

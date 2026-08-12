@@ -26,6 +26,8 @@ export default async function PaginaConta() {
     textoAssinatura = t.statusInadimplente;
   } else if (status === "cancelada") {
     textoAssinatura = t.statusCancelada;
+  } else if (status === "pendente") {
+    textoAssinatura = t.statusPendente;
   } else {
     textoAssinatura = t.statusNenhuma;
   }

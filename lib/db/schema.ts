@@ -69,7 +69,7 @@ export const subscriptions = pgTable("subscriptions", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index("subscriptions_user_idx").on(t.userId),
-  check("subscriptions_status_chk", sql`${t.status} in ('manual','ativa','inadimplente','cancelada')`),
+  check("subscriptions_status_chk", sql`${t.status} in ('manual','ativa','inadimplente','cancelada','pendente')`),
 ]);
 
 export const lessonProgress = pgTable("lesson_progress", {

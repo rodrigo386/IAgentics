@@ -75,6 +75,7 @@ export const plataforma = {
     statusAtiva: (ate: string) => `Ativa até ${ate}`,
     statusManual: "Liberada manualmente",
     statusInadimplente: "Pagamento pendente",
+    statusPendente: "Aguardando confirmação do pagamento",
     statusCancelada: "Cancelada",
     statusNenhuma: "Sem assinatura",
   },
