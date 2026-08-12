@@ -6,6 +6,10 @@ import { users } from "@/lib/db/schema";
 
 export async function criarUsuario(d: { nome: string; email: string; senha: string }):
   Promise<{ ok: true } | { ok: false; motivo: "email_existe" }> {
+  // Defesa em profundidade: a action já barra nome/senha curtos antes de chamar
+  // esta função, mas criarUsuario pode ser chamada diretamente (script, teste,
+  // outra rota futura) — nunca deve criar conta com dado abaixo do piso.
+  if (d.nome.trim().length < 2 || d.senha.length < 8) throw new Error("dados invalidos");
   const senhaHash = await bcrypt.hash(d.senha, 10);
   try {
     await db.insert(users).values({ nome: d.nome.trim(), email: d.email.trim().toLowerCase(), senhaHash });

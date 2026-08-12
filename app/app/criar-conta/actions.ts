@@ -10,6 +10,12 @@ export async function criarContaAction(_: unknown, formData: FormData):
   const email = String(formData.get("email") ?? "");
   const senha = String(formData.get("senha") ?? "");
 
+  // Server Actions são endpoints POST invocáveis diretamente (header Next-Action),
+  // sem passar pela UI/HTML — o minLength do form é só UX de primeira linha, a
+  // validação que conta é esta aqui, do lado do servidor.
+  if (nome.trim().length < 2) return { erro: plataforma.criarConta.nomeCurto };
+  if (senha.length < 8) return { erro: plataforma.criarConta.senhaCurta };
+
   const resultado = await criarUsuario({ nome, email, senha });
   if (!resultado.ok) {
     return { erro: plataforma.criarConta.emailExiste };

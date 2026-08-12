@@ -28,6 +28,8 @@ export const plataforma = {
     jaTem: "Já tem conta?",
     entrar: "Entrar",
     emailExiste: "Este e-mail já tem conta. Entre com sua senha ou peça um link de acesso.",
+    nomeCurto: "Informe seu nome completo.",
+    senhaCurta: "A senha precisa de pelo menos 8 caracteres.",
   },
   painel: {
     continuar: "Continue de onde parou",
