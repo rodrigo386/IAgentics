@@ -7,11 +7,19 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
   senhaHash: text("senha_hash").notNull(),
   role: text("role").notNull().default("aluno"),
+  ativo: boolean("ativo").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   uniqueIndex("users_email_unico").on(sql`lower(${t.email})`),
   check("users_role_chk", sql`${t.role} in ('aluno','admin')`),
 ]);
+
+/** Configurações-chave/valor do admin (Task 4+). Upsert por chave. */
+export const settings = pgTable("settings", {
+  chave: text("chave").primaryKey(),
+  valor: text("valor").notNull().default(""),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 export const courses = pgTable("courses", {
   id: uuid("id").primaryKey().defaultRandom(),

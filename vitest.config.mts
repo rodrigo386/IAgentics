@@ -19,6 +19,13 @@ export default defineConfig({
     include: ["lib/**/*.test.ts"],
     exclude: [...configDefaults.exclude, "scripts/**"],
     environment: "node",
+    server: {
+      // Por padrão o vitest externaliza deps de node_modules (carregadas pelo Node
+      // puro, ignorando resolve.alias abaixo). lib/admin/sessao.ts importa "@/auth",
+      // que puxa next-auth → next/server; sem inline aqui o alias de next/server
+      // nunca entra em ação e o import quebra antes mesmo do primeiro teste rodar.
+      deps: { inline: [/next-auth/, /@auth\/core/] },
+    },
   },
   resolve: {
     alias: {
@@ -30,6 +37,14 @@ export default defineConfig({
       // que o pacote já usa sob "react-server", só para a suíte de integração poder
       // chamar a camada de dados contra o Postgres real.
       "server-only": fileURLToPath(new URL("./node_modules/server-only/empty.js", import.meta.url)),
+      // O pacote "next" não declara "exports" no package.json (o webpack do Next
+      // resolve os subpaths por um mecanismo próprio — dá o mesmo aviso em
+      // next-auth/lib/env.js). Resolução ESM pura (vitest/node) exige a extensão
+      // exata do arquivo; lib/admin/sessao.ts importa "next/navigation" (notFound)
+      // e "@/auth" puxa next-auth, que importa "next/server" — sem isto o módulo
+      // nem carrega em teste, embora funcione normalmente sob `next build`.
+      "next/navigation": fileURLToPath(new URL("./node_modules/next/navigation.js", import.meta.url)),
+      "next/server": fileURLToPath(new URL("./node_modules/next/server.js", import.meta.url)),
     },
   },
 });

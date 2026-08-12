@@ -35,5 +35,7 @@ export async function verificarCredenciais(email: string, senha: string) {
   const [u] = await db.select().from(users)
     .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
   if (!u) { await bcrypt.compare(senha, "$2a$10$invalidoinvalidoinvalidoinvalidoinvalido12345678901234"); return null; } // tempo constante
-  return (await bcrypt.compare(senha, u.senhaHash)) ? u : null;
+  const senhaOk = await bcrypt.compare(senha, u.senhaHash); // roda sempre — o tempo não muda entre ativo e desativado
+  if (!senhaOk) return null;
+  return u.ativo ? u : null;
 }
