@@ -1,0 +1,15 @@
+# Nada de segredo nem de artefato local dentro da imagem.
+.env*
+!.env.example
+node_modules
+.next
+.git
+.dev
+.superpowers
+out
+test-results
+playwright-report
+e2e
+docs
+*.tsbuildinfo
+.DS_Store
