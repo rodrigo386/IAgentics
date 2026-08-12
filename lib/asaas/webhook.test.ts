@@ -37,6 +37,20 @@ describe.skipIf(!process.env.DATABASE_URL)("processarEventoAsaas", () => {
     expect(l.currentPeriodEnd?.toISOString().slice(0, 10)).toBe("2026-09-14");
   });
 
+  it("dueDate 31/01 trava em 28/02 (fevereiro não tem dia 31)", async () => {
+    const s = await alunoComPendente("fim-jan");
+    await processarEventoAsaas({ event: "PAYMENT_CONFIRMED", payment: { subscription: s.asaasSubscriptionId!, dueDate: "2026-01-31" } });
+    const l = await statusDe(s.id);
+    expect(l.currentPeriodEnd?.toISOString().slice(0, 10)).toBe("2026-02-28");
+  });
+
+  it("dueDate 31/12 não encolhe (janeiro seguinte também tem dia 31)", async () => {
+    const s = await alunoComPendente("fim-dez");
+    await processarEventoAsaas({ event: "PAYMENT_CONFIRMED", payment: { subscription: s.asaasSubscriptionId!, dueDate: "2026-12-31" } });
+    const l = await statusDe(s.id);
+    expect(l.currentPeriodEnd?.toISOString().slice(0, 10)).toBe("2027-01-31");
+  });
+
   it("replay do mesmo evento é no-op (continua ativa, mesmo period end)", async () => {
     const s = await alunoComPendente("replay");
     const evento = { event: "PAYMENT_RECEIVED", payment: { subscription: s.asaasSubscriptionId!, dueDate: "2026-08-14" } };
