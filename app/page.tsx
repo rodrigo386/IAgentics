@@ -14,6 +14,9 @@ import { Footer } from "@/components/Footer";
  *   Solutions ... editorial index, image on hover
  *   Contact ..... form split
  */
+/* cache-bust 2026-08-12: o build cache do Railway reaproveitava o módulo
+   compilado da home do deploy original (que redirecionava para /app/entrar).
+   Conteúdo novo neste arquivo força a recompilação da rota raiz. */
 export default function Home() {
   return (
     <>
