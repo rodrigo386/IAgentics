@@ -35,6 +35,8 @@ export default async function PaginaAluno({ params }: { params: Promise<{ id: st
     textoAssinatura = tc.statusInadimplente;
   } else if (aluno.status === "cancelada") {
     textoAssinatura = tc.statusCancelada;
+  } else if (aluno.status === "pendente") {
+    textoAssinatura = tc.statusPendente;
   } else {
     textoAssinatura = tc.statusNenhuma;
   }

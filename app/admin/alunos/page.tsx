@@ -12,6 +12,7 @@ function rotuloStatus(status: StatusAssinatura): string {
   if (status === "ativa") return t.statusAtiva("—");
   if (status === "inadimplente") return t.statusInadimplente;
   if (status === "cancelada") return t.statusCancelada;
+  if (status === "pendente") return t.statusPendente;
   return t.statusNenhuma;
 }
 
