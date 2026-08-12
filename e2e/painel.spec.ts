@@ -4,12 +4,13 @@ const email = `e2e-painel-${Date.now()}@teste.invalido`;
 const senha = "Senha-e2e-123!";
 
 /**
- * O catálogo espelha o site do Academy: as 9 formações publicadas, com capa.
- * (Antes desta decisão de produto, 8 eram cascas ocultas e este spec asseverava
- * a ausência delas; a invariante "publicado=false não aparece" continua coberta
- * pelos testes de integração de autorização, que criam curso oculto próprio.)
+ * Painel editorial: hero + trilhos por estado do aluno.
+ * Aluno novo: hero de boas-vindas; trilhos Formações (1 curso com aulas na
+ * semente) e Em gravação (8 cascas) => exatamente 9 cards.
+ * Após concluir uma aula: hero vira "Continuar:" e o trilho Em andamento
+ * aparece (o curso repete em Formações — repetição intencional do spec).
  */
-test("painel mostra o catálogo completo publicado, com capas", async ({ page }) => {
+test("painel editorial: boas-vindas, trilhos e hero de continuar", async ({ page }) => {
   await page.goto("/app/criar-conta");
   await page.getByLabel("Nome").fill("Aluno Painel");
   await page.getByLabel("E-mail").fill(email);
@@ -17,16 +18,16 @@ test("painel mostra o catálogo completo publicado, com capas", async ({ page })
   await page.getByRole("button", { name: "Criar conta" }).click();
   await expect(page).toHaveURL(/\/app$/);
 
-  await expect(page.getByText("Fundamentos de IA com Copilot")).toBeVisible();
-  await expect(page.getByText("Imersão de Assistentes de IA para Negócios")).toBeVisible();
-  await expect(page.getByText("Neurociência & Produtividade")).toBeVisible();
+  // Aluno novo: hero de boas-vindas com CTA para a primeira formação com aulas.
+  await expect(page.getByText("Bem-vindo à Academy")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Começar o curso" })).toBeVisible();
 
-  // Exatamente os 9 do catálogo — nem cartão a mais, nem faltando.
+  // Trilhos: rótulos e contagem exata (1 formação com aulas + 8 em gravação).
+  await expect(page.getByText("Formações", { exact: true })).toBeVisible();
+  await expect(page.getByText("Em gravação", { exact: true })).toBeVisible();
   await expect(page.getByTestId("card-curso")).toHaveCount(9);
 
-  // Toda capa renderizada de verdade (imagem carregada, não alt quebrado).
-  // Rola até cada cartão antes de medir: as capas são lazy e um cartão fora
-  // da viewport legitimamente nunca carrega — o teste imita o olho, não o DOM.
+  // Capas carregam de verdade (rola até cada card antes de medir — lazy).
   const cards = page.getByTestId("card-curso");
   for (let i = 0; i < 9; i++) {
     await cards.nth(i).scrollIntoViewIfNeeded();
@@ -36,4 +37,15 @@ test("painel mostra o catálogo completo publicado, com capas", async ({ page })
       )
       .toBe(true);
   }
+
+  // Conclui a aula gratuita e volta ao painel.
+  await page.goto("/app/curso/fundamentos-ia-copilot/boas-vindas");
+  await page.getByRole("button", { name: "Marcar como concluída" }).click();
+  await expect(page.getByRole("link", { name: "Próxima aula" })).toBeVisible();
+
+  await page.goto("/app");
+  await expect(page.getByRole("link", { name: /^Continuar:/ })).toBeVisible();
+  await expect(page.getByText("Em andamento", { exact: true })).toBeVisible();
+  // Curso em andamento repete em Formações: 10 cards agora.
+  await expect(page.getByTestId("card-curso")).toHaveCount(10);
 });

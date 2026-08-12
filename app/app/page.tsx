@@ -5,102 +5,187 @@ import { auth } from "@/auth";
 import { CardCurso } from "@/components/plataforma/CardCurso";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
-import { buscarCatalogo, buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
+import {
+  buscarCatalogo,
+  buscarConcluidas,
+  buscarCurso,
+  buscarUltimaAula,
+  temAcesso as verificarAcesso,
+} from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 import type { Aula, Curso } from "@/lib/plataforma/tipos";
 
+type InfoCurso = { pct: number; feitas: number; total: number; proxima: Aula | null };
+
+/** Trilho horizontal do painel: rótulo mono + cards de largura fixa. Só
+ *  renderiza se houver conteúdo (regra do spec). */
+function Trilho({
+  titulo,
+  cursos,
+  info,
+  temAcesso,
+  esmaecido = false,
+}: {
+  titulo: string;
+  cursos: Curso[];
+  info: Map<string, InfoCurso>;
+  temAcesso: boolean;
+  esmaecido?: boolean;
+}) {
+  if (cursos.length === 0) return null;
+  return (
+    <section className="mb-12">
+      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{titulo}</p>
+      <div className={`trilho mt-5 ${esmaecido ? "opacity-60" : ""}`}>
+        {cursos.map((curso) => (
+          <div key={curso.id} className="w-[220px] sm:w-[240px]">
+            <CardCurso curso={curso} pct={info.get(curso.slug)?.pct ?? 0} temAcesso={temAcesso} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default async function Painel() {
   const sessao = await auth();
-  // O middleware já barra /app sem sessão; esta checagem é defesa em profundidade,
-  // não o portão principal — sem ela, sessao.user.id não tipa como string.
+  // O middleware já barra /app sem sessão; defesa em profundidade, como antes.
   if (!sessao?.user?.id) redirect("/app/entrar");
   const userId = sessao.user.id;
 
-  // Fonte de verdade única: temAcesso(userId) de dados.ts, não uma comparação
-  // local reimplementada (subscriptions guarda histórico; "ativa"/"manual" só
-  // conta na linha mais recente, e só dados.ts sabe fazer essa checagem direito).
-  const [catalogo, concluidas, temAcesso, destino] = await Promise.all([
+  const [catalogo, concluidas, temAcesso, destino, ultima] = await Promise.all([
     buscarCatalogo(),
     buscarConcluidas(userId),
     verificarAcesso(userId),
     destinoCta(),
+    buscarUltimaAula(userId),
   ]);
 
-  // Índice de cada curso do catálogo, para derivar pct e "próxima aula" por curso.
   const indices = await Promise.all(catalogo.map((c) => buscarCurso(c.slug)));
-  const progressoPorCurso = new Map<string, { pct: number; proxima: Aula | null }>();
+  const info = new Map<string, InfoCurso>();
   for (const indice of indices) {
     if (!indice) continue;
     const aulaIds = indice.modulos.flatMap((m) => m.aulas.map((a) => a.id));
     const progresso = derivarProgresso(aulaIds, concluidas);
-    progressoPorCurso.set(indice.slug, { pct: progresso.pct, proxima: proximaAula(indice.modulos, concluidas) });
+    info.set(indice.slug, { ...progresso, proxima: proximaAula(indice.modulos, concluidas) });
   }
 
-  // "Continue de onde parou": maior progresso entre 0 e 100 exclusive.
-  let continuar: { curso: Curso; aula: Aula; pct: number } | null = null;
-  for (const curso of catalogo) {
-    const p = progressoPorCurso.get(curso.slug);
-    if (p && p.proxima && p.pct > 0 && p.pct < 100 && (!continuar || p.pct > continuar.pct)) {
-      continuar = { curso, aula: p.proxima, pct: p.pct };
+  // Hero "continuar": curso da última atividade, se ainda tem próxima aula;
+  // senão o de maior progresso em (0,100); senão boas-vindas.
+  let heroCurso = ultima ? catalogo.find((c) => c.slug === ultima.cursoSlug) : undefined;
+  if (!heroCurso || !info.get(heroCurso.slug)?.proxima) {
+    heroCurso = undefined;
+    for (const curso of catalogo) {
+      const i = info.get(curso.slug);
+      if (i?.proxima && i.pct > 0 && i.pct < 100) {
+        if (!heroCurso || i.pct > (info.get(heroCurso.slug)?.pct ?? 0)) heroCurso = curso;
+      }
     }
   }
+  const heroInfo = heroCurso ? info.get(heroCurso.slug) : undefined;
+  // Boas-vindas: primeira formação com aulas; sem nenhuma, a primeira do catálogo.
+  const boasVindas = catalogo.find((c) => (info.get(c.slug)?.total ?? 0) > 0) ?? catalogo[0];
+
+  const porEstado = (f: (i: InfoCurso) => boolean) => catalogo.filter((c) => {
+    const i = info.get(c.slug);
+    return i ? f(i) : false;
+  });
+  const emAndamento = porEstado((i) => i.total > 0 && i.pct > 0 && i.pct < 100);
+  const formacoes = porEstado((i) => i.total > 0);
+  const concluidos = porEstado((i) => i.total > 0 && i.pct === 100);
+  const emGravacao = porEstado((i) => i.total === 0);
+
+  const t = plataforma.painel;
 
   return (
     <div>
       <h1 className="sr-only">{plataforma.shell.meusCursos}</h1>
 
-      {continuar ? (
-        <section className="mb-12">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">
-            {plataforma.painel.continuar}
-          </p>
-          <Link
-            href={`/app/curso/${continuar.curso.slug}/${continuar.aula.slug}`}
-            className="mt-4 flex flex-col gap-5 border border-line bg-surface p-5 transition-colors hover:border-line-strong sm:flex-row sm:items-center"
-          >
-            <div className="relative aspect-[3/4] w-full max-w-[160px] shrink-0 overflow-hidden border border-line">
+      {heroCurso && heroInfo?.proxima ? (
+        <section className="hero-editorial mb-12 border border-line">
+          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
+            <Link
+              href={`/app/curso/${heroCurso.slug}`}
+              className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
+            >
               <Image
-                src={continuar.curso.capaUrl}
+                src={heroCurso.capaUrl}
                 alt=""
                 fill
-                sizes="160px"
+                sizes="200px"
                 style={{ objectPosition: "center top" }}
                 className="object-cover"
               />
-            </div>
+            </Link>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm text-fg-muted">{continuar.curso.titulo}</p>
-              <h2 className="mt-1 text-xl font-medium leading-snug tracking-[-0.02em] text-fg">
-                {continuar.aula.titulo}
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{t.continuar}</p>
+              <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
+                {heroCurso.titulo}
               </h2>
-              <div className="mt-4 h-1 w-full max-w-[320px] bg-line">
-                <div className="h-full bg-accent" style={{ width: `${continuar.pct}%` }} />
+              <p className="mt-2 text-sm text-fg-muted">
+                {plataforma.curso.concluidaDe(heroInfo.feitas, heroInfo.total)}
+              </p>
+              <div className="mt-5 h-1 w-full max-w-[360px] bg-line">
+                <div className="h-full bg-accent" style={{ width: `${heroInfo.pct}%` }} />
               </div>
+              <Link
+                href={`/app/curso/${heroCurso.slug}/${heroInfo.proxima.slug}`}
+                className="mt-6 inline-block max-w-full truncate rounded-control bg-accent px-7 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
+              >
+                {t.continuarAula(heroInfo.proxima.titulo)}
+              </Link>
             </div>
-          </Link>
+          </div>
+        </section>
+      ) : boasVindas ? (
+        <section className="hero-editorial mb-12 border border-line">
+          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
+            <Link
+              href={`/app/curso/${boasVindas.slug}`}
+              className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
+            >
+              <Image
+                src={boasVindas.capaUrl}
+                alt=""
+                fill
+                sizes="200px"
+                style={{ objectPosition: "center top" }}
+                className="object-cover"
+              />
+            </Link>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{t.boasVindas}</p>
+              <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
+                {boasVindas.titulo}
+              </h2>
+              <p className="mt-2 max-w-[55ch] text-sm text-fg-muted">{t.boasVindasTexto}</p>
+              <Link
+                href={`/app/curso/${boasVindas.slug}`}
+                className="mt-6 inline-block rounded-control bg-accent px-7 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
+              >
+                {plataforma.curso.comecar}
+              </Link>
+            </div>
+          </div>
         </section>
       ) : null}
 
       {!temAcesso ? (
         <section className="mb-10 flex flex-col items-start gap-4 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-fg">{plataforma.painel.seloAssine}</p>
+          <p className="text-fg">{t.seloAssine}</p>
           <a
             href={destino}
             className="rounded-control bg-accent px-6 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
           >
-            {plataforma.painel.ctaAssinar}
+            {t.ctaAssinar}
           </a>
         </section>
       ) : null}
 
-      <section>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{plataforma.painel.catalogo}</p>
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {catalogo.map((curso) => (
-            <CardCurso key={curso.id} curso={curso} pct={progressoPorCurso.get(curso.slug)?.pct ?? 0} temAcesso={temAcesso} />
-          ))}
-        </div>
-      </section>
+      <Trilho titulo={t.emAndamento} cursos={emAndamento} info={info} temAcesso={temAcesso} />
+      <Trilho titulo={t.formacoes} cursos={formacoes} info={info} temAcesso={temAcesso} />
+      <Trilho titulo={t.concluidos} cursos={concluidos} info={info} temAcesso={temAcesso} />
+      <Trilho titulo={t.emGravacao} cursos={emGravacao} info={info} temAcesso={temAcesso} esmaecido />
     </div>
   );
 }
