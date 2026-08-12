@@ -8,10 +8,10 @@ const sufixo = Date.now();
 const moduloTitulo = `E2E Módulo ${sufixo}`;
 const aulaTitulo = `E2E Aula ${sufixo}`;
 
-// Curso "casca" da semente: sem módulos/aulas, sempre oculto — nenhum outro
-// spec cria conteúdo nele nem depende do estado dele ficar publicado, mas
-// e2e/painel.spec.ts roda contra o MESMO catálogo do aluno, então a regra
-// aqui é: sair exatamente como entrou (despublicado) ao final do teste.
+// Curso do catálogo (hoje TODO o catálogo nasce publicado, espelhando o site
+// do Academy). Este spec ARRUMA o próprio cenário: oculta o curso no início,
+// exercita o fluxo completo, e RESTAURA para publicado ao final — o estado
+// canônico que e2e/painel.spec.ts assevera (9 cartões).
 const CURSO_SLUG = "fundamentos-ia-negocios";
 const CURSO_TITULO = "Fundamentos de IA aplicado aos Negócios";
 
@@ -36,14 +36,17 @@ test("admin cria módulo/aula/vídeo num curso oculto da semente, publica, aluno
   const paginaAluno = await contextoAluno.newPage();
   await criarConta(paginaAluno, emailAluno, "Aluno E2E Conteúdo");
 
-  // Linha de base: curso oculto da semente não aparece no painel do aluno.
-  await paginaAluno.goto("/app");
-  await expect(paginaAluno.getByText(CURSO_TITULO)).not.toBeVisible();
-
-  // Admin abre o curso oculto pelo slug da semente.
+  // ARRANJO: o catálogo inteiro nasce publicado; este fluxo precisa de um
+  // curso oculto, então o admin oculta ANTES — e restaura no final.
   await paginaAdmin.goto(`/admin/conteudo/${CURSO_SLUG}`);
   await expect(paginaAdmin.getByRole("heading", { name: CURSO_TITULO })).toBeVisible();
+  await paginaAdmin.getByRole("button", { name: "Ocultar" }).click();
+  await expect(paginaAdmin.getByText("Ocultado.", { exact: true })).toBeVisible({ timeout: 15_000 });
   await expect(paginaAdmin.getByText("Oculto", { exact: true })).toBeVisible();
+
+  // Linha de base: curso oculto não aparece no painel do aluno.
+  await paginaAluno.goto("/app");
+  await expect(paginaAluno.getByText(CURSO_TITULO)).not.toBeVisible();
 
   // Cria um módulo.
   await paginaAdmin.getByLabel("Título do módulo").fill(moduloTitulo);
@@ -80,7 +83,7 @@ test("admin cria módulo/aula/vídeo num curso oculto da semente, publica, aluno
   await paginaAluno.reload();
   await expect(paginaAluno.getByText(CURSO_TITULO)).toBeVisible({ timeout: 15_000 });
 
-  // Reverte: despublica para não afetar os specs que dependem do estado da semente.
+  // Exercita o caminho de ocultar (aluno deixa de ver)...
   await paginaAdmin.getByRole("button", { name: "Ocultar" }).click();
   await expect(paginaAdmin.getByText("Ocultado.", { exact: true })).toBeVisible({ timeout: 15_000 });
   await expect(paginaAdmin.getByRole("button", { name: "Publicar" })).toBeVisible();
@@ -95,6 +98,10 @@ test("admin cria módulo/aula/vídeo num curso oculto da semente, publica, aluno
   await formExcluirModulo.getByLabel("Digite EXCLUIR para confirmar").fill("EXCLUIR");
   await formExcluirModulo.getByRole("button", { name: "Excluir módulo" }).click();
   await expect(paginaAdmin.getByTestId("modulo").filter({ hasText: moduloTitulo })).toHaveCount(0, { timeout: 15_000 });
+
+  // RESTAURA o estado canônico do catálogo: publicado (sem o módulo do teste).
+  await paginaAdmin.getByRole("button", { name: "Publicar" }).click();
+  await expect(paginaAdmin.getByText("Publicado.", { exact: true })).toBeVisible({ timeout: 15_000 });
 
   await contextoAdmin.close();
   await contextoAluno.close();

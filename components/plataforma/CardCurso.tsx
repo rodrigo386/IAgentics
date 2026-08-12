@@ -38,6 +38,7 @@ export function CardCurso({ curso, pct, temAcesso }: { curso: Curso; pct: number
   return (
     <Link
       href={`/app/curso/${curso.slug}`}
+      data-testid="card-curso"
       className="group flex h-full flex-col border border-line bg-surface transition-colors hover:border-line-strong"
     >
       <div className="relative aspect-[3/4] w-full overflow-hidden border-b border-line">

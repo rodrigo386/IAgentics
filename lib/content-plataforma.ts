@@ -47,6 +47,8 @@ export const plataforma = {
     gratis: "Grátis",
     aulas: "aulas",
     concluidaDe: (feitas: number, total: number) => `${feitas} de ${total} aulas concluídas`,
+    /* Curso publicado antes das aulas existirem (catálogo espelha o site). */
+    emProducao: "As aulas deste curso estão em gravação e chegam em breve.",
   },
   aula: {
     marcarConcluida: "Marcar como concluída",
