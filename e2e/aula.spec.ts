@@ -27,7 +27,7 @@ test("aula gratuita toca e conclui; aula paga mostra trava de assinatura sem 404
   expect(resposta?.status()).toBe(200);
   await expect(page.locator('iframe[src*="youtube-nocookie"]')).toHaveCount(0);
   await expect(page.getByText("Esta aula faz parte da assinatura")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Falar com a IAgentics" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "Assinar agora" })).toHaveAttribute(
     "href",
     "/academy#contato",
   );

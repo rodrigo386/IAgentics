@@ -5,7 +5,7 @@ import { plataforma } from "@/lib/content-plataforma";
 
 const ESTADO_INICIAL: { erro: string | null } = { erro: null };
 
-export function FormCriarConta() {
+export function FormCriarConta({ voltar }: { voltar: string }) {
   const t = plataforma.criarConta;
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +16,7 @@ export function FormCriarConta() {
 
   return (
     <form action={acao} className="flex flex-col gap-4">
+      <input type="hidden" name="voltar" value={voltar} />
       <label className="flex flex-col gap-1.5 text-sm font-medium">
         {t.nome}
         <input

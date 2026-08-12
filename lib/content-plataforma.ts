@@ -37,8 +37,7 @@ export const plataforma = {
     continuar: "Continue de onde parou",
     catalogo: "Cursos",
     seloAssine: "Assine para acessar",
-    ctaAssinar: "Falar com a IAgentics",
-    /* Ciclo 2 troca o CTA acima pelo checkout. */
+    ctaAssinar: "Assinar agora",
     horas: "h",
   },
   curso: {
@@ -56,7 +55,7 @@ export const plataforma = {
     concluida: "Aula concluída",
     bloqueadaTitulo: "Esta aula faz parte da assinatura",
     bloqueadaTexto: "Assine o acervo da Academy para assistir esta e todas as outras aulas.",
-    bloqueadaCta: "Falar com a IAgentics",
+    bloqueadaCta: "Assinar agora",
     semVideo: "Esta aula está em produção. O vídeo chega em breve.",
     videoFalhou: "O vídeo não carregou.",
     recarregar: "Recarregar",
@@ -78,6 +77,23 @@ export const plataforma = {
     statusPendente: "Aguardando confirmação do pagamento",
     statusCancelada: "Cancelada",
     statusNenhuma: "Sem assinatura",
+  },
+  planos: {
+    eyebrow: "Assinatura",
+    titulo: "Todo o acervo da Academy. Um plano só.",
+    preco: "R$ 39,90",
+    porMes: "/mês",
+    beneficios: [
+      "Acesso total a todas as formações do catálogo — e às que chegarem",
+      "Aulas novas conforme saem da gravação",
+      "Assista no seu ritmo, de qualquer dispositivo",
+      "Cancele quando quiser, sem multa",
+    ],
+    cta: "Assinar agora",
+    jaAssinante: "Você já é assinante.",
+    irParaPlataforma: "Ir para a plataforma",
+    cursosTitulo: "O que está dentro",
+    descricaoMeta: "Assinatura do acervo IAgentics Academy: todas as formações por R$ 39,90 por mês.",
   },
   assinar: {
     titulo: "Assinar a Academy",

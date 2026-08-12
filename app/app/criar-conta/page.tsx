@@ -3,13 +3,14 @@ import { Suspense } from "react";
 import { FormCriarConta } from "@/components/plataforma/FormCriarConta";
 import { plataforma } from "@/lib/content-plataforma";
 
-export default function PaginaCriarConta() {
+export default async function PaginaCriarConta({ searchParams }: { searchParams: Promise<{ voltar?: string }> }) {
+  const { voltar } = await searchParams;
   const t = plataforma.criarConta;
   return (
     <div className="mx-auto flex max-w-md flex-col gap-8">
       <h1 className="text-3xl font-medium tracking-[-0.03em]">{t.titulo}</h1>
       <Suspense>
-        <FormCriarConta />
+        <FormCriarConta voltar={voltar ?? ""} />
       </Suspense>
       <p className="text-sm text-fg-muted">
         {t.jaTem}{" "}

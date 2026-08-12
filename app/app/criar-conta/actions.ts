@@ -22,7 +22,12 @@ export async function criarContaAction(_: unknown, formData: FormData):
   }
 
   try {
-    await signIn("credentials", { email, senha, redirectTo: "/app" });
+    // "voltar" vem do querystring de quem navegou até aqui (ex.: CTA do /planos).
+    // Mesma sanitização de entrar/actions.ts: só caminho relativo interno
+    // (começa com "/" e não com "//"), senão cai no padrão /app.
+    const brutoVoltar = String(formData.get("voltar") || "/app");
+    const voltar = /^\/(?!\/)/.test(brutoVoltar) ? brutoVoltar : "/app";
+    await signIn("credentials", { email, senha, redirectTo: voltar });
     return undefined as never; // signIn redireciona (lança NEXT_REDIRECT)
   } catch (e) {
     if (e instanceof AuthError) return { erro: plataforma.entrar.erroCredenciais };
