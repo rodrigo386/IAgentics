@@ -45,6 +45,20 @@ export async function buscarAssinatura(userId: string): Promise<StatusAssinatura
   return (linha?.status as StatusAssinatura) ?? null;
 }
 
+/** Só chamada pela página de conta quando buscarAssinatura devolve "ativa"
+ *  (no Ciclo 1 essa branch é inatingível com dado real — nada grava status
+ *  "ativa", só "manual" via SQL — mas o texto por extenso fica pronto para
+ *  quando o Asaas existir). Mesmo critério de "mais recente" de buscarAssinatura. */
+export async function buscarFimAssinatura(userId: string): Promise<Date | null> {
+  const [linha] = await db
+    .select({ ate: subscriptions.currentPeriodEnd })
+    .from(subscriptions)
+    .where(eq(subscriptions.userId, userId))
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1);
+  return linha?.ate ?? null;
+}
+
 /** O portão de acesso pago: única checagem de assinatura ativa/manual da
  *  camada de dados. Toda função sensível recebe userId explícito — nunca lê
  *  sessão sozinha, para nunca ser chamada "sem querer" para o usuário errado.

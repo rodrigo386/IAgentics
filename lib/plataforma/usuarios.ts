@@ -23,6 +23,14 @@ export async function criarUsuario(d: { nome: string; email: string; senha: stri
   }
 }
 
+/** Nome/e-mail atuais direto do banco — nunca do session.user (JWT): a sessão
+ *  não se atualiza sozinha depois de salvarNome, então usar session.user.name
+ *  aqui mostraria o nome antigo até o próximo login. */
+export async function buscarUsuario(userId: string): Promise<{ nome: string; email: string } | null> {
+  const [u] = await db.select({ nome: users.nome, email: users.email }).from(users).where(eq(users.id, userId)).limit(1);
+  return u ?? null;
+}
+
 export async function verificarCredenciais(email: string, senha: string) {
   const [u] = await db.select().from(users)
     .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
