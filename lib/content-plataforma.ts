@@ -69,6 +69,8 @@ export const plataforma = {
     salvo: "Salvo.",
     trocarSenha: "Trocar senha",
     novaSenha: "Nova senha",
+    senhaAtual: "Senha atual",
+    senhaAtualErrada: "Senha atual incorreta.",
     senhaTrocada: "Senha atualizada.",
     assinatura: "Assinatura",
     statusAtiva: (ate: string) => `Ativa até ${ate}`,

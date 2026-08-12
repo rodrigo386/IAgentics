@@ -31,6 +31,21 @@ export async function buscarUsuario(userId: string): Promise<{ nome: string; ema
   return u ?? null;
 }
 
+/** Troca de senha exigindo a atual: com conta paga (ciclo Asaas), um cookie de
+ *  sessão roubado não pode virar takeover permanente — trocar a senha passa a
+ *  provar posse da senha vigente, não só da sessão. */
+export async function trocarSenhaVerificando(
+  userId: string,
+  atual: string,
+  nova: string,
+): Promise<{ ok: true } | { ok: false; motivo: "senha_atual_errada" }> {
+  if (nova.length < 8) throw new Error("dados invalidos");
+  const [u] = await db.select({ senhaHash: users.senhaHash }).from(users).where(eq(users.id, userId)).limit(1);
+  if (!u || !(await bcrypt.compare(atual, u.senhaHash))) return { ok: false, motivo: "senha_atual_errada" };
+  await db.update(users).set({ senhaHash: await bcrypt.hash(nova, 10) }).where(eq(users.id, userId));
+  return { ok: true };
+}
+
 export async function verificarCredenciais(email: string, senha: string) {
   const [u] = await db.select().from(users)
     .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);

@@ -23,6 +23,14 @@ test("conta mostra e-mail e status sem assinatura; troca de nome persiste após 
   await page.reload();
   await expect(page.getByLabel("Nome")).toHaveValue("Aluno Renomeado");
 
+  // Senha atual errada: recusa com mensagem, sem trocar nada.
+  await page.getByLabel("Senha atual").fill("senha-completamente-errada");
+  await page.getByLabel("Nova senha").fill("Senha-nova-456!");
+  await page.getByRole("button", { name: "Trocar senha" }).click();
+  await expect(page.getByText("Senha atual incorreta.")).toBeVisible();
+
+  // Com a atual correta, troca.
+  await page.getByLabel("Senha atual").fill(senha);
   await page.getByLabel("Nova senha").fill("Senha-nova-456!");
   await page.getByRole("button", { name: "Trocar senha" }).click();
   await expect(page.getByText("Senha atualizada.")).toBeVisible();

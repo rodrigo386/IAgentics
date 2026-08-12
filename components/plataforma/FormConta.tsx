@@ -17,6 +17,8 @@ export function FormConta({ nomeInicial }: { nomeInicial: string }) {
   const [novaSenha, setNovaSenha] = useState("");
   const [trocandoSenha, setTrocandoSenha] = useState(false);
   const [senhaTrocada, setSenhaTrocada] = useState(false);
+  const [senhaAtual, setSenhaAtual] = useState("");
+  const [erroSenha, setErroSenha] = useState<string | null>(null);
 
   async function aoSalvarNome(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -31,11 +33,15 @@ export function FormConta({ nomeInicial }: { nomeInicial: string }) {
     e.preventDefault();
     setTrocandoSenha(true);
     setSenhaTrocada(false);
-    const r = await trocarSenha(novaSenha);
+    setErroSenha(null);
+    const r = await trocarSenha(senhaAtual, novaSenha);
     setTrocandoSenha(false);
     if (r.ok) {
       setSenhaTrocada(true);
+      setSenhaAtual("");
       setNovaSenha("");
+    } else if (r.erro) {
+      setErroSenha(r.erro);
     }
   }
 
@@ -75,6 +81,22 @@ export function FormConta({ nomeInicial }: { nomeInicial: string }) {
       <form onSubmit={aoTrocarSenha} className="flex flex-col gap-4 border-t border-line pt-8">
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.trocarSenha}</p>
         <label className="flex flex-col gap-1.5 text-sm font-medium">
+          {t.senhaAtual}
+          <input
+            type="password"
+            name="senhaAtual"
+            required
+            autoComplete="current-password"
+            value={senhaAtual}
+            onChange={(e) => {
+              setSenhaAtual(e.target.value);
+              setSenhaTrocada(false);
+              setErroSenha(null);
+            }}
+            className={campo}
+          />
+        </label>
+        <label className="flex flex-col gap-1.5 text-sm font-medium">
           {t.novaSenha}
           <input
             type="password"
@@ -93,6 +115,11 @@ export function FormConta({ nomeInicial }: { nomeInicial: string }) {
         {senhaTrocada ? (
           <p role="status" className="text-sm text-accent-text">
             {t.senhaTrocada}
+          </p>
+        ) : null}
+        {erroSenha ? (
+          <p role="alert" className="text-sm text-fg">
+            {erroSenha}
           </p>
         ) : null}
         <button

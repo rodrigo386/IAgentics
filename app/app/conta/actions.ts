@@ -1,10 +1,11 @@
 "use server";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { contaAtiva } from "@/lib/plataforma/dados";
+import { trocarSenhaVerificando } from "@/lib/plataforma/usuarios";
+import { plataforma } from "@/lib/content-plataforma";
 
 // Fix round final (I1): auth() só confirma o JWT, não que a conta segue
 // ativa — desativar não derruba a sessão já aberta. contaAtiva consulta o
@@ -21,10 +22,11 @@ export async function salvarNome(nome: string) {
   await db.update(users).set({ nome: nome.trim() }).where(eq(users.id, sessao.user.id));
   return { ok: true };
 }
-export async function trocarSenha(nova: string) {
+export async function trocarSenha(atual: string, nova: string): Promise<{ ok: boolean; erro?: string }> {
   const sessao = await auth(); if (!sessao?.user?.id) return { ok: false };
   if (!(await contaAtiva(sessao.user.id))) return { ok: false };
   if (nova.length < 8) return { ok: false };
-  await db.update(users).set({ senhaHash: await bcrypt.hash(nova, 10) }).where(eq(users.id, sessao.user.id));
+  const r = await trocarSenhaVerificando(sessao.user.id, atual, nova);
+  if (!r.ok) return { ok: false, erro: plataforma.conta.senhaAtualErrada };
   return { ok: true };
 }
