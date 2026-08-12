@@ -1,0 +1,73 @@
+/**
+ * Fonte única de texto da plataforma (/app), irmã de lib/content.ts.
+ * Mesma regra do site: nenhuma string visível mora em componente.
+ */
+export const plataforma = {
+  nome: "IAgentics Academy",
+  shell: {
+    meusCursos: "Meus cursos",
+    conta: "Conta",
+    sair: "Sair",
+  },
+  entrar: {
+    titulo: "Entrar na plataforma",
+    email: "E-mail",
+    senha: "Senha",
+    botao: "Entrar",
+    semConta: "Ainda não tem conta?",
+    criarConta: "Criar conta",
+    erroCredenciais: "E-mail ou senha incorretos",
+    sessaoExpirada: "Sua sessão expirou. Entre de novo para continuar.",
+  },
+  criarConta: {
+    titulo: "Criar conta",
+    nome: "Nome",
+    email: "E-mail",
+    senha: "Senha",
+    botao: "Criar conta",
+    jaTem: "Já tem conta?",
+    entrar: "Entrar",
+    emailExiste: "Este e-mail já tem conta. Entre com sua senha ou peça um link de acesso.",
+  },
+  painel: {
+    continuar: "Continue de onde parou",
+    catalogo: "Cursos",
+    seloAssine: "Assine para acessar",
+    ctaAssinar: "Falar com a IAgentics",
+    /* Ciclo 2 troca o CTA acima pelo checkout. */
+    horas: "h",
+  },
+  curso: {
+    continuar: "Continuar",
+    comecar: "Começar o curso",
+    gratis: "Grátis",
+    aulas: "aulas",
+    concluidaDe: (feitas: number, total: number) => `${feitas} de ${total} aulas concluídas`,
+  },
+  aula: {
+    marcarConcluida: "Marcar como concluída",
+    proximaAula: "Próxima aula",
+    concluida: "Aula concluída",
+    bloqueadaTitulo: "Esta aula faz parte da assinatura",
+    bloqueadaTexto: "Assine o acervo da Academy para assistir esta e todas as outras aulas.",
+    bloqueadaCta: "Falar com a IAgentics",
+    videoFalhou: "O vídeo não carregou.",
+    recarregar: "Recarregar",
+  },
+  conta: {
+    titulo: "Sua conta",
+    nome: "Nome",
+    email: "E-mail",
+    salvar: "Salvar",
+    salvo: "Salvo.",
+    trocarSenha: "Trocar senha",
+    novaSenha: "Nova senha",
+    senhaTrocada: "Senha atualizada.",
+    assinatura: "Assinatura",
+    statusAtiva: (ate: string) => `Ativa até ${ate}`,
+    statusManual: "Liberada manualmente",
+    statusInadimplente: "Pagamento pendente",
+    statusCancelada: "Cancelada",
+    statusNenhuma: "Sem assinatura",
+  },
+} as const;
