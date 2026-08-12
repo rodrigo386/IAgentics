@@ -23,9 +23,16 @@ export async function salvarNome(nome: string) {
   return { ok: true };
 }
 export async function trocarSenha(atual: string, nova: string): Promise<{ ok: boolean; erro?: string }> {
-  const sessao = await auth(); if (!sessao?.user?.id) return { ok: false };
-  if (!(await contaAtiva(sessao.user.id))) return { ok: false };
-  if (nova.length < 8) return { ok: false };
+  const sessao = await auth();
+  // Fix (Minor — review final): estes três retornos eram { ok: false } sem
+  // erro — FormConta só exibe algo quando r.erro está presente, então o
+  // aluno via o botão voltar ao normal e nenhuma explicação nenhuma. Mensagem
+  // genérica porque a causa real (sessão caiu, conta foi desativada) não é
+  // algo que o aluno resolve sozinho; "recarregue e tente de novo" cobre os
+  // três casos sem vazar detalhe de autorização.
+  if (!sessao?.user?.id) return { ok: false, erro: plataforma.conta.senhaTrocaFalhou };
+  if (!(await contaAtiva(sessao.user.id))) return { ok: false, erro: plataforma.conta.senhaTrocaFalhou };
+  if (nova.length < 8) return { ok: false, erro: plataforma.conta.senhaTrocaFalhou };
   const r = await trocarSenhaVerificando(sessao.user.id, atual, nova);
   if (!r.ok) return { ok: false, erro: plataforma.conta.senhaAtualErrada };
   return { ok: true };

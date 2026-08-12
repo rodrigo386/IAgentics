@@ -72,6 +72,7 @@ export const plataforma = {
     senhaAtual: "Senha atual",
     senhaAtualErrada: "Senha atual incorreta.",
     senhaTrocada: "Senha atualizada.",
+    senhaTrocaFalhou: "Não foi possível trocar a senha. Recarregue a página e tente de novo.",
     assinatura: "Assinatura",
     statusAtiva: (ate: string) => `Ativa até ${ate}`,
     statusManual: "Liberada manualmente",
