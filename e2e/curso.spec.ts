@@ -16,6 +16,14 @@ test("página do curso mostra índice com etiqueta grátis, CTA para a próxima 
   await page.goto("/app/curso/fundamentos-ia-copilot");
 
   await expect(page.getByRole("heading", { name: "Fundamentos de IA com Copilot" })).toBeVisible();
+  // Redesign: breadcrumb para o painel e barra de progresso no hero.
+  // Escopo em "main": o ShellHeader global também tem um link "Meus cursos"
+  // (fora do main), então o locator sem escopo bate em 2 elementos.
+  await expect(page.getByRole("main").getByRole("link", { name: "Meus cursos" })).toHaveAttribute(
+    "href",
+    "/app",
+  );
+  await expect(page.getByTestId("barra-progresso-curso")).toBeVisible();
   await expect(page.getByText("8 aulas").first()).toBeVisible();
 
   const primeiraAula = page.getByRole("listitem").first();
