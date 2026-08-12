@@ -168,4 +168,55 @@ describe.skipIf(!process.env.DATABASE_URL)("iniciarAssinatura", () => {
     expect(linhas).toHaveLength(2); // a antiga "cancelada" + a nova "pendente" auto-curada
     expect(linhas.find((l) => l.status === "pendente")).toMatchObject({ asaasCustomerId: "cus_org", asaasSubscriptionId: "sub_orfa" });
   });
+
+  // --- Fix round (review final): Important 1 — pagamento RECEIVED/CONFIRMED
+  // tem precedência sobre "sem cobrança aberta ⇒ assinatura morta" ---
+
+  it("cobrança RECEIVED com webhook atrasado: cura a linha pendente para ativa e libera acesso, sem criar assinatura nova", async () => {
+    const userId = await criarAluno("recebida");
+    await db.insert(subscriptions).values({ userId, status: "pendente", asaasCustomerId: "cus_teste_1", asaasSubscriptionId: "sub_teste_1" });
+    const { cliente, chamadas } = fakeAsaas({
+      cobrancas: [{ id: "pay_recebida", status: "RECEIVED", invoiceUrl: "https://asaas.example/i/pay_recebida", dueDate: "2026-08-14" }],
+    });
+    const r = await iniciarAssinatura(userId, CPF_VALIDO, cliente);
+    expect(r).toEqual({ ok: true, liberado: true });
+    expect(chamadas).toEqual(["listarCobrancas"]);
+    expect(chamadas).not.toContain("criarAssinatura");
+    const linhas = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
+    expect(linhas).toHaveLength(1); // update na mesma linha, não insert
+    expect(linhas[0]).toMatchObject({ status: "ativa", asaasCustomerId: "cus_teste_1", asaasSubscriptionId: "sub_teste_1" });
+    expect(linhas[0].currentPeriodEnd?.toISOString().slice(0, 10)).toBe("2026-09-14");
+  });
+
+  it("auto-cura de órfã já paga: assinatura ACTIVE com cobrança só RECEIVED insere linha nova já ativa e libera, sem criar outra", async () => {
+    const userId = await criarAluno("orfa-paga");
+    await db.insert(subscriptions).values({ userId, status: "cancelada", asaasCustomerId: "cus_org2" });
+    const { cliente, chamadas } = fakeAsaas({
+      assinaturasDoCliente: [{ id: "sub_orfa_paga", status: "ACTIVE" }],
+      cobrancas: [{ id: "pay_orfa_paga", status: "RECEIVED", invoiceUrl: "https://asaas.example/i/pay_orfa_paga", dueDate: "2026-08-20" }],
+    });
+    const r = await iniciarAssinatura(userId, CPF_VALIDO, cliente);
+    expect(r).toEqual({ ok: true, liberado: true });
+    expect(chamadas).toEqual(["listarAssinaturasDoCliente", "listarCobrancas"]);
+    expect(chamadas).not.toContain("criarAssinatura");
+    const linhas = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
+    expect(linhas).toHaveLength(2); // a antiga "cancelada" + a nova "ativa" auto-curada
+    const nova = linhas.find((l) => l.status === "ativa");
+    expect(nova).toMatchObject({ asaasCustomerId: "cus_org2", asaasSubscriptionId: "sub_orfa_paga" });
+    expect(nova?.currentPeriodEnd?.toISOString().slice(0, 10)).toBe("2026-09-20");
+  });
+
+  it("precedência: cobrança RECEIVED junto com PENDING do mês seguinte libera acesso em vez de mandar pagar de novo", async () => {
+    const userId = await criarAluno("recebida-e-pendente");
+    await db.insert(subscriptions).values({ userId, status: "pendente", asaasCustomerId: "cus_teste_1", asaasSubscriptionId: "sub_teste_1" });
+    const { cliente, chamadas } = fakeAsaas({
+      cobrancas: [
+        { id: "pay_recebida", status: "RECEIVED", invoiceUrl: "https://asaas.example/i/pay_recebida", dueDate: "2026-08-14" },
+        { id: "pay_seguinte", status: "PENDING", invoiceUrl: "https://asaas.example/i/pay_seguinte", dueDate: "2026-09-14" },
+      ],
+    });
+    const r = await iniciarAssinatura(userId, CPF_VALIDO, cliente);
+    expect(r).toEqual({ ok: true, liberado: true });
+    expect(chamadas).toEqual(["listarCobrancas"]);
+  });
 });

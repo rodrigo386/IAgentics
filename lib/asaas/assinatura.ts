@@ -7,8 +7,9 @@ import { buscarUsuario } from "@/lib/plataforma/usuarios";
 import { plataforma } from "@/lib/content-plataforma";
 import { validarCpf } from "./cpf";
 import { clienteAsaas, type ClienteAsaas } from "./cliente";
+import { fimDoPeriodoPago } from "./webhook";
 
-export type ResultadoAssinar = { ok: true; url: string } | { ok: false; erro: string };
+export type ResultadoAssinar = { ok: true; url: string } | { ok: true; liberado: true } | { ok: false; erro: string };
 
 /** Mutex em processo, por userId (fix round 2, F1 — substitui o db.transaction
  *  + pg_advisory_xact_lock do fix round 1). Aquela versão segurava uma conexão
@@ -63,17 +64,36 @@ export async function iniciarAssinatura(
       // duplicata (clique repetido no botão / segunda chamada que esperou o
       // lock acima).
       const [ultima] = await db
-        .select({ status: subscriptions.status, asaasSubscriptionId: subscriptions.asaasSubscriptionId })
+        .select({ id: subscriptions.id, status: subscriptions.status, asaasSubscriptionId: subscriptions.asaasSubscriptionId })
         .from(subscriptions)
         .where(eq(subscriptions.userId, userId))
         .orderBy(desc(subscriptions.createdAt))
         .limit(1);
       if ((ultima?.status === "pendente" || ultima?.status === "inadimplente") && ultima.asaasSubscriptionId) {
-        const aberta = (await cliente.listarCobrancas(ultima.asaasSubscriptionId)).find(
-          (c) => (c.status === "PENDING" || c.status === "OVERDUE") && c.invoiceUrl,
-        );
+        const cobrancas = await cliente.listarCobrancas(ultima.asaasSubscriptionId);
+        // Fix (Important — review final): cobrança RECEIVED/CONFIRMED tem
+        // PRECEDÊNCIA sobre "sem cobrança aberta ⇒ morta". Sem isto: aluno
+        // paga, webhook atrasa/pausa, a linha segue "pendente"; ele re-submete
+        // /app/assinar, cai aqui, não acha PENDING/OVERDUE e o código antigo
+        // tratava como assinatura morta — criava uma SEGUNDA assinatura B no
+        // Asaas (cobrando de novo) enquanto a A ficava paga e esquecida.
+        // Quando o webhook da A finalmente processa, ativa a linha ANTIGA (A)
+        // — mas temAcesso lê sempre a MAIS RECENTE (B, pendente): aluno pagou
+        // e continua sem acesso. A fonte aqui é a API autenticada do Asaas —
+        // mesmo efeito que o webhook teria, sem esperar ele. UPDATE pelo id
+        // da PRÓPRIA linha (não pelo subscription id) porque é exatamente a
+        // linha que já temos em mãos.
+        const paga = cobrancas.find((c) => c.status === "RECEIVED" || c.status === "CONFIRMED");
+        if (paga) {
+          await db
+            .update(subscriptions)
+            .set({ status: "ativa", currentPeriodEnd: fimDoPeriodoPago(paga.dueDate) })
+            .where(eq(subscriptions.id, ultima.id));
+          return { ok: true, liberado: true };
+        }
+        const aberta = cobrancas.find((c) => (c.status === "PENDING" || c.status === "OVERDUE") && c.invoiceUrl);
         if (aberta) return { ok: true, url: aberta.invoiceUrl };
-        // sem cobrança aberta = assinatura morta no Asaas; segue e cria nova
+        // sem cobrança paga nem aberta = assinatura morta no Asaas; segue e cria nova
       }
 
       // Reuso 2: cliente Asaas já criado em tentativa/assinatura anterior.
@@ -98,9 +118,22 @@ export async function iniciarAssinatura(
         // for achado.
         const ativas = (await cliente.listarAssinaturasDoCliente(customerId)).filter((a) => a.status === "ACTIVE");
         for (const ativa of ativas) {
-          const aberta = (await cliente.listarCobrancas(ativa.id)).find(
-            (c) => (c.status === "PENDING" || c.status === "OVERDUE") && c.invoiceUrl,
-          );
+          const cobrancas = await cliente.listarCobrancas(ativa.id);
+          // Mesma precedência do Reuso 1 acima: cobrança RECEIVED/CONFIRMED
+          // cura a órfã direto para "ativa" (ids + currentPeriodEnd), sem
+          // depender de achar cobrança aberta primeiro.
+          const paga = cobrancas.find((c) => c.status === "RECEIVED" || c.status === "CONFIRMED");
+          if (paga) {
+            await db.insert(subscriptions).values({
+              userId,
+              status: "ativa",
+              asaasCustomerId: customerId,
+              asaasSubscriptionId: ativa.id,
+              currentPeriodEnd: fimDoPeriodoPago(paga.dueDate),
+            });
+            return { ok: true, liberado: true };
+          }
+          const aberta = cobrancas.find((c) => (c.status === "PENDING" || c.status === "OVERDUE") && c.invoiceUrl);
           if (aberta) {
             await db.insert(subscriptions).values({
               userId,
