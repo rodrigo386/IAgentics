@@ -134,14 +134,39 @@ export async function buscarMidia(
   return { provider: linha.provider, videoId: linha.videoId };
 }
 
-/** Portão de escrita, espelho do portão de leitura (buscarMidia): só quem
+/** Fix round final (I3): portão de ACESSO, separado do portão de MÍDIA
+ *  (buscarMidia). Antes, "sem linha em lesson_media" (aula publicada mas
+ *  ainda sem vídeo cadastrado) e "sem acesso pago" produziam o MESMO null de
+ *  buscarMidia — a página não conseguia distinguir "está em produção" de
+ *  "assine para ver", e mostrava a trava de venda pra quem já é assinante.
+ *  Esta função consulta só lessons→modules→courses, de propósito SEM tocar
+ *  em lesson_media: responde "o usuário poderia ver esta aula", não "existe
+ *  vídeo pra ela". */
+export async function podeVerAula(userId: string, lessonId: string): Promise<boolean> {
+  const [linha] = await db
+    .select({
+      gratuita: lessons.gratuita,
+      publicado: courses.publicado,
+    })
+    .from(lessons)
+    .innerJoin(modules, eq(modules.id, lessons.moduleId))
+    .innerJoin(courses, eq(courses.id, modules.courseId))
+    .where(eq(lessons.id, lessonId))
+    .limit(1);
+  if (!linha || !linha.publicado) return false;
+  return linha.gratuita || (await temAcesso(userId));
+}
+
+/** Portão de escrita, espelho do portão de acesso (podeVerAula): só quem
  *  poderia assistir a aula pode gravar progresso nela. Sem isto, qualquer
  *  usuário autenticado (sem checagem de acesso ao lessonId) conseguia chamar
  *  as server actions com o id de uma aula paga e fabricar `concluida: true`
- *  de conteúdo que nunca assistiu — o vídeo não vazava (buscarMidia segurava),
- *  mas o registro de progresso virava mentira. */
+ *  de conteúdo que nunca assistiu. Delega a podeVerAula (não mais a
+ *  buscarMidia) para não depender de lesson_media já ter linha — uma aula
+ *  publicada sem vídeo ainda cadastrado continua um alvo legítimo de
+ *  progresso zero/fabricado bloqueado, sem ficar amarrado a mídia existir. */
 export async function podeGravarProgresso(userId: string, lessonId: string): Promise<boolean> {
-  return (await buscarMidia(userId, lessonId)) !== null;
+  return podeVerAula(userId, lessonId);
 }
 
 export async function gravarProgresso(

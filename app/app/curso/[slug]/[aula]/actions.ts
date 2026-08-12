@@ -22,5 +22,11 @@ export async function baterProgresso(lessonId: string, segundos: number) {
   const sessao = await auth();
   if (!sessao?.user?.id) return;
   if (!(await podeGravarProgresso(sessao.user.id, lessonId))) return;
-  await gravarProgresso(sessao.user.id, lessonId, { segundosAssistidos: Math.max(0, Math.floor(segundos)) });
+  // Fix round final (M5): segundos vem do cliente sem validação — NaN (ex.:
+  // currentTime antes de metadata carregar) produzia NaN→NaN no banco, e
+  // Infinity/valores absurdos (ex.: 3e9) estouravam o int4 da coluna, ambos
+  // derrubando o POST autenticado com 500. Clampa em [0, 86400] (24h, teto
+  // generoso pra qualquer aula) e não-finito vira 0.
+  const s = Number.isFinite(segundos) ? Math.min(86400, Math.max(0, Math.floor(segundos))) : 0;
+  await gravarProgresso(sessao.user.id, lessonId, { segundosAssistidos: s });
 }

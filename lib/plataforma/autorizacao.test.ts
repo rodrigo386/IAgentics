@@ -10,6 +10,7 @@ import {
   buscarMidia,
   gravarProgresso,
   podeGravarProgresso,
+  podeVerAula,
   temAcesso,
 } from "./dados";
 
@@ -27,6 +28,7 @@ let userInadimplente: { id: string };
 let userCancelada: { id: string };
 let aulaGratuita: { id: string };
 let aulaPaga: { id: string };
+let aulaSemMidia: { id: string };
 let aulaOculta: { id: string };
 let cursoOcultoSlug: string;
 
@@ -80,6 +82,13 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     [aulaPaga] = await db
       .insert(lessons)
       .values({ moduleId: moduloPublicado.id, slug: "paga", titulo: "Aula paga", ordem: 2, gratuita: false })
+      .returning({ id: lessons.id });
+    // Regressão do I3: publicada, paga, SEM linha em lesson_media — "em
+    // produção" pro conteúdo, não "sem acesso". podeVerAula não deve
+    // depender de lesson_media existir; buscarMidia continua null aqui.
+    [aulaSemMidia] = await db
+      .insert(lessons)
+      .values({ moduleId: moduloPublicado.id, slug: "sem-midia", titulo: "Aula sem mídia", ordem: 3, gratuita: false })
       .returning({ id: lessons.id });
     await db.insert(lessonMedia).values([
       { lessonId: aulaGratuita.id, videoProvider: "youtube", videoId: "video-gratuita" },
@@ -187,6 +196,11 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
 
     it("aula paga com assinatura manual → true", async () => {
       expect(await podeGravarProgresso(userComAssinatura.id, aulaPaga.id)).toBe(true);
+    });
+
+    it("aula publicada SEM linha em lesson_media → podeVerAula true para assinante (e buscarMidia null)", async () => {
+      expect(await podeVerAula(userComAssinatura.id, aulaSemMidia.id)).toBe(true);
+      expect(await buscarMidia(userComAssinatura.id, aulaSemMidia.id)).toBeNull();
     });
   });
 });

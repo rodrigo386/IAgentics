@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
 import { PlayerAula } from "@/components/plataforma/PlayerAula";
 import { plataforma } from "@/lib/content-plataforma";
-import { buscarConcluidas, buscarCurso, buscarMidia } from "@/lib/plataforma/dados";
+import { buscarConcluidas, buscarCurso, buscarMidia, podeVerAula } from "@/lib/plataforma/dados";
 
 export default async function PaginaAula({
   params,
@@ -33,21 +33,21 @@ export default async function PaginaAula({
   const proxima = sequencia[indiceAtual + 1] ?? null;
   const hrefProxima = proxima ? `/app/curso/${curso.slug}/${proxima.slug}` : null;
 
-  const [concluidas, midia] = await Promise.all([buscarConcluidas(userId), buscarMidia(userId, aula.id)]);
+  // Fix round final (I3): "sem acesso" (trava de assinatura) e "sem vídeo
+  // cadastrado ainda" (aula publicada, lesson_media sem linha) são estados
+  // diferentes e não podem cair no mesmo cartão de venda — quem JÁ é
+  // assinante não deve ver CTA pedindo pra assinar de novo. podeVerAula
+  // decide isso SEM tocar em lesson_media; só se ela liberar é que
+  // buscarMidia é chamada para saber se o vídeo já existe.
+  const [concluidas, podeVer] = await Promise.all([buscarConcluidas(userId), podeVerAula(userId, aula.id)]);
+  const midia = podeVer ? await buscarMidia(userId, aula.id) : null;
 
   const t = plataforma.aula;
 
   return (
     <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[1fr_360px] lg:items-start lg:gap-10">
       <div className="min-w-0">
-        {midia ? (
-          <PlayerAula
-            videoId={midia.videoId}
-            lessonId={aula.id}
-            jaConcluida={concluidas.has(aula.id)}
-            hrefProxima={hrefProxima}
-          />
-        ) : (
+        {!podeVer ? (
           // A página NUNCA é 404 por causa da trava de assinatura — a URL
           // compartilhada continua abrindo e vendendo o curso.
           <div className="flex aspect-video w-full flex-col items-center justify-center gap-4 border border-line bg-brand-ink px-6 text-center text-brand-paper">
@@ -59,6 +59,19 @@ export default async function PaginaAula({
             >
               {t.bloqueadaCta}
             </a>
+          </div>
+        ) : midia ? (
+          <PlayerAula
+            videoId={midia.videoId}
+            lessonId={aula.id}
+            jaConcluida={concluidas.has(aula.id)}
+            hrefProxima={hrefProxima}
+          />
+        ) : (
+          // Aula com acesso liberado mas ainda sem vídeo cadastrado: quem já
+          // tem acesso não leva cartão de venda, só um aviso discreto.
+          <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 border border-line bg-surface px-6 text-center text-fg-muted">
+            <p>{t.semVideo}</p>
           </div>
         )}
 

@@ -53,6 +53,7 @@ export const plataforma = {
     bloqueadaTitulo: "Esta aula faz parte da assinatura",
     bloqueadaTexto: "Assine o acervo da Academy para assistir esta e todas as outras aulas.",
     bloqueadaCta: "Falar com a IAgentics",
+    semVideo: "Esta aula está em produção. O vídeo chega em breve.",
     videoFalhou: "O vídeo não carregou.",
     recarregar: "Recarregar",
     aulasDoCurso: "Aulas do curso",
