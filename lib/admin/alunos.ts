@@ -37,6 +37,13 @@ export type ResultadoAcao =
 
 const POR_PAGINA = 50;
 
+// Fix round final (I2): id vem cru da URL (/admin/alunos/[id]) — um valor
+// qualquer (ex.: "abc") batia direto num eq(users.id, id) com coluna uuid, o
+// Postgres rejeitava a sintaxe e a exceção não tratada virava 500 em vez do
+// 404 (via null) que a página já sabe renderizar. Validar antes do SELECT
+// evita a viagem ao banco só para descobrir que o formato já está errado.
+const RE_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /** Lista paginada de /admin/alunos. Três queries por página, nunca N+1 por
  *  linha: (1) a página de users com o total via `count(*) over()` — window
  *  function, não uma 4ª query; (2) status atual (linha mais recente por
@@ -125,6 +132,8 @@ export async function listarAlunos(o: {
  *  aluno) — a dúzia de queries aqui não é N+1, é o preço normal de um
  *  detalhe rico sem lib de agregação. */
 export async function buscarAluno(id: string): Promise<AlunoDetalhe | null> {
+  if (!RE_UUID.test(id)) return null;
+
   const [u] = await db
     .select({
       id: users.id,
@@ -156,7 +165,15 @@ export async function buscarAluno(id: string): Promise<AlunoDetalhe | null> {
         cursoSlug: courses.slug,
         cursoTitulo: courses.titulo,
         aulaTitulo: lessons.titulo,
-        concluidaEm: lessonProgress.updatedAt,
+        // Fix round final (I4): updatedAt sobe a cada toque do player (é o
+        // "último acesso" da Task 2) — usá-lo aqui mostrava a data do replay
+        // mais recente, não a da conclusão de verdade. concluidaEm nasce só
+        // na primeira conclusão e nunca se move (ver gravarProgresso); o
+        // coalesce cobre só a hipótese de linha antiga sem concluida_em
+        // preenchida (anterior a esta coluna existir).
+        concluidaEm: sql`coalesce(${lessonProgress.concluidaEm}, ${lessonProgress.updatedAt})`.mapWith(
+          (v: string) => new Date(v),
+        ),
       })
       .from(lessonProgress)
       .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))

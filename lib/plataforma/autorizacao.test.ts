@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { like } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessons, modules, subscriptions, users } from "@/lib/db/schema";
@@ -8,6 +8,7 @@ import {
   buscarConcluidas,
   buscarCurso,
   buscarMidia,
+  contaAtiva,
   gravarProgresso,
   podeGravarProgresso,
   podeVerAula,
@@ -26,6 +27,10 @@ let userComAssinatura: { id: string };
 let userCanceladaRecente: { id: string };
 let userInadimplente: { id: string };
 let userCancelada: { id: string };
+// Regressão do I1: assinatura manual válida, mas a CONTA foi desativada —
+// temAcesso/buscarMidia/podeGravarProgresso têm que negar mesmo assim, sem
+// esperar o JWT expirar (auth() sozinho não enxerga isso).
+let userDesativado: { id: string };
 let aulaGratuita: { id: string };
 let aulaPaga: { id: string };
 let aulaSemMidia: { id: string };
@@ -66,6 +71,13 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .values({ nome: "Teste cancelada", email: `${prefixo}-cancelada@teste.invalido`, senhaHash: "x" })
       .returning({ id: users.id });
     await db.insert(subscriptions).values({ userId: userCancelada.id, status: "cancelada" });
+
+    [userDesativado] = await db
+      .insert(users)
+      .values({ nome: "Teste desativado", email: `${prefixo}-desativado@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    await db.insert(subscriptions).values({ userId: userDesativado.id, status: "manual" });
+    await db.update(users).set({ ativo: false }).where(eq(users.id, userDesativado.id));
 
     const [cursoPublicado] = await db
       .insert(courses)
@@ -149,6 +161,15 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     expect(midia).toBeNull();
   });
 
+  // Fix round final (I1): desativado continuava agindo com JWT vivo —
+  // temAcesso lia só a assinatura, nunca users.ativo.
+  it("conta desativada com assinatura manual válida → sem acesso (temAcesso false, mídia paga null)", async () => {
+    expect(await contaAtiva(userDesativado.id)).toBe(false);
+    expect(await temAcesso(userDesativado.id)).toBe(false);
+    const midia = await buscarMidia(userDesativado.id, aulaPaga.id);
+    expect(midia).toBeNull();
+  });
+
   it("mídia de curso não publicado não sai nem para assinante", async () => {
     const midia = await buscarMidia(userComAssinatura.id, aulaOculta.id);
     expect(midia).toBeNull();
@@ -201,6 +222,10 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     it("aula publicada SEM linha em lesson_media → podeVerAula true para assinante (e buscarMidia null)", async () => {
       expect(await podeVerAula(userComAssinatura.id, aulaSemMidia.id)).toBe(true);
       expect(await buscarMidia(userComAssinatura.id, aulaSemMidia.id)).toBeNull();
+    });
+
+    it("aula paga com assinatura manual mas conta desativada → false (I1: JWT vivo não basta)", async () => {
+      expect(await podeGravarProgresso(userDesativado.id, aulaPaga.id)).toBe(false);
     });
   });
 });

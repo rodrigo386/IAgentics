@@ -3,7 +3,7 @@ import { and, eq, like } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { courses, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
 import { gravarProgresso } from "@/lib/plataforma/dados";
-import { conclusaoPorCurso, funilDoCurso, gerarCsv, inicioDoPeriodo, resumo, seriesSemanais } from "./metricas";
+import { conclusaoPorCurso, ehPeriodoValido, funilDoCurso, gerarCsv, inicioDoPeriodo, resumo, seriesSemanais } from "./metricas";
 
 // Mesmo esqueleto de lib/admin/alunos.test.ts: roda contra o Postgres real,
 // prefixo próprio, afterAll limpa por cascade. Insere lesson_progress no curso
@@ -126,6 +126,20 @@ describe.skipIf(!process.env.DATABASE_URL)("métricas do admin", () => {
     // cascade: subscriptions e lesson_progress dos alunos prefixados caem junto.
     await db.delete(users).where(like(users.email, `${prefixo}%`));
     await db.delete(courses).where(like(courses.slug, `${prefixo}%`));
+  });
+
+  // Fix round final (I5): route handler de CSV usava `as Periodo` sem checar
+  // — ehPeriodoValido é o guard real que o route.ts passa a chamar antes de
+  // gerar qualquer coisa.
+  it("ehPeriodoValido: só aceita 7/30/90/tudo", () => {
+    expect(ehPeriodoValido("7")).toBe(true);
+    expect(ehPeriodoValido("30")).toBe(true);
+    expect(ehPeriodoValido("90")).toBe(true);
+    expect(ehPeriodoValido("tudo")).toBe(true);
+    expect(ehPeriodoValido("xyz")).toBe(false);
+    expect(ehPeriodoValido("")).toBe(false);
+    expect(ehPeriodoValido(null)).toBe(false);
+    expect(ehPeriodoValido(undefined)).toBe(false);
   });
 
   it("inicioDoPeriodo: '7' corta 7 dias atrás; 'tudo' retorna null", () => {

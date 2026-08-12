@@ -8,6 +8,18 @@ export type Periodo = "7" | "30" | "90" | "tudo";
 const DIAS_POR_PERIODO = { "7": 7, "30": 30, "90": 90 } as const;
 const DIA_MS = 24 * 60 * 60 * 1000;
 
+const PERIODOS: Periodo[] = ["7", "30", "90", "tudo"];
+
+/** Fix round final (I5): route handler de CSV lia periodo cru de searchParams
+ *  e só fazia `as Periodo` — um valor fora da união não corta em nenhum WHERE
+ *  (o SQL trata como "sem filtro", não como erro) e ainda assim chegava
+ *  intacto no template do Content-Disposition. Validar aqui, antes de gerar
+ *  qualquer coisa, é o mesmo padrão de "cast confia, checagem em runtime é a
+ *  validação real" já usado por BLOCOS_CSV em gerarCsv. */
+export function ehPeriodoValido(v: string | null | undefined): v is Periodo {
+  return !!v && (PERIODOS as string[]).includes(v);
+}
+
 /** null = sem corte (período "tudo"). O relógio é sempre o argumento `agora`,
  *  nunca `new Date()` interno, para o teste poder controlar o dado sem
  *  depender do relógio da máquina. */

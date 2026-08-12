@@ -1,7 +1,7 @@
 import "server-only"; // build falha se um componente client importar isto
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions } from "@/lib/db/schema";
+import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
 import type { Aula, Curso, CursoComIndice, Modulo, StatusAssinatura } from "./tipos";
 
 /** Mapeamento explícito por campo: as colunas já vêm em camelCase do schema
@@ -59,11 +59,26 @@ export async function buscarFimAssinatura(userId: string): Promise<Date | null> 
   return linha?.ate ?? null;
 }
 
+/** Fix round final (I1): consulta users.ativo direto no banco, nunca o JWT —
+ *  a sessão fica viva até o cookie expirar mesmo depois de um admin desativar
+ *  a conta, então "está autenticado" e "a conta ainda existe/está ativa" são
+ *  perguntas diferentes. Mesmo padrão de ehAdminAtivo (lib/admin/sessao.ts). */
+export async function contaAtiva(userId: string): Promise<boolean> {
+  const [linha] = await db.select({ ativo: users.ativo }).from(users).where(eq(users.id, userId)).limit(1);
+  return linha?.ativo ?? false;
+}
+
 /** O portão de acesso pago: única checagem de assinatura ativa/manual da
  *  camada de dados. Toda função sensível recebe userId explícito — nunca lê
  *  sessão sozinha, para nunca ser chamada "sem querer" para o usuário errado.
- *  Fonte de verdade única com buscarAssinatura: mesma linha mais recente. */
+ *  Fonte de verdade única com buscarAssinatura: mesma linha mais recente.
+ *  Fix round final (I1): checa contaAtiva ANTES da assinatura — desativado
+ *  perde acesso pago mesmo com assinatura "manual"/"ativa" válida no histórico
+ *  e com JWT ainda vivo. Aula gratuita não passa por aqui (buscarMidia só
+ *  chama temAcesso para conteúdo pago), então continua liberada — aceitável:
+ *  o alvo é cortar MÍDIA PAGA e ESCRITA de progresso, não o catálogo grátis. */
 export async function temAcesso(userId: string): Promise<boolean> {
+  if (!(await contaAtiva(userId))) return false;
   const status = await buscarAssinatura(userId);
   return status === "ativa" || status === "manual";
 }

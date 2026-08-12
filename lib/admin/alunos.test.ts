@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { eq, like } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { courses, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
-import { temAcesso } from "@/lib/plataforma/dados";
+import { contaAtiva, gravarProgresso, temAcesso } from "@/lib/plataforma/dados";
 import { criarUsuario } from "@/lib/plataforma/usuarios";
 import {
   buscarAluno,
@@ -119,6 +119,16 @@ describe.skipIf(!process.env.DATABASE_URL)("regras de administração de alunos"
     expect(depois.ativo).toBe(true);
   });
 
+  // Fix round final (I1): regressão do lado admin — desativar outro aluno de
+  // fato desliga contaAtiva (o portão que dados.ts/actions passam a checar).
+  it("definirAtivo(false) em outro aluno desativa a conta e contaAtiva vira false", async () => {
+    const aluno = await novoAluno("desativa-outro");
+    expect(await contaAtiva(aluno.id)).toBe(true);
+    const resultado = await definirAtivo(randomUUID(), aluno.id, false);
+    expect(resultado).toEqual({ ok: true });
+    expect(await contaAtiva(aluno.id)).toBe(false);
+  });
+
   it("excluirAluno com e-mail divergente → 'email_nao_confere' e o usuário continua existindo", async () => {
     const aluno = await novoAluno("excl-errado");
     const resultado = await excluirAluno(randomUUID(), aluno.id, "email-errado@t.invalido");
@@ -199,5 +209,45 @@ describe.skipIf(!process.env.DATABASE_URL)("regras de administração de alunos"
     expect(bloco.total).toBe(3);
     expect(bloco.pct).toBe(67);
     expect(bloco.aulas.map((a) => a.titulo).sort()).toEqual(["Aula 1", "Aula 2"]);
+  });
+
+  // Fix round final (I2): id fora do formato uuid batia direto no banco e
+  // virava 500 (exceção de sintaxe do Postgres) em vez do null que a página
+  // já sabe tratar como "aluno não encontrado".
+  it("buscarAluno com id não-uuid retorna null sem lançar", async () => {
+    await expect(buscarAluno("abc")).resolves.toBeNull();
+    await expect(buscarAluno("")).resolves.toBeNull();
+  });
+
+  // Fix round final (I4): a projeção usava lessonProgress.updatedAt, que
+  // sobe a cada toque do player — reabrir uma aula já concluída (replay)
+  // "movia" a data de conclusão exibida no detalhe do aluno. concluidaEm
+  // nasce só na primeira conclusão e nunca se move (mesma invariante que
+  // lib/admin/metricas.ts já depende para aulasConcluidas por período).
+  it("buscarAluno: progresso.aulas mostra a data de conclusão original, mesmo após replay mover updated_at", async () => {
+    const aluno = await novoAluno("concluida-em");
+    await gravarProgresso(aluno.id, aula1.id, { concluida: true });
+    const [antes] = await db
+      .select({ concluidaEm: lessonProgress.concluidaEm, updatedAt: lessonProgress.updatedAt })
+      .from(lessonProgress)
+      .where(and(eq(lessonProgress.userId, aluno.id), eq(lessonProgress.lessonId, aula1.id)));
+    expect(antes.concluidaEm).not.toBeNull();
+
+    // Espera curta pra garantir que, se o bug reaparecer, o updated_at do
+    // replay seja detectavelmente diferente da conclusão original.
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await gravarProgresso(aluno.id, aula1.id, { segundosAssistidos: 30 }); // replay: sem re-concluir
+
+    const [depois] = await db
+      .select({ concluidaEm: lessonProgress.concluidaEm, updatedAt: lessonProgress.updatedAt })
+      .from(lessonProgress)
+      .where(and(eq(lessonProgress.userId, aluno.id), eq(lessonProgress.lessonId, aula1.id)));
+    expect(depois.updatedAt.getTime()).toBeGreaterThan(antes.updatedAt.getTime());
+
+    const detalhe = await buscarAluno(aluno.id);
+    const bloco = detalhe!.progresso.find((p) => p.slug === cursoTeste.slug)!;
+    const aulaDetalhe = bloco.aulas.find((a) => a.titulo === aula1.titulo)!;
+    // O detalhe mostra a data ORIGINAL de conclusão, não a do replay.
+    expect(aulaDetalhe.concluidaEm.getTime()).toBe(antes.concluidaEm!.getTime());
   });
 });

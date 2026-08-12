@@ -139,6 +139,8 @@ export const admin = {
       slugExiste: "Já existe conteúdo com esse endereço (slug).",
       generico: "Não foi possível concluir a ação.",
       cursoPublicado: "Este curso está publicado — oculte antes de excluir.",
+      capaLocal:
+        "A capa deve ser um caminho local começando com / (ex.: /plataforma/cursos/nome.png). Upload e URLs externas chegam num ciclo futuro.",
     },
     mensagens: {
       salvo: "Salvo.",

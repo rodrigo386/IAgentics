@@ -42,3 +42,15 @@ test("aluno comum recebe 404 no handler de CSV", async ({ page }) => {
   const resposta = await page.request.get("/admin/metricas-csv?bloco=cadastros");
   expect(resposta.status()).toBe(404);
 });
+
+// Fix round final (I5): periodo cru fora da união ("7"/"30"/"90"/"tudo")
+// batia direto num `as Periodo` sem checagem — 404 aqui prova que o guard
+// (ehPeriodoValido) roda mesmo para um admin de verdade, antes de gerar nada.
+test("periodo inválido no CSV recebe 404 mesmo para admin autenticado", async ({ page }) => {
+  const emailAdminPeriodo = `e2e-admmetricas-periodo-${Date.now()}@teste.invalido`;
+  await criarConta(page, emailAdminPeriodo, "Admin E2E Período Inválido");
+  execSync(`node scripts/promover-admin.mjs ${emailAdminPeriodo}`, { stdio: "pipe" });
+
+  const resposta = await page.request.get("/admin/metricas-csv?bloco=cadastros&periodo=xyz");
+  expect(resposta.status()).toBe(404);
+});

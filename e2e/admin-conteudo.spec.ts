@@ -99,3 +99,27 @@ test("admin cria módulo/aula/vídeo num curso oculto da semente, publica, aluno
   await contextoAdmin.close();
   await contextoAluno.close();
 });
+
+// Fix round final (I3): capaUrl externa (https://...) quebrava o /app do
+// aluno — a action agora recusa qualquer valor que não seja vazio ou comece
+// com "/", e o valor salvo no banco tem que continuar intacto.
+test("capaUrl externa é recusada pela action e o valor salvo no banco não muda", async ({ page }) => {
+  const emailAdminCapa = `e2e-admconteudo-capa-${Date.now()}@teste.invalido`;
+  await criarConta(page, emailAdminCapa, "Admin E2E Capa");
+  execSync(`node scripts/promover-admin.mjs ${emailAdminCapa}`, { stdio: "pipe" });
+
+  await page.goto(`/admin/conteudo/${CURSO_SLUG}`);
+  const campoCapa = page.getByLabel("URL da capa");
+  const capaOriginal = await campoCapa.inputValue();
+
+  await campoCapa.fill("https://exemplo.com/capa-externa.png");
+  await page.getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(
+    page.getByText("A capa deve ser um caminho local começando com /", { exact: false }),
+  ).toBeVisible({ timeout: 15_000 });
+
+  // A action retornou o erro ANTES de chamar salvarCurso/revalidatePath —
+  // recarregar a página confirma que o banco nunca foi tocado.
+  await page.reload();
+  await expect(page.getByLabel("URL da capa")).toHaveValue(capaOriginal);
+});

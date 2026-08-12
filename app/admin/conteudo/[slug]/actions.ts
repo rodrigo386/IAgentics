@@ -63,6 +63,14 @@ export async function salvarCursoAction(id: string, _estado: Estado, formData: F
     cargaHoras: Number(formData.get("cargaHoras") ?? 0),
     ordem: Number(formData.get("ordem") ?? 0),
   };
+  // Fix round final (I3): capaUrl externa (https://...) quebra o /app do
+  // aluno — hoje a página monta a imagem como caminho local, então uma URL
+  // absoluta produz um <img> com src errado (sem base própria). Recusa aqui,
+  // antes de tocar o banco: upload/URLs externas ficam para um ciclo futuro
+  // com storage e validação de host, não algo pra improvisar agora.
+  if (campos.capaUrl !== "" && !campos.capaUrl.startsWith("/")) {
+    return { erro: t.erros.capaLocal, sucesso: null };
+  }
   const resultado = await salvarCurso(id, campos);
   if (!resultado.ok) return { erro: t.erros.slugExiste, sucesso: null };
 
