@@ -125,6 +125,23 @@ export async function buscarConcluidas(userId: string): Promise<Set<string>> {
   return new Set(linhas.map((r) => r.lessonId));
 }
 
+/** Curso da última atividade do aluno (linha mais recente de lesson_progress
+ *  por updated_at, só cursos publicados). O painel usa para escolher o hero
+ *  "continue de onde parou"; a aula-alvo vem de proximaAula() na página —
+ *  devolver aula/título daqui duplicaria essa lógica. */
+export async function buscarUltimaAula(userId: string): Promise<{ cursoSlug: string } | null> {
+  const [linha] = await db
+    .select({ cursoSlug: courses.slug })
+    .from(lessonProgress)
+    .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
+    .innerJoin(modules, eq(modules.id, lessons.moduleId))
+    .innerJoin(courses, eq(courses.id, modules.courseId))
+    .where(and(eq(lessonProgress.userId, userId), eq(courses.publicado, true)))
+    .orderBy(desc(lessonProgress.updatedAt))
+    .limit(1);
+  return linha ?? null;
+}
+
 /** O portão: sai mídia só se (aula gratuita E curso publicado) OU temAcesso.
  *  Nunca lança para "sem acesso" — a chamadora decide o que mostrar com null. */
 export async function buscarMidia(

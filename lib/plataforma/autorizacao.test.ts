@@ -2,13 +2,14 @@ import { randomUUID } from "node:crypto";
 import { eq, like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
-import { courses, lessonMedia, lessons, modules, subscriptions, users } from "@/lib/db/schema";
+import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
 import {
   buscarAssinatura,
   buscarCatalogo,
   buscarConcluidas,
   buscarCurso,
   buscarMidia,
+  buscarUltimaAula,
   contaAtiva,
   gravarProgresso,
   podeGravarProgresso,
@@ -40,6 +41,11 @@ let aulaPaga: { id: string };
 let aulaSemMidia: { id: string };
 let aulaOculta: { id: string };
 let cursoOcultoSlug: string;
+// Redesign editorial: buscarUltimaAula alimenta o hero do painel.
+let userUltimaAula: { id: string };
+let userUltimaAulaSemProgresso: { id: string };
+let userUltimaAulaSoOculto: { id: string };
+let cursoRecenteSlug: string;
 
 describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", () => {
   beforeAll(async () => {
@@ -131,6 +137,43 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .values({ moduleId: moduloOculto.id, slug: "oculta", titulo: "Aula oculta", ordem: 1, gratuita: true })
       .returning({ id: lessons.id });
     await db.insert(lessonMedia).values({ lessonId: aulaOculta.id, videoProvider: "youtube", videoId: "video-oculta" });
+
+    [userUltimaAula] = await db
+      .insert(users)
+      .values({ nome: "Teste ultima aula", email: `${prefixo}-ultima@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    [userUltimaAulaSemProgresso] = await db
+      .insert(users)
+      .values({ nome: "Teste ultima aula sem progresso", email: `${prefixo}-ultima-sem-prog@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    [userUltimaAulaSoOculto] = await db
+      .insert(users)
+      .values({ nome: "Teste ultima aula so oculto", email: `${prefixo}-ultima-so-oculto@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    const [cursoAntigo] = await db
+      .insert(courses)
+      .values({ slug: `${prefixo}-curso-antigo`, titulo: "Curso antigo", publicado: true })
+      .returning({ id: courses.id });
+    const [cursoRecente] = await db
+      .insert(courses)
+      .values({ slug: `${prefixo}-curso-recente`, titulo: "Curso recente", publicado: true })
+      .returning({ id: courses.id, slug: courses.slug });
+    cursoRecenteSlug = cursoRecente.slug;
+    const [modAntigo] = await db.insert(modules).values({ courseId: cursoAntigo.id, titulo: "M1" }).returning({ id: modules.id });
+    const [modRecente] = await db.insert(modules).values({ courseId: cursoRecente.id, titulo: "M1" }).returning({ id: modules.id });
+    const [aulaAntiga] = await db
+      .insert(lessons)
+      .values({ moduleId: modAntigo.id, slug: "a1", titulo: "A1" })
+      .returning({ id: lessons.id });
+    const [aulaRecente] = await db
+      .insert(lessons)
+      .values({ moduleId: modRecente.id, slug: "a1", titulo: "A1" })
+      .returning({ id: lessons.id });
+    // updatedAt explícitos e bem separados — mesma razão dos createdAt de assinatura.
+    await db.insert(lessonProgress).values([
+      { userId: userUltimaAula.id, lessonId: aulaAntiga.id, segundosAssistidos: 30, updatedAt: new Date("2020-01-01T00:00:00Z") },
+      { userId: userUltimaAula.id, lessonId: aulaRecente.id, segundosAssistidos: 10, updatedAt: new Date("2020-06-01T00:00:00Z") },
+    ]);
   });
 
   afterAll(async () => {
@@ -245,5 +288,19 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     it("aula paga com assinatura manual mas conta desativada → false (I1: JWT vivo não basta)", async () => {
       expect(await podeGravarProgresso(userDesativado.id, aulaPaga.id)).toBe(false);
     });
+  });
+
+  it("buscarUltimaAula: sem progresso devolve null", async () => {
+    expect(await buscarUltimaAula(userUltimaAulaSemProgresso.id)).toBeNull();
+  });
+
+  it("buscarUltimaAula: devolve o curso da linha mais recente por updated_at", async () => {
+    expect(await buscarUltimaAula(userUltimaAula.id)).toEqual({ cursoSlug: cursoRecenteSlug });
+  });
+
+  it("buscarUltimaAula: progresso só em curso oculto devolve null", async () => {
+    // aulaOculta já existe no arranjo deste arquivo (curso publicado=false)
+    await db.insert(lessonProgress).values({ userId: userUltimaAulaSoOculto.id, lessonId: aulaOculta.id, segundosAssistidos: 5 });
+    expect(await buscarUltimaAula(userUltimaAulaSoOculto.id)).toBeNull();
   });
 });
