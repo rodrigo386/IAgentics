@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { CardCurso } from "@/components/plataforma/CardCurso";
 import { plataforma } from "@/lib/content-plataforma";
-import { buscarAssinatura, buscarCatalogo, buscarConcluidas, buscarCurso } from "@/lib/plataforma/dados";
+import { buscarCatalogo, buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 import type { Aula, Curso } from "@/lib/plataforma/tipos";
 
@@ -15,12 +15,14 @@ export default async function Painel() {
   if (!sessao?.user?.id) redirect("/app/entrar");
   const userId = sessao.user.id;
 
-  const [catalogo, concluidas, assinatura] = await Promise.all([
+  // Fonte de verdade única: temAcesso(userId) de dados.ts, não uma comparação
+  // local reimplementada (subscriptions guarda histórico; "ativa"/"manual" só
+  // conta na linha mais recente, e só dados.ts sabe fazer essa checagem direito).
+  const [catalogo, concluidas, temAcesso] = await Promise.all([
     buscarCatalogo(),
     buscarConcluidas(userId),
-    buscarAssinatura(userId),
+    verificarAcesso(userId),
   ]);
-  const temAcesso = assinatura === "ativa" || assinatura === "manual";
 
   // Índice de cada curso do catálogo, para derivar pct e "próxima aula" por curso.
   const indices = await Promise.all(catalogo.map((c) => buscarCurso(c.slug)));

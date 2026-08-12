@@ -31,16 +31,27 @@ function paraAula(r: typeof lessons.$inferSelect): Aula {
   };
 }
 
+/** subscriptions não tem unique em userId — o histórico de mudanças de status
+ *  fica todo lá. "Status atual" é sempre a linha mais recente por createdAt;
+ *  temAcesso (abaixo) tem que derivar deste MESMO critério, nunca de "já
+ *  teve alguma linha ativa/manual" em algum momento. */
+export async function buscarAssinatura(userId: string): Promise<StatusAssinatura> {
+  const [linha] = await db
+    .select({ status: subscriptions.status })
+    .from(subscriptions)
+    .where(eq(subscriptions.userId, userId))
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1);
+  return (linha?.status as StatusAssinatura) ?? null;
+}
+
 /** O portão de acesso pago: única checagem de assinatura ativa/manual da
  *  camada de dados. Toda função sensível recebe userId explícito — nunca lê
- *  sessão sozinha, para nunca ser chamada "sem querer" para o usuário errado. */
+ *  sessão sozinha, para nunca ser chamada "sem querer" para o usuário errado.
+ *  Fonte de verdade única com buscarAssinatura: mesma linha mais recente. */
 export async function temAcesso(userId: string): Promise<boolean> {
-  const [linha] = await db
-    .select({ id: subscriptions.id })
-    .from(subscriptions)
-    .where(and(eq(subscriptions.userId, userId), inArray(subscriptions.status, ["ativa", "manual"])))
-    .limit(1);
-  return !!linha;
+  const status = await buscarAssinatura(userId);
+  return status === "ativa" || status === "manual";
 }
 
 export async function buscarCatalogo(): Promise<Curso[]> {
@@ -83,16 +94,6 @@ export async function buscarConcluidas(userId: string): Promise<Set<string>> {
     .from(lessonProgress)
     .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.concluida, true)));
   return new Set(linhas.map((r) => r.lessonId));
-}
-
-export async function buscarAssinatura(userId: string): Promise<StatusAssinatura> {
-  const [linha] = await db
-    .select({ status: subscriptions.status })
-    .from(subscriptions)
-    .where(eq(subscriptions.userId, userId))
-    .orderBy(desc(subscriptions.createdAt))
-    .limit(1);
-  return (linha?.status as StatusAssinatura) ?? null;
 }
 
 /** O portão: sai mídia só se (aula gratuita E curso publicado) OU temAcesso.

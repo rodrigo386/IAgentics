@@ -3,7 +3,7 @@ import { like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessons, modules, subscriptions, users } from "@/lib/db/schema";
-import { buscarCatalogo, buscarConcluidas, buscarCurso, buscarMidia, gravarProgresso } from "./dados";
+import { buscarCatalogo, buscarConcluidas, buscarCurso, buscarMidia, gravarProgresso, temAcesso } from "./dados";
 
 // Roda contra o Postgres real (precisa de DATABASE_URL); dados próprios com prefixo
 // próprio, limpos no afterAll. NUNCA toca nos dados da semente (curso
@@ -12,6 +12,11 @@ const prefixo = `teste-aut-${Date.now()}`;
 
 let userSemAssinatura: { id: string };
 let userComAssinatura: { id: string };
+// Regressão do Critical: linha "manual" antiga + linha "cancelada" mais nova —
+// temAcesso tem que seguir a mais recente, não "já teve alguma ativa/manual".
+let userCanceladaRecente: { id: string };
+let userInadimplente: { id: string };
+let userCancelada: { id: string };
 let aulaGratuita: { id: string };
 let aulaPaga: { id: string };
 let aulaOculta: { id: string };
@@ -28,6 +33,29 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .values({ nome: "Teste com assinatura", email: `${prefixo}-com@teste.invalido`, senhaHash: "x" })
       .returning({ id: users.id });
     await db.insert(subscriptions).values({ userId: userComAssinatura.id, status: "manual" });
+
+    // createdAt explícitos e bem separados: a ordenação "mais recente vence"
+    // não pode depender da resolução do relógio entre dois inserts seguidos.
+    [userCanceladaRecente] = await db
+      .insert(users)
+      .values({ nome: "Teste cancelada recente", email: `${prefixo}-cancelada-recente@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    await db.insert(subscriptions).values([
+      { userId: userCanceladaRecente.id, status: "manual", createdAt: new Date("2020-01-01T00:00:00Z") },
+      { userId: userCanceladaRecente.id, status: "cancelada", createdAt: new Date("2020-06-01T00:00:00Z") },
+    ]);
+
+    [userInadimplente] = await db
+      .insert(users)
+      .values({ nome: "Teste inadimplente", email: `${prefixo}-inadimplente@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    await db.insert(subscriptions).values({ userId: userInadimplente.id, status: "inadimplente" });
+
+    [userCancelada] = await db
+      .insert(users)
+      .values({ nome: "Teste cancelada", email: `${prefixo}-cancelada@teste.invalido`, senhaHash: "x" })
+      .returning({ id: users.id });
+    await db.insert(subscriptions).values({ userId: userCancelada.id, status: "cancelada" });
 
     const [cursoPublicado] = await db
       .insert(courses)
@@ -86,6 +114,22 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
   it("mídia de aula paga sai para assinante manual", async () => {
     const midia = await buscarMidia(userComAssinatura.id, aulaPaga.id);
     expect(midia).toEqual({ provider: "youtube", videoId: "video-paga" });
+  });
+
+  it("assinatura manual antiga + cancelada mais recente → sem acesso (status atual manda)", async () => {
+    expect(await temAcesso(userCanceladaRecente.id)).toBe(false);
+    const midia = await buscarMidia(userCanceladaRecente.id, aulaPaga.id);
+    expect(midia).toBeNull();
+  });
+
+  it("assinatura inadimplente não libera mídia de aula paga", async () => {
+    const midia = await buscarMidia(userInadimplente.id, aulaPaga.id);
+    expect(midia).toBeNull();
+  });
+
+  it("assinatura cancelada não libera mídia de aula paga", async () => {
+    const midia = await buscarMidia(userCancelada.id, aulaPaga.id);
+    expect(midia).toBeNull();
   });
 
   it("mídia de curso não publicado não sai nem para assinante", async () => {
