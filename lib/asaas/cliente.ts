@@ -19,6 +19,11 @@ async function chamar(caminho: string, init?: RequestInit): Promise<any> {
   const resposta = await fetch(`${BASE}${caminho}`, {
     ...init,
     headers: { "Content-Type": "application/json", access_token: chave, ...(init?.headers ?? {}) },
+    // Fix (Minor — review final): sem timeout, um Asaas pendurado prende a
+    // fila do mutex por usuário (comLockDoUsuario em lib/asaas/assinatura.ts)
+    // até o processo reiniciar — a próxima chamada do MESMO userId nunca
+    // destrava porque a Promise anterior nunca resolve nem rejeita.
+    signal: AbortSignal.timeout(15_000),
   });
   if (!resposta.ok) {
     // Corpo de erro do Asaas fica SÓ no log do servidor — a tela recebe sempre
