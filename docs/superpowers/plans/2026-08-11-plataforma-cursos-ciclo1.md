@@ -564,7 +564,7 @@ git add -A && git commit -m "plataforma: camada de dados com autorização testa
 
 ### Task 6: Página do curso
 
-Igual à v1 (git show `5ee8a27:...`, Task 6) com uma troca mecânica: dados via `buscarCurso(slug)` + `buscarConcluidas(sessao.user.id)` + `buscarAssinatura(sessao.user.id)`. `IndiceCurso` com props `{ cursoSlug: string; modulos: Modulo[]; concluidas: string[]; aulaAtualId?: string }`. e2e `e2e/curso.spec.ts` idêntico (título, "8 aulas", etiqueta "Grátis", "Começar o curso" → `/app/curso/fundamentos-ia-copilot/boas-vindas`, slug inexistente → 404). Commit: `plataforma: página do curso com índice e continuar`.
+Igual à v1 (git show `5ee8a27:...`, Task 6) com uma troca mecânica: dados via `buscarCurso(slug)` + `buscarConcluidas(sessao.user.id)` + `temAcesso(sessao.user.id)`. `IndiceCurso` com props `{ cursoSlug: string; modulos: Modulo[]; concluidas: string[]; aulaAtualId?: string }`. e2e `e2e/curso.spec.ts` idêntico (título, "8 aulas", etiqueta "Grátis", "Começar o curso" → `/app/curso/fundamentos-ia-copilot/boas-vindas`, slug inexistente → 404). Commit: `plataforma: página do curso com índice e continuar`.
 
 ---
 
