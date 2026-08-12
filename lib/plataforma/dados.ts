@@ -120,6 +120,16 @@ export async function buscarMidia(
   return { provider: linha.provider, videoId: linha.videoId };
 }
 
+/** Portão de escrita, espelho do portão de leitura (buscarMidia): só quem
+ *  poderia assistir a aula pode gravar progresso nela. Sem isto, qualquer
+ *  usuário autenticado (sem checagem de acesso ao lessonId) conseguia chamar
+ *  as server actions com o id de uma aula paga e fabricar `concluida: true`
+ *  de conteúdo que nunca assistiu — o vídeo não vazava (buscarMidia segurava),
+ *  mas o registro de progresso virava mentira. */
+export async function podeGravarProgresso(userId: string, lessonId: string): Promise<boolean> {
+  return (await buscarMidia(userId, lessonId)) !== null;
+}
+
 export async function gravarProgresso(
   userId: string,
   lessonId: string,

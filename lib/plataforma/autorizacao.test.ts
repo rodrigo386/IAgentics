@@ -3,7 +3,15 @@ import { like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessons, modules, subscriptions, users } from "@/lib/db/schema";
-import { buscarCatalogo, buscarConcluidas, buscarCurso, buscarMidia, gravarProgresso, temAcesso } from "./dados";
+import {
+  buscarCatalogo,
+  buscarConcluidas,
+  buscarCurso,
+  buscarMidia,
+  gravarProgresso,
+  podeGravarProgresso,
+  temAcesso,
+} from "./dados";
 
 // Roda contra o Postgres real (precisa de DATABASE_URL); dados próprios com prefixo
 // próprio, limpos no afterAll. NUNCA toca nos dados da semente (curso
@@ -159,5 +167,26 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     const concluidasB = await buscarConcluidas(userComAssinatura.id);
     expect(concluidasA.has(aulaGratuita.id)).toBe(true);
     expect(concluidasB.has(aulaGratuita.id)).toBe(false);
+  });
+
+  // Fix round 1 (revisão Task 7, Important): podeGravarProgresso é o portão de
+  // escrita que faltava nas server actions — espelha exatamente a matriz de
+  // buscarMidia (portão de leitura), testado aqui sem simular sessão.
+  describe("podeGravarProgresso (portão de escrita, espelha buscarMidia)", () => {
+    it("aula paga sem assinatura → false", async () => {
+      expect(await podeGravarProgresso(userSemAssinatura.id, aulaPaga.id)).toBe(false);
+    });
+
+    it("aula de curso oculto → false", async () => {
+      expect(await podeGravarProgresso(userComAssinatura.id, aulaOculta.id)).toBe(false);
+    });
+
+    it("aula gratuita sem assinatura → true", async () => {
+      expect(await podeGravarProgresso(userSemAssinatura.id, aulaGratuita.id)).toBe(true);
+    });
+
+    it("aula paga com assinatura manual → true", async () => {
+      expect(await podeGravarProgresso(userComAssinatura.id, aulaPaga.id)).toBe(true);
+    });
   });
 });
