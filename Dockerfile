@@ -17,7 +17,13 @@ COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
 COPY . .
+# Instrumentação de diagnóstico: o build remoto produzia uma rota raiz diferente
+# da que o MESMO fonte e o MESMO comando produzem em qualquer outro lugar. As
+# linhas abaixo gravam na imagem o que o builder viu — hash do fonte, ambiente e
+# tamanho do artefato — para inspeção via ssh.
+RUN md5sum app/page.tsx app/layout.tsx middleware.ts > /diag-fontes.txt && env | sort > /diag-env.txt
 RUN npm run build
+RUN wc -c .next/server/app/page.js .next/server/app/app/page.js >> /diag-fontes.txt
 
 # O Railway injeta PORT; o next start respeita a variável.
 CMD ["npx", "next", "start"]
