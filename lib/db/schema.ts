@@ -77,5 +77,10 @@ export const lessonProgress = pgTable("lesson_progress", {
   lessonId: uuid("lesson_id").notNull().references(() => lessons.id, { onDelete: "cascade" }),
   concluida: boolean("concluida").notNull().default(false),
   segundosAssistidos: integer("segundos_assistidos").notNull().default(0),
+  // Quando a aula foi concluída pela PRIMEIRA vez — nunca "refresca" em replay
+  // (ver gravarProgresso). updatedAt continua subindo a cada toque (último
+  // acesso da Task 2 depende disso); concluidaEm é o proxy correto pra
+  // métricas de "aulas concluídas por período" (Task 3).
+  concluidaEm: timestamp("concluida_em", { withTimezone: true }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [primaryKey({ columns: [t.userId, t.lessonId] })]);

@@ -51,14 +51,16 @@ export async function resumo(p: Periodo): Promise<{
       .select({ n: sql<number>`count(distinct ${lessonProgress.userId})::int` })
       .from(lessonProgress)
       .where(corte ? gte(lessonProgress.updatedAt, corte) : undefined),
-    // aulasConcluidas: linhas concluídas cujo updated_at cai dentro do período
-    // (lesson_progress não tem "concluida_em" própria — updated_at é o proxy).
+    // aulasConcluidas: linhas concluídas cuja PRIMEIRA conclusão (concluida_em,
+    // nunca updated_at) cai dentro do período. updated_at sobe a cada replay
+    // (gravarProgresso toca nela em toda batida, mesmo sem re-concluir), então
+    // usá-la aqui inflaria o cartão quando um aluno reabre uma aula já feita.
     db
       .select({ n: sql<number>`count(*)::int` })
       .from(lessonProgress)
       .where(
         corte
-          ? and(eq(lessonProgress.concluida, true), gte(lessonProgress.updatedAt, corte))
+          ? and(eq(lessonProgress.concluida, true), gte(lessonProgress.concluidaEm, corte))
           : eq(lessonProgress.concluida, true),
       ),
   ]);

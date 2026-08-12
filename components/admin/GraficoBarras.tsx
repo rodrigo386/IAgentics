@@ -79,8 +79,8 @@ export function GraficoBarras({ pontos, rotulo }: { pontos: PontoSemana[]; rotul
         <caption>{rotulo}</caption>
         <thead>
           <tr>
-            <th>Semana</th>
-            <th>Valor</th>
+            <th>{admin.metricas.graficos.colunaSemana}</th>
+            <th>{admin.metricas.graficos.colunaValor}</th>
           </tr>
         </thead>
         <tbody>

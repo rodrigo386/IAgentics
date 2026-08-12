@@ -15,6 +15,13 @@
       "when": 1786535950432,
       "tag": "0001_lucky_saracen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786540986084,
+      "tag": "0002_early_lord_tyger",
+      "breakpoints": true
     }
   ]
 }

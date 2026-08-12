@@ -81,6 +81,8 @@ export const admin = {
     graficos: {
       cadastros: "Cadastros por semana",
       atividade: "Atividade por semana",
+      colunaSemana: "Semana",
+      colunaValor: "Valor",
     },
     semDados: "Sem dados para este período.",
     conclusao: {

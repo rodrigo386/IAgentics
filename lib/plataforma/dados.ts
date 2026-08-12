@@ -1,5 +1,5 @@
 import "server-only"; // build falha se um componente client importar isto
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions } from "@/lib/db/schema";
 import type { Aula, Curso, CursoComIndice, Modulo, StatusAssinatura } from "./tipos";
@@ -174,6 +174,7 @@ export async function gravarProgresso(
   lessonId: string,
   campos: { concluida?: boolean; segundosAssistidos?: number },
 ): Promise<void> {
+  const marcandoConcluida = campos.concluida === true;
   await db
     .insert(lessonProgress)
     .values({
@@ -181,9 +182,25 @@ export async function gravarProgresso(
       lessonId,
       concluida: campos.concluida ?? false,
       segundosAssistidos: campos.segundosAssistidos ?? 0,
+      // Insert só acontece na primeira linha do par (userId, lessonId) — sem
+      // histórico prévio pra preservar: concluidaEm nasce agora se já chega
+      // concluída, senão fica em aberto.
+      concluidaEm: marcandoConcluida ? new Date() : null,
     })
     .onConflictDoUpdate({
       target: [lessonProgress.userId, lessonProgress.lessonId],
-      set: { ...campos, updatedAt: new Date() },
+      set: {
+        ...campos,
+        updatedAt: new Date(), // sempre sobe — "último acesso" da Task 2 depende disso
+        // Replay (marcar concluída de novo numa aula já concluída) NÃO pode
+        // "renovar" a data de conclusão pras métricas por período — só grava
+        // now() na PRIMEIRA vez que concluida vira true. lesson_progress.concluida
+        // aqui, sem EXCLUDED, lê o valor da linha ANTES deste upsert.
+        ...(marcandoConcluida
+          ? {
+              concluidaEm: sql`case when ${lessonProgress.concluida} then ${lessonProgress.concluidaEm} else now() end`,
+            }
+          : {}),
+      },
     });
 }
