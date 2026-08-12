@@ -7,6 +7,8 @@ export const plataforma = {
   shell: {
     meusCursos: "Meus cursos",
     conta: "Conta",
+    /* Só aparece para admin, conferido no banco (nunca no JWT). */
+    administracao: "Administração",
     sair: "Sair",
   },
   entrar: {
