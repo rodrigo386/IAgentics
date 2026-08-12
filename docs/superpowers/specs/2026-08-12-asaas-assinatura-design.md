@@ -128,4 +128,13 @@ Nenhum teste toca a API real do Asaas (chave de produção = cobrança real).
 2. Variáveis no Railway: `ASAAS` (hoje só no `.env.local`) e `ASAAS_WEBHOOK_TOKEN` (novo).
 3. `scripts/configurar-webhook.mjs` registra o webhook de produção.
 4. `/admin/configuracoes`: `cta_destino` → `/planos`.
-5. **Fogo real** (única prova fim-a-fim): Rodrigo assina com o próprio CPF e paga R$ 39,90 via Pix → acesso deve liberar em segundos; estorno depois pelo painel do Asaas (o estorno dispara `PAYMENT_REFUNDED` → `cancelada`, o que também valida a trava).
+5. **Fogo real** (única prova fim-a-fim): Rodrigo assina com o próprio CPF e paga R$ 39,90 via Pix → acesso deve liberar em segundos; estorno depois pelo painel do Asaas (o estorno dispara `PAYMENT_REFUNDED` → `cancelada`, o que também valida a trava). Testar também o retry: re-submeter `/app/assinar` logo após pagar (valida o self-heal de pagamento com webhook atrasado).
+
+## Follow-ups aceitos no review final (fora do v1)
+
+- `callback.successUrl` na assinatura Asaas: após pagar, o aluno fica na página do Asaas sem caminho de volta — a API aceita `callback: { successUrl, autoRedirect }`.
+- Criar assinatura nova não cancela a anterior "morta" no Asaas (`DELETE /subscriptions/{id}`): resíduo pequeno após o self-heal, mas existe.
+- Self-heal de pagamento só dispara quando o aluno re-submete `/app/assinar` — não há poll/cron para "pagou e nunca voltou"; o webhook é o caminho principal.
+- Trocar senha não invalida sessões JWT já emitidas (cookie roubado vale até expirar; mitigação futura: `session_version` checada no callback de sessão).
+- Regenerar o snapshot do drizzle (0003 mantém o check antigo internamente) antes do próximo `drizzle-kit generate` auto-diff, ou conferir a migração proposta.
+- `asaas_subscription_id` sem unique (a auto-cura legitimamente duplica ids entre linhas históricas): decisão de design pendente se o admin ganhar "cancelar no Asaas".
