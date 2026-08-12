@@ -1,33 +1,25 @@
-# Build determinístico para o Railway (e qualquer outro host de containers).
+# Imagem de runtime: serve o .next BUILDADO LOCALMENTE (e validado por 18 e2e).
 #
-# POR QUE EXISTE: o builder automático do Railway (Railpack) restaurava cache de
-# build do primeiro deploy deste serviço — que era outra árvore de código — e o
-# artefato saía com a rota raiz de lá (a home redirecionava para /app/entrar
-# mesmo com o fonte correto no disco). Diagnóstico completo: mesma origem, mesmo
-# node_modules e mesmo ambiente rodando `next build` puro dentro do container
-# produziam a home certa; só o build do Railpack saía envenenado. Um Dockerfile
-# no repo faz o Railway usar ESTE build, sem caches herdados de outra árvore.
+# HISTÓRIA, para quem mexer depois: o builder remoto do Railway produzia, a
+# partir dos MESMOS bytes de fonte (provado por md5 gravado na imagem), um
+# artefato com a rota raiz errada — a home redirecionava para /app/entrar.
+# Reproduções dentro do próprio container de produção (next build puro, npm run
+# build, env estéril idêntico ao do builder, com e sem OTEL) geravam SEMPRE o
+# artefato correto. Esgotadas as variáveis observáveis, o build saiu do builder:
+# o .next entra pronto no contexto (ver .railwayignore, que existe para deixar o
+# .next passar) e a imagem só instala dependências de runtime e serve.
+#
+# Consequência operacional: rode `npm run build` ANTES de `railway up`. O deploy
+# via GitHub (sem artefato no contexto) NÃO funciona com este Dockerfile.
 FROM node:24-slim
 
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
 
-# Dependências primeiro, para o layer de npm ci sobreviver a mudanças de código.
 COPY package.json package-lock.json ./
-RUN npm ci --include=dev
+RUN npm ci --omit=dev
 
 COPY . .
-# Instrumentação de diagnóstico: o build remoto produzia uma rota raiz diferente
-# da que o MESMO fonte e o MESMO comando produzem em qualquer outro lugar. As
-# linhas abaixo gravam na imagem o que o builder viu — hash do fonte, ambiente e
-# tamanho do artefato — para inspeção via ssh.
-RUN md5sum app/page.tsx app/layout.tsx middleware.ts > /diag-fontes.txt && env | sort > /diag-env.txt
-# O builder do Railway injeta OTEL_*/TRACEPARENT no ambiente de build (tracing
-# para um socket local do builder). Com esses vars presentes, o `next build`
-# remoto produzia uma rota raiz diferente da que o MESMO fonte gera em qualquer
-# outro ambiente (provado por hash na instrumentação acima). Build roda sem eles.
-RUN env -u OTEL_EXPORTER_OTLP_TRACES_ENDPOINT -u OTEL_EXPORTER_OTLP_TRACES_PROTOCOL -u OTEL_TRACES_EXPORTER -u OTEL_TRACE_PARENT -u TRACEPARENT npm run build
-RUN wc -c .next/server/app/page.js .next/server/app/app/page.js >> /diag-fontes.txt
 
 # O Railway injeta PORT; o next start respeita a variável.
 CMD ["npx", "next", "start"]

@@ -1,0 +1,17 @@
+# Existe para SUBSTITUIR o .gitignore no upload do `railway up`: o .gitignore
+# exclui o .next, e este deploy PRECISA do .next local no contexto (ver
+# Dockerfile). Tudo o mais continua fora — em especial segredos e node_modules
+# do macOS.
+.env*
+node_modules
+.git
+.dev
+.superpowers
+out
+test-results
+playwright-report
+docs
+e2e
+*.tsbuildinfo
+.DS_Store
+.next/cache
