@@ -46,9 +46,10 @@ export const plataforma = {
     emGravacao: "Em gravação",
     continuarAula: (titulo: string) => `Continuar: ${titulo}`,
     boasVindas: "Bem-vindo à Academy",
-    boasVindasTexto: "Escolha uma formação e comece agora — seu progresso fica salvo aqui.",
+    bannerTitulo: "Todo o acervo, no seu ritmo.",
+    boasVindasTexto:
+      "Formações completas, aulas novas toda semana e progresso salvo — escolha por onde começar nos trilhos abaixo.",
     cursoConcluido: "Curso concluído",
-    reverCurso: "Rever o curso",
     horas: "h",
   },
   curso: {

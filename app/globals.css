@@ -870,3 +870,23 @@
     radial-gradient(120% 180% at 85% -20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%),
     var(--surface);
 }
+
+/* Banner de boas-vindas: gradiente vivo da rampa da marca em movimento
+   contínuo + entrada com fill both (resting state visível sem JS).
+   Motion só CSS, desligado sob prefers-reduced-motion (regra do projeto). */
+.banner-boasvindas {
+  background: linear-gradient(115deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet));
+  background-size: 320% 320%;
+  animation: banner-fluxo 14s ease-in-out infinite, banner-entrada 0.7s ease-out both;
+}
+@keyframes banner-fluxo {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes banner-entrada {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-boasvindas { animation: none; }
+}

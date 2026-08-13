@@ -14,13 +14,16 @@ async function criarConta(page: Page, contaEmail: string, nome: string) {
 }
 
 /**
- * Painel editorial: hero + trilhos por estado do aluno.
- * Aluno novo: hero de boas-vindas; trilhos Formações (1 curso com aulas na
- * semente) e Em gravação (8 cascas) => exatamente 9 cards.
- * Após concluir uma aula: hero vira "Continuar:" e o trilho Em andamento
- * aparece (o curso repete em Formações — repetição intencional do spec).
+ * Painel editorial: banner de assinatura + banner de boas-vindas + trilhos
+ * por estado do aluno.
+ * Aluno novo, sem assinatura: banner "Assine para acessar" no topo, acima do
+ * banner de boas-vindas (motion, sem referência a curso); trilhos Formações
+ * (1 curso com aulas na semente) e Em gravação (8 cascas) => exatamente 9 cards.
+ * Após concluir uma aula: o hero de curso ("Continuar:") aparece e o trilho
+ * Em andamento surge (o curso repete em Formações — repetição intencional do
+ * spec).
  */
-test("painel editorial: boas-vindas, trilhos e hero de continuar", async ({ page }) => {
+test("painel editorial: banner de assinatura, boas-vindas, trilhos e hero de continuar", async ({ page }) => {
   await page.goto("/app/criar-conta");
   await page.getByLabel("Nome").fill("Aluno Painel");
   await page.getByLabel("E-mail").fill(email);
@@ -28,9 +31,22 @@ test("painel editorial: boas-vindas, trilhos e hero de continuar", async ({ page
   await page.getByRole("button", { name: "Criar conta" }).click();
   await expect(page).toHaveURL(/\/app$/);
 
-  // Aluno novo: hero de boas-vindas com CTA para a primeira formação com aulas.
-  await expect(page.getByText("Bem-vindo à Academy")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Começar o curso" })).toBeVisible();
+  // Aluno novo, sem assinatura: banner de assinatura no topo da página, acima
+  // do banner de boas-vindas — que não referencia nenhum curso. O texto
+  // "Assine para acessar" também aparece no selo de cada card bloqueado do
+  // trilho (um <span> por card), então o locator do banner é restrito ao
+  // parágrafo (o único elemento <p> com esse texto na página).
+  const bannerAssinatura = page.locator("p", { hasText: "Assine para acessar" });
+  const bannerBoasVindas = page.getByText("Bem-vindo à Academy");
+  await expect(bannerAssinatura).toBeVisible();
+  await expect(bannerBoasVindas).toBeVisible();
+  await expect(page.getByText("Todo o acervo, no seu ritmo.")).toBeVisible();
+
+  const posAssinatura = await bannerAssinatura.boundingBox();
+  const posBoasVindas = await bannerBoasVindas.boundingBox();
+  expect(posAssinatura).not.toBeNull();
+  expect(posBoasVindas).not.toBeNull();
+  expect(posAssinatura!.y).toBeLessThan(posBoasVindas!.y);
 
   // Trilhos: rótulos e contagem exata (1 formação com aulas + 8 em gravação).
   await expect(page.getByText("Formações", { exact: true })).toBeVisible();
@@ -62,8 +78,12 @@ test("painel editorial: boas-vindas, trilhos e hero de continuar", async ({ page
 
 /**
  * Estado "tudo concluído": terminar as 8 aulas do curso da semente deve trocar
- * o hero de boas-vindas/continuar pelo hero de curso concluído — não apontar
- * de volta pro curso que o aluno já terminou (a UX enganosa que este fix corrige).
+ * o hero de "continuar" pelo banner de boas-vindas (motion, sem referência a
+ * curso) — o hero de curso não existe mais para o estado concluído, então não
+ * há como ele apontar de volta pro curso que o aluno já terminou (a UX
+ * enganosa que o fix original corrigiu continua corrigida, agora sem hero
+ * nenhum nesse estado). O trilho Concluídos com o selo "Concluída" segue
+ * carregando a informação de conclusão.
  *
  * A semente só libera a primeira aula de graça; as outras 7 exigem assinatura.
  * Sem acesso ao banco pelo e2e, o caminho de arranjo é o mesmo que
@@ -71,7 +91,7 @@ test("painel editorial: boas-vindas, trilhos e hero de continuar", async ({ page
  * uma conta promovida a admin via scripts/promover-admin.mjs libera o acesso
  * do aluno pela UI de /admin/alunos, em contexto de navegador separado.
  */
-test("painel editorial: hero de curso concluído após terminar todas as aulas", async ({ browser }) => {
+test("painel editorial: banner de boas-vindas (sem hero de curso) após terminar todas as aulas", async ({ browser }) => {
   const emailAdmin = `e2e-painel-adm-${Date.now()}@teste.invalido`;
   const emailAluno = `e2e-painel-aluno-${Date.now()}@teste.invalido`;
 
@@ -113,14 +133,14 @@ test("painel editorial: hero de curso concluído após terminar todas as aulas",
     }
   }
 
-  // Painel: hero de curso concluído (não boas-vindas, não "continuar" para o
-  // curso que já terminou), CTA "Rever o curso", trilho Concluídos e o selo
-  // "Concluída" no card do trilho Concluídos.
+  // Painel: sem nada em andamento => banner de boas-vindas (não aponta pro
+  // curso que o aluno já terminou, porque não referencia curso nenhum);
+  // trilho Concluídos e o selo "Concluída" no card do trilho Concluídos.
+  // Aluno já tem acesso liberado (via admin acima): banner de assinatura não
+  // aparece.
   await paginaAluno.goto("/app");
-  await expect(paginaAluno.getByText("Curso concluído", { exact: true })).toBeVisible();
-  const reverCurso = paginaAluno.getByRole("link", { name: "Rever o curso" });
-  await expect(reverCurso).toBeVisible();
-  await expect(reverCurso).toHaveAttribute("href", "/app/curso/fundamentos-ia-copilot");
+  await expect(paginaAluno.getByText("Bem-vindo à Academy")).toBeVisible();
+  await expect(paginaAluno.getByText("Assine para acessar")).toHaveCount(0);
   await expect(paginaAluno.getByText("Concluídos", { exact: true })).toBeVisible();
   const trilhoConcluidos = paginaAluno.locator("section").filter({ hasText: "Concluídos" });
   await expect(trilhoConcluidos.getByText("Concluída", { exact: true })).toBeVisible();
