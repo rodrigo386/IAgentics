@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
+import { doAlunoNoCurso, emitirSeConcluido } from "@/lib/plataforma/certificados";
 import { buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 
@@ -28,6 +29,14 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
   const aulaIds = curso.modulos.flatMap((m) => m.aulas.map((a) => a.id));
   const progresso = derivarProgresso(aulaIds, concluidas);
   const proxima = proximaAula(curso.modulos, concluidas);
+
+  // Emissão preguiçosa: quem concluiu antes do ciclo de certificados existir
+  // ganha o certificado ao abrir o curso (sem backfill). Idempotente.
+  let certificado: { codigo: string } | null = null;
+  if (progresso.total > 0 && progresso.pct === 100) {
+    await emitirSeConcluido(userId, curso.id);
+    certificado = await doAlunoNoCurso(userId, curso.id);
+  }
 
   const t = plataforma.curso;
 
@@ -60,12 +69,20 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
               </p>
               <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h1 className="text-4xl font-medium leading-snug tracking-[-0.03em] text-fg sm:text-5xl">{curso.titulo}</h1>
-                {/* Selo só com aula de verdade concluída — mesma regra de antes (M1).
-                    É o ponto de encaixe do botão "Ver certificado" do ciclo 2. */}
+                {/* Selo só com aula de verdade concluída — mesma regra de antes (M1). */}
                 {!proxima && aulaIds.length > 0 ? (
-                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent-text">
-                    {plataforma.painel.cursoConcluido}
-                  </span>
+                  certificado ? (
+                    <Link
+                      href={`/certificados/${certificado.codigo}`}
+                      className="rounded-control bg-accent px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-on transition-colors hover:bg-accent-hover"
+                    >
+                      {plataforma.certificado.verCertificado}
+                    </Link>
+                  ) : (
+                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent-text">
+                      {plataforma.painel.cursoConcluido}
+                    </span>
+                  )
                 ) : null}
               </div>
               <p className="mt-3 max-w-[65ch] text-fg-muted">{curso.descricao}</p>

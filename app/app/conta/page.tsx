@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { FormConta } from "@/components/plataforma/FormConta";
 import { plataforma } from "@/lib/content-plataforma";
+import { listarDoAluno } from "@/lib/plataforma/certificados";
 import { buscarAssinatura, buscarFimAssinatura } from "@/lib/plataforma/dados";
 import { buscarUsuario } from "@/lib/plataforma/usuarios";
 
@@ -11,7 +13,11 @@ export default async function PaginaConta() {
   if (!sessao?.user?.id) redirect("/app/entrar");
   const userId = sessao.user.id;
 
-  const [usuario, status] = await Promise.all([buscarUsuario(userId), buscarAssinatura(userId)]);
+  const [usuario, status, certificados] = await Promise.all([
+    buscarUsuario(userId),
+    buscarAssinatura(userId),
+    listarDoAluno(userId),
+  ]);
   if (!usuario) redirect("/app/entrar");
 
   const t = plataforma.conta;
@@ -42,6 +48,27 @@ export default async function PaginaConta() {
       </section>
 
       <FormConta nomeInicial={usuario.nome} />
+
+      <section className="flex flex-col gap-3 border-t border-line pt-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.certificados}</p>
+        {certificados.length === 0 ? (
+          <p className="text-sm text-fg-muted">{t.semCertificados}</p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {certificados.map((c) => (
+              <li key={c.codigo} className="flex items-center justify-between gap-4">
+                <span className="min-w-0 truncate text-fg">{c.cursoTitulo}</span>
+                <Link
+                  href={`/certificados/${c.codigo}`}
+                  className="shrink-0 text-sm text-accent-text underline-offset-4 hover:underline"
+                >
+                  {plataforma.certificado.verCertificado}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <section className="flex flex-col gap-2 border-t border-line pt-8">
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.assinatura}</p>
