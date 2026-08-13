@@ -873,11 +873,39 @@
 
 /* Banner de boas-vindas: gradiente vivo da rampa da marca em movimento
    contínuo + entrada com fill both (resting state visível sem JS).
-   Motion só CSS, desligado sob prefers-reduced-motion (regra do projeto). */
+   Motion só CSS, desligado sob prefers-reduced-motion (regra do projeto).
+
+   VÉU DE CONTRASTE (fix round). banner-fluxo varre a rampa inteira, e dois
+   stops sozinhos não seguram AA contra o texto branco: periwinkle #6c66f3
+   dá 4.09:1 e blue #6693f8 dá só 2.79:1 contra #f8f8f8 (corpo de texto
+   precisa 4.5:1, título grande precisa 3:1 — blue falha nos dois). Em vez
+   de escurecer a rampa em si (perderia a identidade da marca), um véu ink
+   uniforme (--brand-ink a 40%) fica ENTRE o gradiente e o texto via
+   ::before, então todo stop escurece pela mesma quantidade e o pior caso
+   (blue) sobe para uma faixa segura. .banner-boasvindas vira o contexto de
+   posicionamento (position: relative) para o véu absoluto, e o conteúdo de
+   texto ganha sua própria camada (relative + z-10, no markup) por cima dele.
+
+   Contraste recalculado (composição stop*(1-0.4) + ink*0.4, texto a 90%
+   sobre esse fundo — ver tabela completa no report do fix round):
+     pior stop (blue), texto a 90% opacidade ... 4.93:1  (corpo, precisa 4.5) ✓
+     pior stop (blue), título a 100% opacidade .. 5.64:1  (título, precisa 3.0) ✓
+   Todos os outros stops (violet/indigo/periwinkle) ficam acima disso. Por
+   isso o eyebrow e o parágrafo also subiram de /80 e /85 para /90 no
+   markup — 0.40 de véu sozinho não bastava para essas opacidades mais
+   claras (dava 4.27:1 no pior stop, abaixo do piso de 4.5). */
 .banner-boasvindas {
+  position: relative;
   background: linear-gradient(115deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet));
   background-size: 320% 320%;
   animation: banner-fluxo 14s ease-in-out infinite, banner-entrada 0.7s ease-out both;
+}
+.banner-boasvindas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(19 23 35 / 0.4);
+  pointer-events: none;
 }
 @keyframes banner-fluxo {
   0%, 100% { background-position: 0% 50%; }

@@ -201,11 +201,17 @@ export default async function Painel() {
         />
       ) : (
         <section className="banner-boasvindas mb-12 px-6 py-14 sm:px-10 sm:py-20">
-          <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/80">{t.boasVindas}</p>
-          <h2 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-brand-paper sm:text-6xl">
-            {t.bannerTitulo}
-          </h2>
-          <p className="mt-5 max-w-[48ch] text-brand-paper/85">{t.boasVindasTexto}</p>
+          {/* Camada de texto por cima do véu (::before em globals.css) — o véu
+              garante contraste uniforme contra os quatro stops da rampa
+              animada; sem `relative z-10` aqui o texto ficaria embaixo do véu
+              absoluto, veja a nota de contraste em globals.css. */}
+          <div className="relative z-10">
+            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/90">{t.boasVindas}</p>
+            <h2 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-brand-paper sm:text-6xl">
+              {t.bannerTitulo}
+            </h2>
+            <p className="mt-5 max-w-[48ch] text-brand-paper/90">{t.boasVindasTexto}</p>
+          </div>
         </section>
       )}
 
