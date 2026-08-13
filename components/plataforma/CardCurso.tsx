@@ -46,7 +46,7 @@ export function CardCurso({ curso, pct, temAcesso }: { curso: Curso; pct: number
           src={curso.capaUrl}
           alt=""
           fill
-          sizes="(min-width: 1024px) 360px, 100vw"
+          sizes="240px" // card fixo 220–240px nos trilhos (ver Trilho em app/app/page.tsx)
           style={{ objectPosition: "center top" }}
           className="object-cover"
         />
