@@ -29,6 +29,13 @@
       "when": 1786562502907,
       "tag": "0003_assinatura_pendente",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786623619999,
+      "tag": "0004_certificados",
+      "breakpoints": true
     }
   ]
 }

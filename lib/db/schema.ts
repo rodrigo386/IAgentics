@@ -84,3 +84,15 @@ export const lessonProgress = pgTable("lesson_progress", {
   concluidaEm: timestamp("concluida_em", { withTimezone: true }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [primaryKey({ columns: [t.userId, t.lessonId] })]);
+
+/** Certificados de conclusão: um por aluno por formação, válido PARA SEMPRE
+ *  (decisão do ciclo: a página pública não checa assinatura). `codigo` é a
+ *  chave da URL pública — unique, alfabeto sem ambíguos, gerado em
+ *  lib/plataforma/certificados.ts. */
+export const certificates = pgTable("certificates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  courseId: uuid("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
+  codigo: text("codigo").notNull().unique(),
+  emitidoEm: timestamp("emitido_em", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [uniqueIndex("certificates_aluno_curso_unico").on(t.userId, t.courseId)]);
