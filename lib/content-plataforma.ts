@@ -37,6 +37,7 @@ export const plataforma = {
     continuar: "Continue de onde parou",
     catalogo: "Cursos",
     seloAssine: "Assine para acessar",
+    seloConcluida: "Concluída",
     ctaAssinar: "Assinar agora",
     /* Redesign editorial: trilhos por estado do aluno + hero. */
     emAndamento: "Em andamento",

@@ -55,6 +55,11 @@ export function CardCurso({ curso, pct, temAcesso }: { curso: Curso; pct: number
             {plataforma.painel.seloAssine}
           </span>
         ) : null}
+        {pct === 100 ? (
+          <span className="absolute left-3 top-3 rounded-control bg-accent px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-on">
+            {plataforma.painel.seloConcluida}
+          </span>
+        ) : null}
         {pct > 0 ? (
           <span className="absolute bottom-3 right-3 flex h-[34px] w-[34px] items-center justify-center rounded-control bg-brand-ink/80 text-brand-paper">
             <AnelProgresso pct={pct} />
