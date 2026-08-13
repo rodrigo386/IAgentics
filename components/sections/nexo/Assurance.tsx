@@ -6,82 +6,61 @@ import { nexo } from "@/lib/content";
 /**
  * Where the data stays - the first thing after the cover.
  *
- * It used to sit below the agent index, which put it in the wrong order for the person
- * it is written for. A procurement buyer does not read "where does my data live" as a
- * feature; they read it as a precondition. Placed after the index, the page introduced
- * five AI agents working over the company's purchasing data BEFORE answering where that
- * data goes. Now the sequence is: what it is, where your data stays, what the agents do.
+ * The band carries the WHOLE trust story in one place: the claim, the platform
+ * the claim is made about, and that platform's information-security
+ * certifications. The Desk Manager badge used to sit in the agents index;
+ * split across two sections the story read as three mismatched plates in two
+ * homes (escolha de layout 2026-08-13: colofão editorial, opção C).
  *
- * It is a full-bleed band rather than another column of text because it is the only
- * sentence on the page that has to survive being skimmed. The band also does the
- * structural job of separating the cover from the index.
+ * Right column is a spec-sheet colophon: mono labels (PLATAFORMA /
+ * CERTIFICAÇÕES) with hairline rules. Desk Manager is the section's trust
+ * anchor, so its plate takes the full row width, the tallest artwork and the
+ * periodic sheen (.selo-plataforma) — the seals below sit smaller, as the
+ * receipts for the sentence, not competing with it.
  *
- * The band now carries two things: the claim, and the proof under it. The claim is
- * IAgentics' sentence about where the data stays; the certifications belong to Desk
- * Manager, the platform the claim is actually made about, so they sit as evidence
- * right beneath it rather than as a competing headline. Same section, same band -
- * the certifications are the receipts for the sentence above them, not a new topic.
- *
- * Colour is set in globals.css (.assurance-band) rather than with utilities, because
- * the two themes need different grounds: brand ink reads as a solid block against the
- * light page, but in dark mode the page is ALREADY brand ink, so the band would vanish.
- * There it lifts to --surface instead. The certification intro text below inherits that
- * same colour (no text-fg class, just opacity) for the same reason the ShieldCheck icon
- * does - it has to read on both band grounds, not just one theme's token.
- *
- * The seal plates are always a light plate (bg-brand-paper), never inverted for dark
- * mode: both seals are supplied as light-ground artwork (black-on-white ISO mark,
- * lilac-on-pale-grey ITIL mark), so a dark plate would either invert their colours or
- * force a background fill they weren't designed for. A fixed light plate keeps the
- * client's official artwork intact in both themes, the same call already made for the
- * Desk Manager badge in AgentsIndex.tsx.
+ * Colour is set in globals.css (.assurance-band): brand ink in light mode,
+ * --surface in dark (the page is already ink there). Hairlines use
+ * border-current/20 so they read on both grounds. Seal plates are always a
+ * light plate (bg-brand-paper): the seals and the DM lockup are light-ground
+ * artwork and never get inverted or recoloured.
  */
 export function NexoAssurance() {
+  const dm = nexo.platforms[0];
+  const [iso, itil] = nexo.certificacoes.selos;
+
   return (
     <section className="assurance-band py-20 sm:py-28">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
-        <Reveal>
-          <p className="flex max-w-[20ch] items-start gap-5 text-4xl font-medium leading-[1.1] tracking-[-0.03em] sm:text-5xl lg:max-w-[24ch] lg:text-6xl">
-            <ShieldCheck
-              size={44}
-              weight="regular"
-              aria-hidden="true"
-              className="mt-2 shrink-0 opacity-70"
-            />
-            {nexo.assurance}
-          </p>
-        </Reveal>
-
-        {/* Desk Manager's information-security certifications, offered as evidence for
-            the claim above rather than as their own headline. */}
-        <Reveal className="mt-12 sm:mt-16">
-          <p className="max-w-[46ch] text-base leading-relaxed opacity-80 sm:text-lg">
-            {nexo.certificacoes.intro}
-          </p>
-          <ul className="mt-6 flex flex-wrap items-center gap-4">
-            {nexo.certificacoes.selos.map((selo) => {
-              const isPortrait = selo.h > selo.w;
-              return (
-                <li
-                  key={selo.name}
-                  className="flex items-center justify-center border border-line bg-brand-paper px-6 py-5 sm:px-8"
-                >
-                  <Image
-                    src={selo.src}
-                    alt={selo.name}
-                    width={selo.w}
-                    height={selo.h}
-                    className={
-                      isPortrait
-                        ? "h-24 w-auto object-contain"
-                        : "h-16 w-auto object-contain"
-                    }
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </Reveal>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
+          <Reveal className="lg:col-span-6">
+            <p className="flex max-w-[20ch] items-start gap-5 text-4xl font-medium leading-[1.1] tracking-[-0.03em] sm:text-5xl lg:text-6xl">
+              <ShieldCheck size={44} weight="regular" aria-hidden="true" className="mt-2 shrink-0 opacity-70" />
+              {nexo.assurance}
+            </p>
+            <p className="mt-10 max-w-[46ch] text-base leading-relaxed opacity-80 sm:text-lg">
+              {nexo.certificacoes.intro}
+            </p>
+          </Reveal>
+          <Reveal className="lg:col-span-6 lg:self-center">
+            <div className="grid grid-cols-1 items-center gap-4 border-t border-current/20 py-8 sm:grid-cols-[9rem_1fr] sm:gap-8 sm:py-10">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">Plataforma</span>
+              <div className="selo-plataforma flex items-center justify-center border border-line bg-brand-paper px-8 py-10 shadow-[0_8px_30px_rgb(123_94_237/0.12)] sm:py-12">
+                <Image src={dm.src} alt={dm.name} width={dm.w} height={dm.h} className="max-h-14 w-auto object-contain sm:max-h-20" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 items-center gap-4 border-y border-current/20 py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">Certificações</span>
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-4">
+                  <Image src={iso.src} alt={iso.name} width={iso.w} height={iso.h} className="h-20 w-auto object-contain" />
+                </div>
+                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-4">
+                  <Image src={itil.src} alt={itil.name} width={itil.w} height={itil.h} className="h-11 w-auto object-contain" />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

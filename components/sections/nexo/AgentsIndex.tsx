@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import {
   AgentsIndexList,
@@ -14,10 +13,8 @@ import { nexo, nexoPage } from "@/lib/content";
  * page is an editorial dossier. An index also lets all five be read at once, which a
  * pan never allows.
  *
- * Desk Manager is the only platform and the section's trust anchor, so its badge is
- * the client's official partner lockup — never recoloured, sitting at its own colours
- * on a neutral brand plate — enlarged and given a periodic CSS sweep (.selo-plataforma
- * in globals.css) to carry that weight instead of reading as one badge among several.
+ * The Desk Manager badge lives in the assurance band (Assurance.tsx) with the
+ * security certifications — platform and proof are one story, told once.
  *
  * The code sits in the margin as a folio; the agent's real name is the heading, so the
  * label always carries the meaning.
@@ -53,26 +50,6 @@ export function NexoAgentsIndex() {
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">
             {nexo.lead}
           </p>
-        </Reveal>
-
-        {/* The platforms the agents are embedded in. */}
-        <Reveal className="mt-10">
-          <ul className="flex flex-wrap items-center gap-3">
-            {nexo.platforms.map((platform) => (
-              <li
-                key={platform.name}
-                className="selo-plataforma flex h-20 items-center justify-center border border-line bg-brand-paper px-8 shadow-[0_8px_30px_rgb(123_94_237/0.12)] sm:h-28 sm:px-12"
-              >
-                <Image
-                  src={platform.src}
-                  alt={platform.name}
-                  width={platform.w}
-                  height={platform.h}
-                  className="max-h-10 w-auto object-contain sm:max-h-14"
-                />
-              </li>
-            ))}
-          </ul>
         </Reveal>
 
         {hasScreens ? (
