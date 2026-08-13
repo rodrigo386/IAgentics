@@ -954,3 +954,11 @@
 @media (prefers-reduced-motion: reduce) {
   .barra-trilho { animation: none; }
 }
+
+/* Impressão do certificado: só o documento, sem botões — "salvar PDF" é o
+   imprimir do navegador (decisão do spec: sem PDF no servidor). */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
