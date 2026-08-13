@@ -48,6 +48,7 @@ export const plataforma = {
     boasVindas: "Bem-vindo à Academy",
     boasVindasTexto: "Escolha uma formação e comece agora — seu progresso fica salvo aqui.",
     cursoConcluido: "Curso concluído",
+    reverCurso: "Rever o curso",
     horas: "h",
   },
   curso: {

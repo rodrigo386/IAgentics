@@ -47,6 +47,79 @@ function Trilho({
   );
 }
 
+/** Shell único dos três heroes do painel (continuar / concluído / boas-vindas):
+ *  mesma moldura, capa + eyebrow + título + texto + CTA, barra de progresso
+ *  opcional. O link da capa não tem nome acessível (a Image é alt="") e é
+ *  redundante com o CTA ao lado — sai da árvore de foco/leitura uma vez só,
+ *  aqui, em vez de nos três call sites. */
+function HeroEditorial({
+  capaHref,
+  capaUrl,
+  eyebrow,
+  eyebrowAccent = true,
+  titulo,
+  texto,
+  pct,
+  ctaHref,
+  ctaLabel,
+}: {
+  capaHref: string;
+  capaUrl: string;
+  eyebrow: string;
+  eyebrowAccent?: boolean;
+  titulo: string;
+  texto: string;
+  pct?: number;
+  ctaHref: string;
+  ctaLabel: string;
+}) {
+  return (
+    <section className="hero-editorial mb-12 border border-line">
+      <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
+        <Link
+          href={capaHref}
+          aria-hidden
+          tabIndex={-1}
+          className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
+        >
+          <Image
+            src={capaUrl}
+            alt=""
+            fill
+            sizes="200px"
+            style={{ objectPosition: "center top" }}
+            className="object-cover"
+          />
+        </Link>
+        <div className="min-w-0 flex-1">
+          <p
+            className={`font-mono text-[11px] uppercase tracking-[0.2em] ${
+              eyebrowAccent ? "text-accent-text" : "text-fg-muted"
+            }`}
+          >
+            {eyebrow}
+          </p>
+          <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
+            {titulo}
+          </h2>
+          <p className="mt-2 max-w-[55ch] text-sm text-fg-muted">{texto}</p>
+          {pct !== undefined ? (
+            <div className="mt-5 h-1 w-full max-w-[360px] bg-line">
+              <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
+            </div>
+          ) : null}
+          <Link
+            href={ctaHref}
+            className="mt-6 inline-block max-w-full truncate rounded-control bg-accent px-7 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
+          >
+            {ctaLabel}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default async function Painel() {
   const sessao = await auth();
   // O middleware já barra /app sem sessão; defesa em profundidade, como antes.
@@ -71,7 +144,8 @@ export default async function Painel() {
   }
 
   // Hero "continuar": curso da última atividade, se ainda tem próxima aula;
-  // senão o de maior progresso em (0,100); senão boas-vindas.
+  // senão o de maior progresso em (0,100); senão o hero de curso concluído;
+  // senão boas-vindas.
   let heroCurso = ultima ? catalogo.find((c) => c.slug === ultima.cursoSlug) : undefined;
   if (!heroCurso || !info.get(heroCurso.slug)?.proxima) {
     heroCurso = undefined;
@@ -83,6 +157,24 @@ export default async function Painel() {
     }
   }
   const heroInfo = heroCurso ? info.get(heroCurso.slug) : undefined;
+
+  // Hero "concluído": só entra em jogo quando não há nada em andamento. Prioriza
+  // o curso da última atividade se foi ele que bateu 100%; senão o primeiro
+  // curso concluído do catálogo (ordem estável).
+  let heroConcluido: Curso | undefined;
+  if (!heroCurso) {
+    const ultimaInfo = ultima ? info.get(ultima.cursoSlug) : undefined;
+    if (ultima && ultimaInfo && ultimaInfo.total > 0 && ultimaInfo.pct === 100) {
+      heroConcluido = catalogo.find((c) => c.slug === ultima.cursoSlug);
+    } else {
+      heroConcluido = catalogo.find((c) => {
+        const i = info.get(c.slug);
+        return !!i && i.total > 0 && i.pct === 100;
+      });
+    }
+  }
+  const heroConcluidoInfo = heroConcluido ? info.get(heroConcluido.slug) : undefined;
+
   // Boas-vindas: primeira formação com aulas; sem nenhuma, a primeira do catálogo.
   const boasVindas = catalogo.find((c) => (info.get(c.slug)?.total ?? 0) > 0) ?? catalogo[0];
 
@@ -102,78 +194,37 @@ export default async function Painel() {
       <h1 className="sr-only">{plataforma.shell.meusCursos}</h1>
 
       {heroCurso && heroInfo?.proxima ? (
-        <section className="hero-editorial mb-12 border border-line">
-          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
-            {/* Navegação redundante: o CTA ao lado já cobre; fora da árvore de foco/leitura. */}
-            <Link
-              href={`/app/curso/${heroCurso.slug}`}
-              aria-hidden
-              tabIndex={-1}
-              className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
-            >
-              <Image
-                src={heroCurso.capaUrl}
-                alt=""
-                fill
-                sizes="200px"
-                style={{ objectPosition: "center top" }}
-                className="object-cover"
-              />
-            </Link>
-            <div className="min-w-0 flex-1">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{t.continuar}</p>
-              <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
-                {heroCurso.titulo}
-              </h2>
-              <p className="mt-2 text-sm text-fg-muted">
-                {plataforma.curso.concluidaDe(heroInfo.feitas, heroInfo.total)}
-              </p>
-              <div className="mt-5 h-1 w-full max-w-[360px] bg-line">
-                <div className="h-full bg-accent" style={{ width: `${heroInfo.pct}%` }} />
-              </div>
-              <Link
-                href={`/app/curso/${heroCurso.slug}/${heroInfo.proxima.slug}`}
-                className="mt-6 inline-block max-w-full truncate rounded-control bg-accent px-7 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
-              >
-                {t.continuarAula(heroInfo.proxima.titulo)}
-              </Link>
-            </div>
-          </div>
-        </section>
+        <HeroEditorial
+          capaHref={`/app/curso/${heroCurso.slug}`}
+          capaUrl={heroCurso.capaUrl}
+          eyebrow={t.continuar}
+          titulo={heroCurso.titulo}
+          texto={plataforma.curso.concluidaDe(heroInfo.feitas, heroInfo.total)}
+          pct={heroInfo.pct}
+          ctaHref={`/app/curso/${heroCurso.slug}/${heroInfo.proxima.slug}`}
+          ctaLabel={t.continuarAula(heroInfo.proxima.titulo)}
+        />
+      ) : heroConcluido && heroConcluidoInfo ? (
+        <HeroEditorial
+          capaHref={`/app/curso/${heroConcluido.slug}`}
+          capaUrl={heroConcluido.capaUrl}
+          eyebrow={t.cursoConcluido}
+          titulo={heroConcluido.titulo}
+          texto={plataforma.curso.concluidaDe(heroConcluidoInfo.feitas, heroConcluidoInfo.total)}
+          pct={heroConcluidoInfo.pct}
+          ctaHref={`/app/curso/${heroConcluido.slug}`}
+          ctaLabel={t.reverCurso}
+        />
       ) : boasVindas ? (
-        <section className="hero-editorial mb-12 border border-line">
-          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
-            {/* Navegação redundante: o CTA ao lado já cobre; fora da árvore de foco/leitura. */}
-            <Link
-              href={`/app/curso/${boasVindas.slug}`}
-              aria-hidden
-              tabIndex={-1}
-              className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
-            >
-              <Image
-                src={boasVindas.capaUrl}
-                alt=""
-                fill
-                sizes="200px"
-                style={{ objectPosition: "center top" }}
-                className="object-cover"
-              />
-            </Link>
-            <div className="min-w-0 flex-1">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{t.boasVindas}</p>
-              <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
-                {boasVindas.titulo}
-              </h2>
-              <p className="mt-2 max-w-[55ch] text-sm text-fg-muted">{t.boasVindasTexto}</p>
-              <Link
-                href={`/app/curso/${boasVindas.slug}`}
-                className="mt-6 inline-block rounded-control bg-accent px-7 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
-              >
-                {plataforma.curso.comecar}
-              </Link>
-            </div>
-          </div>
-        </section>
+        <HeroEditorial
+          capaHref={`/app/curso/${boasVindas.slug}`}
+          capaUrl={boasVindas.capaUrl}
+          eyebrow={t.boasVindas}
+          titulo={boasVindas.titulo}
+          texto={t.boasVindasTexto}
+          ctaHref={`/app/curso/${boasVindas.slug}`}
+          ctaLabel={plataforma.curso.comecar}
+        />
       ) : null}
 
       {!temAcesso ? (
