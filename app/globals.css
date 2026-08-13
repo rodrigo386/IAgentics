@@ -961,4 +961,19 @@
   .no-print {
     display: none !important;
   }
+
+  /* Papel é branco: impressão descarta backgrounds, então se o tema escuro
+     estiver ativo (.dark no html) --fg fica quase branco sobre página branca.
+     Força os tokens claros e avisa o navegador que a superfície é clara. */
+  html.dark {
+    --bg: var(--brand-paper);
+    --surface: #fcfcfd;
+    --fg: var(--brand-ink);
+    --fg-muted: #5a6070;
+    --fg-subtle: #767c8c;
+    --line: rgb(19 23 35 / 0.14);
+    --line-strong: rgb(19 23 35 / 0.28);
+    --accent-text: var(--brand-violet);
+    color-scheme: light;
+  }
 }
