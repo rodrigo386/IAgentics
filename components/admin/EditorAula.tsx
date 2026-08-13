@@ -118,6 +118,11 @@ export function EditorAula({
             {estadoMidia.sucesso}
           </p>
         ) : null}
+        {estadoMidia.erro ? (
+          <p role="alert" className="text-xs text-fg">
+            {estadoMidia.erro}
+          </p>
+        ) : null}
         <div className="flex gap-2">
           <button type="submit" disabled={pendenteMidia} className={`w-fit ${botaoClasse}`}>
             {tm.botaoSalvar}

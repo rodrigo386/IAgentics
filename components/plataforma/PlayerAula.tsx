@@ -34,7 +34,10 @@ export function PlayerAula({
   const alvo = useRef<HTMLDivElement | null>(null);
   const player = useRef<any>(null);
   const [concluida, setConcluida] = useState(jaConcluida);
-  const [falhou, setFalhou] = useState(false);
+  // "carga": rede/script falhou — recarregar pode resolver. "restrito": o
+  // YouTube recusou o vídeo (privado, removido ou sem permissão de embed;
+  // códigos 100/101/150) — recarregar não resolve, então nem oferece.
+  const [falhou, setFalhou] = useState<null | "carga" | "restrito">(null);
 
   function concluir() {
     setConcluida(true);
@@ -54,7 +57,8 @@ export function PlayerAula({
           onStateChange: (e: { data: number }) => {
             if (e.data === window.YT!.PlayerState.ENDED) concluir();
           },
-          onError: () => setFalhou(true),
+          onError: (e: { data: number }) =>
+            setFalhou([100, 101, 150].includes(e.data) ? "restrito" : "carga"),
         },
       });
       batida = setInterval(() => {
@@ -72,7 +76,7 @@ export function PlayerAula({
       if (!document.querySelector('script[src*="iframe_api"]')) {
         const s = document.createElement("script");
         s.src = "https://www.youtube.com/iframe_api";
-        s.onerror = () => setFalhou(true);
+        s.onerror = () => setFalhou("carga");
         document.head.appendChild(s);
       }
     }
@@ -87,14 +91,16 @@ export function PlayerAula({
     <div>
       <div className="aspect-video w-full border border-line bg-brand-ink">
         {falhou ? (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-brand-paper">
-            <p>{t.videoFalhou}</p>
-            <button
-              onClick={() => location.reload()}
-              className="rounded-control border border-current px-5 py-2 text-sm"
-            >
-              {t.recarregar}
-            </button>
+          <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-brand-paper">
+            <p>{falhou === "restrito" ? t.videoIndisponivel : t.videoFalhou}</p>
+            {falhou === "carga" ? (
+              <button
+                onClick={() => location.reload()}
+                className="rounded-control border border-current px-5 py-2 text-sm"
+              >
+                {t.recarregar}
+              </button>
+            ) : null}
           </div>
         ) : (
           <div ref={alvo} className="h-full w-full" />

@@ -17,6 +17,7 @@ import {
   salvarModulo,
 } from "@/lib/admin/conteudo";
 import { admin } from "@/lib/content-admin";
+import { extrairYoutubeId } from "@/lib/plataforma/youtube";
 import type { ResultadoAcao } from "@/lib/admin/alunos";
 
 type Estado = { erro: string | null; sucesso: string | null };
@@ -203,7 +204,15 @@ export async function salvarMidiaAction(
 ): Promise<Estado> {
   await exigirAdmin();
   const provider = String(formData.get("provider") ?? "youtube") as "youtube" | "panda" | "mux";
-  const videoId = String(formData.get("videoId") ?? "");
+  const bruto = String(formData.get("videoId") ?? "");
+  // URL colada no lugar do ID vira player preto mudo — normaliza aqui e
+  // recusa o que não der para reconhecer (bug da aula "teste").
+  let videoId = bruto;
+  if (provider === "youtube" && bruto.trim()) {
+    const id = extrairYoutubeId(bruto);
+    if (!id) return { erro: t.mensagens.midiaIdInvalido, sucesso: null };
+    videoId = id;
+  }
   await salvarMidia(lessonId, provider, videoId);
   revalidarConteudo(slug, aulaSlug);
   return { erro: null, sucesso: videoId.trim() ? t.mensagens.midiaSalva : t.mensagens.midiaRemovida };

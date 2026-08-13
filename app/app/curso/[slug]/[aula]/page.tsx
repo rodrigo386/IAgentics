@@ -6,6 +6,7 @@ import { PlayerAula } from "@/components/plataforma/PlayerAula";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
 import { buscarConcluidas, buscarCurso, buscarMidia, podeVerAula } from "@/lib/plataforma/dados";
+import { extrairYoutubeId } from "@/lib/plataforma/youtube";
 
 export default async function PaginaAula({
   params,
@@ -77,8 +78,10 @@ export default async function PaginaAula({
             </a>
           </div>
         ) : midia ? (
+          // extrairYoutubeId cura linhas antigas salvas com a URL inteira no
+          // lugar do ID (player preto mudo); hoje só existe provider youtube.
           <PlayerAula
-            videoId={midia.videoId}
+            videoId={extrairYoutubeId(midia.videoId) ?? midia.videoId}
             lessonId={aula.id}
             jaConcluida={concluidas.has(aula.id)}
             hrefProxima={hrefProxima}

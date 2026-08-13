@@ -150,6 +150,7 @@ export const admin = {
       excluido: "Excluído.",
       midiaSalva: "Vídeo salvo.",
       midiaRemovida: "Vídeo removido.",
+      midiaIdInvalido: "Não reconheci esse vídeo. Cole o link do YouTube ou o ID de 11 caracteres.",
       publicado: "Publicado.",
       ocultado: "Ocultado.",
     },

@@ -70,6 +70,7 @@ export const plataforma = {
     bloqueadaCta: "Assinar agora",
     semVideo: "Esta aula está em produção. O vídeo chega em breve.",
     videoFalhou: "O vídeo não carregou.",
+    videoIndisponivel: "Este vídeo está indisponível — privado ou sem permissão de reprodução fora do YouTube.",
     recarregar: "Recarregar",
     aulasDoCurso: "Aulas do curso",
     aulaDe: (x: number, y: number) => `Aula ${x} de ${y}`,
