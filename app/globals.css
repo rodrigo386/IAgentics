@@ -12,7 +12,9 @@
 
    COLOR CONSISTENCY LOCK
    One accent identity for the whole page: the brand violet #7607E8.
-   It is used as a FILL only. Measured contrast:
+   Sanctioned uses: FILL (buttons, bars, veils) and BORDER as a state
+   indicator (e.g. current-lesson marker). Never as body/heading TEXT — text
+   goes through --accent-text. Measured contrast:
      #7607E8 fill + #F8F8F8 text ....... 6.73:1  (AA pass)
      #7607E8 text on #131723 ........... 2.54:1  (FAILS - never use as text on ink)
    So accent TEXT resolves per mode via --accent-text:
