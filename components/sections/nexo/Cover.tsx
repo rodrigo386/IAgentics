@@ -1,31 +1,33 @@
 import Image from "next/image";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
-import { MediaSlot } from "@/components/ui/MediaSlot";
 import { nexoPage, cta } from "@/lib/content";
 
 /**
- * Editorial cover, now carrying the demo.
+ * Editorial cover, now carrying the product stage.
  *
  * The type was the whole artwork here: two lines set at up to 120px across the full
- * width, the way a magazine sets a feature title. Bringing the video up to the cover
- * costs some of that, and the trade is worth naming rather than hiding.
+ * width, the way a magazine sets a feature title. Bringing product screens up to the
+ * cover costs some of that, and the trade is worth naming rather than hiding.
  *
- * THE ARITHMETIC. The clip is 9:16. At the 420px width it had in its own section it
- * stands 747px tall, and the cover only has 676px of usable height at 1440x900 once
- * padding is removed. So a portrait video and a full-width 120px headline cannot both
- * fit above the fold - one of them has to give. The headline gives: it moves into a
- * 7-column left field and drops to min(6.5vw, 5.5rem), which still reads as a cover
- * line while leaving the right field for the clip.
+ * THE ARITHMETIC. Three screens stacked in perspective need real width to read as
+ * depth rather than a pile - a full-width 120px headline and that stage cannot both
+ * fit above the fold. The headline gives: it moves into a 7-column left field and
+ * drops to min(6.5vw, 5.5rem), which still reads as a cover line while leaving the
+ * right field (5 columns) for the stage.
  *
  * Below lg the two stack, the headline gets the full width back at its original size,
- * and the portrait cut is exactly the right shape for the screen it was authored for.
+ * and the stage drops under it at a smaller, capped height (.palco-nexo's wrapper) so
+ * it never pushes the CTA far down the page.
  *
- * The video is capped by VIEWPORT HEIGHT in globals.css (.cover-video), the same
- * technique the home hero uses for its graph: on a short laptop the clip shrinks so
- * the cover keeps holding one screen instead of pushing its own CTA under the fold.
+ * No dark stage here - the decision that shaped this cover was explicit: the FintechX
+ * reference composes its layered screens over a dark plinth, but this page keeps the
+ * page's own theme (light in light, dark in dark) rather than an inverted section. The
+ * gradient glow behind the stage (.palco-nexo-glow, the Nexo violet-to-blue ramp) is
+ * what stands in for that staged darkness - present in both themes, tuned to be
+ * discreet on paper and legible on ink.
  */
 export function NexoCover() {
-  const { video } = nexoPage;
+  const { heroStage } = nexoPage;
 
   return (
     <section className="relative isolate flex min-h-[calc(100dvh-4rem)] flex-col justify-center overflow-hidden border-b border-line py-16 lg:py-20">
@@ -99,18 +101,77 @@ export function NexoCover() {
             </div>
           </div>
 
-          {/* The demo. Its own aspect, so nothing is cropped, and never wider than the
-              576px source - past that it would be stretched rather than scaled down. */}
+          {/* The stage. Three product screens in perspective, drifting slowly - see
+              .palco-nexo in globals.css. Decorative: the headline already carries the
+              meaning, so the whole stage is aria-hidden and every alt stays empty. */}
           <div
             className="hero-fade lg:col-span-5"
             style={{ animationDelay: "500ms" }}
+            aria-hidden
           >
-            <div className="cover-video mx-auto w-full max-w-[380px] lg:mr-0">
-              <MediaSlot slot={video.slot} aspect="aspect-[9/16]" />
-              <p className="mt-3 flex flex-wrap items-baseline gap-3 font-mono text-[11px] text-fg-muted">
-                <span className="text-accent-text">Vídeo</span>
-                {video.slot.label}
-              </p>
+            <div className="palco-nexo relative mx-auto h-[300px] w-full max-w-[520px] sm:h-[360px] lg:mr-0 lg:h-[420px]">
+              <div className="palco-nexo-glow inset-x-[-10%] bottom-[-18%] top-[30%]" />
+
+              {/* fundo: lista de classificação */}
+              <div
+                className="palco-nexo-prancha right-0 top-0 w-[78%] shadow-[0_24px_80px_rgb(123_94_237/0.28)]"
+                style={
+                  {
+                    "--pose": "rotateY(-13deg) rotateX(4deg)",
+                    animationDelay: "-8s",
+                  } as React.CSSProperties
+                }
+              >
+                <Image
+                  src={heroStage.prints[0].src}
+                  alt={heroStage.prints[0].alt}
+                  width={1917}
+                  height={1078}
+                  sizes="(min-width:1024px) 420px, 80vw"
+                  className="block h-auto w-full"
+                  priority
+                />
+              </div>
+
+              {/* meio: central de cotações (RFQ) */}
+              <div
+                className="palco-nexo-prancha left-[4%] top-[26%] w-[64%] shadow-[0_20px_60px_rgb(57_124_239/0.26)]"
+                style={
+                  {
+                    "--pose": "rotateY(-10deg) rotateX(3deg) translateZ(40px)",
+                    animationDelay: "-4s",
+                  } as React.CSSProperties
+                }
+              >
+                <Image
+                  src={heroStage.prints[1].src}
+                  alt={heroStage.prints[1].alt}
+                  width={1917}
+                  height={1078}
+                  sizes="(min-width:1024px) 340px, 64vw"
+                  className="block h-auto w-full"
+                />
+              </div>
+
+              {/* frente: relatório com a recomendação */}
+              <div
+                className="palco-nexo-prancha bottom-0 right-[6%] w-[56%] shadow-[0_16px_48px_rgb(123_94_237/0.3)]"
+                style={
+                  {
+                    "--pose": "rotateY(-8deg) rotateX(2deg) translateZ(80px)",
+                    animationDelay: "0s",
+                  } as React.CSSProperties
+                }
+              >
+                <Image
+                  src={heroStage.prints[2].src}
+                  alt={heroStage.prints[2].alt}
+                  width={1917}
+                  height={1078}
+                  sizes="(min-width:1024px) 300px, 56vw"
+                  className="block h-auto w-full"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -562,26 +562,55 @@
 }
 
 /* ---------------------------------------------------------------------------
-   NEXO COVER VIDEO - same height cap, harsher arithmetic
+   PALCO DE TELAS DO NEXO (hero)
 
-   The clip is 9:16, so every pixel of width costs 1.78 pixels of height. At
-   380px it stands 676px tall, which is exactly the usable height of the cover
-   at 1440x900 once py-20 is removed - no margin at all. On shorter laptops it
-   would push the cover's own CTA under the fold, so it steps down with the
-   viewport instead.
+   Pranchas do produto em perspectiva, empilhadas com deriva lenta - o campo
+   direito da capa que antes carregava o vídeo 9:16. Sem palco escuro: o fundo
+   é o da página (tokens --bg/--surface), então o conjunto herda o tema em vez
+   de inverter para uma seção sempre escura. Sombras tintadas no gradiente
+   Nexo (#7B5EED -> #397CEF), nunca pretas.
 
-   Width is again the only lever available, because the aspect is fixed.
+   Cada prancha define `--pose` inline (a transform 3D base); a animação some
+   translateY por cima dela, e os delays NEGATIVOS (-8s/-4s/0s) fazem as três
+   nascerem já em fases diferentes do ciclo em vez de derivarem em uníssono.
 --------------------------------------------------------------------------- */
 
-@media (min-width: 1024px) and (max-height: 900px) {
-  .cover-video {
-    max-width: 320px;
+.palco-nexo {
+  perspective: 1200px;
+}
+
+.palco-nexo-prancha {
+  position: absolute;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+  animation: palco-deriva 12s ease-in-out infinite alternate;
+}
+
+.palco-nexo-glow {
+  position: absolute;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgb(123 94 237 / 0.28),
+    rgb(57 124 239 / 0.12) 55%,
+    transparent 75%
+  );
+  filter: blur(24px);
+}
+
+@keyframes palco-deriva {
+  from {
+    transform: var(--pose) translateY(0);
+  }
+  to {
+    transform: var(--pose) translateY(-10px);
   }
 }
 
-@media (min-width: 1024px) and (max-height: 800px) {
-  .cover-video {
-    max-width: 270px;
+@media (prefers-reduced-motion: reduce) {
+  .palco-nexo-prancha {
+    animation: none;
   }
 }
 

@@ -713,24 +713,21 @@ export const nexoPage = {
     platform: "Nexo, o app de Compras, dentro do Desk Manager ou Microsoft",
   },
 
-  video: {
-    /**
-     * Entregue 10/08/2026 em 576x1024 - retrato 9:16, peça de rede social já montada
-     * (título, print e legenda dentro do próprio vídeo), não uma gravação de tela.
-     *
-     * Por isso ele NÃO usa a prancha em bleed 16:9 das telas: `object-cover` cortaria
-     * uma faixa fina do meio e jogaria fora a peça inteira. Ele é exibido em retrato,
-     * contido, a no máximo 420px - a 576px de origem isso ainda reduz, então fica
-     * nítido, enquanto esticá-lo por 1440px ficaria borrado.
-     */
-    slot: {
-      kind: "video" as const,
-      label: "Vídeo de demonstração",
-      spec: "576x1024 · MP4 · 29s",
-      file: "/nexo-demo.mp4",
-      poster: "/nexo-demo-poster.jpg",
-      src: "/nexo-demo.mp4" as string | null,
-    },
+  /**
+   * O palco de telas da capa: três prints reais do produto, empilhados em perspectiva
+   * com deriva lenta (ver .palco-nexo em globals.css e o bloco correspondente em
+   * Cover.tsx). Puramente decorativo - a manchete carrega o significado, então o
+   * conjunto inteiro é aria-hidden e os `alt` ficam vazios de propósito.
+   *
+   * Ordem de empilhamento (fundo -> frente): classificação (lista) -> RFQ (central de
+   * cotações) -> relatório (modal com a recomendação verde, a tela mais "viva").
+   */
+  heroStage: {
+    prints: [
+      { src: "/nexo-hero-classificacao-v1.png", alt: "" },
+      { src: "/nexo-hero-rfq-v1.png", alt: "" },
+      { src: "/nexo-hero-relatorio-v1.png", alt: "" },
+    ],
   },
 
   /* As telas do produto aparecem em UM lugar só: o painel do índice "Entrega
