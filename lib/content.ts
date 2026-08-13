@@ -26,6 +26,15 @@ export const cta = {
   solutions: "Ver as soluções",
 } as const;
 
+/** 404 global (app/not-found.tsx): endereços inexistentes e códigos de
+ *  certificado inválidos caem aqui — antes era o 404 cru do Next, sem marca. */
+export const naoEncontrada = {
+  eyebrow: "Erro 404",
+  titulo: "Esta página não existe.",
+  texto: "O endereço pode ter mudado ou o código digitado não confere. Verifique o link e tente de novo.",
+  voltar: "Ir para o início",
+} as const;
+
 export const nav = {
   links: [
     { label: "Soluções", href: "/#solucoes" },
@@ -610,7 +619,7 @@ export const spendLab = {
 
   method: {
     title: "Como funciona IA Spend Lab?",
-    cta: "Quero o diagnóstico da minha empresa",
+    cta: "Quero o diagnóstico",
     items: [
       { name: "Diagnóstico de maturidade de IA", body: "Avaliar a situação atual da aplicabilidade de IA em sua empresa, entendendo os recursos utilizados, riscos existentes, nível de conhecimento do Capital Humano e custeios gerais." },
       { name: "Políticas e Procedimentos", body: "Desenvolver uma política com boas práticas descrevendo o que deve ser usado, o que não deve ser usado, responsáveis e procedimentos de aplicação." },

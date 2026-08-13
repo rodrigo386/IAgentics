@@ -141,10 +141,15 @@ export function AcademyHeroCarousel() {
                 onClick={() => setAtivo(i)}
                 aria-label={slide.headline}
                 aria-current={i === ativo}
-                className={`block h-1.5 rounded-control transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-text motion-reduce:transition-none ${
-                  i === ativo ? "w-8 bg-accent" : "w-1.5 bg-line-strong"
-                }`}
-              />
+                className="flex h-8 min-w-6 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-1.5 rounded-control transition-all duration-300 motion-reduce:transition-none ${
+                    i === ativo ? "w-8 bg-accent" : "w-1.5 bg-line-strong"
+                  }`}
+                />
+              </button>
             </li>
           ))}
         </ul>

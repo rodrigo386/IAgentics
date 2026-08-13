@@ -3,7 +3,8 @@ import { useState, type FormEvent } from "react";
 import { salvarNome, trocarSenha } from "@/app/app/conta/actions";
 import { plataforma } from "@/lib/content-plataforma";
 
-const campo = "w-full border border-line bg-surface px-4 py-3 text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
+// text-base (16px): abaixo disso o iOS dá zoom automático ao focar o campo.
+const campo = "w-full border border-line bg-surface px-4 py-3 text-base text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
 
 /** Dois formulários independentes (nome, senha) — cada um com sua própria
  *  server action e mensagem de sucesso, sem lib de toast nova. */

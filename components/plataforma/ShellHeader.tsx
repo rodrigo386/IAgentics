@@ -21,17 +21,19 @@ export async function ShellHeader() {
 
   return (
     <header className="border-b border-line">
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5 sm:px-8">
-        <Link href={user ? "/app" : "/app/entrar"} aria-label={plataforma.nome}>
+      {/* min-h + flex-wrap na nav: com os quatro itens do admin num celular a linha
+          não cabe; sem o wrap o flexbox quebrava "Meus cursos" no meio da palavra. */}
+      <div className="mx-auto flex min-h-16 max-w-[1200px] items-center justify-between gap-4 px-5 py-2 sm:px-8">
+        <Link href={user ? "/app" : "/app/entrar"} aria-label={plataforma.nome} className="shrink-0">
           <Image src="/plataforma/academy-logo.png" alt={plataforma.nome} width={893} height={254} className="h-9 w-auto dark:invert-0 invert" priority />
         </Link>
-        <nav className="flex items-center gap-5">
+        <nav className="flex flex-wrap items-center justify-end gap-x-5 gap-y-1">
           {user ? (
             <>
-              <Link href="/app" className="text-sm text-fg-muted transition-colors hover:text-fg">{plataforma.shell.meusCursos}</Link>
-              <Link href="/app/conta" className="text-sm text-fg-muted transition-colors hover:text-fg">{plataforma.shell.conta}</Link>
+              <Link href="/app" className="whitespace-nowrap text-sm text-fg-muted transition-colors hover:text-fg">{plataforma.shell.meusCursos}</Link>
+              <Link href="/app/conta" className="whitespace-nowrap text-sm text-fg-muted transition-colors hover:text-fg">{plataforma.shell.conta}</Link>
               {ehAdmin ? (
-                <Link href="/admin" className="text-sm font-medium text-accent-text transition-colors hover:text-fg">
+                <Link href="/admin" className="whitespace-nowrap text-sm font-medium text-accent-text transition-colors hover:text-fg">
                   {plataforma.shell.administracao}
                 </Link>
               ) : null}

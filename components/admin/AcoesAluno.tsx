@@ -61,7 +61,7 @@ function FormExcluir({ alunoId }: { alunoId: string }) {
           type="email"
           name="email"
           required
-          className="w-full max-w-sm border border-line bg-surface px-4 py-2.5 text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text"
+          className="w-full max-w-sm border border-line bg-surface px-4 py-2.5 text-base text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text"
         />
       </label>
       {estado.erro ? (

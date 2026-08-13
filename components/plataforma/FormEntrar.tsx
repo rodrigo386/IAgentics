@@ -15,7 +15,8 @@ export function FormEntrar() {
   const [senha, setSenha] = useState("");
   const [estado, acao, enviando] = useActionState(entrarAction, ESTADO_INICIAL);
 
-  const campo = "w-full border border-line bg-surface px-4 py-3 text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
+  // text-base (16px): abaixo disso o iOS dá zoom automático ao focar o campo.
+  const campo = "w-full border border-line bg-surface px-4 py-3 text-base text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
 
   return (
     <form action={acao} className="flex flex-col gap-4">

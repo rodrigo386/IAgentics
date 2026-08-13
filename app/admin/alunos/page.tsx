@@ -56,7 +56,7 @@ export default async function PaginaAlunos({
           defaultValue={q ?? ""}
           placeholder={t.buscarPlaceholder}
           aria-label={t.buscarPlaceholder}
-          className="w-full max-w-sm border border-line bg-surface px-4 py-2.5 text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text sm:max-w-md"
+          className="w-full max-w-sm border border-line bg-surface px-4 py-2.5 text-base text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text sm:max-w-md"
         />
         <button
           type="submit"

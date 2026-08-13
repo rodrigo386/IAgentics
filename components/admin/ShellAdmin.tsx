@@ -12,8 +12,9 @@ const links = [
 
 /**
  * Shell do /admin: mesmos tokens e logo Academy de components/plataforma/ShellHeader.tsx.
- * Em lg+ vira nav lateral fixa; abaixo disso a nav é uma linha horizontal rolável
- * no topo, para não empurrar o conteúdo em telas estreitas.
+ * Em lg+ vira nav lateral fixa; abaixo disso a nav quebra em quantas linhas
+ * precisar no topo — rolagem horizontal escondia "Configurações" sem nenhum
+ * indício de que havia mais abas.
  */
 export function ShellAdmin() {
   return (
@@ -33,7 +34,7 @@ export function ShellAdmin() {
       </div>
       <nav
         aria-label={admin.nome}
-        className="flex gap-1 overflow-x-auto border-t border-line px-3 py-2 sm:px-6 lg:flex-col lg:border-t-0 lg:px-3 lg:py-0"
+        className="flex flex-wrap gap-1 border-t border-line px-3 py-2 sm:px-6 lg:flex-col lg:border-t-0 lg:px-3 lg:py-0"
       >
         {links.map((l) => (
           <Link

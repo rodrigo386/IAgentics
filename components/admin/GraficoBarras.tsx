@@ -15,21 +15,20 @@ const MARGEM_DIREITA = 8;
  *  leitor de tela. Sem dado nenhum, nem o SVG é renderizado. */
 export function GraficoBarras({ pontos, rotulo }: { pontos: PontoSemana[]; rotulo: string }) {
   if (pontos.length === 0) {
-    return (
-      <div className="flex flex-col gap-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{rotulo}</p>
-        <p className="text-fg-muted">{admin.metricas.semDados}</p>
-      </div>
-    );
+    // O título visível fica no card que envolve o gráfico (app/admin/page.tsx);
+    // repetir o rotulo aqui duplicava a mesma string na tela.
+    return <p className="text-fg-muted">{admin.metricas.semDados}</p>;
   }
 
   const maximo = Math.max(...pontos.map((p) => p.valor), 1);
-  const largura = MARGEM_ESQUERDA + pontos.length * (LARGURA_BARRA + GAP) - GAP + MARGEM_DIREITA;
+  // Largura mínima de 8 colunas no viewBox: com 1-2 pontos o SVG ficava quase
+  // quadrado e, esticado em w-full no celular, virava uma barra de ~870px de altura.
+  const colunas = Math.max(pontos.length, 8);
+  const largura = MARGEM_ESQUERDA + colunas * (LARGURA_BARRA + GAP) - GAP + MARGEM_DIREITA;
   const alturaTotal = ALTURA_BARRAS + ALTURA_EIXO;
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{rotulo}</p>
       <svg
         viewBox={`0 0 ${largura} ${alturaTotal}`}
         role="img"

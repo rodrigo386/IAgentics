@@ -9,7 +9,7 @@ const ESTADO_INICIAL: Estado = { erro: null, sucesso: null };
 const t = admin.conteudo;
 
 const campoClasse =
-  "w-full border border-line bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
+  "w-full border border-line bg-surface px-3 py-2 text-base text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-accent-text";
 const botaoClasse =
   "rounded-control border border-line-strong px-4 py-2 text-xs font-medium transition-colors hover:border-fg disabled:opacity-60";
 const botaoDestaqueClasse =

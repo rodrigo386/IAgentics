@@ -39,7 +39,10 @@ export function SpendLabSyllabus() {
                   {item.name}
                 </h3>
                 <p className="mt-3 leading-relaxed text-fg-muted">{item.body}</p>
-                <p className="mt-auto flex flex-wrap items-baseline gap-2 border-t border-line pt-5 text-sm">
+                {/* Sempre empilhado: com flex-wrap, entregáveis curtos ficavam na
+                    mesma linha do rótulo e os longos embaixo — cards irmãos com
+                    dois desenhos diferentes. */}
+                <p className="mt-auto flex flex-col gap-1.5 border-t border-line pt-5 text-sm">
                   <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-fg-muted">
                     Entregável
                   </span>
