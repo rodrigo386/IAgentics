@@ -2,6 +2,7 @@ import { Composition } from "remotion";
 import { site } from "@/lib/content";
 import { AberturaMarca, type PropsAbertura } from "./AberturaMarca";
 import { BannerBoasVindas } from "./BannerBoasVindas";
+import { OgCertificado } from "./OgCertificado";
 import "./style.css";
 
 /**
@@ -58,6 +59,19 @@ export function RemotionRoot() {
         fps={30}
         width={1920}
         height={640}
+      />
+
+      {/* Still (1 frame) para a imagem OG da página de certificado. Mesma
+          linguagem visual do banner (rampa + véu); logo e fontes seguem o
+          mecanismo comprovado em AberturaMarca.tsx (ver nota de topo de
+          OgCertificado.tsx). */}
+      <Composition
+        id="og-certificado"
+        component={OgCertificado}
+        durationInFrames={1}
+        fps={30}
+        width={1200}
+        height={630}
       />
     </>
   );
