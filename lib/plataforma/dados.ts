@@ -2,6 +2,7 @@ import "server-only"; // build falha se um componente client importar isto
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
+import { emitirSeConcluido } from "./certificados";
 import type { Aula, Curso, CursoComIndice, Modulo, StatusAssinatura } from "./tipos";
 
 /** Mapeamento explícito por campo: as colunas já vêm em camelCase do schema
@@ -235,4 +236,16 @@ export async function gravarProgresso(
           : {}),
       },
     });
+
+  // Fechou 100%? A emissão do certificado mora na conclusão — idempotente,
+  // e emitirSeConcluido re-verifica o critério inteiro (não confia no chamador).
+  if (marcandoConcluida) {
+    const [m] = await db
+      .select({ courseId: modules.courseId })
+      .from(lessons)
+      .innerJoin(modules, eq(modules.id, lessons.moduleId))
+      .where(eq(lessons.id, lessonId))
+      .limit(1);
+    if (m) await emitirSeConcluido(userId, m.courseId);
+  }
 }
