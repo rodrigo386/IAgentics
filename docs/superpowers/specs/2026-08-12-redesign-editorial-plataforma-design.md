@@ -69,6 +69,15 @@ Mobile empilha: player → ações → índice. Estados existentes intactos na c
 - **e2e**: `painel.spec` evolui — 9 capas continuam contadas via `data-testid`, hero de boas-vindas para aluno novo, hero "Continuar" após concluir uma aula; `aula.spec` — índice lateral visível no desktop, aula atual destacada, check na concluída; `curso.spec` — ajustes de seletor (barra de progresso, breadcrumb).
 - `npm run build` ao final de cada task de página.
 
+## Follow-ups aceitos no review final (fora deste ciclo)
+
+- **Pacote a11y** (primeiro item do próximo ciclo de plataforma): `aria-label` nos navs (shell + 2 breadcrumbs), headings/labels acessíveis nos trilhos, `aria-hidden` no crumb que repete o h1.
+- Fade do `.trilho` é fixo (esmaece o último card mesmo sem overflow) — reavaliar mask scroll-aware.
+- `PlayerAula` grava conclusão fire-and-forget antes de navegação full-page ("Próxima aula") — race teórica pré-existente; observar flakiness do painel.spec em CI.
+- N+1 de `buscarCurso` no painel (paralelizado; vira item de performance se o catálogo crescer).
+- `plataforma.painel.catalogo` órfã; `eyebrowAccent` do HeroEditorial sem call site `false` (alavanca para o futuro).
+- Lock do violeta atualizado por decisão do Rodrigo: FILL + BORDA como indicador de estado (texto segue via `--accent-text`).
+
 ## Entrega
 
 Branch própria → SDD (subagentes) → review final → merge → `scripts/deploy-railway.sh`. Sem migração e sem variável nova: deploy simples. Validação em produção: browser real no painel/curso/aula com a conta admin existente.
