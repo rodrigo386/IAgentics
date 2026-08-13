@@ -16,7 +16,12 @@ export default async function PaginaConta() {
   const [usuario, status, certificados] = await Promise.all([
     buscarUsuario(userId),
     buscarAssinatura(userId),
-    listarDoAluno(userId),
+    // Isolado: mesma régua do ciclo de certificados (seção secundária, nunca
+    // derruba o fluxo crítico) — cobre a janela entre o deploy e a migração 0004.
+    listarDoAluno(userId).catch((e) => {
+      console.error("certificados (conta)", e);
+      return [];
+    }),
   ]);
   if (!usuario) redirect("/app/entrar");
 
