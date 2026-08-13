@@ -743,29 +743,30 @@ export const nexoPage = {
         kind: "image" as const,
         agent: "RC",
         label: "Requisição de Compra",
-        /* Entregue 10/08/2026. PNG e não JPG de propósito: é uma captura de interface,
-           cheia de texto pequeno, e o JPEG suja as bordas das letras. Os 3360px de
-           largura também não são desperdício - a lupa amplia 2,2x, então ela consome
-           essa resolução de verdade. O Next reencoda para WebP/AVIF na entrega. */
-        spec: "3360x1890 · PNG",
-        file: "/nexo-print-rc.png",
-        src: "/nexo-print-rc.png" as string | null,
+        /* v2, entregue 13/08/2026: capturas reais do produto, substituindo as prévias de
+           10/08. PNG e não JPG de propósito: é uma captura de interface, cheia de texto
+           pequeno, e o JPEG suja as bordas das letras. A 1917px de largura a lupa continua
+           útil, só que com ampliação efetiva menor do que os 3360px anteriores permitiam.
+           O Next reencoda para WebP/AVIF na entrega. */
+        spec: "1917x1078 · PNG",
+        file: "/nexo-print-rc-v2.png",
+        src: "/nexo-print-rc-v2.png" as string | null,
       },
       {
         kind: "image" as const,
         agent: "RFP",
         label: "Cotação e concorrência",
-        spec: "3360x1890 · PNG",
-        file: "/nexo-print-rfp.png",
-        src: "/nexo-print-rfp.png" as string | null,
+        spec: "1917x1078 · PNG",
+        file: "/nexo-print-rfp-v2.png",
+        src: "/nexo-print-rfp-v2.png" as string | null,
       },
       {
         kind: "image" as const,
         agent: "Spend",
         label: "Análise de gastos",
-        spec: "3360x1890 · PNG",
-        file: "/nexo-print-spend.png",
-        src: "/nexo-print-spend.png" as string | null,
+        spec: "1917x1078 · PNG",
+        file: "/nexo-print-spend-v2.png",
+        src: "/nexo-print-spend-v2.png" as string | null,
       },
       {
         kind: "image" as const,
