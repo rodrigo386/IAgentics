@@ -15,8 +15,17 @@ test("aula gratuita toca e conclui; aula paga mostra trava de assinatura sem 404
   await page.goto("/app/curso/fundamentos-ia-copilot/boas-vindas");
   await expect(page.locator('iframe[src*="youtube-nocookie"]')).toBeVisible();
 
+  // Redesign: breadcrumb "Aula X de Y" e índice lateral com a aula atual marcada.
+  await expect(page.getByText("Aula 1 de 8")).toBeVisible();
+  await expect(page.locator('aside a[aria-current="true"]')).toBeVisible();
+
   await page.getByRole("button", { name: "Marcar como concluída" }).click();
   await expect(page.getByRole("link", { name: "Próxima aula" })).toBeVisible();
+
+  // Check de concluída aparece no índice lateral sem recarregar? O índice é
+  // server-rendered — o check aparece no PRÓXIMO carregamento; valida na volta:
+  await page.reload();
+  await expect(page.locator("aside").getByText("✓").first()).toBeVisible();
 
   // Recarrega a página do curso: progresso persistiu no servidor.
   await page.goto("/app/curso/fundamentos-ia-copilot");

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
@@ -33,6 +34,7 @@ export default async function PaginaAula({
   const aula = sequencia[indiceAtual];
   const proxima = sequencia[indiceAtual + 1] ?? null;
   const hrefProxima = proxima ? `/app/curso/${curso.slug}/${proxima.slug}` : null;
+  const moduloAtual = curso.modulos.find((m) => m.aulas.some((a) => a.id === aula.id));
 
   // Fix round final (I3): "sem acesso" (trava de assinatura) e "sem vídeo
   // cadastrado ainda" (aula publicada, lesson_media sem linha) são estados
@@ -52,6 +54,15 @@ export default async function PaginaAula({
   return (
     <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[1fr_360px] lg:items-start lg:gap-10">
       <div className="min-w-0">
+        <nav className="mb-4 text-sm text-fg-muted">
+          <Link href={`/app/curso/${curso.slug}`} className="hover:text-fg">
+            {curso.titulo}
+          </Link>
+          <span aria-hidden> · </span>
+          <span>{moduloAtual?.titulo}</span>
+          <span aria-hidden> · </span>
+          <span className="text-fg">{t.aulaDe(indiceAtual + 1, sequencia.length)}</span>
+        </nav>
         {!podeVer ? (
           // A página NUNCA é 404 por causa da trava de assinatura — a URL
           // compartilhada continua abrindo e vendendo o curso.
@@ -95,8 +106,9 @@ export default async function PaginaAula({
         </details>
       </div>
 
-      <aside className="hidden lg:block">
-        <IndiceCurso cursoSlug={curso.slug} modulos={curso.modulos} concluidas={[...concluidas]} aulaAtualId={aula.id} />
+      <aside className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:border-l lg:border-line lg:pl-6">
+        <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{t.aulasDoCurso}</p>
+        <IndiceCurso cursoSlug={curso.slug} modulos={curso.modulos} concluidas={[...concluidas]} aulaAtualId={aula.id} lateral />
       </aside>
     </div>
   );

@@ -17,11 +17,13 @@ export function IndiceCurso({
   modulos,
   concluidas,
   aulaAtualId,
+  lateral = false,
 }: {
   cursoSlug: string;
   modulos: Modulo[];
   concluidas: string[];
   aulaAtualId?: string;
+  lateral?: boolean;
 }) {
   const feitas = new Set(concluidas);
   const t = plataforma.curso;
@@ -46,7 +48,7 @@ export function IndiceCurso({
                         aria-current={atual ? "true" : undefined}
                         aria-label={concluida ? `${aula.titulo} — ${plataforma.aula.concluida}` : undefined}
                         className={`flex items-center justify-between gap-4 px-1 py-3 transition-colors hover:bg-surface ${
-                          atual ? "bg-surface" : ""
+                          atual ? (lateral ? "border-l-2 border-accent bg-surface pl-3" : "bg-surface") : lateral ? "border-l-2 border-transparent pl-3" : ""
                         }`}
                       >
                         <span className="flex min-w-0 items-center gap-2 text-sm text-fg">
