@@ -14,8 +14,10 @@ import { nexo, nexoPage } from "@/lib/content";
  * page is an editorial dossier. An index also lets all five be read at once, which a
  * pan never allows.
  *
- * The platform badges are the client's official partner lockups, so they are never
- * recoloured and sit at their own colours on a neutral brand plate.
+ * Desk Manager is the only platform and the section's trust anchor, so its badge is
+ * the client's official partner lockup — never recoloured, sitting at its own colours
+ * on a neutral brand plate — enlarged and given a periodic CSS sweep (.selo-plataforma
+ * in globals.css) to carry that weight instead of reading as one badge among several.
  *
  * The code sits in the margin as a folio; the agent's real name is the heading, so the
  * label always carries the meaning.
@@ -59,14 +61,14 @@ export function NexoAgentsIndex() {
             {nexo.platforms.map((platform) => (
               <li
                 key={platform.name}
-                className="flex h-16 items-center justify-center border border-line bg-brand-paper px-6"
+                className="selo-plataforma flex h-20 items-center justify-center border border-line bg-brand-paper px-8 shadow-[0_8px_30px_rgb(123_94_237/0.12)] sm:h-28 sm:px-12"
               >
                 <Image
                   src={platform.src}
                   alt={platform.name}
                   width={platform.w}
                   height={platform.h}
-                  className="max-h-8 w-auto object-contain"
+                  className="max-h-10 w-auto object-contain sm:max-h-14"
                 />
               </li>
             ))}

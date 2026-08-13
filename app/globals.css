@@ -984,6 +984,37 @@
   .barra-trilho { animation: none; }
 }
 
+/* Selo de plataforma em destaque (Entrega embarcada do /nexo): o Desk Manager
+   é a única plataforma e o âncora de confiança da seção. Motion motivado por
+   hierarquia: um brilho varre a plate periodicamente puxando o olho, e o hover
+   dá lift físico. Tudo CSS; estático sob prefers-reduced-motion. */
+.selo-plataforma {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.selo-plataforma:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgb(123 94 237 / 0.25);
+}
+.selo-plataforma::after {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(105deg, transparent 42%, rgb(123 94 237 / 0.16) 50%, rgb(57 124 239 / 0.12) 54%, transparent 62%);
+  transform: translateX(-120%);
+  animation: selo-brilho 7s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes selo-brilho {
+  0%, 55% { transform: translateX(-120%); }
+  75%, 100% { transform: translateX(120%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .selo-plataforma::after { animation: none; opacity: 0; }
+  .selo-plataforma:hover { transform: none; }
+}
+
 /* Impressão do certificado: só o documento, sem botões — "salvar PDF" é o
    imprimir do navegador (decisão do spec: sem PDF no servidor). */
 @media print {
