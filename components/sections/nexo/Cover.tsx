@@ -5,19 +5,20 @@ import { nexoPage, cta } from "@/lib/content";
 /**
  * Editorial cover, now carrying the product stage.
  *
- * The type was the whole artwork here: two lines set at up to 120px across the full
- * width, the way a magazine sets a feature title. Bringing product screens up to the
- * cover costs some of that, and the trade is worth naming rather than hiding.
+ * The type was the whole artwork here: the brand lockup - the app icon plus the
+ * single word "Nexo" - set at display scale, the way a magazine sets a feature
+ * title. Bringing product screens up to the cover costs some of that, and the trade
+ * is worth naming rather than hiding.
  *
  * THE ARITHMETIC. Three screens stacked in perspective need real width to read as
- * depth rather than a pile - a full-width 120px headline and that stage cannot both
- * fit above the fold. The headline gives: it moves into a 7-column left field and
- * drops to min(6.5vw, 5.5rem), which still reads as a cover line while leaving the
+ * depth rather than a pile - a full-width, page-filling lockup and that stage cannot
+ * both fit above the fold. The lockup gives: it moves into a 7-column left field and
+ * drops to min(10vw, 8rem), which still reads as a cover line while leaving the
  * right field (5 columns) for the stage.
  *
- * Below lg the two stack, the headline gets the full width back at its original size,
- * and the stage drops under it at a smaller, capped height (.palco-nexo's wrapper) so
- * it never pushes the CTA far down the page.
+ * Below lg the two stack, the lockup gets the full width back at its original
+ * (larger) scale, and the stage drops under it at a smaller, capped height
+ * (.palco-nexo's wrapper) so it never pushes the CTA far down the page.
  *
  * No dark stage here - the decision that shaped this cover was explicit: the FintechX
  * reference composes its layered screens over a dark plinth, but this page keeps the
@@ -38,45 +39,32 @@ export function NexoCover() {
       <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <div
-              className="hero-fade flex items-center gap-4"
-              style={{ animationDelay: "60ms" }}
-            >
+            {/* The lockup IS the headline: app icon + the brand name, both at display
+                scale. No separate eyebrow above it - a small "Nexo" label would be
+                redundant with the word sitting right here at 8rem. */}
+            <h1 className="flex items-center gap-4 text-fg sm:gap-6 lg:gap-7">
               <Image
                 src="/nexo-app-icon.svg"
-                alt="Nexo"
-                width={64}
-                height={64}
+                alt=""
+                aria-hidden="true"
+                width={96}
+                height={96}
                 priority
-                className="size-12 sm:size-14"
+                className="hero-fade size-16 shrink-0 sm:size-20 lg:size-24"
+                style={{ animationDelay: "60ms" }}
               />
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">
-                Nexo
-              </span>
-            </div>
-
-            <h1 className="mt-8 font-medium tracking-[-0.045em] text-fg">
-              <span className="block overflow-hidden pb-[0.16em]">
+              <span className="block overflow-hidden pb-[0.05em]">
                 <span
-                  className="hero-line block whitespace-nowrap text-[min(13vw,4.5rem)] leading-[1.08] sm:text-[min(11vw,6rem)] lg:text-[min(6.5vw,5.5rem)]"
+                  className="hero-line block whitespace-nowrap text-[min(20vw,5.5rem)] font-medium leading-none tracking-[-0.045em] sm:text-[min(16vw,7.5rem)] lg:text-[min(10vw,8rem)]"
                   style={{ animationDelay: "140ms" }}
                 >
-                  Agentes de IA
-                </span>
-              </span>
-              {/* The indent is the editorial move: the second line hangs off the first. */}
-              <span className="block overflow-hidden pb-[0.16em] lg:pl-[16%]">
-                <span
-                  className="hero-line block whitespace-nowrap text-[min(13vw,4.5rem)] leading-[1.08] sm:text-[min(11vw,6rem)] lg:text-[min(6.5vw,5.5rem)]"
-                  style={{ animationDelay: "230ms" }}
-                >
-                  para Compras
+                  {nexoPage.hero.marca}
                 </span>
               </span>
             </h1>
 
             <p
-              className="hero-fade mt-10 max-w-[46ch] text-xl leading-snug text-fg sm:text-2xl"
+              className="hero-fade mt-10 max-w-[46ch] text-2xl leading-snug text-fg sm:text-3xl"
               style={{ animationDelay: "340ms" }}
             >
               {nexoPage.hero.subtext}

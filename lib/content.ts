@@ -701,7 +701,16 @@ export const photoCredits = [
 
 export const nexoPage = {
   hero: {
-    headline: "Agentes de IA para Compras",
+    /**
+     * A capa virou o lockup da marca: o ícone do app ao lado desta palavra, os dois
+     * em escala de display (ver Cover.tsx). Substituiu a antiga headline em duas
+     * linhas ("Agentes de IA / para Compras") a pedido do time - a frase que
+     * descrevia o produto continua abaixo, em `subtext`.
+     *
+     * Caixa mista de propósito, mesmo grande na tela: é a mesma grafia usada no
+     * resto do site (título da página, sidebar), não um SHOUT em caixa alta.
+     */
+    marca: "Nexo",
     subtext:
       "Cinco agentes que assumem o trabalho operacional de suprimentos rodando dentro da plataforma que sua empresa já usa.",
     /**
