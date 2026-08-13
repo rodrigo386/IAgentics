@@ -85,6 +85,13 @@ Bloco novo `certificado`: título da página, "Certificado de conclusão", selo 
 - `/app/conta` lista o certificado.
 - Href do "Adicionar ao LinkedIn" contém `certUrl` e `certId` corretos (assert no atributo, sem navegar para fora).
 
+## Follow-ups aceitos no review final (fora deste ciclo)
+
+- `excluirCurso` no admin cascateia `certificates` — despublicar + excluir apaga certificados emitidos e as URLs públicas passam a 404 (porta dos fundos do "válido para sempre"). Estender o guard existente com `curso_com_certificados` num ciclo futuro.
+- `cache()` do React em `buscarPorCodigo` (hoje 2 queries por view: generateMetadata + page).
+- Testes: estado vazio `semCertificados` na conta; `@media print`/`@page` e o catch de banco da conta sem cobertura automatizada (verificados visualmente/por leitura).
+- Nomenclatura `metaTitulo/metaDescricao` invertida vs `descricaoMeta` do arquivo de conteúdo.
+
 ## Entrega
 
 Branch própria → SDD → review final → merge → migração 0004 em produção (via `railway ssh`, como a 0003) → deploy (`scripts/deploy-railway.sh`) → smoke: código forjado → 404; abrir o curso concluído da sua conta → certificado retroativo emitido e página pública no ar. Sem env nova.
