@@ -117,9 +117,8 @@ export const nexo = {
   lead: "Os 5 agentes rodam dentro da plataforma escolhida.",
   assurance:
     "Seus dados se mantêm protegidos dentro do servidor da sua empresa.",
-  /** As duas plataformas onde o Nexo roda embarcado. Badges oficiais do cliente. */
+  /** A plataforma onde o Nexo roda embarcado. Badge oficial do cliente. */
   platforms: [
-    { name: "Microsoft AI Cloud Partner", src: "/partner-microsoft.png", w: 922, h: 235 },
     { name: "Desk Manager Partners", src: "/partner-deskmanager.png", w: 1057, h: 347 },
   ],
   /** Captura real do Nexo. Fora de uso: o time vai fornecer prints melhores. */
@@ -719,7 +718,7 @@ export const nexoPage = {
      * sobre a hero, e esta é outra página. Se quiser tirar daqui também, é só apagar
      * esta linha e o <p> em Cover.tsx.
      */
-    platform: "Nexo, o app de Compras, dentro do Desk Manager ou Microsoft",
+    platform: "Nexo, o app de Compras, dentro do Desk Manager",
   },
 
   /**
@@ -798,7 +797,7 @@ export const nexoPage = {
     items: [
       {
         title: "Roda dentro do seu ambiente",
-        body: "Os agentes operam no Desk Manager ou no Microsoft que sua empresa já usa. Não é mais um sistema para o time aprender.",
+        body: "Os agentes operam no Desk Manager que sua empresa já usa. Não é mais um sistema para o time aprender.",
       },
       {
         title: "Dados sensíveis não saem",

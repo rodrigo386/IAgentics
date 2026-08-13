@@ -6,7 +6,7 @@ import { nexo, hero } from "@/lib/content";
  *
  * The hub is the real Nexo APP ICON (from the client's own kit), and the five agents
  * hang off it. That states the product exactly as the team describes it: Nexo is the
- * procurement app, it runs inside Desk Manager or Microsoft, and the five agents live
+ * procurement app, it runs inside Desk Manager, and the five agents live
  * inside Nexo. Nothing here is invented - the tile is copied verbatim from
  * nexo-app-icon-gradiente.svg, only rescaled into this coordinate space.
  *

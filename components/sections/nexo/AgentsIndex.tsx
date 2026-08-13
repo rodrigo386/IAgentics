@@ -7,8 +7,8 @@ import {
 import { nexo, nexoPage } from "@/lib/content";
 
 /**
- * "Entrega embarcada": the five agents as a contents index, with the two platforms
- * they run inside stated right under the claim.
+ * "Entrega embarcada": the five agents as a contents index, with the platform they
+ * run inside stated right under the claim.
  *
  * This replaced the pinned horizontal pan: a scroll hijack is agency language, and this
  * page is an editorial dossier. An index also lets all five be read at once, which a
