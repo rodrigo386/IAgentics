@@ -59,7 +59,7 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
                 {plataforma.painel.horas} · {aulaIds.length} {t.aulas}
               </p>
               <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <h1 className="text-3xl font-medium leading-snug tracking-[-0.03em] text-fg sm:text-4xl">{curso.titulo}</h1>
+                <h1 className="text-4xl font-medium leading-snug tracking-[-0.03em] text-fg sm:text-5xl">{curso.titulo}</h1>
                 {/* Selo só com aula de verdade concluída — mesma regra de antes (M1).
                     É o ponto de encaixe do botão "Ver certificado" do ciclo 2. */}
                 {!proxima && aulaIds.length > 0 ? (

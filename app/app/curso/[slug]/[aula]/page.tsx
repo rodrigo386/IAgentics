@@ -92,7 +92,7 @@ export default async function PaginaAula({
         )}
 
         <div className="mt-6">
-          <h1 className="text-2xl font-medium leading-snug tracking-[-0.02em] text-fg">{aula.titulo}</h1>
+          <h1 className="text-3xl font-medium leading-snug tracking-[-0.02em] text-fg">{aula.titulo}</h1>
           <p className="mt-3 max-w-[65ch] text-fg-muted">{aula.descricao}</p>
         </div>
 

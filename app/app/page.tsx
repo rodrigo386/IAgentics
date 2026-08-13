@@ -101,7 +101,7 @@ function HeroEditorial({
           >
             {eyebrow}
           </p>
-          <h2 className="mt-3 text-2xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-4xl">
+          <h2 className="mt-3 text-4xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-5xl">
             {titulo}
           </h2>
           <p className="mt-2 max-w-[55ch] text-sm text-fg-muted">{texto}</p>
