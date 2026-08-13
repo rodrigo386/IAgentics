@@ -23,6 +23,9 @@ export function gerarCodigo(): string {
  *  concluiu antes deste ciclo existir, sem backfill). Válido para sempre:
  *  nenhuma checagem de assinatura aqui, por decisão do spec. */
 export async function emitirSeConcluido(userId: string, courseId: string): Promise<void> {
+  // Caso comum pós-certificação (replay de "concluída"): 1 query só, antes das 3 caras.
+  if (await doAlunoNoCurso(userId, courseId)) return;
+
   const [curso] = await db.select({ publicado: courses.publicado }).from(courses).where(eq(courses.id, courseId)).limit(1);
   if (!curso?.publicado) return;
 
@@ -42,8 +45,6 @@ export async function emitirSeConcluido(userId: string, courseId: string): Promi
       inArray(lessonProgress.lessonId, aulas.map((a) => a.id)),
     ));
   if (concluidas.length < aulas.length) return;
-
-  if (await doAlunoNoCurso(userId, courseId)) return;
 
   // 23505 pode ser colisão de codigo (re-gera) OU corrida no par aluno+curso
   // (outra request emitiu primeiro — também fim feliz). 3 tentativas bastam:

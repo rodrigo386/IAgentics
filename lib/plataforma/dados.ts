@@ -246,6 +246,14 @@ export async function gravarProgresso(
       .innerJoin(modules, eq(modules.id, lessons.moduleId))
       .where(eq(lessons.id, lessonId))
       .limit(1);
-    if (m) await emitirSeConcluido(userId, m.courseId);
+    if (m) {
+      try {
+        await emitirSeConcluido(userId, m.courseId);
+      } catch (e) {
+        // Efeito colateral com rede de recuperação (emissão preguiçosa na página do
+        // curso) — não propaga: marcar a aula como concluída é o fluxo crítico aqui.
+        console.error("emitirSeConcluido (gancho)", e);
+      }
+    }
   }
 }
