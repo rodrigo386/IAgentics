@@ -17,8 +17,9 @@ import type { Aula, Curso } from "@/lib/plataforma/tipos";
 
 type InfoCurso = { pct: number; feitas: number; total: number; proxima: Aula | null };
 
-/** Trilho horizontal do painel: rótulo mono + cards de largura fixa. Só
- *  renderiza se houver conteúdo (regra do spec). */
+/** Trilho horizontal do painel: título h2 + barra animada da rampa da marca
+ *  (.barra-trilho, globals.css) + cards de largura fixa. Só renderiza se
+ *  houver conteúdo (regra do spec). */
 function Trilho({
   titulo,
   cursos,
@@ -35,7 +36,10 @@ function Trilho({
   if (cursos.length === 0) return null;
   return (
     <section className="mb-12">
-      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{titulo}</p>
+      <div className="flex items-center gap-5">
+        <h2 className="shrink-0 text-2xl font-medium tracking-[-0.03em] text-fg sm:text-3xl">{titulo}</h2>
+        <span aria-hidden className="barra-trilho" />
+      </div>
       <div className={`trilho mt-5 ${esmaecido ? "opacity-60" : ""}`}>
         {cursos.map((curso) => (
           <div key={curso.id} className="w-[220px] sm:w-[240px]">

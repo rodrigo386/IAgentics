@@ -918,3 +918,18 @@
 @media (prefers-reduced-motion: reduce) {
   .banner-boasvindas { animation: none; }
 }
+
+/* Barra animada dos títulos de trilho: a rampa da marca corre da esquerda
+   para a direita ao lado do título — destaque vivo, só CSS. Sob
+   prefers-reduced-motion vira gradiente estático. */
+.barra-trilho {
+  height: 3px;
+  flex: 1 1 auto;
+  min-width: 48px;
+  background: linear-gradient(90deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet));
+  background-size: 300% 100%;
+  animation: banner-fluxo 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .barra-trilho { animation: none; }
+}
