@@ -104,8 +104,11 @@ export default async function Painel() {
       {heroCurso && heroInfo?.proxima ? (
         <section className="hero-editorial mb-12 border border-line">
           <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
+            {/* Navegação redundante: o CTA ao lado já cobre; fora da árvore de foco/leitura. */}
             <Link
               href={`/app/curso/${heroCurso.slug}`}
+              aria-hidden
+              tabIndex={-1}
               className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
             >
               <Image
@@ -140,8 +143,11 @@ export default async function Painel() {
       ) : boasVindas ? (
         <section className="hero-editorial mb-12 border border-line">
           <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-8">
+            {/* Navegação redundante: o CTA ao lado já cobre; fora da árvore de foco/leitura. */}
             <Link
               href={`/app/curso/${boasVindas.slug}`}
+              aria-hidden
+              tabIndex={-1}
               className="relative aspect-[3/4] w-full max-w-[200px] shrink-0 overflow-hidden border border-line"
             >
               <Image
