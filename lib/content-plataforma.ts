@@ -126,6 +126,8 @@ export const plataforma = {
     compartilharLinkedin: "Compartilhar no LinkedIn",
     imprimir: "Imprimir / salvar PDF",
     verCertificado: "Ver certificado",
+    // Valor que aparece como organização emissora no formulário do LinkedIn.
+    organizacaoLinkedin: "IAgentics",
     metaTitulo: (formacao: string) => `Certificado — ${formacao} · IAgentics Academy`,
     metaDescricao: (aluno: string, formacao: string) => `${aluno} concluiu a formação ${formacao} na IAgentics Academy.`,
   },

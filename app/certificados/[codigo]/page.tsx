@@ -57,7 +57,7 @@ export default async function PaginaCertificado({ params }: { params: Promise<{ 
   const addLinkedin = `https://www.linkedin.com/profile/add?${new URLSearchParams({
     startTask: "CERTIFICATION_NAME",
     name: cert.cursoTitulo,
-    organizationName: "IAgentics",
+    organizationName: t.organizacaoLinkedin,
     issueYear: String(emitido.getFullYear()),
     issueMonth: String(emitido.getMonth() + 1),
     certUrl: url,
