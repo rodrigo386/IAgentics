@@ -895,16 +895,21 @@
    markup — 0.40 de véu sozinho não bastava para essas opacidades mais
    claras (dava 4.27:1 no pior stop, abaixo do piso de 4.5).
 
-   VÍDEO DE FUNDO (Remotion, remotion/BannerBoasVindas.tsx). O <video> no
-   markup não tem z-index e é o primeiro elemento no DOM depois da section,
-   então empilha ABAIXO do véu por ordem — mas só por ordem não é robusto o
-   bastante (um único elemento sem z-index numa pilha com outro que TEM
-   z-index ainda pode surpreender dependendo do que mais entrar depois), por
-   isso o véu ganhou z-index: 1 explícito abaixo. O conteúdo de texto,
-   z-10 no markup, fica por cima dos dois. O gradiente desta própria classe
-   continua pintado por baixo do vídeo o tempo todo — é o resting state: se
-   o <video> falhar ao carregar, o elemento simplesmente fica transparente
-   e revela o gradiente CSS animado, sem buraco visual. */
+   VÍDEO DE FUNDO (Remotion, remotion/BannerBoasVindas.tsx) — z-index: 1 no
+   ::before é CORREÇÃO OBRIGATÓRIA, não reforço defensivo. ::before é
+   conteúdo GERADO: a caixa entra na árvore como se fosse o PRIMEIRO filho
+   da section, ou seja, ANTES do <video>, que vem depois no markup. Sem
+   z-index (os dois em auto), a pilha segue ordem de documento — quem vem
+   depois pinta por cima de quem vem antes. Sem esta declaração, o véu
+   pintaria ABAIXO do <video>: o vídeo apareceria cru, sem o escurecimento
+   uniforme de que o contraste medido acima depende (o cálculo inteiro
+   pressupõe o véu ENTRE o fundo e o texto, não atrás do fundo). z-index: 1
+   tira o véu desse empate e o força para cima do <video> (que fica em
+   auto/0 no mesmo contexto). O conteúdo de texto, z-10 no markup, continua
+   por cima dos dois. O gradiente desta própria classe segue pintado por
+   baixo do vídeo o tempo todo — é o resting state: se o <video> falhar ao
+   carregar, o elemento fica transparente e revela o gradiente CSS
+   animado, sem buraco visual. */
 .banner-boasvindas {
   position: relative;
   background: linear-gradient(115deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet));

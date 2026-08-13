@@ -212,7 +212,15 @@ export default async function Painel() {
               sob prefers-reduced-motion via CSS (.banner-boasvindas video,
               globals.css) — quem pediu menos movimento fica só com o
               gradiente estático. Sem z-index: fica abaixo do véu ::before
-              (z-index: 1) na ordem de pilha. */}
+              (z-index: 1) na ordem de pilha.
+
+              Nome do arquivo é VERSIONADO À MÃO (-v1): next.config.ts manda
+              cache-control: immutable, max-age de 1 ano para todo mp4 sob
+              /plataforma/ — ótimo pra CDN/browser, péssimo se um re-render
+              futuro sobrescrever o mesmo nome (cliente com cache antigo
+              nunca pediria o arquivo de novo). Regra: todo novo render
+              troca o nome (-v2, -v3, ...) e atualiza o src aqui; nunca
+              sobrescrever um nome já publicado. */}
           <video
             aria-hidden
             autoPlay
@@ -221,7 +229,7 @@ export default async function Painel() {
             playsInline
             preload="metadata"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            src="/plataforma/banner-boasvindas.mp4"
+            src="/plataforma/banner-boasvindas-v1.mp4"
           />
           {/* Camada de texto por cima do véu (::before em globals.css) — o véu
               garante contraste uniforme contra os quatro stops da rampa

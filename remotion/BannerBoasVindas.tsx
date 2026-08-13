@@ -20,12 +20,20 @@ import { Logo } from "@/components/ui/Logo";
  *
  * LOOP PERFEITO, NÃO APROXIMADO. O <video loop> do painel corta do último
  * frame renderizado (299) direto para o primeiro (0), e esse corte precisa
- * ser invisível. A técnica: toda posição aqui é uma função periódica —
- * seno com argumento `2π · k · frame / durationInFrames`, k inteiro. Com k
- * inteiro, sin(2π·k·300/300) = sin(2π·k) = sin(0): o estado matemático do
- * frame 300 (que nunca é renderizado, mas é para onde o loop volta) é
- * IDÊNTICO ao do frame 0. Frequências diferentes por camada (k=1,2,3) dão
- * movimento orgânico sem quebrar o fechamento.
+ * ser invisível. A técnica: toda posição aqui é `sin(2π · k · frame /
+ * durationInFrames + fase)`, k inteiro. O que garante a costura sem emenda
+ * NÃO é "frame 300 == frame 0" isolado — é o DELTA ANGULAR CONSTANTE entre
+ * frames consecutivos: Δθ = 2π·k/durationInFrames é o mesmo passo entre
+ * QUALQUER par frame→frame+1, inclusive entre 299 e 0 (que, na função
+ * contínua, é o "frame 300" da mesma senoide - o loop só reinicia a
+ * contagem, a curva não sabe disso). Como esse passo nunca muda de
+ * tamanho, não há aceleração nem salto no corte: a velocidade do
+ * movimento no frame 299→0 é idêntica à de 0→1. k ser inteiro é o que
+ * faz esse "frame 300" cair exatamente na mesma fase (mod 2π) do frame 0
+ * - sem isso o valor bateria, mas o passo até lá teria um resto fora do
+ * padrão dos demais, e o corte se veria. Frequências diferentes por
+ * camada (k=1,2,3) dão movimento orgânico sem quebrar nenhuma dessas duas
+ * condições.
  *
  * POR ISSO NÃO HÁ ENTRADA. Uma entrada (fade de opacidade, spring) parte de
  * um estado diferente do estado de chegada — é a definição de não-periódico
@@ -72,16 +80,32 @@ type Blob = {
 };
 
 /* Metade esquerda mais calma (é onde o texto HTML do banner real vive):
-   dois blobs pequenos e baixa opacidade. Metade direita, onde mora o logo,
-   pode respirar mais — três blobs maiores. Cinco ao todo, dentro da faixa
-   pedida (3-5). Cores tiradas direto da rampa da marca. */
+   dois blobs pequenos e baixa opacidade. Os três blobs da direita ficam
+   agrupados em torno de CENTRO_LOGO_PCT (~68%, ver abaixo) em vez do canto
+   (~80-90%): quando o logo morava no canto extremo, blobs no canto faziam
+   sentido como "moldura" dele; agora que o logo se mudou para a zona
+   segura do crop mobile, um blob sozinho perto de 90% ficaria órfão, sem
+   nada por perto. Cinco ao todo, dentro da faixa pedida (3-5). Cores
+   tiradas direto da rampa da marca. */
 const BLOBS: Blob[] = [
   { top: 24, left: 12, size: 460, cor: "var(--brand-periwinkle)", opacidade: 0.14, blur: 130, ampX: 2.5, ampY: 2, k: 1, fase: 0 },
   { top: 78, left: 20, size: 520, cor: "var(--brand-violet)", opacidade: 0.12, blur: 150, ampX: 2, ampY: 2.5, k: 2, fase: Math.PI / 3 },
-  { top: 30, left: 80, size: 620, cor: "var(--brand-blue)", opacidade: 0.26, blur: 150, ampX: 3, ampY: 2.5, k: 1, fase: Math.PI / 2 },
-  { top: 72, left: 90, size: 500, cor: "var(--brand-indigo)", opacidade: 0.24, blur: 130, ampX: 2.5, ampY: 3, k: 3, fase: Math.PI },
-  { top: 50, left: 62, size: 380, cor: "var(--brand-periwinkle)", opacidade: 0.16, blur: 110, ampX: 2, ampY: 2, k: 2, fase: (3 * Math.PI) / 4 },
+  { top: 30, left: 70, size: 620, cor: "var(--brand-blue)", opacidade: 0.26, blur: 150, ampX: 3, ampY: 2.5, k: 1, fase: Math.PI / 2 },
+  { top: 72, left: 76, size: 500, cor: "var(--brand-indigo)", opacidade: 0.24, blur: 130, ampX: 2.5, ampY: 3, k: 3, fase: Math.PI },
+  { top: 50, left: 58, size: 380, cor: "var(--brand-periwinkle)", opacidade: 0.16, blur: 110, ampX: 2, ampY: 2, k: 2, fase: (3 * Math.PI) / 4 },
 ];
+
+/* Centro horizontal do bloco logo+wordmark, em % da largura do quadro.
+   1920×640 é MUITO mais largo que os viewports onde a section acaba
+   renderizada em mobile (a section vira quase quadrada com o texto
+   empilhado por cima); object-cover, pra cobrir um contêiner assim com um
+   frame de razão 3:1, escala pela ALTURA e corta boa parte da largura,
+   sobrando só uma faixa central em volta de 50%. right≈8% (centro ≈84%)
+   caía fora dessa faixa - o logo simplesmente sumia no formato mais
+   comum. 68% fica dentro da faixa central-segura em qualquer breakpoint
+   testado E ainda lê como "lado direito" no desktop, onde o quadro
+   inteiro é visível e o texto HTML ocupa a metade esquerda. */
+const CENTRO_LOGO_PCT = 68;
 
 export function BannerBoasVindas({ nomePlataforma }: PropsBannerBoasVindas) {
   const frame = useCurrentFrame();
@@ -138,18 +162,20 @@ export function BannerBoasVindas({ nomePlataforma }: PropsBannerBoasVindas) {
         );
       })}
 
-      {/* Logo + wordmark à direita: metade esquerda do quadro fica livre
-          para o texto HTML do banner real, que se sobrepõe por cima do
-          vídeo na página. */}
+      {/* Logo + wordmark: centralizado em CENTRO_LOGO_PCT (~68% da
+          largura), dentro da zona segura contra o crop de object-cover no
+          mobile (ver nota da constante acima). Metade esquerda do quadro
+          continua livre para o texto HTML do banner real, que se sobrepõe
+          por cima do vídeo na página. */}
       <div
         style={{
           position: "absolute",
-          right: width * 0.08,
+          left: `${CENTRO_LOGO_PCT}%`,
           top: "50%",
-          transform: `translate(0, calc(-50% + ${floatY}px))`,
+          transform: `translate(-50%, calc(-50% + ${floatY}px))`,
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-end",
+          alignItems: "center",
           gap: height * 0.028,
         }}
       >
