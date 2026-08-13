@@ -1,6 +1,8 @@
 import { Composition } from "remotion";
 import { site } from "@/lib/content";
+import { plataforma } from "@/lib/content-plataforma";
 import { AberturaMarca, type PropsAbertura } from "./AberturaMarca";
+import { BannerBoasVindas, type PropsBannerBoasVindas } from "./BannerBoasVindas";
 import "./style.css";
 
 /**
@@ -39,6 +41,23 @@ export function RemotionRoot() {
         height={1920}
         defaultProps={
           { tagline: site.tagline, dominio: site.domain } satisfies PropsAbertura
+        }
+      />
+
+      {/* Fundo em vídeo do banner de boas-vindas do painel (/app). 10s a
+          30fps, loop perfeito (ver nota em BannerBoasVindas.tsx) - o
+          <video loop> na página nunca mostra um corte. nomePlataforma vem
+          de lib/content-plataforma.ts, a mesma fonte de texto da /app, pela
+          mesma razão que tagline/dominio vêm de lib/content.ts acima. */}
+      <Composition
+        id="banner-boasvindas"
+        component={BannerBoasVindas}
+        durationInFrames={300}
+        fps={30}
+        width={1920}
+        height={640}
+        defaultProps={
+          { nomePlataforma: plataforma.nome } satisfies PropsBannerBoasVindas
         }
       />
     </>
