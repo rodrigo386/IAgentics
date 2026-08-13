@@ -30,12 +30,21 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
   const progresso = derivarProgresso(aulaIds, concluidas);
   const proxima = proximaAula(curso.modulos, concluidas);
 
-  // Emissão preguiçosa: quem concluiu antes do ciclo de certificados existir
-  // ganha o certificado ao abrir o curso (sem backfill). Idempotente.
+  // Certificado: busca primeiro (caso comum = já emitido, 1 query); só tenta a
+  // emissão preguiçosa quando ainda não existe. Isolado em try/catch — emissão é
+  // efeito colateral com rede de recuperação (gancho do gravarProgresso + próxima
+  // visita); a página do curso é o fluxo crítico e nunca cai por causa dela.
   let certificado: { codigo: string } | null = null;
   if (progresso.total > 0 && progresso.pct === 100) {
-    await emitirSeConcluido(userId, curso.id);
-    certificado = await doAlunoNoCurso(userId, curso.id);
+    try {
+      certificado = await doAlunoNoCurso(userId, curso.id);
+      if (!certificado) {
+        await emitirSeConcluido(userId, curso.id);
+        certificado = await doAlunoNoCurso(userId, curso.id);
+      }
+    } catch (e) {
+      console.error("certificado (página do curso)", e);
+    }
   }
 
   const t = plataforma.curso;
