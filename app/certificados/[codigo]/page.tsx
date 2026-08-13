@@ -25,8 +25,10 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
   const { codigo } = await params;
   const cert = await buscarPorCodigo(decodeURIComponent(codigo));
   if (!cert) return { title: t.titulo };
-  // og:image tem que ser ABSOLUTA (LinkedIn/scrapers ignoram relativa e o
-  // projeto não define metadataBase) — deriva a origem da própria requisição.
+  // og:image tem que ser ABSOLUTA (LinkedIn/scrapers ignoram relativa). O layout
+  // define metadataBase, mas isso não ajuda aqui: só se aplica a URLs relativas,
+  // e esta já é absoluta — por isso deriva a origem da própria requisição, o que
+  // também funciona em localhost sem depender do valor fixo de site.url.
   const h = await headers();
   const origem = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;
   return {
