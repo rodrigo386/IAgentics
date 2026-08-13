@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { CardCurso } from "@/components/plataforma/CardCurso";
+import { Logo } from "@/components/ui/Logo";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
 import {
@@ -175,6 +176,12 @@ export default async function Painel() {
   const emGravacao = porEstado((i) => i.total === 0);
 
   const t = plataforma.painel;
+  // "Academy": sufixo de plataforma.nome ("IAgentics Academy") depois do
+  // primeiro espaço, nunca digitado à mão — mesma derivação que vivia na
+  // composição Remotion antes do logo virar overlay HTML (round 2 do
+  // review: um vídeo não consegue reagir ao crop de object-cover em cada
+  // viewport, um elemento HTML consegue).
+  const wordmarkAcademy = plataforma.nome.split(" ").slice(1).join(" ");
 
   return (
     <div>
@@ -206,21 +213,26 @@ export default async function Painel() {
       ) : (
         <section className="banner-boasvindas relative mb-12 overflow-hidden px-6 py-14 sm:px-10 sm:py-20">
           {/* Vídeo de fundo (Remotion, remotion/BannerBoasVindas.tsx):
-              decorativo, mudo, em loop perfeito de 10s. O gradiente CSS da
-              própria section é o resting state/fallback — sem JS, sem
-              vídeo, o banner continua íntegro (regra da casa). Escondido
-              sob prefers-reduced-motion via CSS (.banner-boasvindas video,
-              globals.css) — quem pediu menos movimento fica só com o
-              gradiente estático. Sem z-index: fica abaixo do véu ::before
-              (z-index: 1) na ordem de pilha.
+              decorativo, mudo, em loop perfeito de 10s, SÓ motion abstrato
+              (rampa da marca + blobs) — logo e wordmark "Academy" são
+              overlay HTML logo abaixo, não pixel de vídeo (round 2 do
+              review: um <video> com object-cover não consegue reagir ao
+              crop de cada viewport, um elemento HTML consegue). O
+              gradiente CSS da própria section é o resting state/fallback —
+              sem JS, sem vídeo, o banner continua íntegro (regra da casa).
+              Escondido sob prefers-reduced-motion via CSS
+              (.banner-boasvindas video, globals.css) — quem pediu menos
+              movimento fica só com o gradiente estático. Sem z-index: fica
+              abaixo do véu ::before (z-index: 1) na ordem de pilha.
 
-              Nome do arquivo é VERSIONADO À MÃO (-v1): next.config.ts manda
-              cache-control: immutable, max-age de 1 ano para todo mp4 sob
-              /plataforma/ — ótimo pra CDN/browser, péssimo se um re-render
-              futuro sobrescrever o mesmo nome (cliente com cache antigo
-              nunca pediria o arquivo de novo). Regra: todo novo render
-              troca o nome (-v2, -v3, ...) e atualiza o src aqui; nunca
-              sobrescrever um nome já publicado. */}
+              Nome do arquivo é VERSIONADO À MÃO (atual: -v2; era -v1 antes
+              do logo sair do vídeo): next.config.ts manda cache-control:
+              immutable, max-age de 1 ano para todo mp4 sob /plataforma/ —
+              ótimo pra CDN/browser, péssimo se um re-render futuro
+              sobrescrever o mesmo nome (cliente com cache antigo nunca
+              pediria o arquivo de novo). Regra: todo novo render troca o
+              nome (-v3 em diante) e atualiza o src aqui; nunca sobrescrever
+              um nome já publicado. */}
           <video
             aria-hidden
             autoPlay
@@ -229,19 +241,39 @@ export default async function Painel() {
             playsInline
             preload="metadata"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            src="/plataforma/banner-boasvindas-v1.mp4"
+            src="/plataforma/banner-boasvindas-v2.mp4"
           />
           {/* Camada de texto por cima do véu (::before em globals.css) — o véu
               garante contraste uniforme contra os quatro stops da rampa
               animada (agora também sobre o vídeo, mesma paleta); sem
               `relative z-10` aqui o texto ficaria embaixo do véu absoluto,
-              veja a nota de contraste em globals.css. */}
-          <div className="relative z-10">
-            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/90">{t.boasVindas}</p>
-            <h2 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-brand-paper sm:text-6xl">
-              {t.bannerTitulo}
-            </h2>
-            <p className="mt-5 max-w-[48ch] text-brand-paper/90">{t.boasVindasTexto}</p>
+              veja a nota de contraste em globals.css.
+
+              flex: texto à esquerda, logo+wordmark à direita em sm+ (linha,
+              justify-between, logo centralizado verticalmente); empilha em
+              coluna no mobile, logo ABAIXO do texto. É HTML, não pixel de
+              vídeo, então fica 100% visível em qualquer largura — ao
+              contrário do vídeo de fundo, que é só motion abstrato desde o
+              round 2 do review (ver nota em remotion/BannerBoasVindas.tsx:
+              não existe posição fixa no frame 1920×640 que sobreviva ao
+              crop de object-cover em toda a faixa de viewports do painel). */}
+          <div className="relative z-10 flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/90">{t.boasVindas}</p>
+              <h2 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-brand-paper sm:text-6xl">
+                {t.bannerTitulo}
+              </h2>
+              <p className="mt-5 max-w-[48ch] text-brand-paper/90">{t.boasVindasTexto}</p>
+            </div>
+            {/* Decorativo: o nome da plataforma já tem nome acessível no
+                header (ShellHeader, aria-label={plataforma.nome}) — repetir
+                aqui na árvore de a11y seria ruído. */}
+            <div aria-hidden className="flex shrink-0 flex-col items-center gap-3 sm:self-center">
+              <Logo className="w-[150px] text-brand-paper sm:w-[180px]" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/75">
+                {wordmarkAcademy}
+              </span>
+            </div>
           </div>
         </section>
       )}

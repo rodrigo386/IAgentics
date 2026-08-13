@@ -1,22 +1,28 @@
-import {
-  AbsoluteFill,
-  cancelRender,
-  continueRender,
-  delayRender,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
-import { loadFont as carregarMono } from "@remotion/google-fonts/JetBrainsMono";
-import { Logo } from "@/components/ui/Logo";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 
 /**
  * Fundo em vídeo do banner de boas-vindas do painel (/app). Esta composição
- * produz SÓ a camada de fundo — eyebrow, título e parágrafo continuam em
- * HTML por cima (app/app/page.tsx), porque copy centralizada e a11y (texto
- * selecionável, leitor de tela, tradução futura) pedem elemento real, não
- * pixel de vídeo. O gradiente CSS que já existe em .banner-boasvindas
- * (globals.css) é o resting state/fallback: sem JS e sem vídeo o banner
- * continua íntegro, regra da casa.
+ * é SÓ motion abstrato — rampa da marca + blobs translúcidos. Nenhum texto,
+ * nenhum logo: os dois moram em HTML por cima (app/app/page.tsx), decisão
+ * do round 2 do review.
+ *
+ * POR QUE O LOGO SAIU DAQUI. A section real (1920×640, razão 3:1) some
+ * atrás de um crop MUITO mais estreito em telas de celular — a section vira
+ * quase quadrada, e `object-cover` escala o vídeo pela ALTURA pra cobrir o
+ * contêiner, sobrando só uma faixa central estreita do frame (medida real
+ * em browser: ~33% da largura em 375px, não os ~40-60% estimados na
+ * primeira rodada). Não existe posição horizontal fixa dentro do frame que
+ * sobreviva a esse crop em toda a faixa de viewports do painel - até o
+ * centro exato (50%) do frame fica no limite em telas ainda mais estreitas
+ * que 375px. Um elemento de vídeo não pode reagir ao viewport do
+ * navegador; um elemento HTML pode. Por isso o logo + wordmark "Academy"
+ * viraram overlay HTML dentro de `.banner-boasvindas` (ver
+ * `app/app/page.tsx`), onde um `flex` normal os deixa 100% visíveis em
+ * qualquer largura, com layout de verdade (canto direito no desktop,
+ * abaixo do texto no mobile) em vez de uma aposta em coordenadas fixas
+ * sobre um recorte imprevisível. O gradiente + blobs abaixo não têm esse
+ * problema: são fundo ambiente, não precisam estar 100% dentro do crop
+ * para cumprir o papel.
  *
  * LOOP PERFEITO, NÃO APROXIMADO. O <video loop> do painel corta do último
  * frame renderizado (299) direto para o primeiro (0), e esse corte precisa
@@ -42,25 +48,6 @@ import { Logo } from "@/components/ui/Logo";
  * tudo já nasce em regime periódico, no frame 0 tanto quanto no frame 299.
  */
 
-const mono = carregarMono("normal", {
-  weights: ["400", "500"],
-  subsets: ["latin", "latin-ext"],
-});
-
-const espera = delayRender("Carregando JetBrains Mono (banner-boasvindas)");
-mono
-  .waitUntilDone()
-  .then(() => continueRender(espera))
-  .catch((e) => cancelRender(e));
-
-export type PropsBannerBoasVindas = {
-  /** plataforma.nome ("IAgentics Academy"), passado via Root.tsx — nunca
-   *  digitado aqui. O wordmark ao lado do logo é o sufixo depois do
-   *  primeiro espaço ("Academy"), derivado por .split, não escrito à mão:
-   *  se o nome da marca mudar, o vídeo acompanha na mesma edição. */
-  nomePlataforma: string;
-};
-
 /** Um blob = um círculo grande, translúcido e desfocado, que deriva em
  *  paralaxe: posição-base (%) + amplitude (%) · onda periódica própria.
  *  `k` é o número de ciclos completos ao longo do loop de 10s — inteiro,
@@ -80,36 +67,22 @@ type Blob = {
 };
 
 /* Metade esquerda mais calma (é onde o texto HTML do banner real vive):
-   dois blobs pequenos e baixa opacidade. Os três blobs da direita ficam
-   agrupados em torno de CENTRO_LOGO_PCT (~68%, ver abaixo) em vez do canto
-   (~80-90%): quando o logo morava no canto extremo, blobs no canto faziam
-   sentido como "moldura" dele; agora que o logo se mudou para a zona
-   segura do crop mobile, um blob sozinho perto de 90% ficaria órfão, sem
-   nada por perto. Cinco ao todo, dentro da faixa pedida (3-5). Cores
-   tiradas direto da rampa da marca. */
+   dois blobs pequenos e baixa opacidade. Metade direita mais rica — sem
+   logo pra acomodar mais, o espaço abre pro canto (até ~92%), então os
+   três blobs da direita ficam mais espalhados do que nas rodadas
+   anteriores em vez de se agruparem num ponto fixo. Cinco ao todo, dentro
+   da faixa pedida (3-5). Cores tiradas direto da rampa da marca. */
 const BLOBS: Blob[] = [
   { top: 24, left: 12, size: 460, cor: "var(--brand-periwinkle)", opacidade: 0.14, blur: 130, ampX: 2.5, ampY: 2, k: 1, fase: 0 },
   { top: 78, left: 20, size: 520, cor: "var(--brand-violet)", opacidade: 0.12, blur: 150, ampX: 2, ampY: 2.5, k: 2, fase: Math.PI / 3 },
-  { top: 30, left: 70, size: 620, cor: "var(--brand-blue)", opacidade: 0.26, blur: 150, ampX: 3, ampY: 2.5, k: 1, fase: Math.PI / 2 },
-  { top: 72, left: 76, size: 500, cor: "var(--brand-indigo)", opacidade: 0.24, blur: 130, ampX: 2.5, ampY: 3, k: 3, fase: Math.PI },
-  { top: 50, left: 58, size: 380, cor: "var(--brand-periwinkle)", opacidade: 0.16, blur: 110, ampX: 2, ampY: 2, k: 2, fase: (3 * Math.PI) / 4 },
+  { top: 30, left: 64, size: 620, cor: "var(--brand-blue)", opacidade: 0.26, blur: 150, ampX: 3, ampY: 2.5, k: 1, fase: Math.PI / 2 },
+  { top: 74, left: 80, size: 520, cor: "var(--brand-indigo)", opacidade: 0.24, blur: 135, ampX: 2.5, ampY: 3, k: 3, fase: Math.PI },
+  { top: 48, left: 92, size: 420, cor: "var(--brand-periwinkle)", opacidade: 0.18, blur: 120, ampX: 2, ampY: 2, k: 2, fase: (3 * Math.PI) / 4 },
 ];
 
-/* Centro horizontal do bloco logo+wordmark, em % da largura do quadro.
-   1920×640 é MUITO mais largo que os viewports onde a section acaba
-   renderizada em mobile (a section vira quase quadrada com o texto
-   empilhado por cima); object-cover, pra cobrir um contêiner assim com um
-   frame de razão 3:1, escala pela ALTURA e corta boa parte da largura,
-   sobrando só uma faixa central em volta de 50%. right≈8% (centro ≈84%)
-   caía fora dessa faixa - o logo simplesmente sumia no formato mais
-   comum. 68% fica dentro da faixa central-segura em qualquer breakpoint
-   testado E ainda lê como "lado direito" no desktop, onde o quadro
-   inteiro é visível e o texto HTML ocupa a metade esquerda. */
-const CENTRO_LOGO_PCT = 68;
-
-export function BannerBoasVindas({ nomePlataforma }: PropsBannerBoasVindas) {
+export function BannerBoasVindas() {
   const frame = useCurrentFrame();
-  const { width, height, durationInFrames } = useVideoConfig();
+  const { durationInFrames } = useVideoConfig();
 
   /* onda(k, fase): -1..1, período = durationInFrames / k. k inteiro fecha o
      loop (ver nota de topo do arquivo). */
@@ -121,18 +94,9 @@ export function BannerBoasVindas({ nomePlataforma }: PropsBannerBoasVindas) {
   const bgX = 50 + 50 * onda(1);
   const bgY = 50 + 22 * onda(1, Math.PI / 2);
 
-  // Flutuação quase imperceptível do bloco logo+wordmark: poucos pixels,
-  // dois ciclos ao longo dos 10s.
-  const floatY = height * 0.012 * onda(2, Math.PI / 5);
-
-  const sufixo = nomePlataforma.split(" ").slice(1).join(" ");
-
-  const logoLargura = width * 0.15;
-
   return (
     <AbsoluteFill
       style={{
-        ["--font-jetbrains-mono" as string]: mono.fontFamily,
         overflow: "hidden",
         background:
           "linear-gradient(115deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet))",
@@ -161,38 +125,6 @@ export function BannerBoasVindas({ nomePlataforma }: PropsBannerBoasVindas) {
           />
         );
       })}
-
-      {/* Logo + wordmark: centralizado em CENTRO_LOGO_PCT (~68% da
-          largura), dentro da zona segura contra o crop de object-cover no
-          mobile (ver nota da constante acima). Metade esquerda do quadro
-          continua livre para o texto HTML do banner real, que se sobrepõe
-          por cima do vídeo na página. */}
-      <div
-        style={{
-          position: "absolute",
-          left: `${CENTRO_LOGO_PCT}%`,
-          top: "50%",
-          transform: `translate(-50%, calc(-50% + ${floatY}px))`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: height * 0.028,
-        }}
-      >
-        <div className="text-brand-paper" style={{ width: logoLargura }}>
-          <Logo />
-        </div>
-        <span
-          className="font-mono uppercase text-brand-paper"
-          style={{
-            fontSize: width * 0.0095,
-            letterSpacing: "0.24em",
-            opacity: 0.78,
-          }}
-        >
-          {sufixo}
-        </span>
-      </div>
     </AbsoluteFill>
   );
 }

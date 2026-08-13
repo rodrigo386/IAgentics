@@ -10,7 +10,7 @@
     "video": "remotion studio",
     "video:render": "remotion render abertura-marca out/abertura-marca.mp4",
     "video:render:vertical": "remotion render abertura-marca-vertical out/abertura-marca-vertical.mp4",
-    "video:render:banner": "remotion render banner-boasvindas public/plataforma/banner-boasvindas-v1.mp4",
+    "video:render:banner": "remotion render banner-boasvindas public/plataforma/banner-boasvindas-v2.mp4",
     "test:unit": "vitest run",
     "test:integracao": "vitest run lib/plataforma/autorizacao.test.ts",
     "test:e2e": "playwright test",
