@@ -204,11 +204,30 @@ export default async function Painel() {
           ctaLabel={t.continuarAula(heroInfo.proxima.titulo)}
         />
       ) : (
-        <section className="banner-boasvindas mb-12 px-6 py-14 sm:px-10 sm:py-20">
+        <section className="banner-boasvindas relative mb-12 overflow-hidden px-6 py-14 sm:px-10 sm:py-20">
+          {/* Vídeo de fundo (Remotion, remotion/BannerBoasVindas.tsx):
+              decorativo, mudo, em loop perfeito de 10s. O gradiente CSS da
+              própria section é o resting state/fallback — sem JS, sem
+              vídeo, o banner continua íntegro (regra da casa). Escondido
+              sob prefers-reduced-motion via CSS (.banner-boasvindas video,
+              globals.css) — quem pediu menos movimento fica só com o
+              gradiente estático. Sem z-index: fica abaixo do véu ::before
+              (z-index: 1) na ordem de pilha. */}
+          <video
+            aria-hidden
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            src="/plataforma/banner-boasvindas.mp4"
+          />
           {/* Camada de texto por cima do véu (::before em globals.css) — o véu
               garante contraste uniforme contra os quatro stops da rampa
-              animada; sem `relative z-10` aqui o texto ficaria embaixo do véu
-              absoluto, veja a nota de contraste em globals.css. */}
+              animada (agora também sobre o vídeo, mesma paleta); sem
+              `relative z-10` aqui o texto ficaria embaixo do véu absoluto,
+              veja a nota de contraste em globals.css. */}
           <div className="relative z-10">
             <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-brand-paper/90">{t.boasVindas}</p>
             <h2 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-brand-paper sm:text-6xl">

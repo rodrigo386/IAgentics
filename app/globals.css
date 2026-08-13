@@ -893,7 +893,18 @@
    Todos os outros stops (violet/indigo/periwinkle) ficam acima disso. Por
    isso o eyebrow e o parágrafo also subiram de /80 e /85 para /90 no
    markup — 0.40 de véu sozinho não bastava para essas opacidades mais
-   claras (dava 4.27:1 no pior stop, abaixo do piso de 4.5). */
+   claras (dava 4.27:1 no pior stop, abaixo do piso de 4.5).
+
+   VÍDEO DE FUNDO (Remotion, remotion/BannerBoasVindas.tsx). O <video> no
+   markup não tem z-index e é o primeiro elemento no DOM depois da section,
+   então empilha ABAIXO do véu por ordem — mas só por ordem não é robusto o
+   bastante (um único elemento sem z-index numa pilha com outro que TEM
+   z-index ainda pode surpreender dependendo do que mais entrar depois), por
+   isso o véu ganhou z-index: 1 explícito abaixo. O conteúdo de texto,
+   z-10 no markup, fica por cima dos dois. O gradiente desta própria classe
+   continua pintado por baixo do vídeo o tempo todo — é o resting state: se
+   o <video> falhar ao carregar, o elemento simplesmente fica transparente
+   e revela o gradiente CSS animado, sem buraco visual. */
 .banner-boasvindas {
   position: relative;
   background: linear-gradient(115deg, var(--brand-violet), var(--brand-indigo), var(--brand-periwinkle), var(--brand-blue), var(--brand-violet));
@@ -904,6 +915,7 @@
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: rgb(19 23 35 / 0.4);
   pointer-events: none;
 }
@@ -917,6 +929,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .banner-boasvindas { animation: none; }
+  /* Quem pede menos movimento não recebe o vídeo em loop — some, e o
+     gradiente CSS (acima, já sem animação neste modo) vira o estado final,
+     estático como o resto da página sob esta preferência. */
+  .banner-boasvindas video { display: none; }
 }
 
 /* Barra animada dos títulos de trilho: a rampa da marca corre da esquerda
