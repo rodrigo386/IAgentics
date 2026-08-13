@@ -50,12 +50,14 @@ export function NexoAssurance() {
             </div>
             <div className="grid grid-cols-1 items-center gap-4 border-y border-current/20 py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
               <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">Certificações</span>
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-4">
-                  <Image src={iso.src} alt={iso.name} width={iso.w} height={iso.h} className="h-20 w-auto object-contain" />
+              {/* 50/50 na largura toda: selos soltos deixavam um buraco à direita,
+                  desalinhado com a prancha do DM acima. */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-5">
+                  <Image src={iso.src} alt={iso.name} width={iso.w} height={iso.h} className="h-20 w-auto object-contain sm:h-24" />
                 </div>
-                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-4">
-                  <Image src={itil.src} alt={itil.name} width={itil.w} height={itil.h} className="h-11 w-auto object-contain" />
+                <div className="flex items-center justify-center border border-line bg-brand-paper px-6 py-5">
+                  <Image src={itil.src} alt={itil.name} width={itil.w} height={itil.h} className="h-11 w-auto object-contain sm:h-14" />
                 </div>
               </div>
             </div>
