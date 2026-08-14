@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { exigirAdmin } from "@/lib/admin/sessao";
 import {
+  alunoExiste,
   confirmarEmailManual,
   definirAtivo,
   definirRole,
@@ -108,9 +109,16 @@ export async function confirmarEmailManualAction(alunoId: string, _estado: Estad
 /** Gera um link de reset de uso único para o admin repassar por outro canal.
  *  Nunca loga o segredo nem a URL — só trafega no retorno da action, direto
  *  para a tela. Nada muda na ficha do aluno (o token não aparece em lugar
- *  nenhum da página), então não há revalidatePath aqui. */
+ *  nenhum da página), então não há revalidatePath aqui.
+ *
+ *  Checa existência ANTES de emitirToken: a ficha pode ficar aberta em outra
+ *  aba depois de uma exclusão (a mesma tela tem "Excluir conta") — sem essa
+ *  guarda, o INSERT em auth_tokens estouraria a FK (23503) sem tratamento,
+ *  em vez de cair no {erro,url} do padrão local, como todas as outras ações
+ *  desta tela já fazem para "não encontrado". */
 export async function gerarLinkResetAction(alunoId: string, _estado: EstadoLink, _formData: FormData): Promise<EstadoLink> {
   await exigirAdmin();
+  if (!(await alunoExiste(alunoId))) return { erro: admin.alunos.mensagens.erroGenerico, url: null };
   const r = await emitirToken(alunoId, "reset");
   if (!r.ok) return { erro: admin.alunos.mensagens.aguardeReenvio, url: null };
   return { erro: null, url: `${urlBase()}/app/redefinir-senha/${r.segredo}` };

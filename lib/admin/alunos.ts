@@ -242,6 +242,18 @@ export async function liberarAcesso(executorId: string, alunoId: string): Promis
   return { ok: true };
 }
 
+/** Checagem simples de existência, MESMO padrão de liberarAcesso/revogarAcesso
+ *  acima — usada por ações que operam sobre outro recurso (ex.: token de
+ *  reset) sem passar por um ResultadoAcao completo. Existe para fechar um
+ *  TOCTOU real: a ficha do aluno fica aberta em outra aba, e a aba tem seu
+ *  próprio botão "Excluir conta" — sem essa checagem, emitirToken tentaria
+ *  inserir em auth_tokens com um userId que não existe mais e estouraria a
+ *  FK (23503) direto, sem virar o {erro,url} do padrão local. */
+export async function alunoExiste(alunoId: string): Promise<boolean> {
+  const [aluno] = await db.select({ id: users.id }).from(users).where(eq(users.id, alunoId)).limit(1);
+  return !!aluno;
+}
+
 /** Espelho de liberarAcesso: revogar = inserir linha "cancelada", nunca UPDATE. */
 export async function revogarAcesso(executorId: string, alunoId: string): Promise<ResultadoAcao> {
   const [aluno] = await db.select({ id: users.id }).from(users).where(eq(users.id, alunoId)).limit(1);
