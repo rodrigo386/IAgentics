@@ -40,6 +40,7 @@ export const nav = {
     { label: "Soluções", href: "/#solucoes" },
     { label: "Nexo", href: "/nexo" },
     { label: "Academy", href: "/academy" },
+    { label: "Cursos", href: "/cursos" },
     { label: "Spend Lab", href: "/spend-lab" },
   ],
 } as const;
@@ -269,16 +270,15 @@ export const academy = {
    * time, trocados por este CTA. O fato das 9 empresas não se perdeu: continua em
    * `clients.lead`, na faixa de clientes.
    *
-   * `href` APONTA PARA A SEÇÃO DE CURSOS DESTA PÁGINA, não para a plataforma.
-   * Procurei o endereço da plataforma online em todos os links do site de vocês e
-   * ele não existe lá. Assim que tiver a URL, troque aqui - é uma linha, e o
-   * destino passa a ser o certo.
+   * `href` aponta para a landing da plataforma (/cursos) desde 2026-08-14 -
+   * antes apontava para a seção de cursos desta própria página, porque a
+   * plataforma ainda não tinha endereço público.
    */
   platform: {
     label: "Plataforma online de cursos",
     body: "Formações no seu ritmo, conteúdo exclusivo IAgentics.",
     cta: "Ver os cursos",
-    href: "#cursos",
+    href: "/cursos",
     /**
      * O botão da plataforma. `appHref: null` = ainda sem endereço, e o botão
      * aparece desabilitado com a marca "em breve" em vez de fingir que leva a
@@ -878,5 +878,72 @@ export const nexoPage = {
           "O agente classifica as linhas por categoria no modelo UNSPSC e aprende com o feedback do time.",
       },
     ],
+  },
+} as const;
+
+/**
+ * Landing pública da plataforma de cursos (/cursos) - a página que deixa claro
+ * o que é o /app antes do login. Escolha de layout do Rodrigo em 2026-08-14:
+ * "Prateleira viva" (as capas reais do catálogo são o hero).
+ *
+ * O catálogo em si vem do banco (buscarCatalogo) - aqui mora só a moldura de
+ * texto. O funil é o MESMO contrato do antigo /planos: anônimo vai para
+ * criar-conta com ?voltar=/app/assinar; logado sem acesso vai direto para
+ * /app/assinar; assinante vê "Ir para a plataforma".
+ */
+export const cursos = {
+  meta: {
+    titulo: "Cursos",
+    descricao:
+      "Plataforma de cursos IAgentics Academy: formações de IA aplicada, progresso salvo e certificado, por R$ 39,90 por mês.",
+  },
+  hero: {
+    headline: "Todo o acervo, no seu ritmo.",
+    /* 18 palavras - teto de 20 do hero. */
+    subtext:
+      "Formações de IA aplicada, gravadas por quem implementa. Aulas novas toda semana, progresso salvo e certificado ao concluir.",
+    jaSouAluno: "Já sou aluno",
+    estanteAlt: "Capas das formações disponíveis na plataforma",
+  },
+  catalogo: {
+    titulo: "O que está dentro",
+    lead: "Formações completas, do fundamento à imersão. O catálogo cresce com a assinatura ativa.",
+    horas: "h",
+  },
+  comoFunciona: {
+    titulo: "Como funciona",
+    passos: [
+      {
+        nome: "Crie sua conta",
+        texto: "Cadastro em um minuto e assinatura no cartão ou Pix, sem fidelidade.",
+      },
+      {
+        nome: "Assista onde quiser",
+        texto: "Player próprio, sem distração, no computador ou no celular.",
+      },
+      {
+        nome: "Avance no seu ritmo",
+        texto: "O progresso fica salvo por aula. Pare e volte de onde parou.",
+      },
+      {
+        nome: "Receba o certificado",
+        texto: "Cada formação concluída emite certificado com verificação online.",
+      },
+    ],
+  },
+  assinatura: {
+    eyebrow: "Assinatura",
+    titulo: "Todo o acervo da Academy. Um plano só.",
+    preco: "R$ 39,90",
+    porMes: "/mês",
+    beneficios: [
+      "Acesso total a todas as formações do catálogo, incluindo as que chegarem",
+      "Aulas novas conforme saem da gravação",
+      "Assista no seu ritmo, de qualquer dispositivo",
+      "Cancele quando quiser, sem multa",
+    ],
+    cta: "Assinar agora",
+    jaAssinante: "Você já é assinante.",
+    irParaPlataforma: "Ir para a plataforma",
   },
 } as const;

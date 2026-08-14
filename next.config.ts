@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
      muda; um re-render publica um nome novo (-v2, -v3...), não sobrescreve
      este. Sem essa disciplina de nome, `immutable` seria uma armadilha —
      um re-render silencioso ficaria preso em cache por até um ano. */
+  /* /planos virou a landing /cursos (2026-08-14). Redirect permanente para
+     não quebrar link antigo em e-mail, WhatsApp ou índice de busca. */
+  async redirects() {
+    return [{ source: "/planos", destination: "/cursos", permanent: true }];
+  },
   async headers() {
     return [
       {

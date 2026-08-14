@@ -1085,3 +1085,27 @@
   height: 3px;
   background: var(--brand-violet);
 }
+
+/* ---------------------------------------------------------------------------
+   ESTANTE DE CAPAS (/cursos, hero "Prateleira viva")
+
+   Colunas de capas 3:4 que sobem em loop contínuo. O conteúdo de cada coluna
+   é duplicado no markup e o keyframe percorre -50%, então o loop emenda sem
+   salto. Mesma doutrina do resto do site: CSS puro, e o estado de REPOUSO é
+   o visível - sem a animação (reduced motion, JS fora) a estante é apenas
+   uma grade parada de capas, completa e legível.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .estante-rolagem {
+    animation: estante-sobe var(--estante-dur, 60s) linear infinite;
+  }
+  .estante-rolagem-inversa {
+    animation-direction: reverse;
+  }
+}
+
+@keyframes estante-sobe {
+  to {
+    transform: translateY(-50%);
+  }
+}
