@@ -72,4 +72,24 @@ describe("emitirToken / consumirToken", () => {
     await db.update(authTokens).set({ expiraEm: new Date(Date.now() - 1000) }).where(eq(authTokens.userId, userId));
     expect((await consumirToken(r.segredo, "reset")).ok).toBe(false);
   });
+
+  it("concorrência real mata a corrida do link órfão", async () => {
+    // 4× emitirToken simultâneos no mesmo usuário: advisory lock serializa,
+    // exatamente 1 sucede e 3 ficam em "aguarde"
+    await db.delete(authTokens).where(eq(authTokens.userId, userId));
+    const resultados = await Promise.all([
+      emitirToken(userId, "reset"),
+      emitirToken(userId, "reset"),
+      emitirToken(userId, "reset"),
+      emitirToken(userId, "reset"),
+    ]);
+    const sucessos = resultados.filter((r) => r.ok === true);
+    const aguardes = resultados.filter((r) => r.ok === false && r.motivo === "aguarde");
+    expect(sucessos).toHaveLength(1);
+    expect(aguardes).toHaveLength(3);
+    // valida que o segredo vencedor consome com sucesso
+    if (!sucessos[0].ok) throw new Error("sucesso deveria ter ok=true");
+    const consumo = await consumirToken(sucessos[0].segredo, "reset");
+    expect(consumo).toEqual({ ok: true, userId });
+  });
 });
