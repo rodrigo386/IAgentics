@@ -74,6 +74,17 @@ export const plataforma = {
     recarregar: "Recarregar",
     aulasDoCurso: "Aulas do curso",
     aulaDe: (x: number, y: number) => `Aula ${x} de ${y}`,
+    /* Controles do player próprio (moldura sobre o embed do YouTube). */
+    player: {
+      reproduzir: "Reproduzir",
+      pausar: "Pausar",
+      progresso: "Progresso do vídeo",
+      velocidade: "Velocidade de reprodução",
+      semSom: "Desativar som",
+      comSom: "Ativar som",
+      telaCheia: "Tela cheia",
+      sairTelaCheia: "Sair da tela cheia",
+    },
   },
   conta: {
     titulo: "Sua conta",

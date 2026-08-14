@@ -11,8 +11,10 @@ test("aula gratuita toca e conclui; aula paga mostra trava de assinatura sem 404
   await page.getByRole("button", { name: "Criar conta" }).click();
   await expect(page).toHaveURL(/\/app$/);
 
-  // Aula gratuita: player visível, marca concluída, botão vira "Próxima aula".
+  // Aula gratuita: poster da marca primeiro (o iframe só nasce no clique),
+  // depois o player com a nossa moldura.
   await page.goto("/app/curso/fundamentos-ia-copilot/boas-vindas");
+  await page.getByRole("button", { name: "Reproduzir" }).click();
   await expect(page.locator('iframe[src*="youtube-nocookie"]')).toBeVisible();
 
   // Redesign: breadcrumb "Aula X de Y" e índice lateral com a aula atual marcada.

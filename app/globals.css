@@ -1044,3 +1044,44 @@
     margin: 12mm;
   }
 }
+
+/* Barra de progresso do player da aula (components/plataforma/PlayerAula.tsx):
+   range nativo com pista fina sobre o vídeo e polegar da cor de acento.
+   Sempre sobre fundo escuro (a barra vive num véu de tinta), então as cores
+   são fixas — não seguem o tema da página. */
+.progresso-aula {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+.progresso-aula::-webkit-slider-runnable-track {
+  height: 3px;
+  background: rgb(247 247 245 / 0.35);
+}
+.progresso-aula::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -5.5px;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--brand-violet);
+}
+.progresso-aula::-moz-range-track {
+  height: 3px;
+  background: rgb(247 247 245 / 0.35);
+}
+.progresso-aula::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--brand-violet);
+}
+.progresso-aula::-moz-range-progress {
+  height: 3px;
+  background: var(--brand-violet);
+}
