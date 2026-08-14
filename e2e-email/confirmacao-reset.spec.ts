@@ -94,7 +94,7 @@ test("esqueci minha senha: link redefine, senha antiga morre, link não repete",
   await expect(page).toHaveURL(/\/app$/);
 });
 
-test("reenvio e reset são neutros para e-mail inexistente", async ({ page }) => {
+test("pedido de reset é neutro para e-mail inexistente", async ({ page }) => {
   await page.goto("/app/recuperar-senha");
   await page.getByLabel("E-mail").fill("nao-existe@teste.invalido");
   await page.getByRole("button", { name: "Enviar link" }).click();

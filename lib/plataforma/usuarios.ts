@@ -7,6 +7,12 @@ import { users } from "@/lib/db/schema";
 import { emitirToken, consumirToken } from "@/lib/plataforma/tokens";
 import { emailDeConfirmacao, emailDeReset, emailTransacionalAtivo, enviarEmail, urlBase } from "@/lib/plataforma/email";
 
+/** Hash bcrypt sintaticamente válido mas que nenhuma senha real gera — usado para
+ *  comparar contra "nada" sem pular o custo do bcrypt.compare. Compartilhado entre
+ *  verificarCredenciais e credenciaisValidasMasNaoConfirmadas: mesma defesa contra
+ *  timing oracle nos dois lugares (ver comentário na segunda função). */
+const HASH_DUMMY = "$2a$10$invalidoinvalidoinvalidoinvalidoinvalido12345678901234";
+
 export async function criarUsuario(d: { nome: string; email: string; senha: string }):
   Promise<{ ok: true; id: string; confirmacaoPendente: boolean } | { ok: false; motivo: "email_existe" }> {
   // Defesa em profundidade: a action já barra nome/senha curtos antes de chamar
@@ -64,7 +70,7 @@ export async function trocarSenhaVerificando(
 export async function verificarCredenciais(email: string, senha: string) {
   const [u] = await db.select().from(users)
     .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
-  if (!u) { await bcrypt.compare(senha, "$2a$10$invalidoinvalidoinvalidoinvalidoinvalido12345678901234"); return null; } // tempo constante
+  if (!u) { await bcrypt.compare(senha, HASH_DUMMY); return null; } // tempo constante
   const senhaOk = await bcrypt.compare(senha, u.senhaHash); // roda sempre — o tempo não muda entre ativo e desativado
   if (!senhaOk) return null;
   // INVARIANTE: não confirmado nunca loga. Checagem depois da senha, para não
@@ -74,12 +80,20 @@ export async function verificarCredenciais(email: string, senha: string) {
 }
 
 /** Para a página de login distinguir "senha errada" de "falta confirmar":
- *  só roda DEPOIS de um AuthError (caminho raro), custo extra de bcrypt ok. */
+ *  só roda DEPOIS de um AuthError (caminho raro), custo extra de bcrypt ok.
+ *  Roda SEMPRE exatamente um bcrypt.compare — mesma família de defesa contra
+ *  timing oracle do hash dummy em verificarCredenciais e do after() em
+ *  reenviarConfirmacaoPorEmail/pedirResetPorEmail (este é o 3º caso da série).
+ *  Sem isso, quem chama esta função só depois de um AuthError (a action de
+ *  login) veria dois perfis de tempo: 1 bcrypt para conta inexistente ou já
+ *  confirmada, 2 bcrypts para conta existente e não confirmada — a latência
+ *  denunciaria cadastros pendentes de confirmação por e-mail. */
 export async function credenciaisValidasMasNaoConfirmadas(email: string, senha: string): Promise<boolean> {
   const [u] = await db.select().from(users)
     .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
-  if (!u || u.emailConfirmadoEm) return false;
-  return bcrypt.compare(senha, u.senhaHash);
+  const pendente = !!u && !u.emailConfirmadoEm;
+  const senhaOk = await bcrypt.compare(senha, pendente ? u.senhaHash : HASH_DUMMY);
+  return pendente && senhaOk;
 }
 
 /** Emite e envia o link de confirmação. Folga de 60s vira log, não erro —

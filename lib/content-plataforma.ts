@@ -42,6 +42,8 @@ export const plataforma = {
     reenviado: "Se existir uma conta com este e-mail, enviamos um novo link.",
     linkInvalidoTitulo: "Link inválido ou vencido",
     linkInvalidoTexto: "Peça um novo link de confirmação informando seu e-mail.",
+    jaConfirmado: "Se você já confirmou, é só entrar com sua senha.",
+    irParaLogin: "Ir para o login",
     confirmadoAviso: "E-mail confirmado — entre com sua senha.",
   },
   painel: {

@@ -18,6 +18,14 @@ export default async function ConfirmarEmailPage({
       <p className="mt-4 leading-relaxed text-fg-muted">
         {erro ? t.linkInvalidoTexto : para ? t.enviamos(para) : t.linkInvalidoTexto}
       </p>
+      {erro && (
+        <p className="mt-2 text-sm text-fg-muted">
+          {t.jaConfirmado}{" "}
+          <a href="/app/entrar" className="text-sm text-accent-text hover:text-fg">
+            {t.irParaLogin}
+          </a>
+        </p>
+      )}
       <div className="mt-8">
         <FormReenviarConfirmacao emailInicial={para ?? ""} />
       </div>
