@@ -740,7 +740,7 @@ export const nexoPage = {
      */
     marca: "Nexo",
     subtext:
-      "Cinco agentes que assumem o trabalho operacional de suprimentos rodando dentro da plataforma que sua empresa já usa.",
+      "Cinco agentes de IA, conduzindo seus processos de compras, com governança, segurança e gestão dos dados.",
     /**
      * Esta capa usava a mesma frase da hero da home. Quando a home passou a exibir
      * só "Nexo", a frase ficou morando aqui em vez de sumir junto: a instrução era
