@@ -2,8 +2,8 @@
 import { useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { entrarAction } from "@/app/app/entrar/actions";
+import { reenviarDoLoginAction } from "@/app/app/confirmar-email/actions";
 import { plataforma } from "@/lib/content-plataforma";
-import { FormReenviarConfirmacao } from "@/components/plataforma/FormReenviarConfirmacao";
 
 const ESTADO_INICIAL: { erro: string | null; naoConfirmado?: boolean; email?: string | null } = { erro: null };
 
@@ -58,7 +58,17 @@ export function FormEntrar() {
       {estado?.naoConfirmado ? (
         <div className="flex flex-col gap-4">
           <p role="alert" className="text-sm text-fg">{t.naoConfirmado}</p>
-          <FormReenviarConfirmacao emailInicial={estado.email ?? email} />
+          {/* Reaproveita o form de login (mesmos campos) em vez de aninhar um
+              <form> dentro de outro: formNoValidate porque o required de senha
+              bloquearia o submit deste botão, que só precisa do e-mail. */}
+          <button
+            type="submit"
+            formAction={reenviarDoLoginAction}
+            formNoValidate
+            className="rounded-control border border-line-strong px-6 py-3 font-medium transition-colors hover:border-fg"
+          >
+            {plataforma.confirmacao.reenviar}
+          </button>
         </div>
       ) : estado?.erro ? (
         <p role="alert" className="text-sm text-fg">{estado.erro}</p>

@@ -23,7 +23,14 @@ export async function criarContaAction(_: unknown, formData: FormData):
   }
 
   if (resultado.confirmacaoPendente) {
-    await emitirEEnviarConfirmacao(resultado.id, nome, email);
+    try {
+      await emitirEEnviarConfirmacao(resultado.id, nome.trim(), email.trim().toLowerCase());
+    } catch (e) {
+      // A conta já existe (criarUsuario deu ok) — a tela de confirmação tem
+      // reenvio, então uma falha aqui não pode travar o cadastro. Log só com
+      // o userId: nunca token, nunca e-mail.
+      console.error("[criar-conta] emissão da confirmação falhou", { userId: resultado.id });
+    }
     redirect(`/app/confirmar-email?para=${encodeURIComponent(email.trim().toLowerCase())}`);
   }
   // canal inativo: segue o signIn de hoje

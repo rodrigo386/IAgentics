@@ -12,7 +12,7 @@ export function FormReenviarConfirmacao({ emailInicial }: { emailInicial: string
   return (
     <form action={acao} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5 text-sm font-medium">
-        E-mail
+        {plataforma.entrar.email}
         <input type="email" name="email" required defaultValue={emailInicial} autoComplete="email" className={campo} />
       </label>
       {estado ? <p role="status" className="text-sm text-accent-text">{estado.mensagem}</p> : null}

@@ -1,6 +1,7 @@
 import "server-only";
 import { eq, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { after } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { emitirToken, consumirToken } from "@/lib/plataforma/tokens";
@@ -94,12 +95,20 @@ export async function emitirEEnviarConfirmacao(userId: string, nome: string, ema
   if (!r.ok) console.error("[confirmacao] envio falhou", { userId });
 }
 
-/** Caminho público de reenvio: resposta é sempre a mesma para quem chama. */
+/** Caminho público de reenvio: resposta é sempre a mesma para quem chama, e no
+ *  MESMO TEMPO — mesmo espírito do bcrypt dummy em verificarCredenciais (que
+ *  compara contra um hash inválido quando o e-mail não existe, para o tempo
+ *  de resposta não denunciar se a conta existe). Aqui o SELECT sozinho já é
+ *  rápido e igual nos dois ramos; o que variaria é a transação de emitirToken
+ *  + a chamada de rede do envio, que só acontecem quando a conta existe e não
+ *  está confirmada. `after` agenda esse trabalho para RODAR DEPOIS da resposta
+ *  já ter saído, então a latência do request fica igual nos dois casos. Erros
+ *  já são logados dentro de emitirEEnviarConfirmacao. */
 export async function reenviarConfirmacaoPorEmail(email: string): Promise<void> {
   const [u] = await db.select({ id: users.id, nome: users.nome, email: users.email, emailConfirmadoEm: users.emailConfirmadoEm })
     .from(users).where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
   if (!u || u.emailConfirmadoEm) return;
-  await emitirEEnviarConfirmacao(u.id, u.nome, u.email);
+  after(() => emitirEEnviarConfirmacao(u.id, u.nome, u.email));
 }
 
 /** Consome o token de confirmação e marca o e-mail como confirmado. */
