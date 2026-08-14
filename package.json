@@ -15,6 +15,7 @@
     "test:unit": "vitest run",
     "test:integracao": "vitest run lib/plataforma/autorizacao.test.ts",
     "test:e2e": "playwright test",
+    "test:e2e:email": "rm -f /tmp/iagentics-e2e-emails.jsonl && playwright test -c playwright.email.config.ts",
     "db:local": "node scripts/db-local.mjs start",
     "db:local:stop": "node scripts/db-local.mjs stop",
     "db:migrar": "node scripts/migrar.mjs",
