@@ -165,7 +165,9 @@ export const nexo = {
    *  slide 3), com um print real por passo (slides 4-13). Substituiu o índice
    *  de agentes como seção principal da página em 2026-08-14. */
   fluxo: {
-    titulo: "Compras dentro da Desk Manager",
+    /* "Nexo" em caixa mista de propósito (mesma regra do hero): caixa alta na
+       string faz leitor de tela soletrar N-E-X-O. */
+    titulo: "Processo de Compras no Nexo",
     lead: "Da requisição ao pedido no ERP: sete passos conduzidos pelos agentes do Nexo.",
     passos: [
       {

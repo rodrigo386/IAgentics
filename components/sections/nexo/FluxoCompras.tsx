@@ -53,7 +53,15 @@ export function NexoFluxoCompras() {
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[18ch] text-4xl font-medium tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
+          {/* Lockup com o ícone do app, como no hero — o título carrega a marca. */}
+          <h2 className="flex max-w-[22ch] items-center gap-4 text-4xl font-medium tracking-[-0.03em] text-fg sm:gap-5 sm:text-5xl lg:text-6xl">
+            <Image
+              src="/nexo-app-icon.svg"
+              alt=""
+              width={512}
+              height={512}
+              className="size-10 shrink-0 sm:size-12 lg:size-14"
+            />
             {nexo.fluxo.titulo}
           </h2>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{nexo.fluxo.lead}</p>
