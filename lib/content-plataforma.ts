@@ -154,4 +154,23 @@ export const plataforma = {
     jaAssinante: "Você já é assinante.",
     erroGenerico: "Não foi possível iniciar o pagamento. Tente novamente em instantes.",
   },
+  /* E-mails transacionais (lib/plataforma/email.ts). Texto puro + HTML simples
+     da marca; link também em texto puro por entregabilidade. */
+  emails: {
+    confirmacao: {
+      assunto: "Confirme seu e-mail — IAgentics Academy",
+      saudacao: (nome: string) => `Olá, ${nome}.`,
+      corpo: "Confirme seu e-mail para entrar na IAgentics Academy. O link vale por 7 dias.",
+      botao: "Confirmar e-mail",
+      ignorar: "Se você não criou esta conta, ignore esta mensagem.",
+    },
+    reset: {
+      assunto: "Redefinir sua senha — IAgentics Academy",
+      saudacao: (nome: string) => `Olá, ${nome}.`,
+      corpo: "Recebemos um pedido para redefinir sua senha. O link vale por 60 minutos e funciona uma única vez.",
+      botao: "Redefinir senha",
+      ignorar: "Se você não pediu a redefinição, ignore esta mensagem — sua senha continua a mesma.",
+    },
+    rodape: "IAgentics Academy · iagentics.com.br",
+  },
 } as const;
