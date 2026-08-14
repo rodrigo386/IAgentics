@@ -898,6 +898,9 @@ export const cursos = {
       "Plataforma de cursos IAgentics Academy: formações de IA aplicada, progresso salvo e certificado, por R$ 39,90 por mês.",
   },
   hero: {
+    /* O wordmark branco da plataforma (o mesmo do shell do /app), invertido
+       no tema claro - a landing carrega a marca Academy, não só a frase. */
+    logoAlt: "IAgentics Academy",
     headline: "Todo o acervo, no seu ritmo.",
     /* 18 palavras - teto de 20 do hero. */
     subtext:

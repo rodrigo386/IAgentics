@@ -36,7 +36,17 @@ export function CursosEstante({
     <section className="overflow-hidden border-b border-line">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:py-24">
         <div className="lg:col-span-5">
-          <h1 className="max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
+          {/* O wordmark da Academy em destaque, mesmo asset e mesmo idioma de
+              inversão do shell do /app: branco no escuro, invertido no claro. */}
+          <Image
+            src="/plataforma/academy-logo.png"
+            alt={t.hero.logoAlt}
+            width={893}
+            height={254}
+            priority
+            className="h-12 w-auto invert sm:h-14 lg:h-16 dark:invert-0"
+          />
+          <h1 className="mt-8 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
             {t.hero.headline}
           </h1>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtext}</p>
