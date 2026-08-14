@@ -53,6 +53,9 @@ test("admin busca aluno, libera acesso à aula paga (prova de ponta a ponta), de
 
   // Sessão do ALUNO (contexto separado) agora enxerga o player da aula paga.
   await paginaAluno.reload();
+  // Player novo: o iframe só nasce no clique do poster — o poster visível já
+  // prova o acesso (a trava não renderiza player), e o clique prova o embed.
+  await paginaAluno.getByRole("button", { name: "Reproduzir" }).click();
   await expect(paginaAluno.locator('iframe[src*="youtube-nocookie"]')).toBeVisible();
 
   // Admin revoga.
