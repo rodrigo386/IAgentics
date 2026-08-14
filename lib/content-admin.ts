@@ -22,6 +22,8 @@ export const admin = {
     },
     seloAdmin: "Admin",
     seloDesativada: "Desativada",
+    emailConfirmado: "E-mail confirmado",
+    emailNaoConfirmado: "E-mail não confirmado",
     nuncaAcessou: "—",
     paginacao: {
       anterior: "Anterior",
@@ -48,6 +50,9 @@ export const admin = {
       campoEmailConfirmacao: "Digite o e-mail do aluno para confirmar",
       botaoConfirmarExclusao: "Excluir definitivamente",
       emailNaoConfere: "O e-mail digitado não confere.",
+      confirmarEmail: "Marcar e-mail como confirmado",
+      gerarLinkReset: "Gerar link de redefinição",
+      linkResetAjuda: "Copie e envie ao aluno por outro canal. Vale 60 minutos, uso único.",
     },
     mensagens: {
       acessoLiberado: "Acesso liberado.",
@@ -60,6 +65,8 @@ export const admin = {
       erroGenerico: "Não foi possível concluir a ação.",
       jaTemAcesso: "Este aluno já tem acesso liberado.",
       jaSemAcesso: "Este aluno já não tem acesso.",
+      emailConfirmadoOk: "E-mail confirmado na mão.",
+      aguardeReenvio: "Aguarde 60 segundos entre links.",
     },
   },
   conteudo: {

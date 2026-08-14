@@ -77,6 +77,9 @@ export default async function PaginaAluno({ params }: { params: Promise<{ id: st
             <dd className="mt-1 text-fg">{formatarData(aluno.ultimoAcesso)}</dd>
           </div>
         </dl>
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">
+          {aluno.emailConfirmadoEm ? t.emailConfirmado : t.emailNaoConfirmado}
+        </p>
         {aluno.role === "admin" || !aluno.ativo ? (
           <div className="flex flex-wrap gap-2">
             {aluno.role === "admin" ? (
@@ -146,6 +149,7 @@ export default async function PaginaAluno({ params }: { params: Promise<{ id: st
         role={aluno.role}
         ativo={aluno.ativo}
         temAcesso={temAcessoAtual}
+        emailConfirmado={Boolean(aluno.emailConfirmadoEm)}
         souEu={souEu}
       />
     </div>

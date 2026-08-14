@@ -17,6 +17,7 @@ export type AlunoLinha = {
 };
 
 export type AlunoDetalhe = AlunoLinha & {
+  emailConfirmadoEm: Date | null;
   historico: { status: string; criadoEm: Date }[]; // todas as linhas, mais recente primeiro
   progresso: {
     slug: string;
@@ -142,6 +143,7 @@ export async function buscarAluno(id: string): Promise<AlunoDetalhe | null> {
       role: users.role,
       ativo: users.ativo,
       criadoEm: users.createdAt,
+      emailConfirmadoEm: users.emailConfirmadoEm,
     })
     .from(users)
     .where(eq(users.id, id))
@@ -220,6 +222,7 @@ export async function buscarAluno(id: string): Promise<AlunoDetalhe | null> {
     role: u.role,
     ativo: u.ativo,
     criadoEm: u.criadoEm,
+    emailConfirmadoEm: u.emailConfirmadoEm,
     status,
     ultimoAcesso: acessoLinha[0]?.ultimo ?? null,
     historico,
@@ -279,5 +282,19 @@ export async function excluirAluno(executorId: string, alunoId: string, emailCon
     return { ok: false, motivo: "email_nao_confere" };
   }
   await db.delete(users).where(eq(users.id, alunoId)); // cascade: subscriptions e lesson_progress
+  return { ok: true };
+}
+
+/** Válvula de suporte: confirma o e-mail na mão, sem token. Mesmo coalesce de
+ *  redefinirSenhaComToken (lib/plataforma/usuarios.ts) — idempotente, nunca
+ *  sobrescreve uma data de confirmação já existente. Sem restrição a si
+ *  mesmo: um admin confirmar o próprio e-mail é inofensivo. */
+export async function confirmarEmailManual(executorId: string, alunoId: string): Promise<ResultadoAcao> {
+  const resultado = await db
+    .update(users)
+    .set({ emailConfirmadoEm: sql`coalesce(${users.emailConfirmadoEm}, now())` })
+    .where(eq(users.id, alunoId))
+    .returning({ id: users.id });
+  if (!resultado.length) return { ok: false, motivo: "nao_encontrado" };
   return { ok: true };
 }
