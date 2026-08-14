@@ -154,6 +154,21 @@ export const plataforma = {
     metaTitulo: (formacao: string) => `Certificado — ${formacao} · IAgentics Academy`,
     metaDescricao: (aluno: string, formacao: string) => `${aluno} concluiu a formação ${formacao} na IAgentics Academy.`,
   },
+  recuperarSenha: {
+    titulo: "Esqueci minha senha",
+    texto: "Informe seu e-mail. Se houver uma conta, enviaremos o link de redefinição.",
+    botao: "Enviar link",
+    enviado: "Se existir uma conta com este e-mail, enviamos o link de redefinição.",
+    novaTitulo: "Escolha a nova senha",
+    novaTexto: "O link é de uso único. Salve a senha nova para entrar.",
+    novaSenha: "Nova senha",
+    botaoSalvar: "Salvar nova senha",
+    linkInvalidoTitulo: "Link inválido ou vencido",
+    linkInvalidoTexto: "Links de redefinição valem por 60 minutos e funcionam uma vez.",
+    pedirNovo: "Pedir um novo link",
+    redefinidaAviso: "Senha redefinida — entre com a nova senha.",
+    senhaCurta: "A senha precisa de pelo menos 8 caracteres.",
+  },
   assinar: {
     titulo: "Assinar a Academy",
     resumo:

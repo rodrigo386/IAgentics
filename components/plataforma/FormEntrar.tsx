@@ -13,6 +13,7 @@ export function FormEntrar() {
   const voltar = busca.get("voltar") ?? "/app";
   const sessaoExpirada = busca.get("sessao") === "expirada";
   const confirmado = busca.get("confirmado") === "1";
+  const redefinida = busca.get("redefinida") === "1";
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [estado, acao, enviando] = useActionState(entrarAction, ESTADO_INICIAL);
@@ -25,6 +26,11 @@ export function FormEntrar() {
       {confirmado ? (
         <p role="status" className="border border-line bg-surface px-4 py-3 text-sm text-accent-text">
           {plataforma.confirmacao.confirmadoAviso}
+        </p>
+      ) : null}
+      {redefinida ? (
+        <p role="status" className="border border-line bg-surface px-4 py-3 text-sm text-accent-text">
+          {plataforma.recuperarSenha.redefinidaAviso}
         </p>
       ) : null}
       {sessaoExpirada ? (

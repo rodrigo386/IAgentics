@@ -5,7 +5,7 @@ import { after } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { emitirToken, consumirToken } from "@/lib/plataforma/tokens";
-import { emailDeConfirmacao, emailTransacionalAtivo, enviarEmail, urlBase } from "@/lib/plataforma/email";
+import { emailDeConfirmacao, emailDeReset, emailTransacionalAtivo, enviarEmail, urlBase } from "@/lib/plataforma/email";
 
 export async function criarUsuario(d: { nome: string; email: string; senha: string }):
   Promise<{ ok: true; id: string; confirmacaoPendente: boolean } | { ok: false; motivo: "email_existe" }> {
@@ -116,5 +116,46 @@ export async function confirmarEmailPorToken(segredo: string): Promise<boolean> 
   const r = await consumirToken(segredo, "confirmacao");
   if (!r.ok) return false;
   await db.update(users).set({ emailConfirmadoEm: new Date() }).where(eq(users.id, r.userId));
+  return true;
+}
+
+/** Emite e envia o link de reset. Folga de 60s vira log, não erro. Nunca loga
+ *  o token nem o link. */
+async function emitirEEnviarReset(userId: string, nome: string, email: string): Promise<void> {
+  const t = await emitirToken(userId, "reset");
+  if (!t.ok) {
+    console.info("[reset] pedido dentro da folga de 60s", { userId });
+    return;
+  }
+  const msg = emailDeReset(nome, `${urlBase()}/app/redefinir-senha/${t.segredo}`);
+  const r = await enviarEmail({ para: email, ...msg });
+  if (!r.ok) console.error("[reset] envio falhou", { userId });
+}
+
+/** Caminho público do "esqueci minha senha": resposta neutra sempre, e NO
+ *  MESMO TEMPO — mesmo espírito do bcrypt dummy em verificarCredenciais e do
+ *  `after` em reenviarConfirmacaoPorEmail (evita timing oracle que denunciaria
+ *  se a conta existe). O SELECT sozinho é rápido e igual nos dois ramos; o que
+ *  variaria é a transação de emitirToken + a chamada de rede do envio, que só
+ *  acontecem quando a conta existe. `after` agenda esse trabalho para RODAR
+ *  DEPOIS da resposta já ter saído, então a latência do request fica igual
+ *  nos dois casos. Erros já são logados dentro de emitirEEnviarReset. */
+export async function pedirResetPorEmail(email: string): Promise<void> {
+  const [u] = await db.select({ id: users.id, nome: users.nome, email: users.email })
+    .from(users).where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
+  if (!u) return;
+  after(() => emitirEEnviarReset(u.id, u.nome, u.email));
+}
+
+/** Redefine a senha com o token. VALIDA ANTES de consumir: senha curta não
+ *  pode queimar o link. Reset concluído também confirma o e-mail (posse). */
+export async function redefinirSenhaComToken(segredo: string, novaSenha: string): Promise<boolean> {
+  if (novaSenha.length < 8) throw new Error("dados invalidos");
+  const senhaHash = await bcrypt.hash(novaSenha, 10);
+  const r = await consumirToken(segredo, "reset");
+  if (!r.ok) return false;
+  await db.update(users)
+    .set({ senhaHash, emailConfirmadoEm: sql`coalesce(${users.emailConfirmadoEm}, now())` })
+    .where(eq(users.id, r.userId));
   return true;
 }
