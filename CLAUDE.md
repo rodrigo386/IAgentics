@@ -1,0 +1,62 @@
+# IAgentics — Memória do Projeto
+
+Site institucional + plataforma de cursos (IAgentics Academy) + admin. Tudo em **pt-BR**.
+
+- **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` ainda aponta para o site antigo (DNS pendente com o Rodrigo).
+- **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
+- **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
+
+## Stack
+
+Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.js (Credentials + bcryptjs) · Resend (condicionado a chave) · Remotion (vídeos) · vitest + Playwright.
+
+## Mapa de rotas
+
+- Público: `/` (home), `/nexo`, `/academy`, `/spend-lab`, `/planos`, `/certificados`
+- Aluno: `/app` (entrar, criar-conta, curso, conta, assinar, confirmar-email, recuperar-senha, redefinir-senha)
+- Admin: `/admin` (alunos, conteudo, configuracoes, metricas-csv)
+
+## Convenções que valem sempre
+
+- **Toda string visível vive em `lib/content.ts`** (+ `content-plataforma.ts`, `content-admin.ts`), copiada verbatim do deck `IAgentics_Clientes_V2.pptx`. Nunca hardcodar copy em componente.
+- **"Nexo" em caixa mista nas strings** — em caps o leitor de tela soletra N-E-X-O. Peso visual vem da tipografia, não de maiúsculas.
+- Datas relativas viram absolutas em docs; commits em pt-BR no padrão `feat:`/`fix:`.
+
+## Testes
+
+- `npm run test:unit` (vitest) · `npm run test:e2e` (Playwright, **workers: 1** — os specs dividem um banco só e correm em corrida se paralelos) · `npm run test:e2e:email` (config própria, porta 3100, caixa de e-mail em arquivo).
+- Banco local: `npm run db:local` / `db:migrar` / `db:gerar`.
+
+## Deploy (Railway)
+
+- `scripts/deploy-railway.sh` — build local → upload de `next-build/`. Poll de status via GraphQL `backboard.railway.com/graphql/v2`.
+- O token em `.env.local` chamado `RAILWAY_TOKEN` funciona como **RAILWAY_API_TOKEN** (token de conta): `export RAILWAY_API_TOKEN=$(grep "^RAILWAY_TOKEN=" .env.local | cut -d= -f2-)` habilita `npx @railway/cli ssh/up`.
+- **Migração nova em produção**: o container roda o artefato antigo até o upload terminar — SQL novo se aplica inline via `ssh` (script node em base64, split por statement-breakpoint, + linha manual em `__drizzle_migrations`). `migrar.mjs` no container antigo é no-op.
+- Migração local exige a entrada no `drizzle/meta/_journal.json` — `migrate()` ignora `.sql` fora do journal em silêncio.
+
+## E-mail e auth (regras de segurança)
+
+- Canal transacional: `emailTransacionalAtivo()` = `EMAIL_CAIXA_TESTE` (precedência) `|| RESEND_API_KEY`. **`EMAIL_CAIXA_TESTE` NUNCA vai para o Railway** — bloquearia cadastro e desviaria todo e-mail para arquivo.
+- Confirmação de e-mail **bloqueia login** (invariante em `verificarCredenciais`, depois do bcrypt). Tokens em `auth_tokens` com hash SHA-256, uso único, confirmação 7d / reset 60min.
+- Tokens e URLs de reset **nunca aparecem em log** (só userId+tipo). URL de reset só na resposta da ação do admin.
+- Timing uniforme: `HASH_DUMMY` + `after()` — não remover achando que é código morto.
+
+## Segredos
+
+- `.env.local` nunca vai para git/docker/railway. Valores de chave **nunca no chat** — "no arquivo, nunca no chat".
+- `ASAAS` é chave de **PRODUÇÃO** (cobrança real): nunca chamar a API em teste automatizado. Webhook em `https://iagentics.com.br/api/asaas/webhook`.
+- CPF nunca persiste nem vai a log (`redigirCpfs`).
+
+## Armadilhas que já quebraram o build (não repetir)
+
+1. `npx next build` com `next dev` rodando clobbera o `.next` compartilhado — página sem estilo, 404 em chunks. Nunca buildar com dev de pé.
+2. Tailwind v4 **abandonou** o shorthand v3 `bg-[--token]` — falha em silêncio. Usar token de tema (`bg-brand-paper`) ou `var(--token)`.
+3. Trocar imagem mantendo o nome do arquivo serve a antiga (cache do otimizador por URL). Apagar `.next/cache/images` depois.
+4. Antes de rebuild/restart: matar `next start` **e** `next-server` **e** `lsof -ti:3000` — um server velho servindo chunk velho faz o fix parecer quebrado.
+5. `initial={{opacity:0}}` do Motion faz SSR de página em branco — entrada é CSS puro com fill `backwards`/`both` (ver DESIGN.md).
+
+## Pendências em aberto (com o Rodrigo)
+
+- **RESEND_API_KEY** no Railway (ativa confirmação, reset e formulário de contato → rodrigo.costa@iagentics.com.br).
+- **DNS do www** → apontar para o apex/Railway (hoje serve o site antigo; canonicals em `site.url` referenciam www).
+- **Fogo real Asaas**: R$ 39,90 via Pix em /planos para validar a cobrança ponta a ponta.
