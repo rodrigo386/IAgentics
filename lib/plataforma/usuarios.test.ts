@@ -13,7 +13,10 @@ describe.skipIf(!process.env.DATABASE_URL)("trocarSenhaVerificando", () => {
   beforeAll(async () => {
     const [u] = await db
       .insert(users)
-      .values({ nome: "Teste troca", email, senhaHash: await bcrypt.hash("senha-antiga-1", 10) })
+      // emailConfirmadoEm: fixture representa um usuário já confirmado — quem
+      // troca senha já está logado, e verificarCredenciais agora exige
+      // confirmação (Task 4: bloqueio total atrás do interruptor do canal).
+      .values({ nome: "Teste troca", email, senhaHash: await bcrypt.hash("senha-antiga-1", 10), emailConfirmadoEm: new Date() })
       .returning({ id: users.id });
     userId = u.id;
   });

@@ -20,6 +20,8 @@ export const plataforma = {
     criarConta: "Criar conta",
     erroCredenciais: "E-mail ou senha incorretos",
     sessaoExpirada: "Sua sessão expirou. Entre de novo para continuar.",
+    naoConfirmado: "Confirme seu e-mail antes de entrar. Não recebeu o link?",
+    esqueciSenha: "Esqueci minha senha",
   },
   criarConta: {
     titulo: "Criar conta",
@@ -32,6 +34,15 @@ export const plataforma = {
     emailExiste: "Este e-mail já tem conta. Entre com sua senha ou peça um link de acesso.",
     nomeCurto: "Informe seu nome completo.",
     senhaCurta: "A senha precisa de pelo menos 8 caracteres.",
+  },
+  confirmacao: {
+    titulo: "Confirme seu e-mail",
+    enviamos: (email: string) => `Enviamos um link de confirmação para ${email}. Abra o e-mail e clique no link para entrar.`,
+    reenviar: "Reenviar link",
+    reenviado: "Se existir uma conta com este e-mail, enviamos um novo link.",
+    linkInvalidoTitulo: "Link inválido ou vencido",
+    linkInvalidoTexto: "Peça um novo link de confirmação informando seu e-mail.",
+    confirmadoAviso: "E-mail confirmado — entre com sua senha.",
   },
   painel: {
     continuar: "Continue de onde parou",

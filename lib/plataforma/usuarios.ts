@@ -3,17 +3,31 @@ import { eq, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
+import { emitirToken, consumirToken } from "@/lib/plataforma/tokens";
+import { emailDeConfirmacao, emailTransacionalAtivo, enviarEmail, urlBase } from "@/lib/plataforma/email";
 
 export async function criarUsuario(d: { nome: string; email: string; senha: string }):
-  Promise<{ ok: true } | { ok: false; motivo: "email_existe" }> {
+  Promise<{ ok: true; id: string; confirmacaoPendente: boolean } | { ok: false; motivo: "email_existe" }> {
   // Defesa em profundidade: a action já barra nome/senha curtos antes de chamar
   // esta função, mas criarUsuario pode ser chamada diretamente (script, teste,
   // outra rota futura) — nunca deve criar conta com dado abaixo do piso.
   if (d.nome.trim().length < 2 || d.senha.length < 8) throw new Error("dados invalidos");
   const senhaHash = await bcrypt.hash(d.senha, 10);
+  // Bloqueio total é decisão de produto, mas só faz sentido com canal de e-mail:
+  // sem RESEND_API_KEY (nem caixa de teste) a conta nasce confirmada — o
+  // comportamento de sempre, zero regressão até a chave existir.
+  const confirmacaoPendente = emailTransacionalAtivo();
   try {
-    await db.insert(users).values({ nome: d.nome.trim(), email: d.email.trim().toLowerCase(), senhaHash });
-    return { ok: true };
+    const [linha] = await db
+      .insert(users)
+      .values({
+        nome: d.nome.trim(),
+        email: d.email.trim().toLowerCase(),
+        senhaHash,
+        emailConfirmadoEm: confirmacaoPendente ? null : new Date(),
+      })
+      .returning({ id: users.id });
+    return { ok: true, id: linha.id, confirmacaoPendente };
   } catch (e: any) {
     // drizzle-orm@0.45 envolve o erro do driver em DrizzleQueryError; o código
     // pg real (23505 = unique_violation) vem em e.cause.code, não em e.code.
@@ -52,5 +66,46 @@ export async function verificarCredenciais(email: string, senha: string) {
   if (!u) { await bcrypt.compare(senha, "$2a$10$invalidoinvalidoinvalidoinvalidoinvalido12345678901234"); return null; } // tempo constante
   const senhaOk = await bcrypt.compare(senha, u.senhaHash); // roda sempre — o tempo não muda entre ativo e desativado
   if (!senhaOk) return null;
+  // INVARIANTE: não confirmado nunca loga. Checagem depois da senha, para não
+  // mudar o perfil de tempo entre existente/inexistente.
+  if (!u.emailConfirmadoEm) return null;
   return u.ativo ? u : null;
+}
+
+/** Para a página de login distinguir "senha errada" de "falta confirmar":
+ *  só roda DEPOIS de um AuthError (caminho raro), custo extra de bcrypt ok. */
+export async function credenciaisValidasMasNaoConfirmadas(email: string, senha: string): Promise<boolean> {
+  const [u] = await db.select().from(users)
+    .where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
+  if (!u || u.emailConfirmadoEm) return false;
+  return bcrypt.compare(senha, u.senhaHash);
+}
+
+/** Emite e envia o link de confirmação. Folga de 60s vira log, não erro —
+ *  quem chama nunca precisa tratar. Nunca loga o token. */
+export async function emitirEEnviarConfirmacao(userId: string, nome: string, email: string): Promise<void> {
+  const t = await emitirToken(userId, "confirmacao");
+  if (!t.ok) {
+    console.info("[confirmacao] reenvio dentro da folga de 60s", { userId });
+    return;
+  }
+  const msg = emailDeConfirmacao(nome, `${urlBase()}/app/confirmar-email/${t.segredo}`);
+  const r = await enviarEmail({ para: email, ...msg });
+  if (!r.ok) console.error("[confirmacao] envio falhou", { userId });
+}
+
+/** Caminho público de reenvio: resposta é sempre a mesma para quem chama. */
+export async function reenviarConfirmacaoPorEmail(email: string): Promise<void> {
+  const [u] = await db.select({ id: users.id, nome: users.nome, email: users.email, emailConfirmadoEm: users.emailConfirmadoEm })
+    .from(users).where(eq(sql`lower(${users.email})`, email.trim().toLowerCase())).limit(1);
+  if (!u || u.emailConfirmadoEm) return;
+  await emitirEEnviarConfirmacao(u.id, u.nome, u.email);
+}
+
+/** Consome o token de confirmação e marca o e-mail como confirmado. */
+export async function confirmarEmailPorToken(segredo: string): Promise<boolean> {
+  const r = await consumirToken(segredo, "confirmacao");
+  if (!r.ok) return false;
+  await db.update(users).set({ emailConfirmadoEm: new Date() }).where(eq(users.id, r.userId));
+  return true;
 }

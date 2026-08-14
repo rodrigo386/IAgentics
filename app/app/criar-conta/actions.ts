@@ -1,7 +1,8 @@
 "use server";
+import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
-import { criarUsuario } from "@/lib/plataforma/usuarios";
+import { criarUsuario, emitirEEnviarConfirmacao } from "@/lib/plataforma/usuarios";
 import { plataforma } from "@/lib/content-plataforma";
 
 export async function criarContaAction(_: unknown, formData: FormData):
@@ -20,6 +21,12 @@ export async function criarContaAction(_: unknown, formData: FormData):
   if (!resultado.ok) {
     return { erro: plataforma.criarConta.emailExiste };
   }
+
+  if (resultado.confirmacaoPendente) {
+    await emitirEEnviarConfirmacao(resultado.id, nome, email);
+    redirect(`/app/confirmar-email?para=${encodeURIComponent(email.trim().toLowerCase())}`);
+  }
+  // canal inativo: segue o signIn de hoje
 
   try {
     // "voltar" vem do querystring de quem navegou até aqui (ex.: CTA do /planos).

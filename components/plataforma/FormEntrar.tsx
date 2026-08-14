@@ -3,14 +3,16 @@ import { useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { entrarAction } from "@/app/app/entrar/actions";
 import { plataforma } from "@/lib/content-plataforma";
+import { FormReenviarConfirmacao } from "@/components/plataforma/FormReenviarConfirmacao";
 
-const ESTADO_INICIAL: { erro: string | null } = { erro: null };
+const ESTADO_INICIAL: { erro: string | null; naoConfirmado?: boolean; email?: string | null } = { erro: null };
 
 export function FormEntrar() {
   const t = plataforma.entrar;
   const busca = useSearchParams();
   const voltar = busca.get("voltar") ?? "/app";
   const sessaoExpirada = busca.get("sessao") === "expirada";
+  const confirmado = busca.get("confirmado") === "1";
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [estado, acao, enviando] = useActionState(entrarAction, ESTADO_INICIAL);
@@ -20,6 +22,11 @@ export function FormEntrar() {
 
   return (
     <form action={acao} className="flex flex-col gap-4">
+      {confirmado ? (
+        <p role="status" className="border border-line bg-surface px-4 py-3 text-sm text-accent-text">
+          {plataforma.confirmacao.confirmadoAviso}
+        </p>
+      ) : null}
       {sessaoExpirada ? (
         <p className="border border-line bg-surface px-4 py-3 text-sm text-fg-muted">{t.sessaoExpirada}</p>
       ) : null}
@@ -48,10 +55,18 @@ export function FormEntrar() {
           className={campo}
         />
       </label>
-      {estado?.erro ? <p role="alert" className="text-sm text-fg">{estado.erro}</p> : null}
+      {estado?.naoConfirmado ? (
+        <div className="flex flex-col gap-4">
+          <p role="alert" className="text-sm text-fg">{t.naoConfirmado}</p>
+          <FormReenviarConfirmacao emailInicial={estado.email ?? email} />
+        </div>
+      ) : estado?.erro ? (
+        <p role="alert" className="text-sm text-fg">{estado.erro}</p>
+      ) : null}
       <button disabled={enviando} className="rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover disabled:opacity-60">
         {t.botao}
       </button>
+      <a href="/app/recuperar-senha" className="text-sm text-fg-muted hover:text-fg">{t.esqueciSenha}</a>
     </form>
   );
 }
