@@ -3,7 +3,17 @@ import { NextResponse } from "next/server";
 import { authConfig } from "./auth.config";
 
 const { auth } = NextAuth(authConfig);
-const PUBLICAS = ["/app/entrar", "/app/criar-conta", "/api/auth"];
+const PUBLICAS = [
+  "/app/entrar",
+  "/app/criar-conta",
+  "/api/auth",
+  // Alcançadas por link de e-mail SEM sessão (confirmação/reset) — bloqueá-las
+  // aqui levaria todo visitante anônimo de volta para /app/entrar antes de
+  // consumir o token.
+  "/app/confirmar-email",
+  "/app/recuperar-senha",
+  "/app/redefinir-senha",
+];
 
 export default auth((req) => {
   const rota = req.nextUrl.pathname;
