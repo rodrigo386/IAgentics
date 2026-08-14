@@ -122,8 +122,6 @@ export const solutions = {
 
 export const nexo = {
   kicker: "IAgentics Nexo",
-  headline: "Entrega embarcada",
-  lead: "Os 5 agentes rodam dentro da plataforma escolhida.",
   assurance:
     "Seus dados se mantêm protegidos dentro do servidor da sua empresa.",
   /** A plataforma onde o Nexo roda embarcado. Badge oficial do cliente. */
@@ -163,6 +161,57 @@ export const nexo = {
     { code: "Onboarding", name: "Homologação de fornecedor" },
     { code: "Contratos", name: "Ciclo contratual" },
   ],
+  /** O processo de compras de ponta a ponta (deck IAgentics_DeskManager_Promo,
+   *  slide 3), com um print real por passo (slides 4-13). Substituiu o índice
+   *  de agentes como seção principal da página em 2026-08-14. */
+  fluxo: {
+    titulo: "Compras dentro da Desk Manager",
+    lead: "Da requisição ao pedido no ERP: sete passos conduzidos pelos agentes do Nexo.",
+    passos: [
+      {
+        n: "01",
+        nome: "Abertura da Requisição de Compras",
+        texto: "O chatbot MIA abre a RC a partir de uma descrição em linguagem natural — e a IA confere os dados antes de enviar para Compras.",
+        src: "/nexo-print-rc-v2.png", w: 1917, h: 1078,
+      },
+      {
+        n: "02",
+        nome: "Triagem e aprovação",
+        texto: "A IA classifica por categoria, define a cadeia de aprovação por alçada e audita a requisição sozinha.",
+        src: "/nexo-fluxo-triagem-v1.png", w: 1917, h: 1078,
+      },
+      {
+        n: "03",
+        nome: "RFQ — seleção de fornecedores",
+        texto: "A IA busca fornecedores na base cadastrada e novos na internet, e dispara a solicitação de cotação.",
+        src: "/nexo-print-rfp-v2.png", w: 1917, h: 1078,
+      },
+      {
+        n: "04",
+        nome: "Propostas via formulário web",
+        texto: "Convite por link, sem senha e sem conta: o Portal do Fornecedor recebe proposta e anexo.",
+        src: "/nexo-fluxo-portal-v1.jpg", w: 1568, h: 688,
+      },
+      {
+        n: "05",
+        nome: "Negociação com suporte de IA",
+        texto: "A IA lê os anexos, monta o mapa comparativo com scores e sugere a próxima mensagem de negociação.",
+        src: "/nexo-fluxo-mapa-v1.jpg", w: 1568, h: 688,
+      },
+      {
+        n: "06",
+        nome: "Seleção e aprovação final",
+        texto: "A proposta vencedora é aprovada com nome e motivo registrados — a trilha fica no histórico.",
+        src: "/nexo-fluxo-aprovacao-v1.jpg", w: 1568, h: 688,
+      },
+      {
+        n: "07",
+        nome: "Pedido de compras no ERP",
+        texto: "A OC nasce sozinha: RC, RFQ e proposta vencedora consolidadas, prontas para o ERP do cliente.",
+        src: "/nexo-fluxo-oc-v1.jpg", w: 1568, h: 688,
+      },
+    ],
+  },
 } as const;
 
 /* ---------------------------------------------------------------------------
@@ -771,55 +820,6 @@ export const nexoPage = {
      embarcada". A sequência de pranchas que existia abaixo do vídeo mostrava
      exatamente as mesmas imagens e foi removida. `agent` amarra cada tela ao código
      do agente em nexo.agents; preencha `src` e a tela entra no painel sozinha. */
-  gallery: {
-    slots: [
-      {
-        kind: "image" as const,
-        agent: "RC",
-        label: "Requisição de Compra",
-        /* v2, entregue 13/08/2026: capturas reais do produto, substituindo as prévias de
-           10/08. PNG e não JPG de propósito: é uma captura de interface, cheia de texto
-           pequeno, e o JPEG suja as bordas das letras. A 1917px de largura a lupa continua
-           útil, só que com ampliação efetiva menor do que os 3360px anteriores permitiam.
-           O Next reencoda para WebP/AVIF na entrega. */
-        spec: "1917x1078 · PNG",
-        file: "/nexo-print-rc-v2.png",
-        src: "/nexo-print-rc-v2.png" as string | null,
-      },
-      {
-        kind: "image" as const,
-        agent: "RFP",
-        label: "Cotação e concorrência",
-        spec: "1917x1078 · PNG",
-        file: "/nexo-print-rfp-v2.png",
-        src: "/nexo-print-rfp-v2.png" as string | null,
-      },
-      {
-        kind: "image" as const,
-        agent: "Spend",
-        label: "Análise de gastos",
-        spec: "1917x1078 · PNG",
-        file: "/nexo-print-spend-v2.png",
-        src: "/nexo-print-spend-v2.png" as string | null,
-      },
-      {
-        kind: "image" as const,
-        agent: "Onboarding",
-        label: "Homologação de fornecedor",
-        spec: "1920x1080 · JPG",
-        file: "/nexo-print-onboarding.jpg",
-        src: null as string | null,
-      },
-      {
-        kind: "image" as const,
-        agent: "Contratos",
-        label: "Ciclo contratual",
-        spec: "1920x1080 · JPG",
-        file: "/nexo-print-contratos.jpg",
-        src: null as string | null,
-      },
-    ],
-  },
 
   differentiators: {
     title: "Por que o Nexo é diferente",

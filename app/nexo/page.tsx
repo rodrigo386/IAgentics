@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { NexoCover } from "@/components/sections/nexo/Cover";
-import { NexoAgentsIndex } from "@/components/sections/nexo/AgentsIndex";
+import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
 import { NexoAssurance } from "@/components/sections/nexo/Assurance";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
 import { Contact } from "@/components/sections/Contact";
@@ -42,7 +42,7 @@ export default function Page() {
             operando sobre os dados de compras da empresa e só depois dizer onde
             esses dados moram. */}
         <NexoAssurance />
-        <NexoAgentsIndex />
+        <NexoFluxoCompras />
         <NexoDifferentiators />
         <Contact />
       </main>

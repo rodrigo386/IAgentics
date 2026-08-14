@@ -1,0 +1,102 @@
+<h2>Painel do aluno — qual intensidade de redesign?</h2>
+<p class="subtitle">As três seguem a direção "acervo editorial" (trilhos por estado do aluno, decidido no terminal). O que muda é o quanto a página se transforma. Cores e formas seguem o design system real: violeta #7607E8 só em preenchimento, cantos retos, controles pill.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a-evolucao" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#101014;padding:14px;display:block">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:.14em;color:#888;text-transform:uppercase;margin-bottom:8px">IAgentics Academy&nbsp;&nbsp;|&nbsp;&nbsp;Meus cursos · Conta</div>
+      <div style="font-family:monospace;font-size:7px;letter-spacing:.12em;color:#b18aec;text-transform:uppercase;margin-bottom:4px">Continue de onde parou</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px">
+        <div style="width:32%;background:#1c1c22;border:1px solid #2a2a32;padding:5px">
+          <div style="height:26px;background:linear-gradient(135deg,#7607E8 55%,#4a0596);margin-bottom:4px"></div>
+          <div style="height:4px;width:80%;background:#3a3a44"></div>
+          <div style="height:3px;width:45%;background:#7607E8;margin-top:3px"></div>
+        </div>
+        <div style="width:32%;background:#1c1c22;border:1px solid #2a2a32;padding:5px">
+          <div style="height:26px;background:#26262e;margin-bottom:4px"></div>
+          <div style="height:4px;width:70%;background:#3a3a44"></div>
+          <div style="height:3px;width:20%;background:#7607E8;margin-top:3px"></div>
+        </div>
+      </div>
+      <div style="font-family:monospace;font-size:7px;letter-spacing:.12em;color:#888;text-transform:uppercase;margin-bottom:4px">Cursos</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+        <div style="aspect-ratio:3/4;background:linear-gradient(160deg,#26262e,#1a1a20);border:1px solid #2a2a32"></div>
+        <div style="aspect-ratio:3/4;background:linear-gradient(160deg,#2b2333,#1a1a20);border:1px solid #2a2a32"></div>
+        <div style="aspect-ratio:3/4;background:linear-gradient(160deg,#26262e,#1a1a20);border:1px solid #2a2a32"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Evolução no lugar</h3>
+      <p>A grade atual continua a estrela; ganha uma faixa "continue de onde parou" no topo com progresso. Menor esforço, menor risco — e menor impacto: continua parecendo uma área de membros comum.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b-editorial" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#101014;padding:0;display:block">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:.14em;color:#888;text-transform:uppercase;padding:10px 14px">IAgentics Academy&nbsp;&nbsp;|&nbsp;&nbsp;Meus cursos · Conta</div>
+      <div style="display:flex;background:linear-gradient(100deg,#17121e 60%,#241533);padding:12px 14px;gap:12px;align-items:center">
+        <div style="width:60px;aspect-ratio:3/4;background:linear-gradient(135deg,#7607E8 55%,#4a0596);flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-family:monospace;font-size:6px;letter-spacing:.14em;color:#b18aec;text-transform:uppercase;margin-bottom:4px">Continue de onde parou</div>
+          <div style="height:7px;width:85%;background:#e8e8ec;margin-bottom:3px"></div>
+          <div style="height:7px;width:55%;background:#e8e8ec;margin-bottom:6px"></div>
+          <div style="height:4px;width:70%;background:#3a3a44;margin-bottom:6px"></div>
+          <div style="height:3px;width:40%;background:#7607E8;margin-bottom:8px"></div>
+          <div style="display:inline-block;background:#7607E8;color:#fff;font-size:7px;padding:3px 12px;border-radius:99px">Continuar aula 3</div>
+        </div>
+      </div>
+      <div style="padding:10px 14px">
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.12em;color:#888;text-transform:uppercase;margin-bottom:4px">Formações&nbsp;&nbsp;→</div>
+        <div style="display:flex;gap:6px;overflow:hidden">
+          <div style="width:23%;flex-shrink:0;aspect-ratio:3/4;background:linear-gradient(160deg,#2b2333,#1a1a20);border:1px solid #2a2a32"></div>
+          <div style="width:23%;flex-shrink:0;aspect-ratio:3/4;background:linear-gradient(160deg,#26262e,#1a1a20);border:1px solid #2a2a32"></div>
+          <div style="width:23%;flex-shrink:0;aspect-ratio:3/4;background:linear-gradient(160deg,#2b2333,#1a1a20);border:1px solid #2a2a32"></div>
+          <div style="width:23%;flex-shrink:0;aspect-ratio:3/4;background:linear-gradient(160deg,#26262e,#1a1a20);border:1px solid #2a2a32"></div>
+          <div style="width:12%;flex-shrink:0;aspect-ratio:3/4;background:#1a1a20;border:1px dashed #3a3a44"></div>
+        </div>
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.12em;color:#666;text-transform:uppercase;margin:8px 0 4px">Em gravação</div>
+        <div style="display:flex;gap:6px;opacity:.45">
+          <div style="width:23%;aspect-ratio:3/4;background:#22222a"></div>
+          <div style="width:23%;aspect-ratio:3/4;background:#22222a"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Editorial completo (recomendada)</h3>
+      <p>Hero com a capa do curso em andamento + CTA "Continuar aula N", trilhos horizontais com rolagem (Formações) e faixa esmaecida "Em gravação". Página de curso e aula ganham o mesmo tratamento. CSS puro, sem lib nova.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c-imersivo" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#000;padding:0;display:block">
+      <div style="position:relative;height:120px;background:linear-gradient(180deg,#2a1740 0%,#0a0510 85%)">
+        <div style="position:absolute;inset:0;display:flex;align-items:flex-end;padding:12px">
+          <div>
+            <div style="font-family:monospace;font-size:6px;letter-spacing:.14em;color:#b18aec;text-transform:uppercase;margin-bottom:4px">Formação · 12h</div>
+            <div style="height:9px;width:140px;background:#fff;margin-bottom:3px"></div>
+            <div style="height:9px;width:90px;background:#fff;margin-bottom:8px"></div>
+            <div style="display:inline-block;background:#7607E8;color:#fff;font-size:7px;padding:3px 12px;border-radius:99px">Assistir</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:8px 12px;background:#000">
+        <div style="display:flex;gap:6px">
+          <div style="width:23%;aspect-ratio:3/4;background:linear-gradient(160deg,#241b30,#0f0b15);transform:scale(1.06)"></div>
+          <div style="width:23%;aspect-ratio:3/4;background:linear-gradient(160deg,#1c1c24,#0f0b15)"></div>
+          <div style="width:23%;aspect-ratio:3/4;background:linear-gradient(160deg,#1c1c24,#0f0b15)"></div>
+          <div style="width:23%;aspect-ratio:3/4;background:linear-gradient(160deg,#1c1c24,#0f0b15)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Editorial imersivo (teatro)</h3>
+      <p>Tudo do B, mas a plataforma vira um mundo próprio sempre escuro (independente do tema do site), hero cinematográfico full-bleed, capas com zoom no hover. Mais "MasterClass" — porém quebra a paridade de temas claro/escuro que o resto do produto mantém.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="section">
+  <p class="subtitle">Clique na opção que preferir — dá para trocar detalhes depois (ex.: B com o hero do C).</p>
+</div>
