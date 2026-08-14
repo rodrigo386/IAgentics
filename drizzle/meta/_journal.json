@@ -36,6 +36,13 @@
       "when": 1786623619999,
       "tag": "0004_certificados",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786668955006,
+      "tag": "0005_confirmacao_email",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,6 @@
 ALTER TABLE "users" ADD COLUMN "email_confirmado_em" timestamp with time zone;--> statement-breakpoint
+-- Backfill: toda conta existente é considerada confirmada — ninguém ativo é
+-- trancado para fora quando o bloqueio ligar.
 UPDATE "users" SET "email_confirmado_em" = now();--> statement-breakpoint
 CREATE TABLE "auth_tokens" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
