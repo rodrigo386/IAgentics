@@ -50,4 +50,11 @@ describe("camada de e-mail", () => {
     delete process.env.AUTH_URL;
     expect(urlBase()).toBe("http://localhost:3000");
   });
+
+  it("escapa HTML no nome", () => {
+    const c = emailDeConfirmacao('<b>Zé</b> & Cia', "https://x/t");
+    expect(c.html).not.toContain("<b>Zé</b>");
+    expect(c.html).toContain("&lt;b&gt;");
+    expect(c.texto).toContain("<b>Zé</b> & Cia");
+  });
 });

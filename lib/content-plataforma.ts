@@ -171,6 +171,7 @@ export const plataforma = {
       botao: "Redefinir senha",
       ignorar: "Se você não pediu a redefinição, ignore esta mensagem — sua senha continua a mesma.",
     },
+    copie: "Ou copie e cole:",
     rodape: "IAgentics Academy · iagentics.com.br",
   },
 } as const;
