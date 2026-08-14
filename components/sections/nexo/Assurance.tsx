@@ -32,13 +32,13 @@ export function NexoAssurance() {
     <section className="assurance-band py-20 sm:py-28">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
-          <Reveal className="lg:col-span-6">
+          {/* Só o claim, centrado na altura do colofão — o texto-ponte das
+              certificações saiu a pedido (2026-08-14); os rótulos PLATAFORMA/
+              CERTIFICAÇÕES à direita já contam essa história. */}
+          <Reveal className="lg:col-span-6 lg:self-center">
             <p className="flex max-w-[20ch] items-start gap-5 text-4xl font-medium leading-[1.1] tracking-[-0.03em] sm:text-5xl lg:text-6xl">
               <ShieldCheck size={44} weight="regular" aria-hidden="true" className="mt-2 shrink-0 opacity-70" />
               {nexo.assurance}
-            </p>
-            <p className="mt-10 max-w-[46ch] text-base leading-relaxed opacity-80 sm:text-lg">
-              {nexo.certificacoes.intro}
             </p>
           </Reveal>
           <Reveal className="lg:col-span-6 lg:self-center">

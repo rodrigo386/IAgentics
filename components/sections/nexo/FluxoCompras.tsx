@@ -52,23 +52,26 @@ export function NexoFluxoCompras() {
   return (
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
-        <Reveal>
-          {/* Lockup com o ícone do app, como no hero — o título carrega a marca. */}
-          <h2 className="flex max-w-[22ch] items-center gap-4 text-4xl font-medium tracking-[-0.03em] text-fg sm:gap-5 sm:text-5xl lg:text-6xl">
-            <Image
-              src="/nexo-app-icon.svg"
-              alt=""
-              width={512}
-              height={512}
-              className="size-10 shrink-0 sm:size-12 lg:size-14"
-            />
-            {nexo.fluxo.titulo}
-          </h2>
-          <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{nexo.fluxo.lead}</p>
-        </Reveal>
+        {/* Cabeçalho DENTRO da coluna esquerda: o palco sobe e alinha com o
+            título — sem vazio no topo direito nem respiro antes do passo 01. */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <Reveal>
+              {/* Lockup com o ícone do app, como no hero — o título carrega a marca. */}
+              <h2 className="flex max-w-[22ch] items-center gap-4 text-4xl font-medium tracking-[-0.03em] text-fg sm:gap-5 sm:text-5xl lg:text-6xl">
+                <Image
+                  src="/nexo-app-icon.svg"
+                  alt=""
+                  width={512}
+                  height={512}
+                  className="size-10 shrink-0 sm:size-12 lg:size-14"
+                />
+                {nexo.fluxo.titulo}
+              </h2>
+              <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{nexo.fluxo.lead}</p>
+            </Reveal>
 
-        <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-12">
-          <ol className="flex flex-col gap-14 lg:col-span-5 lg:gap-28 lg:py-[20vh]">
+            <ol className="mt-12 flex flex-col gap-14 lg:mt-16 lg:gap-28 lg:pb-[20vh]">
             {nexo.fluxo.passos.map((p, i) => (
               <li
                 key={p.n}
@@ -98,7 +101,8 @@ export function NexoFluxoCompras() {
                 </div>
               </li>
             ))}
-          </ol>
+            </ol>
+          </div>
 
           <div className="hidden lg:col-span-7 lg:block">
             <div className="sticky top-24">

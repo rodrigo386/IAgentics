@@ -131,8 +131,6 @@ export const nexo = {
   /** Certificações de segurança da informação da Desk Manager, a plataforma
    *  onde o Nexo roda embarcado. Selos oficiais fornecidos pelo cliente. */
   certificacoes: {
-    intro:
-      "A Desk Manager, plataforma onde o Nexo roda, é certificada em segurança da informação:",
     selos: [
       {
         name: "Certified Company ISO/IEC 27001 · QMS Certification",
