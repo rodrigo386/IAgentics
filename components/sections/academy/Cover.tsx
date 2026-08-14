@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Marquee } from "@/components/ui/Marquee";
 import { AcademyHeroCarousel } from "@/components/sections/academy/HeroCarousel";
 import { academy } from "@/lib/content";
@@ -53,19 +53,9 @@ export function AcademyCover() {
             </p>
           </div>
 
+          {/* Um botão só, a pedido (2026-08-14): "Ver os cursos" saiu e
+              "Acessar plataforma" leva à landing /cursos (destino em content.ts). */}
           <div className="flex shrink-0 flex-wrap items-center gap-3">
-            <a
-              href={academy.platform.href}
-              className="group inline-flex items-center gap-2 rounded-control border border-line-strong px-7 py-3.5 font-medium text-fg transition-colors duration-200 hover:border-fg active:scale-[0.98]"
-            >
-              <span className="whitespace-nowrap">{academy.platform.cta}</span>
-              <ArrowRight
-                size={17}
-                weight="regular"
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </a>
-
             {/* Sem endereço ainda. Um <button disabled> em vez de um link morto:
                 botão que parece clicável e não faz nada é o mesmo defeito do
                 formulário que não envia. A marca "em breve" diz o porquê, e o

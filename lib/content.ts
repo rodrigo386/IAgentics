@@ -270,15 +270,12 @@ export const academy = {
    * time, trocados por este CTA. O fato das 9 empresas não se perdeu: continua em
    * `clients.lead`, na faixa de clientes.
    *
-   * `href` aponta para a landing da plataforma (/cursos) desde 2026-08-14 -
-   * antes apontava para a seção de cursos desta própria página, porque a
-   * plataforma ainda não tinha endereço público.
+   * O botão "Ver os cursos" saiu da capa a pedido (2026-08-14) - ficou só o
+   * "Acessar plataforma"; a landing /cursos segue no nav.
    */
   platform: {
     label: "Plataforma online de cursos",
     body: "Formações no seu ritmo, conteúdo exclusivo IAgentics.",
-    cta: "Ver os cursos",
-    href: "/cursos",
     /**
      * O botão da plataforma. `appHref: null` = ainda sem endereço, e o botão
      * aparece desabilitado com a marca "em breve" em vez de fingir que leva a
@@ -286,7 +283,10 @@ export const academy = {
      * padrão dos quadros de mídia do /nexo.
      */
     appLabel: "Acessar plataforma",
-    appHref: "/app" as string | null,
+    /* Aponta para a landing /cursos (pedido de 2026-08-14): quem ainda não é
+       aluno entende o que é a plataforma antes do login; quem já é entra por
+       "Já sou aluno" lá. */
+    appHref: "/cursos" as string | null,
   },
 
   /** Apoiadores. No site atual passam em marquee, repetidos 3x. */
