@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   role: text("role").notNull().default("aluno"),
   ativo: boolean("ativo").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  emailConfirmadoEm: timestamp("email_confirmado_em", { withTimezone: true }),
 }, (t) => [
   uniqueIndex("users_email_unico").on(sql`lower(${t.email})`),
   check("users_role_chk", sql`${t.role} in ('aluno','admin')`),
@@ -96,3 +97,19 @@ export const certificates = pgTable("certificates", {
   codigo: text("codigo").notNull().unique(),
   emitidoEm: timestamp("emitido_em", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("certificates_aluno_curso_unico").on(t.userId, t.courseId)]);
+
+/** Tokens de uso único dos fluxos de e-mail (confirmação de cadastro e reset
+ *  de senha). O banco guarda só o SHA-256 do segredo; o segredo vive apenas na
+ *  URL enviada por e-mail. Ver lib/plataforma/tokens.ts. */
+export const authTokens = pgTable("auth_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  tipo: text("tipo").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiraEm: timestamp("expira_em", { withTimezone: true }).notNull(),
+  usadoEm: timestamp("usado_em", { withTimezone: true }),
+  criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index("auth_tokens_user_tipo_idx").on(t.userId, t.tipo),
+  check("auth_tokens_tipo_chk", sql`${t.tipo} in ('confirmacao','reset')`),
+]);
