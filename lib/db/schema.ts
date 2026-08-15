@@ -1,4 +1,4 @@
-import { boolean, check, index, integer, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, date, index, integer, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -113,3 +113,15 @@ export const authTokens = pgTable("auth_tokens", {
   index("auth_tokens_user_tipo_idx").on(t.userId, t.tipo),
   check("auth_tokens_tipo_chk", sql`${t.tipo} in ('confirmacao','reset')`),
 ]);
+
+/** Visitas do site público, agregadas por dia+rota - alimentadas pelo beacon
+ *  (components/site/Beacon.tsx → app/api/estatisticas/route.ts). Agregado de
+ *  propósito: nenhum dado pessoal, nenhum cookie, nenhum user-agent; a
+ *  cardinalidade de `rota` é limitada pelo normalizador em lib/estatisticas.ts
+ *  (seções conhecidas + "/outras"), então a tabela cresce no máximo
+ *  |rotas| linhas por dia. */
+export const pageViews = pgTable("page_views", {
+  dia: date("dia").notNull(),
+  rota: text("rota").notNull(),
+  visitas: integer("visitas").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.rota] })]);

@@ -38,6 +38,14 @@ export function GraficoBarras({ pontos, rotulo }: { pontos: PontoSemana[]; rotul
         <g className="text-fg-muted">
           <line
             x1={MARGEM_ESQUERDA}
+            y1={ALTURA_BARRAS / 2}
+            x2={largura - MARGEM_DIREITA}
+            y2={ALTURA_BARRAS / 2}
+            className="stroke-current"
+            strokeOpacity={0.12}
+          />
+          <line
+            x1={MARGEM_ESQUERDA}
             y1={ALTURA_BARRAS}
             x2={largura - MARGEM_DIREITA}
             y2={ALTURA_BARRAS}
@@ -59,7 +67,16 @@ export function GraficoBarras({ pontos, rotulo }: { pontos: PontoSemana[]; rotul
             return (
               <g key={p.semana}>
                 <title>{`${p.semana}: ${p.valor}`}</title>
-                <rect x={x} y={y} width={LARGURA_BARRA} height={alturaBarra} className="fill-current" />
+                {/* Entrada: a barra cresce do eixo (CSS .barra-cresce, escalonada
+                    por índice; reduced-motion pula direto pro estado final). */}
+                <rect
+                  x={x}
+                  y={y}
+                  width={LARGURA_BARRA}
+                  height={alturaBarra}
+                  className="barra-cresce fill-current"
+                  style={{ "--i": i } as React.CSSProperties}
+                />
                 <text
                   x={x + LARGURA_BARRA / 2}
                   y={ALTURA_BARRAS + 16}

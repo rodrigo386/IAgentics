@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { site } from "@/lib/content";
+import { Beacon } from "@/components/site/Beacon";
 import "./globals.css";
 
 /**
@@ -86,6 +87,8 @@ export default function RootLayout({
           Ir para o conteúdo
         </a>
         {children}
+        {/* Contador de visitas do site (só rotas públicas; ver o componente). */}
+        <Beacon />
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { courses, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
+import { courses, lessonProgress, lessons, modules, pageViews, subscriptions, users } from "@/lib/db/schema";
 
 export type Periodo = "7" | "30" | "90" | "tudo";
 
@@ -247,4 +247,39 @@ export async function gerarCsv(bloco: BlocoCsv, p: Periodo, cursoSlug?: string):
   }
 
   return BOM + linhas.join("\n");
+}
+
+export type PontoDia = { dia: string; valor: number };
+export type LinhaRota = { rota: string; visitas: number };
+
+/** Visitas do site (page_views, alimentada pelo beacon). Mesmo contrato de
+ *  período das demais consultas: corte por inicioDoPeriodo, "tudo" = sem corte.
+ *  A coluna `dia` é DATE - o corte compara pela string YYYY-MM-DD (UTC), o
+ *  mesmo formato que o coletor grava. */
+export async function trafegoDoSite(p: Periodo): Promise<{
+  total: number;
+  porDia: PontoDia[];
+  porRota: LinhaRota[];
+}> {
+  const corte = inicioDoPeriodo(p, new Date());
+  const corteDia = corte ? corte.toISOString().slice(0, 10) : null;
+  const filtro = corteDia ? gte(pageViews.dia, corteDia) : undefined;
+
+  const [porDia, porRota] = await Promise.all([
+    db
+      .select({ dia: pageViews.dia, valor: sql<number>`sum(${pageViews.visitas})::int` })
+      .from(pageViews)
+      .where(filtro)
+      .groupBy(pageViews.dia)
+      .orderBy(pageViews.dia),
+    db
+      .select({ rota: pageViews.rota, visitas: sql<number>`sum(${pageViews.visitas})::int` })
+      .from(pageViews)
+      .where(filtro)
+      .groupBy(pageViews.rota)
+      .orderBy(sql`sum(${pageViews.visitas}) desc`),
+  ]);
+
+  const total = porRota.reduce((soma, l) => soma + l.visitas, 0);
+  return { total, porDia, porRota };
 }

@@ -3,6 +3,8 @@ export const admin = {
   nome: "Administração",
   shell: {
     metricas: "Métricas",
+    recolher: "Recolher menu",
+    expandir: "Expandir menu",
     alunos: "Alunos",
     conteudo: "Conteúdo",
     configuracoes: "Configurações",
@@ -199,6 +201,27 @@ export const admin = {
       semCurso: "Nenhum curso publicado ainda.",
     },
     exportarCsv: "Exportar CSV",
+    /* Visitas do site público (beacon → page_views). Rótulos de rota viram
+       nome de seção legível; o balde "/outras" agrupa o resto. */
+    trafego: {
+      titulo: "Visitas do site",
+      total: "Visitas no período",
+      porPagina: "Por página",
+      visitas: "Visitas",
+      vazio: {
+        titulo: "Ainda sem visitas registradas",
+        texto: "O contador começou a rodar com este deploy e agrega por dia. Volte amanhã para ver o primeiro dia completo.",
+      },
+      rotas: {
+        "/": "Início",
+        "/nexo": "Nexo",
+        "/academy": "Academy",
+        "/cursos": "Cursos",
+        "/spend-lab": "Spend Lab",
+        "/certificados": "Certificados",
+        "/outras": "Outras",
+      } as Record<string, string>,
+    },
   },
   configuracoes: {
     titulo: "Configurações",

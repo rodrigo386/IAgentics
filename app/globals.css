@@ -1109,3 +1109,88 @@
     transform: translateY(-50%);
   }
 }
+
+/* ---------------------------------------------------------------------------
+   PAINEL ADMIN - MOTION DE ESTADO, CSS PURO
+
+   Mesma doutrina do site: o estado de repouso é o final e o escondido só
+   existe durante a animação (`backwards`). Sem media query de no-preference
+   nas ENTRADAS não faz falta - todas terminam no estado visível - mas barras
+   e linha ganham o gate mesmo assim para não "puxar o olho" de quem pediu
+   menos movimento.
+
+   Motivação (uma frase por animação):
+   - .painel-entra: hierarquia - os blocos entram na ordem de leitura.
+   - .barra-cresce: storytelling - a barra "conta" o valor crescendo do zero.
+   - .linha-desenha: storytelling - a série se desenha na direção do tempo.
+   - .skeleton: feedback - a página está viva enquanto o dado não chega.
+--------------------------------------------------------------------------- */
+.painel-entra {
+  animation: painel-sobe 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+@keyframes painel-sobe {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .barra-cresce {
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: barra-sobe 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  .linha-desenha {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: linha-corre 1.1s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  }
+  .area-surge {
+    animation: area-aparece 0.7s ease 0.7s backwards;
+  }
+}
+@keyframes barra-sobe {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes linha-corre {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes area-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(var(--shadow-tint) / 0.06), transparent);
+    animation: skeleton-varre 1.6s ease-in-out infinite;
+  }
+}
+@keyframes skeleton-varre {
+  to {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .painel-entra {
+    animation: none;
+  }
+}

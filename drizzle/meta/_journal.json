@@ -43,6 +43,13 @@
       "when": 1786668955006,
       "tag": "0005_confirmacao_email",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786792897044,
+      "tag": "0006_ambitious_newton_destine",
+      "breakpoints": true
     }
   ]
 }

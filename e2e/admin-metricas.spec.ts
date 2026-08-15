@@ -54,3 +54,19 @@ test("periodo inválido no CSV recebe 404 mesmo para admin autenticado", async (
   const resposta = await page.request.get("/admin/metricas-csv?bloco=cadastros&periodo=xyz");
   expect(resposta.status()).toBe(404);
 });
+
+test("beacon conta visita e o painel mostra o bloco de tráfego com a página", async ({ page }) => {
+  const emailAdminTrafego = `e2e-admmetricas-trafego-${Date.now()}@teste.invalido`;
+  await criarConta(page, emailAdminTrafego, "Admin E2E Trafego");
+  execSync(`node scripts/promover-admin.mjs ${emailAdminTrafego}`, { stdio: "pipe" });
+
+  // POST direto no coletor (o mesmo formato que o Beacon manda). 204 sempre.
+  const resposta = await page.request.post("/api/estatisticas", { data: { rota: "/nexo" } });
+  expect(resposta.status()).toBe(204);
+
+  await page.goto("/admin");
+  // .first(): o rótulo também vive na <caption> sr-only do gráfico acessível.
+  await expect(page.getByText("Visitas do site").first()).toBeVisible();
+  // A linha "Nexo" existe na quebra por página (>=1 visita garantida acima).
+  await expect(page.getByText("Nexo", { exact: true })).toBeVisible();
+});

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { admin } from "@/lib/content-admin";
-import { conclusaoPorCurso, funilDoCurso, resumo, seriesSemanais, type Periodo } from "@/lib/admin/metricas";
+import { conclusaoPorCurso, funilDoCurso, resumo, seriesSemanais, trafegoDoSite, type Periodo } from "@/lib/admin/metricas";
 import { GraficoBarras } from "@/components/admin/GraficoBarras";
+import { GraficoArea } from "@/components/admin/GraficoArea";
+import { EstadoVazio } from "@/components/admin/EstadoVazio";
 
 const PERIODOS: Periodo[] = ["7", "30", "90", "tudo"];
 
@@ -24,6 +26,12 @@ function hrefCsv(bloco: string, periodo: Periodo, curso?: string): string {
 const classeLinkCsv =
   "shrink-0 rounded-control border border-line-strong px-4 py-2 text-xs font-medium text-fg-muted transition-colors hover:border-fg hover:text-fg";
 
+/**
+ * Painel do admin. Ordem de leitura: os cinco números que resumem o negócio,
+ * o tráfego do site (de onde vem gente), as séries da plataforma (cadastro e
+ * atividade), e o detalhe por curso (conclusão + funil). Os blocos entram em
+ * cascata (.painel-entra) na mesma ordem - hierarquia, não decoração.
+ */
 export default async function PaginaAdmin({
   searchParams,
 }: {
@@ -32,15 +40,19 @@ export default async function PaginaAdmin({
   const { periodo: periodoParam, curso: cursoParam } = await searchParams;
   const periodo: Periodo = ehPeriodoValido(periodoParam) ? periodoParam : "30";
 
-  const [dadosResumo, series, conclusao] = await Promise.all([resumo(periodo), seriesSemanais(periodo), conclusaoPorCurso()]);
+  const [dadosResumo, series, conclusao, trafego] = await Promise.all([
+    resumo(periodo),
+    seriesSemanais(periodo),
+    conclusaoPorCurso(),
+    trafegoDoSite(periodo),
+  ]);
 
-  // curso do funil: o pedido via searchParams se existir entre os publicados,
-  // senão o primeiro publicado (conclusaoPorCurso só lista publicados).
   const cursoAtual = conclusao.find((c) => c.slug === cursoParam)?.slug ?? conclusao[0]?.slug;
   const funil = cursoAtual ? await funilDoCurso(cursoAtual) : null;
   const maximoFunil = funil?.length ? Math.max(...funil.map((f) => f.concluiram), 1) : 1;
 
   const t = admin.metricas;
+  const maiorRota = Math.max(...trafego.porRota.map((l) => l.visitas), 1);
 
   const cartoes: { rotulo: string; valor: number }[] = [
     { rotulo: t.cartoes.alunosTotais, valor: dadosResumo.alunosTotais },
@@ -52,7 +64,7 @@ export default async function PaginaAdmin({
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="painel-entra flex flex-wrap items-center justify-between gap-4" style={{ "--i": 0 } as React.CSSProperties}>
         <h1 className="text-3xl font-medium tracking-[-0.03em]">{t.titulo}</h1>
         <nav aria-label={t.periodo.rotulo} className="flex gap-1">
           {PERIODOS.map((p) => (
@@ -70,17 +82,61 @@ export default async function PaginaAdmin({
         </nav>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        {cartoes.map((c) => (
-          <div key={c.rotulo} className="flex flex-col gap-1 border border-line p-5">
+      {/* Os cinco números, em colunas de filete - sem caixa: a régua agrupa e o
+          tamanho tipográfico hierarquiza, mesma gramática do site. */}
+      <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
+        {cartoes.map((c, i) => (
+          <div
+            key={c.rotulo}
+            className="painel-entra flex flex-col gap-2 border-t border-line-strong pt-4"
+            style={{ "--i": i + 1 } as React.CSSProperties}
+          >
             <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{c.rotulo}</p>
-            <p className="tnum text-2xl font-medium text-fg">{c.valor}</p>
+            <p className="tnum text-3xl font-medium tracking-[-0.02em] text-fg">{c.valor}</p>
           </div>
         ))}
       </div>
 
+      <section className="painel-entra flex flex-col gap-4 border border-line p-6" style={{ "--i": 6 } as React.CSSProperties}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="font-medium text-fg">{t.trafego.titulo}</p>
+          {trafego.total > 0 ? (
+            <p className="tnum font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">
+              {t.trafego.total}: <span className="text-fg">{trafego.total}</span>
+            </p>
+          ) : null}
+        </div>
+        {trafego.porDia.length === 0 ? (
+          <EstadoVazio titulo={t.trafego.vazio.titulo} texto={t.trafego.vazio.texto} />
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <GraficoArea pontos={trafego.porDia} rotulo={t.trafego.titulo} />
+            </div>
+            <div className="lg:col-span-4">
+              <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{t.trafego.porPagina}</p>
+              <ul className="flex flex-col gap-4">
+                {trafego.porRota.map((linha) => (
+                  <li key={linha.rota} className="flex flex-col gap-1.5">
+                    <div className="flex items-baseline justify-between gap-4 text-sm">
+                      <span className="text-fg">{t.trafego.rotas[linha.rota] ?? linha.rota}</span>
+                      <span className="tnum shrink-0 font-mono text-[11px] text-fg-muted">{linha.visitas}</span>
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      className="h-1 bg-accent"
+                      style={{ width: `${Math.max(Math.round((linha.visitas / maiorRota) * 100), 2)}%` }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </section>
+
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="flex flex-col gap-4 border border-line p-6">
+        <div className="painel-entra flex flex-col gap-4 border border-line p-6" style={{ "--i": 7 } as React.CSSProperties}>
           <div className="flex items-center justify-between gap-4">
             <p className="font-medium text-fg">{t.graficos.cadastros}</p>
             <a href={hrefCsv("cadastros", periodo)} className={classeLinkCsv}>
@@ -89,7 +145,7 @@ export default async function PaginaAdmin({
           </div>
           <GraficoBarras pontos={series.cadastros} rotulo={t.graficos.cadastros} />
         </div>
-        <div className="flex flex-col gap-4 border border-line p-6">
+        <div className="painel-entra flex flex-col gap-4 border border-line p-6" style={{ "--i": 8 } as React.CSSProperties}>
           <div className="flex items-center justify-between gap-4">
             <p className="font-medium text-fg">{t.graficos.atividade}</p>
             <a href={hrefCsv("atividade", periodo)} className={classeLinkCsv}>
@@ -100,7 +156,7 @@ export default async function PaginaAdmin({
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 border border-line p-6">
+      <section className="painel-entra flex flex-col gap-4 border border-line p-6" style={{ "--i": 9 } as React.CSSProperties}>
         <div className="flex items-center justify-between gap-4">
           <p className="font-medium text-fg">{t.conclusao.titulo}</p>
           <a href={hrefCsv("conclusao", periodo)} className={classeLinkCsv}>
@@ -120,7 +176,7 @@ export default async function PaginaAdmin({
               </thead>
               <tbody className="divide-y divide-line">
                 {conclusao.map((c) => (
-                  <tr key={c.slug}>
+                  <tr key={c.slug} className="transition-colors hover:bg-surface">
                     <td className="px-0 py-3 text-fg">{c.titulo}</td>
                     <td className="tnum px-4 py-3 text-fg-muted">{c.comecaram}</td>
                     <td className="tnum px-4 py-3 text-fg-muted">{c.concluiram}</td>
@@ -131,11 +187,11 @@ export default async function PaginaAdmin({
             </table>
           </div>
         ) : (
-          <p className="text-fg-muted">{t.conclusao.vazio}</p>
+          <EstadoVazio titulo={t.conclusao.vazio} texto={t.semDados} />
         )}
       </section>
 
-      <section className="flex flex-col gap-4 border border-line p-6">
+      <section className="painel-entra flex flex-col gap-4 border border-line p-6" style={{ "--i": 10 } as React.CSSProperties}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="font-medium text-fg">{t.funil.titulo}</p>
           {cursoAtual ? (
