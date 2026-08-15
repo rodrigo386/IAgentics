@@ -54,6 +54,10 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 3. Trocar imagem mantendo o nome do arquivo serve a antiga (cache do otimizador por URL). Apagar `.next/cache/images` depois.
 4. Antes de rebuild/restart: matar `next start` **e** `next-server` **e** `lsof -ti:3000` — um server velho servindo chunk velho faz o fix parecer quebrado.
 5. `initial={{opacity:0}}` do Motion faz SSR de página em branco — entrada é CSS puro com fill `backwards`/`both` (ver DESIGN.md).
+6. **Server action com resposta descartada (React 19)**: sob carga, useActionState fica preso em pending com POST 200 e banco gravado — até o redirect da action se perde. Ações de admin usam **form HTML nativo + route handler 303** (`app/admin/alunos/[id]/acoes/route.ts`); não voltar para server action nesses botões sem stress-testar 15+ cliques.
+7. **Navegação só-de-querystring via `<Link>` abortava fetch RSC de forma intermitente** (Next 15.5, cresce com o payload da página). Filtros do `/admin` (aba/período/curso) são `<a>` nativos de propósito.
+8. O pool do Postgres está em **20** (lib/db/index.ts) porque o painel dispara ~16 queries paralelas; com 5, actions na fila estouravam timeout. `prefetch={false}` na sidebar do admin pelo mesmo motivo (o prefetch do painel disparava a rajada em toda página).
+9. **Verificar deploy novo por `BUILD_ID`** (`.next/BUILD_ID` local vs container via ssh) — hash de chunk é por CONTEÚDO e não muda se aquele arquivo não mudou.
 
 ## Pendências em aberto (com o Rodrigo)
 
