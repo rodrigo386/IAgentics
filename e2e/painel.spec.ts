@@ -111,7 +111,7 @@ test("painel editorial: banner de boas-vindas (sem hero de curso) após terminar
   await paginaAdmin.getByRole("button", { name: "Buscar" }).click();
   await paginaAdmin.getByRole("row").filter({ hasText: emailAluno }).getByRole("link").click();
   await paginaAdmin.getByRole("button", { name: "Liberar acesso" }).click();
-  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible();
+  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible({ timeout: 15000 });
 
   // Marca concluída e segue por "Próxima aula" até ela sumir (a última aula
   // da semente não tem próxima). Máximo 10 iterações para 8 aulas.

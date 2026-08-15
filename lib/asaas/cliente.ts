@@ -2,6 +2,12 @@ import "server-only"; // a chave de produção nunca pode vazar para bundle de c
 
 const BASE = "https://api.asaas.com/v3";
 
+/** R$ 39,90/mês, travado pelo spec da assinatura. Fonte única: é o value
+ *  enviado ao Asaas em criarAssinatura E a base do MRR estimado no painel
+ *  (lib/admin/metricas.ts). Mudou o preço? Muda aqui e nos textos de
+ *  lib/content*.ts - o resto acompanha. */
+export const VALOR_MENSAL = 39.9;
+
 /** Mascara CPF antes de logar: sequência de 11 dígitos crus E o formato
  *  pontuado usual (000.000.000-00, e parcialmente pontuado). Fix round
  *  (Important 2, endurecido no round 2 — F2): o endpoint /customers valida o
@@ -52,14 +58,14 @@ export const clienteAsaas: ClienteAsaas = {
     return { id: r.id };
   },
   async criarAssinatura(d) {
-    // Valores travados pelo spec: R$ 39,90/mês, aluno escolhe Pix/cartão/boleto na fatura.
+    // Valor travado pelo spec (VALOR_MENSAL); aluno escolhe Pix/cartão/boleto na fatura.
     const r = await chamar("/subscriptions", {
       method: "POST",
       body: JSON.stringify({
         customer: d.customer,
         nextDueDate: d.nextDueDate,
         billingType: "UNDEFINED",
-        value: 39.9,
+        value: VALOR_MENSAL,
         cycle: "MONTHLY",
         description: "Assinatura IAgentics Academy",
       }),

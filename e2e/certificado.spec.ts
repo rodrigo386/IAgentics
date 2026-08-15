@@ -35,7 +35,7 @@ test("fluxo completo: concluir formação → certificado público, LinkedIn e c
   await paginaAdmin.getByRole("button", { name: "Buscar" }).click();
   await paginaAdmin.getByRole("row").filter({ hasText: emailAluno }).getByRole("link").click();
   await paginaAdmin.getByRole("button", { name: "Liberar acesso" }).click();
-  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible();
+  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible({ timeout: 15000 });
 
   await paginaAluno.goto("/app/curso/fundamentos-ia-copilot/boas-vindas");
   for (let i = 0; i < 10; i++) {

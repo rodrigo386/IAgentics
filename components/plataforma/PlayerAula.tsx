@@ -75,9 +75,21 @@ export function PlayerAula({
   const [controlesVisiveis, setControlesVisiveis] = useState(true);
   const [posterCaiu, setPosterCaiu] = useState(false);
 
-  function concluir() {
-    setConcluida(true);
-    void concluirAula(lessonId);
+  /** O estado só vira DEPOIS da gravação confirmar. A versão otimista
+   *  (setConcluida antes, action com `void`) mostrava "Próxima aula" com o
+   *  POST ainda em voo - navegar naquele instante cancelava a requisição e a
+   *  conclusão se perdia em silêncio (flake do e2e do painel era exatamente
+   *  isso). `salvando` trava reentrada do clique e do ENDED do player. */
+  const salvando = useRef(false);
+  async function concluir() {
+    if (salvando.current || concluida) return;
+    salvando.current = true;
+    try {
+      await concluirAula(lessonId);
+      setConcluida(true);
+    } finally {
+      salvando.current = false;
+    }
   }
 
   function mostrarControles() {
@@ -185,7 +197,7 @@ export function PlayerAula({
             if (e.data === YT.PlayerState.PAUSED) setControlesVisiveis(true);
             if (e.data === YT.PlayerState.ENDED) {
               setControlesVisiveis(true);
-              concluir();
+              void concluir();
             }
           },
           onError: (e: { data: number }) =>

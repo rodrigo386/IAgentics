@@ -47,7 +47,7 @@ test("admin busca aluno, libera acesso à aula paga (prova de ponta a ponta), de
 
   // Libera acesso.
   await paginaAdmin.getByRole("button", { name: "Liberar acesso" }).click();
-  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible();
+  await expect(paginaAdmin.getByText("Acesso liberado.")).toBeVisible({ timeout: 15000 });
   await expect(paginaAdmin.getByText("Liberada manualmente")).toBeVisible();
   await expect(paginaAdmin.getByRole("button", { name: "Revogar acesso" })).toBeVisible();
 
@@ -60,7 +60,7 @@ test("admin busca aluno, libera acesso à aula paga (prova de ponta a ponta), de
 
   // Admin revoga.
   await paginaAdmin.getByRole("button", { name: "Revogar acesso" }).click();
-  await expect(paginaAdmin.getByText("Acesso revogado.")).toBeVisible();
+  await expect(paginaAdmin.getByText("Acesso revogado.")).toBeVisible({ timeout: 15000 });
   // exact: true porque o histórico logo abaixo também tem uma linha "cancelada"
   // (valor cru do banco, minúsculo) — sem isso a busca por texto é ambígua.
   await expect(paginaAdmin.getByText("Cancelada", { exact: true })).toBeVisible();

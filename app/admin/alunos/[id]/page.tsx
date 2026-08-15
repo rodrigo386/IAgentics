@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { AcoesAluno } from "@/components/admin/AcoesAluno";
+import { AcoesRapidas } from "@/components/admin/AcoesRapidas";
+import { ehChaveSucesso, MENSAGENS_SUCESSO, MOTIVOS_ERRO, mensagemErro } from "@/lib/admin/mensagens-aluno";
 import { admin } from "@/lib/content-admin";
 import { plataforma } from "@/lib/content-plataforma";
 import { buscarAluno } from "@/lib/admin/alunos";
@@ -12,7 +13,21 @@ function formatarData(d: Date | null): string {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d);
 }
 
-export default async function PaginaAluno({ params }: { params: Promise<{ id: string }> }) {
+export default async function PaginaAluno({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ msg?: string; erro?: string }>;
+}) {
+  // Feedback das ações rápidas via querystring (ver AcoesRapidas.tsx). Chave
+  // desconhecida na URL é ignorada - nunca vira texto na tela.
+  const { msg, erro } = await searchParams;
+  const mensagem = ehChaveSucesso(msg)
+    ? ({ tipo: "sucesso", texto: MENSAGENS_SUCESSO[msg] } as const)
+    : erro && MOTIVOS_ERRO.includes(erro)
+      ? ({ tipo: "erro", texto: mensagemErro(erro) } as const)
+      : null;
   // O layout de /admin já rodou exigirAdmin() (gate 404); aqui só precisamos
   // de quem está logado, sem pagar outra consulta ao banco para revalidar.
   const sessao = await auth();
@@ -144,13 +159,14 @@ export default async function PaginaAluno({ params }: { params: Promise<{ id: st
         )}
       </section>
 
-      <AcoesAluno
+      <AcoesRapidas
         alunoId={aluno.id}
         role={aluno.role}
         ativo={aluno.ativo}
         temAcesso={temAcessoAtual}
         emailConfirmado={Boolean(aluno.emailConfirmadoEm)}
         souEu={souEu}
+        mensagem={mensagem}
       />
     </div>
   );

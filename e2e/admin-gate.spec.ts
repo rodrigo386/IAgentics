@@ -24,7 +24,9 @@ test("promovido por script, entra e vê a shell", async ({ page }) => {
   await criarConta(page, em);
   execSync(`node scripts/promover-admin.mjs ${em}`, { stdio: "pipe" });
   await page.goto("/admin");
-  await expect(page.getByRole("link", { name: "Alunos" })).toBeVisible();
+  // exact: o painel ganhou o atalho "Ver alunos" (saúde das assinaturas), que
+  // também casa com o substring "Alunos".
+  await expect(page.getByRole("link", { name: "Alunos", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ver como aluno" })).toBeVisible();
 });
 

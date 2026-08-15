@@ -91,6 +91,11 @@ export function ShellAdmin() {
           <Link
             key={href}
             href={href}
+            // prefetch desligado: com loading.tsx no /admin, o prefetch do link
+            // "Métricas" (sempre visível) disparava a rajada analítica inteira
+            // em background A CADA página do admin — e as server actions
+            // enfileiradas atrás dela estouravam timeout (2026-08-15).
+            prefetch={false}
             aria-current={ativa(href) ? "page" : undefined}
             title={recolhida ? label : undefined}
             className={`flex shrink-0 items-center gap-3 whitespace-nowrap rounded-control px-4 py-2 text-sm transition-colors ${
@@ -103,6 +108,7 @@ export function ShellAdmin() {
         ))}
         <Link
           href="/app"
+          prefetch={false}
           title={recolhida ? admin.shell.verComoAluno : undefined}
           className={`flex shrink-0 items-center gap-3 whitespace-nowrap rounded-control border border-line px-4 py-2 text-sm text-fg-muted transition-colors hover:border-line-strong hover:text-fg lg:mt-auto ${
             recolhida ? "lg:justify-center lg:border-0 lg:px-0 lg:py-2.5" : ""

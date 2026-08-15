@@ -1,7 +1,8 @@
 import "server-only";
-import { and, eq, gte, inArray, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { courses, lessonProgress, lessons, modules, pageViews, subscriptions, users } from "@/lib/db/schema";
+import { certificates, courses, lessonProgress, lessons, modules, pageViews, subscriptions, users } from "@/lib/db/schema";
+import { VALOR_MENSAL } from "@/lib/asaas/cliente";
 
 export type Periodo = "7" | "30" | "90" | "tudo";
 
@@ -282,4 +283,214 @@ export async function trafegoDoSite(p: Periodo): Promise<{
 
   const total = porRota.reduce((soma, l) => soma + l.visitas, 0);
   return { total, porDia, porRota };
+}
+
+/* ----------------------------------------------------------------------------
+   Analítico por aba (2026-08-15): comparações com o período ANTERIOR de mesmo
+   tamanho, saúde das assinaturas, MRR estimado, funil site→assinatura.
+   Regra do painel: só métrica calculável com dado real - nada estimado além
+   do MRR, que é aritmética declarada (ativas × VALOR_MENSAL).
+---------------------------------------------------------------------------- */
+
+/** Janela imediatamente anterior ao período, com o MESMO tamanho: para "30"
+ *  é [agora-60d, agora-30d). "tudo" não tem anterior - comparação vira null
+ *  e o cartão simplesmente não mostra variação. */
+function janelaAnterior(p: Periodo, agora: Date): { inicio: Date; fim: Date } | null {
+  if (p === "tudo") return null;
+  const dias = DIAS_POR_PERIODO[p];
+  const fim = new Date(agora.getTime() - dias * DIA_MS);
+  return { inicio: new Date(fim.getTime() - dias * DIA_MS), fim };
+}
+
+/** Alunos cuja PRIMEIRA linha ativa/manual cai depois do corte: novas
+ *  assinaturas de verdade, não mudanças de status de quem já assinava. */
+async function novasAssinaturasDesde(corte: Date | null): Promise<number> {
+  const r = await db.execute<{ n: number }>(sql`
+    select count(*)::int as n from (
+      select user_id, min(created_at) as primeira
+      from subscriptions
+      where status in ('ativa', 'manual')
+      group by user_id
+    ) t
+    ${corte ? sql`where primeira >= ${corte}` : sql``}
+  `);
+  return r.rows[0]?.n ?? 0;
+}
+
+export type AnaliticoApp = {
+  novosAnterior: number | null;
+  aulasConcluidasAnterior: number | null;
+  certificados: number;
+  certificadosAnterior: number | null;
+  novasAssinaturas: number;
+  status: { ativas: number; manuais: number; pendentes: number; inadimplentes: number; canceladas: number };
+  mrr: number;
+  pendentesConfirmacao: number;
+  catalogo: { cursos: number; aulas: number; horas: number };
+  topAulas: { aula: string; curso: string; concluidas: number }[];
+};
+
+export async function analiticoDoApp(p: Periodo): Promise<AnaliticoApp> {
+  const agora = new Date();
+  const corte = inicioDoPeriodo(p, agora);
+  const anterior = janelaAnterior(p, agora);
+
+  const [
+    novosAnteriorLinha,
+    aulasAnteriorLinha,
+    certificadosLinha,
+    certificadosAnteriorLinha,
+    novasAssinaturas,
+    statusResultado,
+    pendentesLinha,
+    cursosLinha,
+    aulasLinha,
+    horasLinha,
+    topAulas,
+  ] = await Promise.all([
+    anterior
+      ? db
+          .select({ n: sql<number>`count(*)::int` })
+          .from(users)
+          .where(and(gte(users.createdAt, anterior.inicio), lt(users.createdAt, anterior.fim)))
+      : Promise.resolve(null),
+    anterior
+      ? db
+          .select({ n: sql<number>`count(*)::int` })
+          .from(lessonProgress)
+          .where(
+            and(
+              eq(lessonProgress.concluida, true),
+              gte(lessonProgress.concluidaEm, anterior.inicio),
+              lt(lessonProgress.concluidaEm, anterior.fim),
+            ),
+          )
+      : Promise.resolve(null),
+    db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(certificates)
+      .where(corte ? gte(certificates.emitidoEm, corte) : undefined),
+    anterior
+      ? db
+          .select({ n: sql<number>`count(*)::int` })
+          .from(certificates)
+          .where(and(gte(certificates.emitidoEm, anterior.inicio), lt(certificates.emitidoEm, anterior.fim)))
+      : Promise.resolve(null),
+    novasAssinaturasDesde(corte),
+    // Status ATUAL por aluno (linha mais recente) - mesma semântica de
+    // temAcesso/buscarAssinatura, agora aberta por categoria.
+    db.execute<{ status: string; n: number }>(sql`
+      select status, count(*)::int as n from (
+        select distinct on (user_id) status
+        from subscriptions
+        order by user_id, created_at desc
+      ) s
+      group by status
+    `),
+    db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(users)
+      .where(and(sql`${users.emailConfirmadoEm} is null`, eq(users.ativo, true))),
+    db.select({ n: sql<number>`count(*)::int` }).from(courses).where(eq(courses.publicado, true)),
+    db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(lessons)
+      .innerJoin(modules, eq(modules.id, lessons.moduleId))
+      .innerJoin(courses, and(eq(courses.id, modules.courseId), eq(courses.publicado, true))),
+    db
+      .select({ h: sql<number>`coalesce(sum(${courses.cargaHoras}), 0)::float` })
+      .from(courses)
+      .where(eq(courses.publicado, true)),
+    db
+      .select({
+        aula: lessons.titulo,
+        curso: courses.titulo,
+        concluidas: sql<number>`count(*)::int`,
+      })
+      .from(lessonProgress)
+      .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
+      .innerJoin(modules, eq(modules.id, lessons.moduleId))
+      .innerJoin(courses, eq(courses.id, modules.courseId))
+      .where(
+        corte
+          ? and(eq(lessonProgress.concluida, true), gte(lessonProgress.concluidaEm, corte))
+          : eq(lessonProgress.concluida, true),
+      )
+      .groupBy(lessons.titulo, courses.titulo)
+      .orderBy(sql`count(*) desc`)
+      .limit(5),
+  ]);
+
+  const porStatus = new Map(statusResultado.rows.map((l) => [l.status, l.n]));
+  const ativas = porStatus.get("ativa") ?? 0;
+
+  return {
+    novosAnterior: novosAnteriorLinha ? (novosAnteriorLinha[0]?.n ?? 0) : null,
+    aulasConcluidasAnterior: aulasAnteriorLinha ? (aulasAnteriorLinha[0]?.n ?? 0) : null,
+    certificados: certificadosLinha[0]?.n ?? 0,
+    certificadosAnterior: certificadosAnteriorLinha ? (certificadosAnteriorLinha[0]?.n ?? 0) : null,
+    novasAssinaturas,
+    status: {
+      ativas,
+      manuais: porStatus.get("manual") ?? 0,
+      pendentes: porStatus.get("pendente") ?? 0,
+      inadimplentes: porStatus.get("inadimplente") ?? 0,
+      canceladas: porStatus.get("cancelada") ?? 0,
+    },
+    // Só assinatura paga entra no MRR; cortesia (manual) fica de fora e
+    // aparece separada na saúde das assinaturas.
+    mrr: ativas * VALOR_MENSAL,
+    pendentesConfirmacao: pendentesLinha[0]?.n ?? 0,
+    catalogo: {
+      cursos: cursosLinha[0]?.n ?? 0,
+      aulas: aulasLinha[0]?.n ?? 0,
+      horas: horasLinha[0]?.h ?? 0,
+    },
+    topAulas,
+  };
+}
+
+export type AnaliticoSite = {
+  visitasAnterior: number | null;
+  contas: number;
+  confirmadas: number;
+  novasAssinaturas: number;
+};
+
+/** Funil site→app do período: visitas vêm de trafegoDoSite (mesma chamada que
+ *  alimenta o gráfico); aqui ficam as etapas seguintes e a comparação. */
+export async function analiticoDoSite(p: Periodo): Promise<AnaliticoSite> {
+  const agora = new Date();
+  const corte = inicioDoPeriodo(p, agora);
+  const anterior = janelaAnterior(p, agora);
+
+  const [visitasAnteriorResultado, contasLinha, confirmadasLinha, novasAssinaturas] = await Promise.all([
+    anterior
+      ? db
+          .select({ n: sql<number>`coalesce(sum(${pageViews.visitas}), 0)::int` })
+          .from(pageViews)
+          .where(
+            and(
+              gte(pageViews.dia, anterior.inicio.toISOString().slice(0, 10)),
+              lt(pageViews.dia, anterior.fim.toISOString().slice(0, 10)),
+            ),
+          )
+      : Promise.resolve(null),
+    db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(users)
+      .where(corte ? gte(users.createdAt, corte) : undefined),
+    db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(users)
+      .where(corte ? gte(users.emailConfirmadoEm, corte) : sql`${users.emailConfirmadoEm} is not null`),
+    novasAssinaturasDesde(corte),
+  ]);
+
+  return {
+    visitasAnterior: visitasAnteriorResultado ? (visitasAnteriorResultado[0]?.n ?? 0) : null,
+    contas: contasLinha[0]?.n ?? 0,
+    confirmadas: confirmadasLinha[0]?.n ?? 0,
+    novasAssinaturas,
+  };
 }

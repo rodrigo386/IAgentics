@@ -166,6 +166,15 @@ export const admin = {
   },
   metricas: {
     titulo: "Métricas",
+    abas: {
+      rotulo: "Área",
+      app: "App",
+      site: "Site",
+    },
+    variacao: {
+      vsAnterior: "vs período anterior",
+      semBase: "sem base de comparação",
+    },
     periodo: {
       rotulo: "Período",
       "7": "7 dias",
@@ -179,7 +188,43 @@ export const admin = {
       assinaturasAtivas: "Assinaturas ativas",
       alunosAtivos: "Alunos ativos",
       aulasConcluidas: "Aulas concluídas",
+      mrr: "MRR estimado",
+      certificados: "Certificados emitidos",
+      visitas: "Visitas do site",
+      melhorDia: "Melhor dia",
+      paginaMaisVista: "Página mais vista",
     },
+    /* MRR = assinaturas com status ativa × R$ 39,90 (VALOR_MENSAL). Cortesia
+       (manual) fica fora e aparece na saúde das assinaturas. */
+    mrrNota: "assinaturas ativas × R$ 39,90",
+    saude: {
+      titulo: "Saúde das assinaturas",
+      ativas: "Ativas",
+      cortesias: "Cortesias",
+      novas: "Novas no período",
+      pendentes: "Pendentes",
+      inadimplentes: "Inadimplentes",
+      canceladas: "Canceladas",
+      aguardandoConfirmacao: "aguardando confirmação de e-mail",
+      verAlunos: "Ver alunos",
+    },
+    funilNegocio: {
+      titulo: "Do site à assinatura",
+      visitas: "Visitas",
+      contas: "Contas criadas",
+      confirmadas: "E-mails confirmados",
+      assinantes: "Novas assinaturas",
+      vazio: {
+        titulo: "Funil ainda sem visitas",
+        texto: "As etapas aparecem conforme o contador de visitas acumula dados do período.",
+      },
+    },
+    topAulas: {
+      titulo: "Aulas mais concluídas",
+      vazio: "Nenhuma aula concluída neste período.",
+    },
+    catalogo: (cursos: number, aulas: number, horas: number) =>
+      `${cursos} cursos publicados, ${aulas} aulas, ${horas}h de conteúdo`,
     graficos: {
       cadastros: "Cadastros por semana",
       atividade: "Atividade por semana",

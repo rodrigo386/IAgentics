@@ -27,7 +27,8 @@ test("admin vê os 5 cartões, troca período por link e baixa um CSV", async ({
 
   // Filtro de período é um link puro (server-first): clicar muda a URL.
   await page.getByRole("link", { name: "7 dias" }).click();
-  await expect(page).toHaveURL(/\/admin\?periodo=7/);
+  // A URL carrega também a aba (padrão app) desde as abas de 2026-08-15.
+  await expect(page).toHaveURL(/periodo=7/);
 
   // Exportar CSV: aciona um download real; nome do arquivo reflete bloco+período.
   const [download] = await Promise.all([
@@ -64,9 +65,17 @@ test("beacon conta visita e o painel mostra o bloco de tráfego com a página", 
   const resposta = await page.request.post("/api/estatisticas", { data: { rota: "/nexo" } });
   expect(resposta.status()).toBe(204);
 
-  await page.goto("/admin");
+  // O tráfego mora na aba Site (2026-08-15); a aba padrão é App.
+  await page.goto("/admin?aba=site");
   // .first(): o rótulo também vive na <caption> sr-only do gráfico acessível.
   await expect(page.getByText("Visitas do site").first()).toBeVisible();
   // A linha "Nexo" existe na quebra por página (>=1 visita garantida acima).
   await expect(page.getByText("Nexo", { exact: true })).toBeVisible();
+  // O funil site→assinatura renderiza com as quatro etapas.
+  await expect(page.getByText("Do site à assinatura")).toBeVisible();
+  await expect(page.getByText("Contas criadas")).toBeVisible();
+  // A aba App segue com os cartões de sempre + MRR.
+  await page.getByRole("link", { name: "App", exact: true }).click();
+  await expect(page.getByText("MRR estimado")).toBeVisible();
+  await expect(page.getByText("Saúde das assinaturas")).toBeVisible();
 });
