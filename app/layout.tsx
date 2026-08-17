@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { site } from "@/lib/content";
 import { Beacon } from "@/components/site/Beacon";
+import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
 import "./globals.css";
 
 /**
@@ -89,6 +90,8 @@ export default function RootLayout({
         {children}
         {/* Contador de visitas do site (só rotas públicas; ver o componente). */}
         <Beacon />
+        {/* GA4, também só nas rotas públicas (ver o componente). */}
+        <GoogleAnalytics />
       </body>
     </html>
   );
