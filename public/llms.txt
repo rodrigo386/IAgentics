@@ -1,0 +1,25 @@
+# IAgentics
+
+> Automações Inteligentes para Compras e Gestão de Gastos. A IAgentics coloca agentes de IA para rodar dentro da plataforma que sua empresa já usa; os dados permanecem no servidor da sua empresa. Site em português do Brasil (pt-BR).
+
+A IAgentics tem três soluções: Nexo (agentes de IA para Compras), IAgentics Academy (escola de negócios de IA) e IA Spend Lab (consultoria de implementação de IA em Compras). Parcerias: Microsoft AI Cloud Partner, Oracle, SAP, Desk Manager e Anthropic (Claude Partner Network).
+
+## Soluções
+
+- [Nexo](https://iagentics.com.br/nexo): cinco agentes de IA conduzindo o processo de compras de ponta a ponta — abertura de requisição (RC), triagem e aprovação por alçada, RFQ com seleção de fornecedores, propostas via Portal do Fornecedor, negociação com suporte de IA, aprovação final e pedido de compras no ERP. Roda dentro do Desk Manager, integra ao ERP e ao e-procurement já em uso, e os dados sensíveis não saem do ambiente do cliente.
+- [IAgentics Academy](https://iagentics.com.br/academy): escola de negócios de IA — formações in company, mentorias, imersões e plataforma online de cursos. Trilhas práticas de Fundamentos, Assistentes e Agentes de IA.
+- [IA Spend Lab](https://iagentics.com.br/spend-lab): consultoria de implementação de IA em Compras — diagnóstico de maturidade e governança, design e mapeamento de fluxos, transformação digital e formação aplicada em programa de 8 semanas.
+
+## Plataforma de cursos
+
+- [Cursos](https://iagentics.com.br/cursos): catálogo da IAgentics Academy — formações de IA aplicada gravadas por quem implementa, com progresso salvo por aula e certificado ao concluir. Assinatura única de R$ 39,90/mês, sem fidelidade.
+- [Verificação de certificados](https://iagentics.com.br/certificados): validação online dos certificados emitidos pela plataforma, por código.
+
+## Resultados publicados
+
+- Indústria química brasileira (Compras e Jurídico): −50% no ciclo de contratos — o agente revisa e sinaliza cláusulas, analisa riscos pela política interna e sugere melhorias.
+- Indústria de alimentos brasileira (Compras): −90% do tempo na análise de gastos — o agente classifica mais de 10 mil linhas por categoria no modelo UNSPSC e aprende com o feedback do time.
+
+## Institucional
+
+- [Página inicial](https://iagentics.com.br/): apresentação das três soluções, parcerias e formulário de contato ("Vamos conversar").
