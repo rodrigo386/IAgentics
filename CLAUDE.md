@@ -22,6 +22,14 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 - **"Nexo" em caixa mista nas strings** — em caps o leitor de tela soletra N-E-X-O. Peso visual vem da tipografia, não de maiúsculas.
 - Datas relativas viram absolutas em docs; commits em pt-BR no padrão `feat:`/`fix:`.
 
+## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
+
+- **Endereço canônico é o apex** `https://iagentics.com.br` (`site.url`); o www redireciona 301 para ele.
+- **`canonical` e `openGraph` são declarados por página, nunca no layout** — metadata do Next é herdada: um valor no layout faz toda rota se declarar como sendo a home (o `og:url` estava exatamente assim até 2026-08-18). Use `ogDaPagina()` de `lib/seo.ts`.
+- **Dado estruturado sai de `lib/seo.ts`**, sempre derivado de `lib/content.ts` ou do catálogo do banco — JSON-LD que não bate com a página é penalizado. O componente `JsonLd` escapa `<` (título de curso é texto do admin: `</script>` fecharia a tag).
+- **Página nova pública?** Entra em `ROTAS_SITEMAP`. Página com dado pessoal (certificado tem nome de aluno) leva `robots: noindex` na própria página — nunca `Disallow` no robots.txt, que mataria a prévia do LinkedIn.
+- O **robots.txt que o robô lê não é só o nosso**: o Cloudflare injeta o "Managed Content Signals" na frente, hoje com `Disallow: /` para ClaudeBot/GPTBot/Google-Extended.
+
 ## Testes
 
 - `npm run test:unit` (vitest) · `npm run test:e2e` (Playwright, **workers: 1** — os specs dividem um banco só e correm em corrida se paralelos) · `npm run test:e2e:email` (config própria, porta 3100, caixa de e-mail em arquivo).

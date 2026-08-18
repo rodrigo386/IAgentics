@@ -24,7 +24,16 @@ async function urlDaPagina(codigo: string): Promise<string> {
 export async function generateMetadata({ params }: { params: Promise<{ codigo: string }> }): Promise<Metadata> {
   const { codigo } = await params;
   const cert = await buscarPorCodigo(decodeURIComponent(codigo));
-  if (!cert) return { title: t.titulo };
+  /* `noindex` no CERTIFICADO (2026-08-18): a página é pública de propósito
+     (é o que faz a verificação valer), mas ela estampa o NOME DO ALUNO, e um
+     código por certificado gera URLs infinitas. Fora do índice do Google,
+     acessível por link.
+     Feito por meta, não por Disallow no robots.txt: o LinkedIn respeita o
+     robots.txt e pararia de montar a prévia justamente de quem compartilha o
+     certificado - que é o uso esperado. `follow` fica ligado para o link
+     interno do rodapé continuar passando autoridade. */
+  const semIndice = { robots: { index: false, follow: true } } satisfies Partial<Metadata>;
+  if (!cert) return { title: t.titulo, ...semIndice };
   // og:image tem que ser ABSOLUTA (LinkedIn/scrapers ignoram relativa). O layout
   // define metadataBase, mas isso não ajuda aqui: só se aplica a URLs relativas,
   // e esta já é absoluta — por isso deriva a origem da própria requisição, o que
@@ -34,9 +43,13 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
   return {
     title: t.metaTitulo(cert.cursoTitulo),
     description: t.metaDescricao(cert.alunoNome, cert.cursoTitulo),
+    ...semIndice,
     openGraph: {
       title: t.metaTitulo(cert.cursoTitulo),
       description: t.metaDescricao(cert.alunoNome, cert.cursoTitulo),
+      // Endereço do próprio certificado: sem isto o LinkedIn atribuiria o
+      // compartilhamento à home (og:url herdado do layout).
+      url: `${origem}/certificados/${codigo}`,
       images: [`${origem}/plataforma/og-certificado-v1.jpg`],
     },
   };

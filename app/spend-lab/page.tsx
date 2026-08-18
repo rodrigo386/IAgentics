@@ -9,11 +9,16 @@ import { SpendLabMethod } from "@/components/sections/spend-lab/Method";
 import { SpendLabComparison } from "@/components/sections/spend-lab/Comparison";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
+import { ogDaPagina } from "@/lib/seo";
+
+const DESCRICAO_SPEND_LAB =
+  "Implemente IA com Mente, Método e Cultura. Diagnóstico de maturidade, consultoria e formação aplicada em 8 semanas.";
 
 export const metadata: Metadata = {
   title: "IA Spend Lab",
-  description:
-    "Implemente IA com Mente, Método e Cultura. Diagnóstico de maturidade, consultoria e formação aplicada em 8 semanas.",
+  description: DESCRICAO_SPEND_LAB,
+  alternates: { canonical: "/spend-lab" },
+  openGraph: ogDaPagina("/spend-lab", "IA Spend Lab · IAgentics", DESCRICAO_SPEND_LAB),
 };
 
 /**

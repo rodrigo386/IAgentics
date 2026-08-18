@@ -7,11 +7,16 @@ import { AcademyFormats } from "@/components/sections/academy/Formats";
 import { AcademyCourses } from "@/components/sections/academy/Courses";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { academyJsonLd, ogDaPagina } from "@/lib/seo";
+
+const DESCRICAO_ACADEMY = "Escola de experiências com IA para pessoas, times e empresas.";
 
 export const metadata: Metadata = {
   title: "Academy",
-  description:
-    "Escola de experiências com IA para pessoas, times e empresas.",
+  description: DESCRICAO_ACADEMY,
+  alternates: { canonical: "/academy" },
+  openGraph: ogDaPagina("/academy", "IAgentics Academy", DESCRICAO_ACADEMY),
 };
 
 /**
@@ -29,6 +34,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
+      <JsonLd dados={academyJsonLd()} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <AcademyCover />

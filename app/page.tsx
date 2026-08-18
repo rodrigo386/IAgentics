@@ -1,8 +1,20 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Solutions } from "@/components/sections/Solutions";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizacaoJsonLd, ogDaPagina } from "@/lib/seo";
+import { site } from "@/lib/content";
+
+/* Canonical e og:url são declarados PÁGINA A PÁGINA, nunca no layout:
+   metadata do Next é herdada, então um valor no layout faria toda rota sem
+   valor próprio se declarar como sendo a home. */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: ogDaPagina("/", `${site.name} · ${site.tagline}`, site.description),
+};
 
 /**
  * Landing page, kept deliberately short: the value prop, the three solutions, and the
@@ -20,6 +32,7 @@ import { Footer } from "@/components/Footer";
 export default function Home() {
   return (
     <>
+      <JsonLd dados={organizacaoJsonLd()} />
       <Nav />
       <main id="conteudo">
         <Hero />

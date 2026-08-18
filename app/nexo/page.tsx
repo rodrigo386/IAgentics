@@ -7,10 +7,13 @@ import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators"
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
 import { nexoPage } from "@/lib/content";
+import { ogDaPagina } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Nexo",
   description: nexoPage.hero.subtext,
+  alternates: { canonical: "/nexo" },
+  openGraph: ogDaPagina("/nexo", "Nexo · IAgentics", nexoPage.hero.subtext),
 };
 
 /**

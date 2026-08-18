@@ -9,8 +9,16 @@ import { CursosAssinatura } from "@/components/sections/cursos/Assinatura";
 import { CursosApoiadores } from "@/components/sections/cursos/Apoiadores";
 import { cursos as t } from "@/lib/content";
 import { buscarCatalogo, temAcesso } from "@/lib/plataforma/dados";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { cursosJsonLd, ogDaPagina } from "@/lib/seo";
+import { VALOR_MENSAL } from "@/lib/asaas/cliente";
 
-export const metadata: Metadata = { title: t.meta.titulo, description: t.meta.descricao };
+export const metadata: Metadata = {
+  title: t.meta.titulo,
+  description: t.meta.descricao,
+  alternates: { canonical: "/cursos" },
+  openGraph: ogDaPagina("/cursos", `${t.meta.titulo} · IAgentics Academy`, t.meta.descricao),
+};
 
 // Consulta banco e sessão a cada request - o build do Railway não tem rede
 // para o banco, então esta página NÃO pode ser prerenderizada (mesmo
@@ -32,6 +40,9 @@ export default async function PaginaCursos() {
 
   return (
     <>
+      {/* Dado estruturado gerado do MESMO catálogo que a página renderiza -
+          curso despublicado some dos dois ao mesmo tempo. */}
+      <JsonLd dados={cursosJsonLd(cursos, VALOR_MENSAL)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <CursosEstante cursos={cursos} destino={destino} assinante={assinante} logado={logado} />

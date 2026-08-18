@@ -14,8 +14,12 @@
 
 export const site = {
   name: "IAgentics",
-  domain: "www.iagentics.com.br",
-  url: "https://www.iagentics.com.br",
+  /* O APEX é o endereço canônico (2026-08-18). Era `www`, que não respondia:
+     todo canonical/og:url do site apontava para um host morto. O www agora
+     redireciona 301 para cá, então há UM endereço oficial - o que o Google
+     precisa para não dividir a autoridade entre duas versões da mesma página. */
+  domain: "iagentics.com.br",
+  url: "https://iagentics.com.br",
   tagline: "Automações Inteligentes para Compras e Gestão de Gastos",
   description:
     "A IAgentics coloca agentes de IA para rodar dentro da plataforma que sua empresa já usa, em Compras e Gestão de Gastos. Seus dados permanecem no servidor da sua empresa.",

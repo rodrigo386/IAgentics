@@ -27,25 +27,32 @@ GA4 e `/llms.txt` no ar.
 6. **Sem opengraph-image.** Link compartilhado no WhatsApp/LinkedIn aparece
    sem imagem.
 
-## Fase 1 — Fundação técnica (no código; 1 deploy)
+## Fase 1 — Fundação técnica — CONCLUÍDA em 2026-08-18
 
-- [ ] Trocar `site.url` para `https://iagentics.com.br` (o apex, que é quem
-      responde). Quando o DNS do www for corrigido, o www vira 301 para o
-      apex e o canonical continua válido.
-- [ ] `app/sitemap.ts`: rotas públicas (`/`, `/nexo`, `/academy`, `/cursos`,
-      `/spend-lab`, `/certificados`).
-- [ ] `app/robots.ts`: allow geral, `Disallow: /app`, `/admin`, `/api`, e a
-      linha `Sitemap:`. (O Cloudflare concatena o managed content acima do
-      nosso — desligar lá é a Fase 2.)
-- [ ] `alternates.canonical` por página via metadata do Next.
-- [ ] JSON-LD: `Organization` na home; `Course` + `Offer` (R$ 39,90/mês) em
-      /cursos, gerado do catálogo real; `EducationalOrganization` em
-      /academy.
-- [ ] `opengraph-image` 1200×630 (home no mínimo; ideal uma por seção) —
-      seguindo docs/DESIGN.md.
-- [ ] Revisar as descriptions com as palavras-chave alvo (Fase 3) sem
-      quebrar a regra do copy verbatim: description de meta não é copy de
-      página, pode ser otimizada.
+- [x] `site.url` e `site.domain` agora são o apex `iagentics.com.br`.
+- [x] `app/sitemap.ts` com as 5 páginas públicas. **`/certificados` ficou de
+      fora**: descobrimos na execução que aquele endereço é 404 (a rota é
+      `/certificados/[codigo]`), então listá-lo mandaria o Google a uma
+      página inexistente.
+- [x] `app/robots.ts` com allow geral, `Disallow` em /app, /admin, /api e a
+      linha `Sitemap:`.
+- [x] `alternates.canonical` por página.
+- [x] **`og:url` por página** — não estava no plano. Descoberto ao verificar
+      o build: o `openGraph` do layout é herdado por todas as rotas, então
+      cada página anunciava a HOME como seu endereço, e o LinkedIn atribuiria
+      todo compartilhamento à página inicial. Resolvido com `ogDaPagina()`.
+- [x] JSON-LD: `Organization` na home, `EducationalOrganization` na
+      /academy, `ItemList` de `Course` + `Offer` na /cursos gerado do
+      catálogo real do banco.
+- [x] `opengraph-image` 1200×630 gerada no build (next/og + Space Grotesk).
+- [x] **`noindex` nos certificados** — não estava no plano. Cada certificado
+      estampa o nome do aluno e gera URL infinita; ficam fora do índice por
+      meta (não por robots.txt, que quebraria a prévia do LinkedIn).
+
+Validação: 165 testes unit (10 novos em `lib/seo.test.ts`) + 26 e2e.
+
+Fica para depois, quando houver dados do Search Console: revisar as
+descriptions com as palavras-chave alvo da Fase 3.
 
 ## Fase 2 — Cloudflare e Google (precisa dos acessos do Rodrigo)
 
