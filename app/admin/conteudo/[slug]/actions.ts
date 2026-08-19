@@ -1,6 +1,8 @@
 "use server";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
+import { avisarIndexNow, URL_CATALOGO } from "@/lib/indexnow";
 import { exigirAdmin } from "@/lib/admin/sessao";
 import {
   criarAula,
@@ -35,6 +37,23 @@ function revalidarConteudo(cursoSlug: string, aulaSlug?: string) {
   revalidatePath("/app");
   revalidatePath(`/app/curso/${cursoSlug}`);
   if (aulaSlug) revalidatePath(`/app/curso/${cursoSlug}/${aulaSlug}`);
+}
+
+/**
+ * Avisa o IndexNow que a landing pública do catálogo mudou.
+ *
+ * Fica NA ACTION, não em lib/admin/conteudo.ts: aquelas funções são de banco
+ * e os testes as chamam de verdade — enfiar uma chamada de rede lá dentro
+ * faria a suíte falar com a internet. Aqui é `after()`, então o admin recebe
+ * a resposta na hora e o aviso sai depois, sem poder atrasar nem derrubar a
+ * publicação de um curso.
+ *
+ * Só a /cursos entra: as formações não têm página pública própria (o
+ * conteúdo vive atrás do login), então é a landing que muda aos olhos do
+ * buscador.
+ */
+function avisarCatalogoMudou() {
+  after(() => avisarIndexNow([URL_CATALOGO]));
 }
 
 function mensagemErroResultado(motivo: Exclude<ResultadoAcao, { ok: true }>["motivo"]): string {
@@ -77,6 +96,7 @@ export async function salvarCursoAction(id: string, _estado: Estado, formData: F
 
   revalidarConteudo(slugAntigo);
   if (campos.slug !== slugAntigo) revalidarConteudo(campos.slug);
+  avisarCatalogoMudou();
   return { erro: null, sucesso: t.mensagens.salvo };
 }
 
@@ -90,6 +110,7 @@ export async function definirPublicadoAction(
   await exigirAdmin();
   const resultado = await definirPublicado(id, publicado);
   revalidarConteudo(slug);
+  avisarCatalogoMudou();
 
   let sucesso: string = publicado ? t.mensagens.publicado : t.mensagens.ocultado;
   if (resultado.aviso === "aulas_sem_video") sucesso = t.avisos.aulasSemVideo(resultado.n);
@@ -107,6 +128,9 @@ export async function excluirCursoAction(id: string, slug: string, _estado: Esta
   revalidatePath("/admin/conteudo");
   revalidatePath("/app");
   revalidatePath(`/app/curso/${slug}`);
+  // Antes do redirect de propósito: o redirect lança para desviar o fluxo, e
+  // o que vier depois dele não executa.
+  avisarCatalogoMudou();
   redirect("/admin/conteudo?excluido=1");
 }
 
