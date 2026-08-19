@@ -70,6 +70,13 @@ export function AcademyApproach() {
             src="/academy/empresas-bg.mp4"
             label=""
             hideControls
+            /* Medido em produção (2026-08-19): sem isto a /academy pesava
+               2,9 MB no load, e 2,5 MB eram este vídeo — baixado inteiro
+               ANTES de alguém rolar até a faixa (o arquivo tem faststart e o
+               navegador puxa adiante mesmo com preload="metadata"). Com
+               "none" nada sai do servidor até o IntersectionObserver dar o
+               play, e o véu de ink 82% sustenta a faixa até lá. */
+            preload="none"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-brand-ink/[0.82]" />
