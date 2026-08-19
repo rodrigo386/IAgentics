@@ -71,7 +71,8 @@ export const privacidade = {
     {
       titulo: "Quem é responsável pelos seus dados",
       paragrafos: [
-        "A IAgentics é a controladora dos dados pessoais tratados neste site e na plataforma de cursos da IAgentics Academy. Qualquer dúvida ou pedido sobre seus dados pode ser enviado pelos canais no fim desta página.",
+        "A controladora dos dados pessoais tratados neste site e na plataforma de cursos da IAgentics Academy é a IAgentics LTDA, inscrita no CNPJ sob o nº 56.920.339/0001-60, com sede na Rua Barão de Teffé, 160, conjunto 505, anexo V140, Jardim Ana Maria, Jundiaí/SP, CEP 13.208-760.",
+        "Qualquer dúvida ou pedido sobre seus dados pode ser enviado pelos canais no fim desta página.",
       ],
       itens: [],
     },
