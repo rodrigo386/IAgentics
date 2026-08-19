@@ -25,6 +25,12 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
   await expect(page.getByText("56.920.339/0001-60")).toBeVisible();
   await expect(page.getByText(/IAgentics LTDA/)).toBeVisible();
 
+  // Canal de e-mail para exercer direitos da LGPD, como link clicável.
+  await expect(page.getByRole("link", { name: "contato@iagentics.com.br" })).toHaveAttribute(
+    "href",
+    "mailto:contato@iagentics.com.br",
+  );
+
   // Chegar até ela a partir de qualquer página.
   await page.goto("/");
   const linkRodape = page.getByRole("link", { name: "Política de Privacidade" });

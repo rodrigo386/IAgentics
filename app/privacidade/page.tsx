@@ -72,6 +72,14 @@ export default function Page() {
                 <div className="lg:col-span-7 lg:col-start-6">
                   <p className="max-w-[62ch] text-lg leading-relaxed text-fg-muted">{t.contato.texto}</p>
                   <ul className="mt-8 flex flex-wrap gap-4">
+                    <li>
+                      <a
+                        href={`mailto:${t.contato.email}`}
+                        className="inline-block rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-colors duration-200 hover:bg-accent-hover"
+                      >
+                        {t.contato.email}
+                      </a>
+                    </li>
                     {contact.social.map((canal) => (
                       <li key={canal.label}>
                         <a

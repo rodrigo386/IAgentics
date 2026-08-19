@@ -161,6 +161,11 @@ export const privacidade = {
   contato: {
     titulo: "Falar sobre seus dados",
     texto: "Para qualquer pedido relacionado a dados pessoais, use um destes canais:",
+    /* O endereço eletrônico que a própria empresa declarou à Receita Federal
+       no CNPJ, e de onde o site já envia as mensagens do formulário. Fica em
+       primeiro lugar entre os canais: pedido de LGPD costuma pedir registro
+       escrito, e e-mail deixa trilha dos dois lados. */
+    email: "contato@iagentics.com.br",
   },
 } as const;
 
