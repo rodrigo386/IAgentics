@@ -39,6 +39,130 @@ export const naoEncontrada = {
   voltar: "Ir para o início",
 } as const;
 
+/**
+ * Política de privacidade (/privacidade).
+ *
+ * ESTE TEXTO DESCREVE O QUE O CÓDIGO REALMENTE FAZ — foi escrito lendo o
+ * schema do banco, o formulário de contato e o fluxo de assinatura, não um
+ * modelo genérico. Se o comportamento mudar, o texto muda junto:
+ *
+ *   - `users` guarda nome, e-mail e senha em hash bcrypt (schema.ts)
+ *   - CPF é validado e enviado ao Asaas, e NUNCA persiste (asaas/assinatura.ts)
+ *   - `page_views` agrega dia + rota, sem cookie, IP ou identificador
+ *   - `auth_tokens` guarda hash SHA-256, uso único
+ *
+ * A URL existe também por um motivo de campo: /privacidade era a segunda
+ * página mais exibida do domínio no Google (19 impressões em 7 dias) e
+ * respondia 404, herança do site antigo.
+ */
+export const privacidade = {
+  meta: {
+    titulo: "Política de Privacidade",
+    descricao:
+      "Como a IAgentics trata dados pessoais no site, na plataforma de cursos e na cobrança de assinaturas, conforme a LGPD.",
+  },
+  hero: {
+    eyebrow: "Privacidade",
+    titulo: "Política de Privacidade",
+    atualizado: "Atualizada em 19 de agosto de 2026",
+    lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
+  },
+  secoes: [
+    {
+      titulo: "Quem é responsável pelos seus dados",
+      paragrafos: [
+        "A IAgentics é a controladora dos dados pessoais tratados neste site e na plataforma de cursos da IAgentics Academy. Qualquer dúvida ou pedido sobre seus dados pode ser enviado pelos canais no fim desta página.",
+      ],
+      itens: [],
+    },
+    {
+      titulo: "O que coletamos, e só isso",
+      paragrafos: [
+        "Coletamos o mínimo necessário para cada finalidade. Nada é vendido, e nada é usado para publicidade de terceiros.",
+      ],
+      itens: [
+        {
+          termo: "Formulário de contato",
+          texto:
+            "Nome, e-mail corporativo e a mensagem que você escreve. Servem para responder você, e chegam até nós por e-mail. Sem contato iniciado por você, não há coleta.",
+        },
+        {
+          termo: "Conta de aluno",
+          texto:
+            "Nome, e-mail e senha. A senha é guardada apenas como hash bcrypt — nem nós conseguimos lê-la. Registramos também seu progresso nas aulas e os certificados emitidos em seu nome.",
+        },
+        {
+          termo: "Assinatura e cobrança",
+          texto:
+            "O CPF é solicitado no momento de assinar, validado e enviado ao Asaas, nosso processador de pagamentos, para emitir a cobrança. Ele NÃO é gravado nos nossos servidores e não aparece em nossos registros técnicos. Guardamos apenas o identificador da assinatura no Asaas e a situação dela.",
+        },
+        {
+          termo: "Medição de visitas do site",
+          texto:
+            "Contamos quantas visitas cada página pública recebe por dia. Esse contador registra apenas a data e o endereço da página — sem cookie, sem endereço IP e sem qualquer identificador de pessoa. Ele não funciona nas áreas de aluno e de administração.",
+        },
+        {
+          termo: "Google Analytics",
+          texto:
+            "Usamos o Google Analytics nas páginas públicas para entender o uso do site. Ele grava cookies no seu navegador e trata dados conforme a política do Google. As áreas de aluno e de administração ficam fora dessa medição, de propósito.",
+        },
+      ],
+    },
+    {
+      titulo: "Com quem compartilhamos",
+      paragrafos: [
+        "Compartilhamos dados apenas com os serviços necessários para o site funcionar, e apenas o que cada um precisa para cumprir sua função:",
+      ],
+      itens: [
+        { termo: "Asaas", texto: "Processamento de pagamentos da assinatura, incluindo emissão de cobrança por Pix e cartão." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: mensagem de contato, confirmação de cadastro e redefinição de senha." },
+        { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
+        { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
+      ],
+    },
+    {
+      titulo: "Por quanto tempo guardamos",
+      paragrafos: [
+        "Dados da sua conta e do seu progresso ficam enquanto a conta existir. Certificados emitidos são preservados enquanto a verificação pública fizer sentido — é ela que permite a alguém conferir a autenticidade do documento. Mensagens do formulário de contato ficam na nossa caixa de e-mail pelo tempo do atendimento e do relacionamento comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+      ],
+      itens: [],
+    },
+    {
+      titulo: "Como protegemos",
+      paragrafos: [
+        "Senhas são guardadas em hash bcrypt, nunca em texto. Links de confirmação de e-mail e de redefinição de senha usam token de uso único, guardado como hash, com validade curta — e nunca aparecem em registros técnicos. Todo o tráfego do site é cifrado por HTTPS. O acesso administrativo é restrito e exige autenticação.",
+      ],
+      itens: [],
+    },
+    {
+      titulo: "Seus direitos",
+      paragrafos: [
+        "A Lei Geral de Proteção de Dados garante a você, a qualquer momento e sem custo, o direito de confirmar se tratamos seus dados, acessá-los, corrigi-los, pedir a anonimização ou a eliminação dos dados desnecessários, solicitar a portabilidade, saber com quem compartilhamos e revogar consentimento.",
+        "Para exercer qualquer um desses direitos, fale com a gente pelos canais abaixo. Respondemos no menor prazo possível.",
+      ],
+      itens: [],
+    },
+    {
+      titulo: "Cookies",
+      paragrafos: [
+        "O site usa cookies em dois casos: os do Google Analytics, nas páginas públicas, e os necessários para manter você conectado na área do aluno. Você pode bloquear cookies nas configurações do seu navegador — os de medição sem prejuízo algum ao uso do site; os de sessão impedirão o login na plataforma.",
+      ],
+      itens: [],
+    },
+    {
+      titulo: "Mudanças nesta política",
+      paragrafos: [
+        "Se o que fazemos com dados mudar, esta página muda junto, e a data de atualização no topo passa a refletir a revisão mais recente.",
+      ],
+      itens: [],
+    },
+  ],
+  contato: {
+    titulo: "Falar sobre seus dados",
+    texto: "Para qualquer pedido relacionado a dados pessoais, use um destes canais:",
+  },
+} as const;
+
 export const nav = {
   links: [
     { label: "Soluções", href: "/#solucoes" },
@@ -802,10 +926,18 @@ export const spendLab = {
 export const contact = {
   headline: "Vamos conversar",
   lead: "Conte onde o time de suprimentos perde mais tempo hoje. Respondemos com um próximo passo concreto.",
+  /* WhatsApp PRIMEIRO (2026-08-19): o Search Console mostrou três das oito
+     consultas do período procurando telefone ("tem algum telefone", "preciso
+     telefone") — chegava gente querendo falar agora e o site só oferecia
+     formulário. O texto do link já vai preenchido para sabermos que a conversa
+     veio do site. */
   social: [
+    { label: "WhatsApp", href: "https://wa.me/5515998714091?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20IAgentics." },
     { label: "LinkedIn", href: "https://www.linkedin.com/company/iagentics/" },
     { label: "Instagram", href: "https://www.instagram.com/iagentics/" },
   ],
+  /** O número em forma legível, para quem prefere ligar ou salvar o contato. */
+  whatsapp: { label: "WhatsApp", numero: "(15) 99871-4091" },
   form: {
     name: { label: "Nome", placeholder: "Como podemos te chamar" },
     email: { label: "E-mail corporativo", placeholder: "voce@suaempresa.com.br" },

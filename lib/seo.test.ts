@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { site } from "@/lib/content";
-import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, cursosJsonLd, faqJsonLd } from "@/lib/seo";
+import { ROTAS_SITEMAP, PRIORIDADE_SITEMAP, organizacaoJsonLd, academyJsonLd, cursosJsonLd, faqJsonLd } from "@/lib/seo";
 import { nexoPage, academy, spendLab } from "@/lib/content";
 import type { Curso } from "@/lib/plataforma/tipos";
 
@@ -26,7 +26,11 @@ describe("endereço canônico", () => {
 
 describe("rotas do sitemap", () => {
   it("lista as páginas públicas", () => {
-    expect([...ROTAS_SITEMAP]).toEqual(["/", "/nexo", "/academy", "/cursos", "/spend-lab"]);
+    expect([...ROTAS_SITEMAP]).toEqual(["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/privacidade"]);
+  });
+
+  it("toda rota do sitemap tem prioridade declarada", () => {
+    for (const rota of ROTAS_SITEMAP) expect(PRIORIDADE_SITEMAP[rota]).toBeGreaterThan(0);
   });
 
   it("não inclui área logada, admin nem certificados", () => {

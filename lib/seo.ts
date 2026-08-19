@@ -22,7 +22,7 @@ import type { Curso } from "@/lib/plataforma/tipos";
  * do índice por `robots: noindex` na própria página, e não por bloqueio no
  * robots.txt, senão o LinkedIn pararia de gerar a prévia ao compartilhar.
  */
-export const ROTAS_SITEMAP = ["/", "/nexo", "/academy", "/cursos", "/spend-lab"] as const;
+export const ROTAS_SITEMAP = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/privacidade"] as const;
 
 /** Prioridade relativa dentro do site. A home lidera; /cursos vem logo atrás
  *  por ser a única página com conversão direta (assinatura). */
@@ -32,6 +32,10 @@ export const PRIORIDADE_SITEMAP: Record<string, number> = {
   "/nexo": 0.8,
   "/academy": 0.8,
   "/spend-lab": 0.8,
+  /* Baixa de propósito: é página de referência, não de entrada — mas precisa
+     estar no índice, porque o Google já exibia essa URL (do site antigo, com
+     404) e alguém procurando "iagentics privacidade" tem que achar a certa. */
+  "/privacidade": 0.3,
 };
 
 function absoluta(caminho: string): string {

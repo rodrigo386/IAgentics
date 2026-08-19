@@ -1,5 +1,5 @@
 import { Logo } from "@/components/ui/Logo";
-import { nav, contact, site, footer } from "@/lib/content";
+import { nav, contact, site, footer, privacidade } from "@/lib/content";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -58,9 +58,16 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-14 max-w-[1400px] border-t border-line px-5 pt-8 sm:px-8">
-        <p className="text-sm text-fg-subtle">
-          © {year} {site.name}
-        </p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <p className="text-sm text-fg-subtle">
+            © {year} {site.name}
+          </p>
+          {/* A política precisa ser alcançável de qualquer página — é o lugar
+              onde todo mundo procura, e o Google já exibia essa URL. */}
+          <a href="/privacidade" className="text-sm text-fg-subtle transition-colors duration-200 hover:text-fg">
+            {privacidade.meta.titulo}
+          </a>
+        </div>
       </div>
     </footer>
   );

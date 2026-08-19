@@ -1,0 +1,35 @@
+import { test, expect } from "@playwright/test";
+
+/**
+ * A política de privacidade.
+ *
+ * Este spec existe porque a URL já tinha histórico: /privacidade era a
+ * segunda página mais exibida do domínio no Google e respondia 404 (herança
+ * do site antigo). Um 404 aqui não é só página faltando — é o endereço que o
+ * buscador oferece a quem procura, e um dever legal do site.
+ */
+test("a política abre, é alcançável pelo rodapé e traz o que o site coleta", async ({ page }) => {
+  await page.goto("/privacidade");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Política de Privacidade" })).toBeVisible();
+
+  // Os pontos que a política PRECISA declarar, porque descrevem tratamento real.
+  await expect(page.getByRole("heading", { name: "O que coletamos, e só isso" })).toBeVisible();
+  // Aparece duas vezes de propósito (o que guardamos, e como protegemos).
+  await expect(page.getByText("hash bcrypt").first()).toBeVisible();
+  await expect(page.getByText(/CPF é solicitado/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Seus direitos" })).toBeVisible();
+
+  // Chegar até ela a partir de qualquer página.
+  await page.goto("/");
+  const linkRodape = page.getByRole("link", { name: "Política de Privacidade" });
+  await expect(linkRodape).toBeVisible();
+  await linkRodape.click();
+  await expect(page).toHaveURL(/\/privacidade$/);
+});
+
+test("o WhatsApp aparece no contato com o número certo", async ({ page }) => {
+  await page.goto("/");
+  const zap = page.getByRole("link", { name: "WhatsApp" }).first();
+  await expect(zap).toHaveAttribute("href", /wa\.me\/5515998714091/);
+});
