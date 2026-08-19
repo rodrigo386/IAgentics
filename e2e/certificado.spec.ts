@@ -65,6 +65,23 @@ test("fluxo completo: concluir formação → certificado público, LinkedIn e c
   await expect(paginaAluno.getByRole("article").getByText("Fundamentos de IA com Copilot")).toBeVisible();
   await expect(paginaAluno.getByText("✓ Certificado válido")).toBeVisible();
 
+  // IMPRESSÃO NUNCA SAI EM BRANCO. A chegada do certificado é animada com
+  // fill `backwards`, o que deixa o estado ANTERIOR ao início invisível — se a
+  // impressão pegasse esse instante, o aluno imprimiria um cartão vazio. O
+  // @media print em globals.css zera essas animações; esta asserção é o que
+  // impede alguém de removê-lo sem perceber.
+  await paginaAluno.emulateMedia({ media: "print" });
+  const riscoNaImpressao = await paginaAluno.evaluate(() =>
+    [".cert-cartao", ".cert-nome", ".cert-dados", ".cert-selo"].filter((seletor) => {
+      const el = document.querySelector(seletor);
+      if (!el) return true;
+      const estilo = getComputedStyle(el);
+      return Number(estilo.opacity) < 0.99 || estilo.animationName !== "none";
+    }),
+  );
+  expect(riscoNaImpressao).toEqual([]);
+  await paginaAluno.emulateMedia({ media: "screen" });
+
   // Dono vê os botões; o href do LinkedIn carrega certUrl e certId.
   const urlCertificado = paginaAluno.url();
   const addLi = paginaAluno.getByRole("link", { name: "Adicionar ao LinkedIn" });

@@ -81,9 +81,9 @@ export default async function PaginaCertificado({ params }: { params: Promise<{ 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4 py-12 print:p-0">
       <div className="w-full max-w-3xl">
-        <article className="hero-editorial relative border border-line p-8 sm:p-12">
+        <article className="cert-cartao hero-editorial relative border border-line p-8 sm:p-12">
           <div className="relative z-10 flex flex-col gap-8">
-            <div className="flex items-center justify-between gap-6">
+            <div className="cert-topo flex items-center justify-between gap-6">
               <span aria-hidden className="w-[140px] text-fg">
                 <Logo />
               </span>
@@ -91,16 +91,16 @@ export default async function PaginaCertificado({ params }: { params: Promise<{ 
             </div>
 
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-accent-text">{t.titulo}</p>
-              <h1 className="mt-4 text-4xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-5xl">
+              <p className="cert-eyebrow font-mono text-[11px] uppercase tracking-[0.24em] text-accent-text">{t.titulo}</p>
+              <h1 className="cert-nome mt-4 text-4xl font-medium leading-tight tracking-[-0.03em] text-fg sm:text-5xl">
                 {cert.alunoNome}
               </h1>
-              <p className="mt-3 text-fg-muted">
+              <p className="cert-curso mt-3 text-fg-muted">
                 {t.concluiuA} <span className="text-fg">{cert.cursoTitulo}</span>
               </p>
             </div>
 
-            <dl className="grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3">
+            <dl className="cert-dados grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3">
               <div>
                 <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{t.cargaHoraria}</dt>
                 <dd className="mt-1 text-fg">{cert.cargaHoras}{plataforma.painel.horas}</dd>
@@ -115,7 +115,7 @@ export default async function PaginaCertificado({ params }: { params: Promise<{ 
               </div>
             </dl>
 
-            <p className="border-t border-line pt-6 text-sm text-fg-muted">
+            <p className="cert-selo border-t border-line pt-6 text-sm text-fg-muted">
               <span className="font-medium text-accent-text">{t.seloValido}</span> — {t.autenticidade}
             </p>
           </div>

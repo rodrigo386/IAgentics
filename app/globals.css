@@ -1277,3 +1277,87 @@
     animation: contato-erro-treme 0.36s ease-in-out both;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   CHEGADA DO CERTIFICADO — /certificados/[codigo]
+
+   É o pico emocional da plataforma: o aluno terminou a formação e esta é a
+   página que entrega a prova. Antes ela aparecia pronta, de uma vez, como
+   qualquer outra tela.
+
+   A encenação segue a ordem em que a informação IMPORTA, e o nome do aluno é
+   o herói: ele entra depois do resto, com um pouco mais de percurso, e é o
+   único item com 0.6s. O resto abre caminho para ele e o selo fecha.
+
+   Orçamento de stagger: o último item começa em 0.42s, dentro do teto de 0.5s
+   — passar disso faz a página parecer lenta em vez de encenada.
+
+   IMPRESSÃO: esta página é impressa (há botão de imprimir e estilos print:).
+   Com `backwards`, o estado ANTES do início é o invisível — se o navegador
+   montasse a impressão nesse instante, sairia certificado em branco. Por isso
+   o bloco @media print zera tudo. Não remover.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes cert-cartao-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0) scale(0.995);
+    }
+  }
+
+  @keyframes cert-linha-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+  }
+
+  /* O herói percorre mais e chega mais devagar: é o que o olho deve seguir. */
+  @keyframes cert-nome-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+  }
+
+  .cert-cartao {
+    animation: cert-cartao-entra 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .cert-topo {
+    animation: cert-linha-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s backwards;
+  }
+
+  .cert-eyebrow {
+    animation: cert-linha-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.14s backwards;
+  }
+
+  .cert-nome {
+    animation: cert-nome-entra 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+  }
+
+  .cert-curso {
+    animation: cert-linha-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.28s backwards;
+  }
+
+  .cert-dados {
+    animation: cert-linha-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.34s backwards;
+  }
+
+  .cert-selo {
+    animation: cert-linha-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+  }
+}
+
+@media print {
+  .cert-cartao,
+  .cert-topo,
+  .cert-eyebrow,
+  .cert-nome,
+  .cert-curso,
+  .cert-dados,
+  .cert-selo {
+    animation: none !important;
+  }
+}
