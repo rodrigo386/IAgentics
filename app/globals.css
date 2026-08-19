@@ -1194,3 +1194,86 @@
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   RESPOSTA DO FORMULÁRIO DE CONTATO — sucesso e erro
+
+   Por que existe: enviar o formulário é o funil inteiro do lado B2B, e a
+   resposta trocava na tela sem transição nenhuma — a caixa de sucesso
+   aparecia seca, e o erro era um texto estático fácil de não perceber.
+
+   As três camadas (a caixa, o selo e o texto) entram em sequência curta em vez
+   de tudo junto: é o que faz a chegada parecer uma resposta a um ato, e não um
+   redesenho de tela.
+
+   Curva-assinatura do site (0.16, 1, 0.3, 1) na caixa e no texto. O selo é a
+   ÚNICA peça com overshoot (0.34, 1.56, 0.64, 1), porque é o instante que
+   celebra — e mesmo assim discreto, porque a marca é sóbria.
+
+   O erro NÃO tem overshoot de propósito: erro corporativo deve soar firme, não
+   brincalhão. Duas oscilações, amplitude pequena, e para.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes contato-sucesso-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0) scale(0.985);
+    }
+  }
+
+  @keyframes contato-selo-entra {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+
+  @keyframes contato-texto-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 4px, 0);
+    }
+  }
+
+  /* ±6px, duas idas e voltas, encerrando no lugar. ease-in-out dá a parada
+     seca nas pontas; sem isso o movimento fica elástico e parece erro fofo. */
+  @keyframes contato-erro-treme {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    20% {
+      transform: translate3d(-6px, 0, 0);
+    }
+    40% {
+      transform: translate3d(6px, 0, 0);
+    }
+    60% {
+      transform: translate3d(-4px, 0, 0);
+    }
+    80% {
+      transform: translate3d(3px, 0, 0);
+    }
+  }
+
+  .contato-sucesso {
+    animation: contato-sucesso-entra 0.36s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  /* Atrasos curtos DE PROPÓSITO (medido em captura a 120ms): com 0.12s/0.18s
+     a caixa aparecia visivelmente vazia por um instante, o que lê como falha e
+     não como encenação. Aqui o conteúdo já está entrando enquanto a própria
+     caixa ainda ganha opacidade. */
+  .contato-selo {
+    animation: contato-selo-entra 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) 0.06s backwards;
+  }
+
+  .contato-texto {
+    animation: contato-texto-entra 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+  }
+
+  .contato-erro {
+    animation: contato-erro-treme 0.36s ease-in-out both;
+  }
+}

@@ -94,14 +94,14 @@ export function Contact() {
           {status === "sent" ? (
             <div
               role="status"
-              className="flex items-start gap-3 border border-line-strong p-8"
+              className="contato-sucesso flex items-start gap-3 border border-line-strong p-8"
             >
               <CheckCircle
                 size={24}
                 weight="regular"
-                className="mt-0.5 shrink-0 text-accent-text"
+                className="contato-selo mt-0.5 shrink-0 text-accent-text"
               />
-              <p className="text-lg text-fg">{contact.form.success}</p>
+              <p className="contato-texto text-lg text-fg">{contact.form.success}</p>
             </div>
           ) : (
             <form onSubmit={onSubmit} noValidate className="grid gap-6">
@@ -190,7 +190,7 @@ export function Contact() {
               </div>
 
               {status === "error" ? (
-                <p role="alert" className="text-sm text-accent-text">
+                <p role="alert" className="contato-erro text-sm text-accent-text">
                   {contact.form.errors.submit}
                 </p>
               ) : null}
