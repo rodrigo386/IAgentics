@@ -883,6 +883,65 @@ export const nexoPage = {
       },
     ],
   },
+
+  /**
+   * Perguntas e respostas, transcritas do deck IAgentics_DeskManager_Promo.pptx
+   * (Documentos/IAgentics/PPTS) — cada resposta usa os fatos da lâmina indicada,
+   * nada inventado aqui.
+   *
+   * O formato não é decoração: é o que faz o conteúdo ser citável. Buscadores e
+   * assistentes de IA extraem trechos, então cada resposta tem que se sustentar
+   * SOZINHA, fora do contexto da página — por isso repetem "o Nexo" em vez de
+   * "ele", e cabem em uma ou duas frases.
+   *
+   * Renderizadas abertas, nunca em accordion: conteúdo escondido atrás de
+   * clique pode não ser lido por quem extrai a resposta.
+   */
+  faq: {
+    eyebrow: "Perguntas frequentes",
+    titulo: "O que perguntam sobre o Nexo",
+    itens: [
+      {
+        pergunta: "O Nexo é mais um sistema para o time de Compras aprender?",
+        resposta:
+          "Não. O Nexo roda dentro da Desk Manager que a empresa já usa, e o pedido final sai no ERP do cliente — o time trabalha nas mesmas telas de sempre.",
+      },
+      {
+        pergunta: "Como uma requisição de compra é aberta no Nexo?",
+        resposta:
+          "O chatbot MIA abre a requisição a partir de uma descrição em linguagem natural, por um formulário simples, e a IA confere se a RC está correta antes de enviá-la para Compras.",
+      },
+      {
+        pergunta: "A IA aprova a compra sozinha?",
+        resposta:
+          "Não. A IA classifica o pedido por categoria, define a cadeia de aprovação por alçada e audita os dados; a aprovação final é de uma pessoa, e o sistema exige quem aprovou e por quê, com a trilha registrada no histórico.",
+      },
+      {
+        pergunta: "O fornecedor precisa criar conta ou senha para cotar?",
+        resposta:
+          "Não. Cada fornecedor recebe um link único e rastreável para o Portal do Fornecedor, sem senha e sem conta, e responde preço, prazo e condições ali mesmo, com anexo.",
+      },
+      {
+        pergunta: "Como o Nexo compara as propostas dos fornecedores?",
+        resposta:
+          "A IA lê os anexos e monta o mapa comparativo sozinha, pontuando cada fornecedor por preço, prazo e condições — e ainda sugere a próxima mensagem de negociação.",
+      },
+      {
+        pergunta: "É preciso redigitar o pedido no ERP no fim do processo?",
+        resposta:
+          "Não. Um clique em Empacotar OC consolida requisição, cotação e proposta vencedora numa ordem de compra pronta para o ERP do cliente.",
+      },
+      {
+        pergunta: "O Nexo mostra o gasto consolidado da empresa?",
+        resposta:
+          "Sim. O Spend Analysis consolida gasto total, ticket médio e concentração por fornecedor, por categoria e período, e aponta oportunidades e riscos para a próxima negociação.",
+      },
+      {
+        pergunta: "Qual IA está por trás do Nexo?",
+        resposta: "O Nexo usa o Claude, da Anthropic, e opera dentro da Desk Manager.",
+      },
+    ],
+  },
 } as const;
 
 /**

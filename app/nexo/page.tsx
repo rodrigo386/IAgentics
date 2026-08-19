@@ -6,8 +6,10 @@ import { NexoAssurance } from "@/components/sections/nexo/Assurance";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
+import { NexoFaq } from "@/components/sections/nexo/Faq";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { nexoPage } from "@/lib/content";
-import { ogDaPagina } from "@/lib/seo";
+import { ogDaPagina, faqJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Nexo",
@@ -37,6 +39,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
+      <JsonLd dados={faqJsonLd(nexoPage.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <NexoCover />
@@ -47,6 +50,10 @@ export default function Page() {
         <NexoAssurance />
         <NexoFluxoCompras />
         <NexoDifferentiators />
+        {/* O FAQ fecha o argumento, logo antes do contato: são as objeções que
+            sobram depois de ver o processo e os diferenciais - e é o bloco que
+            um assistente de IA cita quando alguém pergunta sobre o Nexo. */}
+        <NexoFaq />
         <Contact />
       </main>
       <Footer />

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { site } from "@/lib/content";
-import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, cursosJsonLd } from "@/lib/seo";
+import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, cursosJsonLd, faqJsonLd } from "@/lib/seo";
+import { nexoPage } from "@/lib/content";
 import type { Curso } from "@/lib/plataforma/tipos";
 
 const curso = (over: Partial<Curso> = {}): Curso => ({
@@ -51,6 +52,29 @@ describe("JSON-LD da Academy", () => {
     const dados = academyJsonLd();
     expect(dados["@type"]).toBe("EducationalOrganization");
     expect(dados.parentOrganization.name).toBe(site.name);
+  });
+});
+
+describe("JSON-LD do FAQ", () => {
+  it("vira FAQPage com uma Question por item", () => {
+    const dados = faqJsonLd([{ pergunta: "Roda onde?", resposta: "Dentro da Desk Manager." }]);
+    expect(dados["@type"]).toBe("FAQPage");
+    expect(dados.mainEntity[0].name).toBe("Roda onde?");
+    expect(dados.mainEntity[0].acceptedAnswer.text).toBe("Dentro da Desk Manager.");
+  });
+
+  it("cobre todas as perguntas publicadas na /nexo", () => {
+    const dados = faqJsonLd(nexoPage.faq.itens);
+    expect(dados.mainEntity).toHaveLength(nexoPage.faq.itens.length);
+    expect(nexoPage.faq.itens.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("cada resposta se sustenta sozinha: sem promessa vazia e curta o bastante para citação", () => {
+    for (const item of nexoPage.faq.itens) {
+      expect(item.pergunta.endsWith("?")).toBe(true);
+      expect(item.resposta.length).toBeLessThanOrEqual(260);
+      expect(item.resposta.trim().length).toBeGreaterThan(0);
+    }
   });
 });
 

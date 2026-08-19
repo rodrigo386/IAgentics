@@ -73,6 +73,25 @@ export function organizacaoJsonLd() {
   };
 }
 
+/**
+ * As perguntas frequentes, no formato que o Google e os assistentes leem.
+ *
+ * O texto vem do MESMO objeto que a página renderiza (nexoPage.faq): dado
+ * estruturado que promete uma resposta e mostra outra é penalizado, e aqui
+ * não há como divergir.
+ */
+export function faqJsonLd(itens: ReadonlyArray<{ pergunta: string; resposta: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: itens.map((item) => ({
+      "@type": "Question",
+      name: item.pergunta,
+      acceptedAnswer: { "@type": "Answer", text: item.resposta },
+    })),
+  };
+}
+
 /** A Academy como instituição de ensino, na /academy. */
 export function academyJsonLd() {
   return {
