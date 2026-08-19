@@ -101,3 +101,24 @@ export async function doAlunoNoCurso(userId: string, courseId: string): Promise<
     .limit(1);
   return linha ?? null;
 }
+
+/**
+ * O certificado do aluno no curso ao qual esta AULA pertence.
+ *
+ * Existe para o player poder dizer "formação concluída" no instante em que a
+ * última aula fecha: ali o cliente só conhece o lessonId, e refazer o caminho
+ * aula → módulo → curso na action espalharia essa junção pelo código.
+ *
+ * Devolve null quando a aula não existe ou o certificado ainda não foi emitido
+ * — chamar isto NÃO emite nada; a emissão mora no gancho de gravarProgresso.
+ */
+export async function doAlunoPelaAula(userId: string, lessonId: string): Promise<{ codigo: string } | null> {
+  const [linha] = await db
+    .select({ courseId: modules.courseId })
+    .from(lessons)
+    .innerJoin(modules, eq(modules.id, lessons.moduleId))
+    .where(eq(lessons.id, lessonId))
+    .limit(1);
+  if (!linha) return null;
+  return doAlunoNoCurso(userId, linha.courseId);
+}

@@ -6,6 +6,7 @@ import { PlayerAula } from "@/components/plataforma/PlayerAula";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
 import { buscarConcluidas, buscarCurso, buscarMidia, podeVerAula } from "@/lib/plataforma/dados";
+import { doAlunoPelaAula } from "@/lib/plataforma/certificados";
 import { extrairYoutubeId } from "@/lib/plataforma/youtube";
 
 export default async function PaginaAula({
@@ -36,6 +37,12 @@ export default async function PaginaAula({
   const proxima = sequencia[indiceAtual + 1] ?? null;
   const hrefProxima = proxima ? `/app/curso/${curso.slug}/${proxima.slug}` : null;
   const moduloAtual = curso.modulos.find((m) => m.aulas.some((a) => a.id === aula.id));
+
+  /* Certificado já emitido? O player usa isto para continuar mostrando
+     "Ver certificado" depois de um F5 — o estado do cliente sozinho perderia
+     o aviso no primeiro recarregamento. Consulta barata (uma linha por
+     índice) e nunca emite nada. */
+  const certificado = await doAlunoPelaAula(userId, aula.id);
 
   // Fix round final (I3): "sem acesso" (trava de assinatura) e "sem vídeo
   // cadastrado ainda" (aula publicada, lesson_media sem linha) são estados
@@ -85,6 +92,7 @@ export default async function PaginaAula({
             lessonId={aula.id}
             jaConcluida={concluidas.has(aula.id)}
             hrefProxima={hrefProxima}
+            certificadoInicial={certificado?.codigo ?? null}
           />
         ) : (
           // Aula com acesso liberado mas ainda sem vídeo cadastrado: quem já

@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@/auth";
 import { contaAtiva, gravarProgresso, podeGravarProgresso } from "@/lib/plataforma/dados";
+import { doAlunoPelaAula } from "@/lib/plataforma/certificados";
 
 // Fix round 1 (revisão Task 7, Important): as duas actions só checavam
 // identidade (auth()), nunca se o usuário tem acesso ao lessonId — gravarProgresso
@@ -17,12 +18,30 @@ import { contaAtiva, gravarProgresso, podeGravarProgresso } from "@/lib/platafor
 // consulta o banco a cada chamada (mesmo padrão de exigirAdmin/ehAdminAtivo)
 // e corta a escrita imediatamente, sem esperar o JWT vencer.
 
-export async function concluirAula(lessonId: string) {
+/**
+ * Marca a aula como concluída e devolve o certificado SE esta conclusão
+ * fechou a formação.
+ *
+ * O retorno existe para o player poder anunciar o fim no instante em que ele
+ * acontece: antes, terminar a última aula mostrava um "Aula concluída" seco e
+ * o aluno tinha que voltar sozinho à página do curso para descobrir que havia
+ * certificado. A emissão em si não acontece aqui — ela mora no gancho de
+ * gravarProgresso, que revalida o critério inteiro; aqui só perguntamos o
+ * resultado.
+ *
+ * `certificado: null` cobre tudo que não é conclusão de curso: aula do meio,
+ * chamada recusada pelos portões acima, ou emissão que falhou (a página do
+ * curso tem a rede de recuperação).
+ */
+export async function concluirAula(lessonId: string): Promise<{ certificado: string | null }> {
   const sessao = await auth();
-  if (!sessao?.user?.id) return;
-  if (!(await contaAtiva(sessao.user.id))) return;
-  if (!(await podeGravarProgresso(sessao.user.id, lessonId))) return;
+  if (!sessao?.user?.id) return { certificado: null };
+  if (!(await contaAtiva(sessao.user.id))) return { certificado: null };
+  if (!(await podeGravarProgresso(sessao.user.id, lessonId))) return { certificado: null };
   await gravarProgresso(sessao.user.id, lessonId, { concluida: true });
+
+  const certificado = await doAlunoPelaAula(sessao.user.id, lessonId);
+  return { certificado: certificado?.codigo ?? null };
 }
 
 export async function baterProgresso(lessonId: string, segundos: number) {

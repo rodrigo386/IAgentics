@@ -48,11 +48,16 @@ export function PlayerAula({
   lessonId,
   jaConcluida,
   hrefProxima,
+  certificadoInicial,
 }: {
   videoId: string;
   lessonId: string;
   jaConcluida: boolean;
   hrefProxima: string | null;
+  /** Código do certificado, quando a formação JÁ estava concluída ao abrir a
+   *  página. Vem do servidor para o estado sobreviver a um recarregamento — o
+   *  estado do cliente sozinho perderia o aviso no primeiro F5. */
+  certificadoInicial: string | null;
 }) {
   const t = plataforma.aula;
   const moldura = useRef<HTMLDivElement | null>(null);
@@ -62,6 +67,7 @@ export function PlayerAula({
 
   const [iniciado, setIniciado] = useState(false);
   const [concluida, setConcluida] = useState(jaConcluida);
+  const [certificado, setCertificado] = useState<string | null>(certificadoInicial);
   // "carga": rede/script falhou — recarregar pode resolver. "restrito": o
   // YouTube recusou o vídeo (privado, removido ou sem permissão de embed;
   // códigos 100/101/150) — recarregar não resolve, então nem oferece.
@@ -85,8 +91,11 @@ export function PlayerAula({
     if (salvando.current || concluida) return;
     salvando.current = true;
     try {
-      await concluirAula(lessonId);
+      const resultado = await concluirAula(lessonId);
       setConcluida(true);
+      // Só sobe, nunca zera: se esta conclusão não fechou o curso, o valor que
+      // já veio do servidor continua valendo.
+      if (resultado?.certificado) setCertificado(resultado.certificado);
     } finally {
       salvando.current = false;
     }
@@ -352,7 +361,23 @@ export function PlayerAula({
         )}
       </div>
       <div className="mt-4 flex items-center gap-3">
-        {concluida && hrefProxima ? (
+        {/* Formação fechada vem ANTES da próxima aula: quando existe
+            certificado, todas as aulas já foram concluídas, e mandar o aluno
+            para a "próxima" seria devolvê-lo a um vídeo que ele já viu em vez
+            de entregar o que ele acabou de conquistar. */}
+        {concluida && certificado ? (
+          <div className="aula-conquista flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent-text">
+              {plataforma.painel.cursoConcluido}
+            </p>
+            <a
+              href={`/certificados/${certificado}`}
+              className="rounded-control bg-accent px-6 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
+            >
+              {plataforma.certificado.verCertificado}
+            </a>
+          </div>
+        ) : concluida && hrefProxima ? (
           <a
             href={hrefProxima}
             className="rounded-control bg-accent px-6 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"

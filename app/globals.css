@@ -1361,3 +1361,19 @@
     animation: none !important;
   }
 }
+
+/* A conquista no fim da última aula: o aviso de formação concluída e o botão
+   do certificado entram juntos, curtos. É um degrau para o prêmio (a página do
+   certificado), não o prêmio — por isso discreto e sem overshoot. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes aula-conquista-entra {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 6px, 0);
+    }
+  }
+
+  .aula-conquista {
+    animation: aula-conquista-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+}

@@ -119,16 +119,17 @@ test("painel editorial: banner de boas-vindas (sem hero de curso) após terminar
   for (let i = 0; i < 10; i++) {
     await paginaAluno.getByRole("button", { name: "Marcar como concluída" }).click();
     const proxima = paginaAluno.getByRole("link", { name: "Próxima aula" });
-    const semProxima = paginaAluno.getByText("Aula concluída", { exact: true });
-    await expect(proxima.or(semProxima)).toBeVisible();
+    // Fechar a última aula anuncia a formação concluída e leva ao certificado.
+    const conquista = paginaAluno.getByRole("link", { name: "Ver certificado" });
+    await expect(proxima.or(conquista)).toBeVisible();
     if (await proxima.isVisible()) {
       await proxima.click();
     } else {
-      // Última aula: concluirAula é fire-and-forget no cliente — recarrega
-      // para confirmar que a gravação chegou no servidor antes de ir pro
-      // painel (mesmo padrão de aula.spec.ts).
+      // Última aula: recarrega para confirmar que a gravação chegou no
+      // servidor antes de ir pro painel (mesmo padrão de aula.spec.ts) — e a
+      // conquista tem que continuar lá, porque vem do servidor.
       await paginaAluno.reload();
-      await expect(semProxima).toBeVisible();
+      await expect(conquista).toBeVisible();
       break;
     }
   }
