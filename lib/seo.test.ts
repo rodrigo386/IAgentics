@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { site } from "@/lib/content";
 import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, cursosJsonLd, faqJsonLd } from "@/lib/seo";
-import { nexoPage } from "@/lib/content";
+import { nexoPage, academy, spendLab } from "@/lib/content";
 import type { Curso } from "@/lib/plataforma/tipos";
 
 const curso = (over: Partial<Curso> = {}): Curso => ({
@@ -63,19 +63,35 @@ describe("JSON-LD do FAQ", () => {
     expect(dados.mainEntity[0].acceptedAnswer.text).toBe("Dentro da Desk Manager.");
   });
 
-  it("cobre todas as perguntas publicadas na /nexo", () => {
-    const dados = faqJsonLd(nexoPage.faq.itens);
-    expect(dados.mainEntity).toHaveLength(nexoPage.faq.itens.length);
-    expect(nexoPage.faq.itens.length).toBeGreaterThanOrEqual(5);
-  });
+  /* As três páginas com FAQ. Passar por aqui é o que garante que uma página
+     nova não entre no ar com pergunta sem "?" ou resposta longa demais para
+     ser citada — o formato é a razão de o bloco existir. */
+  const paginasComFaq = [
+    { rota: "/nexo", faq: nexoPage.faq },
+    { rota: "/academy", faq: academy.faq },
+    { rota: "/spend-lab", faq: spendLab.faq },
+  ];
 
-  it("cada resposta se sustenta sozinha: sem promessa vazia e curta o bastante para citação", () => {
-    for (const item of nexoPage.faq.itens) {
-      expect(item.pergunta.endsWith("?")).toBe(true);
-      expect(item.resposta.length).toBeLessThanOrEqual(260);
-      expect(item.resposta.trim().length).toBeGreaterThan(0);
-    }
-  });
+  for (const { rota, faq } of paginasComFaq) {
+    it(`${rota}: toda pergunta publicada vira uma Question no schema`, () => {
+      const dados = faqJsonLd(faq.itens);
+      expect(dados.mainEntity).toHaveLength(faq.itens.length);
+      expect(faq.itens.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it(`${rota}: cada resposta se sustenta sozinha e cabe numa citação`, () => {
+      for (const item of faq.itens) {
+        expect(item.pergunta.endsWith("?")).toBe(true);
+        expect(item.resposta.length).toBeLessThanOrEqual(260);
+        expect(item.resposta.trim().length).toBeGreaterThan(0);
+      }
+    });
+
+    it(`${rota}: nenhuma pergunta repetida — duplicata vira item duplicado no schema`, () => {
+      const perguntas = faq.itens.map((i) => i.pergunta);
+      expect(new Set(perguntas).size).toBe(perguntas.length);
+    });
+  }
 });
 
 describe("JSON-LD do catálogo", () => {

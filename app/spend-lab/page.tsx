@@ -9,7 +9,10 @@ import { SpendLabMethod } from "@/components/sections/spend-lab/Method";
 import { SpendLabComparison } from "@/components/sections/spend-lab/Comparison";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
-import { ogDaPagina } from "@/lib/seo";
+import { SecaoFaq } from "@/components/sections/Faq";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { spendLab } from "@/lib/content";
+import { ogDaPagina, faqJsonLd } from "@/lib/seo";
 
 const DESCRICAO_SPEND_LAB =
   "Implemente IA com Mente, Método e Cultura. Diagnóstico de maturidade, consultoria e formação aplicada em 8 semanas.";
@@ -40,6 +43,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
+      <JsonLd dados={faqJsonLd(spendLab.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <SpendLabCover />
@@ -49,6 +53,9 @@ export default function Page() {
         <SpendLabPartners />
         <SpendLabMethod />
         <SpendLabComparison />
+        {/* Fecha o argumento antes do contato, como no /nexo: o que sobra de
+            dúvida depois de ver método e comparação. */}
+        <SecaoFaq eyebrow={spendLab.faq.eyebrow} titulo={spendLab.faq.titulo} itens={spendLab.faq.itens} />
         <Contact />
       </main>
       <Footer />

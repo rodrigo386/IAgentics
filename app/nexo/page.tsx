@@ -6,7 +6,7 @@ import { NexoAssurance } from "@/components/sections/nexo/Assurance";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
-import { NexoFaq } from "@/components/sections/nexo/Faq";
+import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { nexoPage } from "@/lib/content";
 import { ogDaPagina, faqJsonLd } from "@/lib/seo";
@@ -53,7 +53,7 @@ export default function Page() {
         {/* O FAQ fecha o argumento, logo antes do contato: são as objeções que
             sobram depois de ver o processo e os diferenciais - e é o bloco que
             um assistente de IA cita quando alguém pergunta sobre o Nexo. */}
-        <NexoFaq />
+        <SecaoFaq eyebrow={nexoPage.faq.eyebrow} titulo={nexoPage.faq.titulo} itens={nexoPage.faq.itens} />
         <Contact />
       </main>
       <Footer />

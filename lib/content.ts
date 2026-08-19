@@ -547,6 +547,46 @@ export const academy = {
     quote:
       "Acreditamos que um bom café e uma boa conversa iluminam as possibilidades",
   },
+
+  /** Perguntas e respostas da lâmina "IAgentics Academy" do deck
+   *  IAgentics_Clientes_V3.pptx. Mesmas regras do FAQ do Nexo: resposta que se
+   *  sustenta sozinha, em uma ou duas frases, sem accordion. */
+  faq: {
+    eyebrow: "Perguntas frequentes",
+    titulo: "O que perguntam sobre a Academy",
+    itens: [
+      {
+        pergunta: "Para quem é a IAgentics Academy?",
+        resposta:
+          "A Academy é uma escola de negócios para quem precisa de resultados imediatos com IA no dia a dia: lideranças e C-level, times de negócio e operação, empresas sem estrutura de dados madura e orçamentos enxutos.",
+      },
+      {
+        pergunta: "Precisamos ter uma estrutura de dados madura para começar?",
+        resposta:
+          "Não. Empresas sem estrutura de dados madura estão entre o público da Academy — os programas conectam estratégia, cultura e ferramenta prática, sem exigir uma base pronta.",
+      },
+      {
+        pergunta: "O que a Academy ensina, na prática?",
+        resposta:
+          "Fundamentos de IA aplicados ao negócio, análise de dados com IA, automações com assistentes e agentes de IA, uso seguro e governança, e cultura e gestão da mudança.",
+      },
+      {
+        pergunta: "Em quais formatos a capacitação acontece?",
+        resposta:
+          "Da imersão executiva à capacitação de times inteiros: trilhas in company, workshops práticos, plataforma online e mentoria executiva.",
+      },
+      {
+        pergunta: "A formação termina em teoria ou em algo aplicado?",
+        resposta:
+          "Toda trilha termina em projeto aplicado — a Academy existe para quem precisa de resultado no dia a dia, não de conteúdo para assistir.",
+      },
+      {
+        pergunta: "Dá para estudar sem contratar uma trilha para a empresa?",
+        resposta:
+          "Sim. A plataforma online é um dos formatos da Academy: assinatura mensal com acesso a todo o acervo de formações, no seu ritmo e com certificado ao concluir.",
+      },
+    ],
+  },
 } as const;
 
 /* ---------------------------------------------------------------------------
@@ -716,6 +756,46 @@ export const spendLab = {
     title: "Quer falar com a gente?",
     body: "A gente está a disposição pra conversar, ouvir suas ideias e te ajudar a descobrir a forma ou a experiência perfeita para você, sua empresa ou sua equipe.",
     quote: "Acreditamos que um bom café e uma boa conversa ilumina as possibilidades",
+  },
+
+  /** Perguntas e respostas da lâmina "IA Spend Lab" do deck
+   *  IAgentics_Clientes_V3.pptx (as três frentes: diagnóstico, consultoria
+   *  aplicada e formação aplicada). Mesmas regras dos outros FAQs. */
+  faq: {
+    eyebrow: "Perguntas frequentes",
+    titulo: "O que perguntam sobre o IA Spend Lab",
+    itens: [
+      {
+        pergunta: "Por onde começa um projeto do IA Spend Lab?",
+        resposta:
+          "Pelo diagnóstico de maturidade: mapeamento de processos, avaliação da qualidade e disponibilidade dos dados e da prontidão de time e tecnologia, com entrega de um relatório de quick wins priorizados.",
+      },
+      {
+        pergunta: "Como o IA Spend Lab escolhe onde aplicar IA primeiro?",
+        resposta:
+          "Os casos de uso são desenhados por ROI e organizados num roadmap de implantação por ondas — começa pelo que paga a conta mais rápido, não pelo que é mais bonito de demonstrar.",
+      },
+      {
+        pergunta: "Quem cuida das regras de uso e da governança da IA?",
+        resposta:
+          "O IA Spend Lab entrega um modelo de governança e políticas de uso junto com a implantação, porque uso seguro é parte do método, não um anexo no fim do projeto.",
+      },
+      {
+        pergunta: "Como saber se a implantação deu resultado?",
+        resposta:
+          "O projeto define indicadores de economia e produtividade — o resultado é medido nos números da operação, não na percepção do time.",
+      },
+      {
+        pergunta: "O que acontece depois que a IA entra em operação?",
+        resposta:
+          "Vem a formação aplicada: capacitação hands-on por perfil, playbooks e prompts de compras, acompanhamento pós-implantação e evolução contínua dos agentes.",
+      },
+      {
+        pergunta: "O IA Spend Lab é consultoria ou treinamento?",
+        resposta:
+          "Os dois, na mesma frente: diagnóstico e consultoria aplicada desenham o caminho, e a formação coloca o time de suprimentos operando com IA no dia a dia.",
+      },
+    ],
   },
 } as const;
 

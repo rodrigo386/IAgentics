@@ -7,8 +7,10 @@ import { AcademyFormats } from "@/components/sections/academy/Formats";
 import { AcademyCourses } from "@/components/sections/academy/Courses";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
+import { academy } from "@/lib/content";
+import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { academyJsonLd, ogDaPagina } from "@/lib/seo";
+import { academyJsonLd, ogDaPagina, faqJsonLd } from "@/lib/seo";
 
 const DESCRICAO_ACADEMY = "Escola de experiências com IA para pessoas, times e empresas.";
 
@@ -35,6 +37,7 @@ export default function Page() {
   return (
     <>
       <JsonLd dados={academyJsonLd()} />
+      <JsonLd dados={faqJsonLd(academy.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <AcademyCover />
@@ -42,6 +45,9 @@ export default function Page() {
         <AcademyApproach />
         <AcademyFormats />
         <AcademyCourses />
+        {/* O FAQ antes do contato: as objeções de quem compra treinamento
+            corporativo, respondidas em texto que um assistente de IA cita. */}
+        <SecaoFaq eyebrow={academy.faq.eyebrow} titulo={academy.faq.titulo} itens={academy.faq.itens} />
         <Contact />
       </main>
       <Footer />
