@@ -1,7 +1,13 @@
-# Existe para SUBSTITUIR o .gitignore no upload do `railway up`: o .gitignore
-# exclui o .next, e este deploy PRECISA do .next local no contexto (ver
-# Dockerfile). Tudo o mais continua fora — em especial segredos e node_modules
-# do macOS.
+# Existe para SUBSTITUIR o .gitignore no upload do `railway up`: o deploy
+# precisa de next-build/ no contexto, e o .gitignore excluiria tudo que cheira
+# a build. Tudo o mais continua fora — em especial segredos e node_modules.
+#
+# O `.next` INTEIRO sai do upload (2026-08-19). Antes só o `.next/cache` era
+# excluído, "porque o Dockerfile precisa do .next" — não precisa: ele faz
+# `rm -rf .next && mv next-build .next`, ou seja, apaga o que subiu. O que ia
+# junto era peso morto, e o cache local chegou a 943 MB; o upload passou a
+# estourar com "Repository snapshot operation timed out" e o deploy FALHOU.
+# Quem carrega o artefato é next-build/, montado pelo scripts/deploy-railway.sh.
 .env*
 node_modules
 .git
@@ -14,4 +20,4 @@ docs
 e2e
 *.tsbuildinfo
 .DS_Store
-.next/cache
+.next

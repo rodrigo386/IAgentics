@@ -12,7 +12,7 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 
 ## Mapa de rotas
 
-- Público: `/` (home), `/nexo`, `/academy`, `/spend-lab`, `/planos`, `/certificados`
+- Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/certificados/[codigo]`. `/planos` redireciona 308 para `/cursos`; **`/certificados` sem código é 404** (não existe índice).
 - Aluno: `/app` (entrar, criar-conta, curso, conta, assinar, confirmar-email, recuperar-senha, redefinir-senha)
 - Admin: `/admin` (alunos, conteudo, configuracoes, metricas-csv)
 
@@ -66,9 +66,12 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 7. **Navegação só-de-querystring via `<Link>` abortava fetch RSC de forma intermitente** (Next 15.5, cresce com o payload da página). Filtros do `/admin` (aba/período/curso) são `<a>` nativos de propósito.
 8. O pool do Postgres está em **20** (lib/db/index.ts) porque o painel dispara ~16 queries paralelas; com 5, actions na fila estouravam timeout. `prefetch={false}` na sidebar do admin pelo mesmo motivo (o prefetch do painel disparava a rajada em toda página).
 9. **Verificar deploy novo por `BUILD_ID`** (`.next/BUILD_ID` local vs container via ssh) — hash de chunk é por CONTEÚDO e não muda se aquele arquivo não mudou.
+10. **O projeto mora dentro do `~/Documents` sincronizado pelo iCloud.** Isso já produziu 73 arquivos duplicados (`* 2.json`) dentro do `.next` e faz `cp -R` estourar com `fcopyfile: Operation timed out`. Nenhum arquivo de código foi atingido até hoje (2026-08-19) — só artefato de build. Se um `cp`/build falhar por timeout, apagar `.next` inteiro e refazer. Mover o repositório para fora do `~/Documents` resolveria de vez.
+11. **`.railwayignore` SUBSTITUI o `.gitignore` no `railway up`.** O `.next` inteiro está excluído (2026-08-19): o Dockerfile faz `rm -rf .next && mv next-build .next`, ou seja, o `.next` enviado é descartado — subia como peso morto, com o cache local chegando a 943 MB.
+12. **O serviço do Railway está ligado ao repo `rodrigo386/IAgentics`**, então TODO deploy (inclusive `railway up`) passa por um snapshot do repositório. Quando esse passo expira, o erro é `Repository snapshot operation timed out` e aparece só em `deployment(id){meta}` → `configErrors` — os logs de build ficam vazios ("Deployment does not have an associated build"). Um `git push` dispara um deploy paralelo que costuma FALHAR e pode ficar preso em QUEUED; cancelar com a mutation `deploymentCancel`.
 
 ## Pendências em aberto (com o Rodrigo)
 
 - **RESEND_API_KEY** no Railway (ativa confirmação, reset e formulário de contato → rodrigo.costa@iagentics.com.br).
-- **DNS do www** → apontar para o apex/Railway (hoje serve o site antigo; canonicals em `site.url` referenciam www).
+- **DNS do www** → em correção pelo Rodrigo (CNAME `www` → apex, proxy ligado, + Redirect Rule 301). `site.url` já é o apex, então o canonical não depende mais disso.
 - **Fogo real Asaas**: R$ 39,90 via Pix em /planos para validar a cobrança ponta a ponta.
