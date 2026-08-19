@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { nav, contact, site, footer, privacidade } from "@/lib/content";
 
@@ -16,16 +17,24 @@ export function Footer() {
           </p>
         </div>
 
+        {/* `Link`, não `<a>` (2026-08-19): medido, o rodapé recarregava o
+            documento inteiro a cada clique enquanto o cabeçalho navegava sem
+            recarga — a mesma ação parecia lenta ou instantânea dependendo de
+            onde o visitante clicasse.
+            `prefetch={false}` pela razão do painel admin (armadilha 8): o
+            rodapé aparece em TODA página e /cursos é force-dynamic, então
+            prefetch aqui viraria consulta ao banco em cada rolagem até o fim. */}
         <nav aria-label="Rodapé" className="md:col-span-4">
           <ul className="grid grid-cols-2 gap-y-3">
             {nav.links.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
+                  prefetch={false}
                   className="text-sm text-fg-muted transition-colors duration-200 hover:text-fg"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -64,9 +73,13 @@ export function Footer() {
           </p>
           {/* A política precisa ser alcançável de qualquer página — é o lugar
               onde todo mundo procura, e o Google já exibia essa URL. */}
-          <a href="/privacidade" className="text-sm text-fg-subtle transition-colors duration-200 hover:text-fg">
+          <Link
+            href="/privacidade"
+            prefetch={false}
+            className="text-sm text-fg-subtle transition-colors duration-200 hover:text-fg"
+          >
             {privacidade.meta.titulo}
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
