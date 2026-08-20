@@ -223,6 +223,9 @@ export async function buscarMidia(
       videoId: lessonMedia.videoId,
       gratuita: lessons.gratuita,
       publicado: courses.publicado,
+      // O join até courses já existe; o id sai de graça e evita uma consulta
+      // extra só para descobrir a que curso a aula pertence.
+      courseId: courses.id,
     })
     .from(lessonMedia)
     .innerJoin(lessons, eq(lessons.id, lessonMedia.lessonId))
@@ -231,7 +234,7 @@ export async function buscarMidia(
     .where(eq(lessonMedia.lessonId, lessonId))
     .limit(1);
   if (!linha || !linha.publicado) return null;
-  if (!linha.gratuita && !(await temAcesso(userId))) return null;
+  if (!linha.gratuita && !(await podeAcessarCurso(userId, linha.courseId))) return null;
   return { provider: linha.provider, videoId: linha.videoId };
 }
 
@@ -248,6 +251,7 @@ export async function podeVerAula(userId: string, lessonId: string): Promise<boo
     .select({
       gratuita: lessons.gratuita,
       publicado: courses.publicado,
+      courseId: courses.id,
     })
     .from(lessons)
     .innerJoin(modules, eq(modules.id, lessons.moduleId))
@@ -255,7 +259,7 @@ export async function podeVerAula(userId: string, lessonId: string): Promise<boo
     .where(eq(lessons.id, lessonId))
     .limit(1);
   if (!linha || !linha.publicado) return false;
-  return linha.gratuita || (await temAcesso(userId));
+  return linha.gratuita || (await podeAcessarCurso(userId, linha.courseId));
 }
 
 /** Portão de escrita, espelho do portão de acesso (podeVerAula): só quem
