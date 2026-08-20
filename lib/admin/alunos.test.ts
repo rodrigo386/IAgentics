@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { and, eq, like } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { courses, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
-import { contaAtiva, gravarProgresso, temAcesso } from "@/lib/plataforma/dados";
+import { contaAtiva, gravarProgresso, ehAssinante } from "@/lib/plataforma/dados";
 import { criarUsuario } from "@/lib/plataforma/usuarios";
 import {
   buscarAluno,
@@ -67,7 +67,7 @@ describe.skipIf(!process.env.DATABASE_URL)("regras de administração de alunos"
     const linhas = await db.select().from(subscriptions).where(eq(subscriptions.userId, aluno.id));
     expect(linhas).toHaveLength(1);
     expect(linhas[0].status).toBe("manual");
-    expect(await temAcesso(aluno.id)).toBe(true);
+    expect(await ehAssinante(aluno.id)).toBe(true);
   });
 
   it("liberar quando já tem acesso → { ok: false, motivo: 'ja_tem_acesso' } e NÃO insere segunda linha", async () => {
@@ -79,7 +79,7 @@ describe.skipIf(!process.env.DATABASE_URL)("regras de administração de alunos"
     expect(linhas).toHaveLength(1);
   });
 
-  it("revogarAcesso insere linha cancelada (nunca UPDATE: as duas linhas existem) e temAcesso vira false", async () => {
+  it("revogarAcesso insere linha cancelada (nunca UPDATE: as duas linhas existem) e ehAssinante vira false", async () => {
     const aluno = await novoAluno("revogar");
     await db.insert(subscriptions).values({ userId: aluno.id, status: "manual" });
     const resultado = await revogarAcesso(randomUUID(), aluno.id);
@@ -92,7 +92,7 @@ describe.skipIf(!process.env.DATABASE_URL)("regras de administração de alunos"
     expect(linhas).toHaveLength(2);
     expect(linhas[0].status).toBe("manual");
     expect(linhas[1].status).toBe("cancelada");
-    expect(await temAcesso(aluno.id)).toBe(false);
+    expect(await ehAssinante(aluno.id)).toBe(false);
   });
 
   it("revogar quem não tem acesso → 'ja_sem_acesso'", async () => {

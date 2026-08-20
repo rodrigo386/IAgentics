@@ -82,7 +82,7 @@ export async function iniciarAssinatura(
         // tratava como assinatura morta — criava uma SEGUNDA assinatura B no
         // Asaas (cobrando de novo) enquanto a A ficava paga e esquecida.
         // Quando o webhook da A finalmente processa, ativa a linha ANTIGA (A)
-        // — mas temAcesso lê sempre a MAIS RECENTE (B, pendente): aluno pagou
+        // — mas ehAssinante lê sempre a MAIS RECENTE (B, pendente): aluno pagou
         // e continua sem acesso. A fonte aqui é a API autenticada do Asaas —
         // mesmo efeito que o webhook teria, sem esperar ele. UPDATE pelo id
         // da PRÓPRIA linha (não pelo subscription id) porque é exatamente a
@@ -156,7 +156,7 @@ export async function iniciarAssinatura(
       const assinatura = await cliente.criarAssinatura({ customer: customerId, nextDueDate });
 
       // Linha nova, nunca update — o histórico de status é o mesmo padrão do
-      // liberar/revogar do admin, e temAcesso lê sempre a linha mais recente.
+      // liberar/revogar do admin, e ehAssinante lê sempre a linha mais recente.
       await db.insert(subscriptions).values({
         userId,
         status: "pendente",

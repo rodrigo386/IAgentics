@@ -17,7 +17,6 @@ import {
   gravarProgresso,
   podeGravarProgresso,
   podeVerAula,
-  temAcesso,
 } from "./dados";
 
 // Roda contra o Postgres real (precisa de DATABASE_URL); dados próprios com prefixo
@@ -28,13 +27,13 @@ const prefixo = `teste-aut-${Date.now()}`;
 let userSemAssinatura: { id: string };
 let userComAssinatura: { id: string };
 // Regressão do Critical: linha "manual" antiga + linha "cancelada" mais nova —
-// temAcesso tem que seguir a mais recente, não "já teve alguma ativa/manual".
+// ehAssinante tem que seguir a mais recente, não "já teve alguma ativa/manual".
 let userCanceladaRecente: { id: string };
 let userInadimplente: { id: string };
 let userCancelada: { id: string };
 // Regressão do I1: assinatura manual válida, mas a CONTA foi desativada —
-// temAcesso/buscarMidia/podeGravarProgresso têm que negar mesmo assim, sem
-// esperar o JWT expirar (auth() sozinho não enxerga isso).
+// ehAssinante/direitosDoAluno/buscarMidia/podeGravarProgresso têm que negar
+// mesmo assim, sem esperar o JWT expirar (auth() sozinho não enxerga isso).
 let userDesativado: { id: string };
 // Ciclo Asaas: linha "pendente" (assinatura criada, fatura ainda não paga) —
 // por construção NÃO dá acesso: pendente ∉ ('ativa','manual').
@@ -208,7 +207,7 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
   });
 
   it("assinatura manual antiga + cancelada mais recente → sem acesso (status atual manda)", async () => {
-    expect(await temAcesso(userCanceladaRecente.id)).toBe(false);
+    expect(await ehAssinante(userCanceladaRecente.id)).toBe(false);
     const midia = await buscarMidia(userCanceladaRecente.id, aulaPaga.id);
     expect(midia).toBeNull();
   });
@@ -224,16 +223,16 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
   });
 
   // Fix round final (I1): desativado continuava agindo com JWT vivo —
-  // temAcesso lia só a assinatura, nunca users.ativo.
-  it("conta desativada com assinatura manual válida → sem acesso (temAcesso false, mídia paga null)", async () => {
+  // ehAssinante lia só a assinatura, nunca users.ativo.
+  it("conta desativada com assinatura manual válida → sem acesso (ehAssinante false, mídia paga null)", async () => {
     expect(await contaAtiva(userDesativado.id)).toBe(false);
-    expect(await temAcesso(userDesativado.id)).toBe(false);
+    expect(await ehAssinante(userDesativado.id)).toBe(false);
     const midia = await buscarMidia(userDesativado.id, aulaPaga.id);
     expect(midia).toBeNull();
   });
 
   it("assinatura pendente não dá acesso", async () => {
-    expect(await temAcesso(userPendente.id)).toBe(false);
+    expect(await ehAssinante(userPendente.id)).toBe(false);
   });
 
   it("buscarAssinatura devolve o status pendente", async () => {
@@ -289,7 +288,7 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
   });
 
   /* ehAssinante é a pergunta COMERCIAL e tem que responder exatamente o que o
-     antigo temAcesso respondia — é dela que dependem o CTA de assinatura, o
+     antigo ehAssinante respondia — é dela que dependem o CTA de assinatura, o
      banner do painel e a trava de segunda assinatura no Asaas. */
   it("ehAssinante espelha o comportamento do antigo temAcesso", async () => {
     expect(await ehAssinante(userComAssinatura.id)).toBe(true);

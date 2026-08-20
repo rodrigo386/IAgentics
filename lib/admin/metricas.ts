@@ -50,7 +50,7 @@ export async function resumo(p: Periodo): Promise<{
       .from(users)
       .where(corte ? gte(users.createdAt, corte) : undefined),
     // assinaturasAtivas: status ATUAL por aluno (linha mais recente), nunca linha
-    // histórica — mesma semântica de temAcesso/buscarAssinatura. Independe do período.
+    // histórica — mesma semântica de ehAssinante/buscarAssinatura. Independe do período.
     db.execute<{ n: number }>(sql`
       select count(*)::int as n from (
         select distinct on (user_id) status
@@ -378,7 +378,7 @@ export async function analiticoDoApp(p: Periodo): Promise<AnaliticoApp> {
       : Promise.resolve(null),
     novasAssinaturasDesde(corte),
     // Status ATUAL por aluno (linha mais recente) - mesma semântica de
-    // temAcesso/buscarAssinatura, agora aberta por categoria.
+    // ehAssinante/buscarAssinatura, agora aberta por categoria.
     db.execute<{ status: string; n: number }>(sql`
       select status, count(*)::int as n from (
         select distinct on (user_id) status

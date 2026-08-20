@@ -34,7 +34,7 @@ function paraAula(r: typeof lessons.$inferSelect): Aula {
 
 /** subscriptions não tem unique em userId — o histórico de mudanças de status
  *  fica todo lá. "Status atual" é sempre a linha mais recente por createdAt;
- *  temAcesso (abaixo) tem que derivar deste MESMO critério, nunca de "já
+ *  ehAssinante (abaixo) tem que derivar deste MESMO critério, nunca de "já
  *  teve alguma linha ativa/manual" em algum momento. */
 export async function buscarAssinatura(userId: string): Promise<StatusAssinatura> {
   const [linha] = await db
@@ -69,28 +69,26 @@ export async function contaAtiva(userId: string): Promise<boolean> {
   return linha?.ativo ?? false;
 }
 
-/** O portão de acesso pago: única checagem de assinatura ativa/manual da
- *  camada de dados. Toda função sensível recebe userId explícito — nunca lê
- *  sessão sozinha, para nunca ser chamada "sem querer" para o usuário errado.
- *  Fonte de verdade única com buscarAssinatura: mesma linha mais recente.
- *  Fix round final (I1): checa contaAtiva ANTES da assinatura — desativado
- *  perde acesso pago mesmo com assinatura "manual"/"ativa" válida no histórico
- *  e com JWT ainda vivo. Aula gratuita não passa por aqui (buscarMidia só
- *  chama temAcesso para conteúdo pago), então continua liberada — aceitável:
- *  o alvo é cortar MÍDIA PAGA e ESCRITA de progresso, não o catálogo grátis. */
-export async function temAcesso(userId: string): Promise<boolean> {
-  if (!(await contaAtiva(userId))) return false;
-  const status = await buscarAssinatura(userId);
-  return status === "ativa" || status === "manual";
-}
-
 /* ---------------------------------------------------------------------------
    DIREITO DE ACESSO POR CURSO
 
-   Até 2026-08-20 acesso era um booleano para o acervo inteiro (temAcesso, logo
-   acima). A venda B2B em grupo vende CURSOS ESPECÍFICOS por contrato, então
-   acesso vira um conjunto de cursos — e "é assinante" deixa de ser a mesma
-   pergunta que "pode assistir a isto".
+   Até 2026-08-20 acesso era um booleano para o acervo inteiro — uma função
+   `temAcesso`, removida nesta refatoração. A venda B2B em grupo vende CURSOS
+   ESPECÍFICOS por contrato, então acesso virou um conjunto de cursos, e "é
+   assinante" deixou de ser a mesma pergunta que "pode assistir a isto".
+
+   O que valia para a antiga temAcesso e continua valendo para as três abaixo:
+
+   - Toda função sensível recebe userId EXPLÍCITO e nunca lê a sessão sozinha,
+     para não haver como chamá-la "sem querer" para o usuário errado.
+   - Fonte de verdade única com buscarAssinatura: a mesma linha mais recente.
+   - `contaAtiva` é checada ANTES da assinatura (fix round final, I1): conta
+     desativada perde acesso mesmo com assinatura "manual"/"ativa" válida no
+     histórico e com JWT ainda vivo.
+   - Aula gratuita NÃO passa por aqui: buscarMidia e podeVerAula só consultam o
+     direito para conteúdo pago, então o catálogo grátis continua liberado. É
+     deliberado — o alvo é cortar mídia paga e escrita de progresso, não o que
+     é aberto de propósito.
 
    Spec: docs/superpowers/specs/2026-08-20-direito-de-acesso-por-curso-design.md
 --------------------------------------------------------------------------- */
@@ -211,7 +209,7 @@ export async function buscarUltimaAula(userId: string): Promise<{ cursoSlug: str
   return linha ?? null;
 }
 
-/** O portão: sai mídia só se (aula gratuita E curso publicado) OU temAcesso.
+/** O portão: sai mídia só se (aula gratuita E curso publicado) OU direito ao curso.
  *  Nunca lança para "sem acesso" — a chamadora decide o que mostrar com null. */
 export async function buscarMidia(
   userId: string,

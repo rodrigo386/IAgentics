@@ -6,7 +6,7 @@ import { IndiceCurso } from "@/components/plataforma/IndiceCurso";
 import { plataforma } from "@/lib/content-plataforma";
 import { destinoCta } from "@/lib/admin/configuracoes";
 import { doAlunoNoCurso, emitirSeConcluido } from "@/lib/plataforma/certificados";
-import { buscarConcluidas, buscarCurso, temAcesso as verificarAcesso } from "@/lib/plataforma/dados";
+import { buscarConcluidas, buscarCurso, podeAcessarCurso } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 
 export default async function PaginaCurso({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,9 +20,11 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
   const curso = await buscarCurso(slug);
   if (!curso) notFound();
 
-  const [concluidas, temAcesso, destino] = await Promise.all([
+  // Direito a ESTE curso, não ao acervo: `buscarCurso` já rodou acima, então
+  // o id está em mãos sem consulta extra.
+  const [concluidas, liberado, destino] = await Promise.all([
     buscarConcluidas(userId),
-    verificarAcesso(userId),
+    podeAcessarCurso(userId, curso.id),
     destinoCta(),
   ]);
 
@@ -120,7 +122,7 @@ export default async function PaginaCurso({ params }: { params: Promise<{ slug: 
         </div>
       </header>
 
-      {!temAcesso ? (
+      {!liberado ? (
         <section className="flex flex-col items-start gap-4 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-fg">{plataforma.painel.seloAssine}</p>
           <a
