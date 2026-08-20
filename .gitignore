@@ -8,7 +8,3 @@ out/
 .dev/
 test-results/
 playwright-report/
-
-# Artefato do deploy (scripts/deploy-railway.sh: cp -R .next next-build).
-# Nunca versionado — é saída de build, e o .railwayignore já o trata à parte.
-next-build/
