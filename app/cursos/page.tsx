@@ -8,7 +8,7 @@ import { CursosComoFunciona } from "@/components/sections/cursos/ComoFunciona";
 import { CursosAssinatura } from "@/components/sections/cursos/Assinatura";
 import { CursosApoiadores } from "@/components/sections/cursos/Apoiadores";
 import { cursos as t } from "@/lib/content";
-import { buscarCatalogo, temAcesso } from "@/lib/plataforma/dados";
+import { buscarCatalogo, ehAssinante } from "@/lib/plataforma/dados";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { cursosJsonLd, ogDaPagina } from "@/lib/seo";
 import { VALOR_MENSAL } from "@/lib/asaas/cliente";
@@ -34,7 +34,9 @@ export const dynamic = "force-dynamic";
 export default async function PaginaCursos() {
   const sessao = await auth();
   const logado = Boolean(sessao?.user?.id);
-  const assinante = sessao?.user?.id ? await temAcesso(sessao.user.id) : false;
+  // Pergunta COMERCIAL: a página de venda esconde o CTA de assinatura para
+  // quem já assina. Não tem a ver com poder assistir a um curso específico.
+  const assinante = sessao?.user?.id ? await ehAssinante(sessao.user.id) : false;
   const cursos = await buscarCatalogo();
   const destino = logado ? "/app/assinar" : "/app/criar-conta?voltar=/app/assinar";
 

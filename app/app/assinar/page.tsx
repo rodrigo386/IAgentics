@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { FormAssinar } from "@/components/plataforma/FormAssinar";
 import { plataforma } from "@/lib/content-plataforma";
-import { temAcesso } from "@/lib/plataforma/dados";
+import { ehAssinante } from "@/lib/plataforma/dados";
 
 export default async function PaginaAssinar() {
   const sessao = await auth();
@@ -11,7 +11,10 @@ export default async function PaginaAssinar() {
   if (!sessao?.user?.id) redirect("/app/entrar");
   const t = plataforma.assinar;
 
-  if (await temAcesso(sessao.user.id)) {
+  // Pergunta COMERCIAL: "já assina" é o que decide mostrar o formulário de
+  // assinatura ou a mensagem de que já existe uma. Um aluno com acesso apenas
+  // por contrato B2B (etapa 2) NÃO é assinante e deve continuar podendo assinar.
+  if (await ehAssinante(sessao.user.id)) {
     return (
       <div className="mx-auto flex max-w-md flex-col gap-6">
         <h1 className="text-3xl font-medium tracking-[-0.03em]">{t.titulo}</h1>

@@ -2,7 +2,7 @@ import "server-only";
 import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
-import { contaAtiva, temAcesso } from "@/lib/plataforma/dados";
+import { contaAtiva, ehAssinante } from "@/lib/plataforma/dados";
 import { buscarUsuario } from "@/lib/plataforma/usuarios";
 import { plataforma } from "@/lib/content-plataforma";
 import { validarCpf } from "./cpf";
@@ -48,7 +48,11 @@ export async function iniciarAssinatura(
 ): Promise<ResultadoAssinar> {
   const t = plataforma.assinar;
   if (!(await contaAtiva(userId))) return { ok: false, erro: t.erroGenerico };
-  if (await temAcesso(userId)) return { ok: false, erro: t.jaAssinante };
+  // Pergunta COMERCIAL, e aqui a distinção é dinheiro: a trava existe para não
+  // cobrar duas vezes de quem já tem assinatura. Acesso por contrato B2B
+  // (etapa 2) não é assinatura e não pode impedir a pessoa de assinar por
+  // conta própria — cobrar seria errado nos dois sentidos.
+  if (await ehAssinante(userId)) return { ok: false, erro: t.jaAssinante };
   const cpf = validarCpf(cpfBruto);
   if (!cpf) return { ok: false, erro: t.cpfInvalido };
   const usuario = await buscarUsuario(userId);
