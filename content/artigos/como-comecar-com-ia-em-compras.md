@@ -6,7 +6,7 @@ data: 2026-05-29
 autor: "Rodrigo Costa — IAgentics"
 categoria: "Implantação"
 produto: "nexo"
-status: "rascunho — decisões pendentes no README"
+status: "publicado"
 titulo_linkedin: "8 horas viram 22 minutos. O que muda em Compras quando o agente entra na cadeia certa"
 ---
 

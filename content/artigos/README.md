@@ -20,6 +20,27 @@ dele — estão aqui para quem revisar depois saber que não passaram despercebi
 Reverter qualquer um é trocar `publicado` por `rascunho`: sai da listagem, sai
 do sitemap e passa a responder 404.
 
+### `como-comecar-com-ia-em-compras` (publicado depois, mesmo dia)
+
+Segundo texto do Rodrigo vindo do LinkedIn ("8 horas viram 22 minutos", de
+29/05/2026). As três decisões que estavam pendentes foram resolvidas por ele:
+
+1. **ProAICircle saiu.** No LinkedIn a comunidade externa faz sentido; no site
+   mandava tráfego para fora do domínio e concorria com o artigo de prompts que
+   acabáramos de publicar. O link agora aponta para o artigo próprio.
+2. **Data mantida em 29/05/2026**, a original — mais coerente com a
+   reivindicação de que o site é a casa do texto, e dá profundidade cronológica
+   à listagem em vez de seis artigos nascidos no mesmo dia. Aparece por último,
+   que é o correto.
+3. **O caso do cliente ficou verbatim**, por decisão dele — inclusive
+   "embalagem flexível", que estreita bastante quem pode ser.
+
+O que a adaptação acrescentou ao original: a **conta de payback** (setup de
+8-16h contra ~7,5h/semana economizadas ⇒ 1 a 3 semanas), que sai dos números
+que ele já tinha e não estava no texto; e **quatro links internos** para os
+outros artigos — é este texto que amarra a coleção, porque a tese dele
+(conciliação versus decisão) é a que explica os demais.
+
 ## Como publicar (ou despublicar)
 
 1. Troque o `status` no frontmatter (`publicado` ↔ `rascunho`).
