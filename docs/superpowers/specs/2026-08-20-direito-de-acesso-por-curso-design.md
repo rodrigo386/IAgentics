@@ -23,8 +23,10 @@ Asaas. Na conversa de levantamento (2026-08-20) o Rodrigo definiu:
 - o valor do contrato entra nas métricas junto com o Asaas
 
 A última decisão de escopo é a que obriga esta etapa. Hoje o acesso é
-tudo-ou-nada, e **12 arquivos** dependem desse portão — incluindo o caminho pago
-que está em produção. Misturar essa refatoração com schema novo, telas novas e
+tudo-ou-nada, e **12 arquivos** tocam a área de acesso/assinatura — dos quais
+**6 chamam `temAcesso` diretamente** (os outros já usam `buscarAssinatura` ou
+uma variável local, e são comerciais por natureza: não mudam). O caminho pago em
+produção passa por esses 6. Misturar essa refatoração com schema novo, telas novas e
 papel de usuário novo é somar o maior risco ao maior volume.
 
 O trabalho foi quebrado em quatro:
