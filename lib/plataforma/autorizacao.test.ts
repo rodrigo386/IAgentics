@@ -11,6 +11,9 @@ import {
   buscarMidia,
   buscarUltimaAula,
   contaAtiva,
+  direitosDoAluno,
+  ehAssinante,
+  podeAcessarCurso,
   gravarProgresso,
   podeGravarProgresso,
   podeVerAula,
@@ -41,6 +44,10 @@ let aulaPaga: { id: string };
 let aulaSemMidia: { id: string };
 let aulaOculta: { id: string };
 let cursoOcultoSlug: string;
+// Direito por curso (2026-08-20): os testes de direitosDoAluno/podeAcessarCurso
+// precisam do ID, não do slug — direito é conjunto de IDs de curso.
+let cursoPublicadoId: string;
+let cursoOcultoId: string;
 // Redesign editorial: buscarUltimaAula alimenta o hero do painel.
 let userUltimaAula: { id: string };
 let userUltimaAulaSemProgresso: { id: string };
@@ -99,6 +106,7 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .insert(courses)
       .values({ slug: `${prefixo}-curso-publicado`, titulo: "Curso publicado de teste", publicado: true, ordem: 1 })
       .returning({ id: courses.id });
+    cursoPublicadoId = cursoPublicado.id;
     const [moduloPublicado] = await db
       .insert(modules)
       .values({ courseId: cursoPublicado.id, titulo: "Módulo de teste", ordem: 1 })
@@ -128,6 +136,7 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
       .values({ slug: `${prefixo}-curso-oculto`, titulo: "Curso oculto de teste", publicado: false, ordem: 2 })
       .returning({ id: courses.id, slug: courses.slug });
     cursoOcultoSlug = cursoOculto.slug;
+    cursoOcultoId = cursoOculto.id;
     const [moduloOculto] = await db
       .insert(modules)
       .values({ courseId: cursoOculto.id, titulo: "Módulo oculto", ordem: 1 })
@@ -229,6 +238,64 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
 
   it("buscarAssinatura devolve o status pendente", async () => {
     expect(await buscarAssinatura(userPendente.id)).toBe("pendente");
+  });
+
+  /* -------------------------------------------------------------------------
+     DIREITO DE ACESSO POR CURSO (etapa 1 da venda B2B, 2026-08-20)
+
+     O portão deixa de ser um booleano para o acervo inteiro e passa a ser um
+     CONJUNTO de cursos. Nesta etapa existe uma fonte só — a assinatura —, então
+     o comportamento tem que ser idêntico ao do antigo temAcesso: estas
+     asserções são o que prova isso.
+
+     Spec: docs/superpowers/specs/2026-08-20-direito-de-acesso-por-curso-design.md
+  ------------------------------------------------------------------------- */
+
+  it("assinante tem direito a TODOS os cursos publicados", async () => {
+    const direitos = await direitosDoAluno(userComAssinatura.id);
+    const publicados = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
+    expect([...direitos].sort()).toEqual(publicados.map((c) => c.id).sort());
+  });
+
+  it("curso NÃO publicado nunca entra no direito, nem para assinante", async () => {
+    const direitos = await direitosDoAluno(userComAssinatura.id);
+    expect(direitos.has(cursoOcultoId)).toBe(false);
+    expect(await podeAcessarCurso(userComAssinatura.id, cursoOcultoId)).toBe(false);
+  });
+
+  it("assinante pode acessar o curso publicado", async () => {
+    expect(await podeAcessarCurso(userComAssinatura.id, cursoPublicadoId)).toBe(true);
+  });
+
+  it("sem assinatura, conjunto vazio e nenhum curso acessível", async () => {
+    expect((await direitosDoAluno(userSemAssinatura.id)).size).toBe(0);
+    expect(await podeAcessarCurso(userSemAssinatura.id, cursoPublicadoId)).toBe(false);
+  });
+
+  it("status que não libera não dá direito (cancelada recente, inadimplente, cancelada, pendente)", async () => {
+    for (const u of [userCanceladaRecente, userInadimplente, userCancelada, userPendente]) {
+      expect((await direitosDoAluno(u.id)).size).toBe(0);
+      expect(await podeAcessarCurso(u.id, cursoPublicadoId)).toBe(false);
+    }
+  });
+
+  /* Mesma garantia do I1, agora no modelo novo: conta desativada perde direito
+     mesmo com assinatura manual válida no histórico. Se esta asserção cair, a
+     refatoração reabriu o buraco de "JWT vivo depois de desativar a conta". */
+  it("conta desativada perde o direito mesmo com assinatura válida", async () => {
+    expect((await direitosDoAluno(userDesativado.id)).size).toBe(0);
+    expect(await podeAcessarCurso(userDesativado.id, cursoPublicadoId)).toBe(false);
+    expect(await ehAssinante(userDesativado.id)).toBe(false);
+  });
+
+  /* ehAssinante é a pergunta COMERCIAL e tem que responder exatamente o que o
+     antigo temAcesso respondia — é dela que dependem o CTA de assinatura, o
+     banner do painel e a trava de segunda assinatura no Asaas. */
+  it("ehAssinante espelha o comportamento do antigo temAcesso", async () => {
+    expect(await ehAssinante(userComAssinatura.id)).toBe(true);
+    expect(await ehAssinante(userSemAssinatura.id)).toBe(false);
+    expect(await ehAssinante(userCanceladaRecente.id)).toBe(false);
+    expect(await ehAssinante(userPendente.id)).toBe(false);
   });
 
   it("mídia de curso não publicado não sai nem para assinante", async () => {

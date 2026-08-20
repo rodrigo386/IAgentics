@@ -84,6 +84,74 @@ export async function temAcesso(userId: string): Promise<boolean> {
   return status === "ativa" || status === "manual";
 }
 
+/* ---------------------------------------------------------------------------
+   DIREITO DE ACESSO POR CURSO
+
+   Até 2026-08-20 acesso era um booleano para o acervo inteiro (temAcesso, logo
+   acima). A venda B2B em grupo vende CURSOS ESPECÍFICOS por contrato, então
+   acesso vira um conjunto de cursos — e "é assinante" deixa de ser a mesma
+   pergunta que "pode assistir a isto".
+
+   Spec: docs/superpowers/specs/2026-08-20-direito-de-acesso-por-curso-design.md
+--------------------------------------------------------------------------- */
+
+/**
+ * A pergunta COMERCIAL: este aluno é assinante?
+ *
+ * É o comportamento literal do antigo `temAcesso`, com o nome da pergunta que
+ * ele de fato responde. Quem chama isto quer saber da relação comercial —
+ * mostrar CTA de assinatura, o banner do painel, barrar segunda assinatura no
+ * Asaas. NÃO serve para decidir se alguém pode assistir a um curso: a partir do
+ * contrato B2B as duas respostas deixam de coincidir.
+ */
+export async function ehAssinante(userId: string): Promise<boolean> {
+  if (!(await contaAtiva(userId))) return false;
+  const status = await buscarAssinatura(userId);
+  return status === "ativa" || status === "manual";
+}
+
+/**
+ * A pergunta de ACESSO, em lote: a que cursos este aluno tem direito?
+ *
+ * Direito é DERIVADO, nunca armazenado — calculado perguntando a cada fonte no
+ * momento da consulta. Tabela de direitos materializada é a origem clássica de
+ * divergência aqui: assinatura cancela, contrato vence, membro sai do grupo, e
+ * a tabela segue afirmando o contrário até alguém rodar uma varredura.
+ *
+ * Hoje há uma fonte só: a assinatura, que dá direito ao acervo publicado
+ * inteiro. O contrato B2B entra AQUI e em `podeAcessarCurso`, como UNIÃO —
+ * basta uma fonte conceder. Nunca "a linha mais recente vence": uma pessoa pode
+ * ter assinatura própria E estar num grupo, e o fim do contrato do grupo não
+ * pode derrubar o que ela paga sozinha.
+ *
+ * Em lote de propósito: o painel renderiza ~10 cards e uma consulta por card
+ * multiplicaria por 10 a pressão sobre o pool (armadilha 8 do CLAUDE.md). São 3
+ * consultas fixas, independentemente de quantos cursos existirem.
+ */
+export async function direitosDoAluno(userId: string): Promise<Set<string>> {
+  if (!(await ehAssinante(userId))) return new Set();
+  const linhas = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
+  return new Set(linhas.map((l) => l.id));
+}
+
+/**
+ * A pergunta de ACESSO, para um curso só.
+ *
+ * Confere `publicado` por conta própria de propósito, mesmo quando a chamadora
+ * já filtrou: precisa estar correta chamada isoladamente. O custo é uma busca
+ * por chave primária; o risco de depender do filtro alheio é conteúdo não
+ * publicado vazar quando alguém reordenar as guardas.
+ */
+export async function podeAcessarCurso(userId: string, courseId: string): Promise<boolean> {
+  if (!(await ehAssinante(userId))) return false;
+  const [linha] = await db
+    .select({ id: courses.id })
+    .from(courses)
+    .where(and(eq(courses.id, courseId), eq(courses.publicado, true)))
+    .limit(1);
+  return Boolean(linha);
+}
+
 export async function buscarCatalogo(): Promise<Curso[]> {
   const linhas = await db.select().from(courses).where(eq(courses.publicado, true)).orderBy(courses.ordem);
   return linhas.map(paraCurso);
