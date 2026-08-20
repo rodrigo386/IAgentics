@@ -1,7 +1,7 @@
 # Direito de acesso por curso — plano de implementação
 
 > **Para quem for executar:** siga tarefa a tarefa, na ordem. Os passos usam
-> caixa (`- [ ]`) para acompanhamento. Spec:
+> caixa (`- [x]`) para acompanhamento. Spec:
 > [2026-08-20-direito-de-acesso-por-curso-design.md](../specs/2026-08-20-direito-de-acesso-por-curso-design.md)
 
 **Objetivo:** trocar o portão de acesso booleano por direito **por curso**,
@@ -60,7 +60,7 @@ Playwright.
 - `direitosDoAluno(userId: string): Promise<Set<string>>` — ids de curso
 - `podeAcessarCurso(userId: string, courseId: string): Promise<boolean>`
 
-- [ ] **Passo 1: escrever o teste que falha**
+- [x] **Passo 1: escrever o teste que falha**
 
 Criar `lib/plataforma/direitos.test.ts`. O padrão do projeto é integração
 contra o Postgres real, com dados isolados por prefixo — siga
@@ -121,12 +121,12 @@ describe("direito de acesso derivado da assinatura", () => {
 });
 ```
 
-- [ ] **Passo 2: rodar e confirmar que falha**
+- [x] **Passo 2: rodar e confirmar que falha**
 
 `npx vitest run lib/plataforma/direitos.test.ts`
 Esperado: falha em importar `direitosDoAluno` — a função não existe.
 
-- [ ] **Passo 3: implementar**
+- [x] **Passo 3: implementar**
 
 Em `lib/plataforma/dados.ts`, logo abaixo de `temAcesso` (que continua no lugar
 por enquanto):
@@ -181,11 +181,11 @@ export async function podeAcessarCurso(userId: string, courseId: string): Promis
 }
 ```
 
-- [ ] **Passo 4: rodar e confirmar que passa**
+- [x] **Passo 4: rodar e confirmar que passa**
 
 `npx vitest run lib/plataforma/direitos.test.ts` → todos verdes.
 
-- [ ] **Passo 5: commit**
+- [x] **Passo 5: commit**
 
 ```bash
 git add lib/plataforma/dados.ts lib/plataforma/direitos.test.ts
@@ -200,7 +200,7 @@ git commit -m "feat: direito de acesso por curso, derivado da assinatura"
 
 **Consome:** `podeAcessarCurso` (Tarefa 1)
 
-- [ ] **Passo 1: acrescentar `courseId` aos dois selects**
+- [x] **Passo 1: acrescentar `courseId` aos dois selects**
 
 `buscarMidia` e `podeVerAula` já fazem o join `lessons → modules → courses`.
 Acrescente a coluna ao select dos dois:
@@ -209,7 +209,7 @@ Acrescente a coluna ao select dos dois:
       courseId: courses.id,
 ```
 
-- [ ] **Passo 2: trocar a checagem**
+- [x] **Passo 2: trocar a checagem**
 
 Em `buscarMidia`:
 
@@ -225,7 +225,7 @@ Em `podeVerAula`:
 
 `podeGravarProgresso` **não muda** — delega a `podeVerAula` e herda a correção.
 
-- [ ] **Passo 3: rodar as suítes de acesso**
+- [x] **Passo 3: rodar as suítes de acesso**
 
 ```
 npx vitest run lib/plataforma/
@@ -233,7 +233,7 @@ npx vitest run lib/plataforma/
 Esperado: verde. Estes testes cobrem o portão de mídia, o de aula e o de
 escrita — se algum falhar, é regressão real, não teste velho.
 
-- [ ] **Passo 4: commit**
+- [x] **Passo 4: commit**
 
 ```bash
 git commit -am "refactor: portões de aula consultam direito por curso"
@@ -249,7 +249,7 @@ git commit -am "refactor: portões de aula consultam direito por curso"
 Os três fazem a pergunta comercial. Nenhuma mudança de semântica — só passam a
 chamar a função com o nome certo.
 
-- [ ] **Passo 1: `app/cursos/page.tsx`**
+- [x] **Passo 1: `app/cursos/page.tsx`**
 
 Trocar o import e a linha 37:
 
@@ -259,7 +259,7 @@ import { buscarCatalogo, ehAssinante } from "@/lib/plataforma/dados";
   const assinante = sessao?.user?.id ? await ehAssinante(sessao.user.id) : false;
 ```
 
-- [ ] **Passo 2: `app/app/assinar/page.tsx`**
+- [x] **Passo 2: `app/app/assinar/page.tsx`**
 
 ```ts
 import { ehAssinante } from "@/lib/plataforma/dados";
@@ -267,7 +267,7 @@ import { ehAssinante } from "@/lib/plataforma/dados";
   if (await ehAssinante(sessao.user.id)) {
 ```
 
-- [ ] **Passo 3: `lib/asaas/assinatura.ts`** (linha ~51)
+- [x] **Passo 3: `lib/asaas/assinatura.ts`** (linha ~51)
 
 ```ts
 import { contaAtiva, ehAssinante } from "@/lib/plataforma/dados";
@@ -275,7 +275,7 @@ import { contaAtiva, ehAssinante } from "@/lib/plataforma/dados";
   if (await ehAssinante(userId)) return { ok: false, erro: t.jaAssinante };
 ```
 
-- [ ] **Passo 4: rodar e commitar**
+- [x] **Passo 4: rodar e commitar**
 
 ```
 npm run test:unit
@@ -293,7 +293,7 @@ todos os cards.
 
 **Consome:** `direitosDoAluno` (Tarefa 1)
 
-- [ ] **Passo 1: `CardCurso` recebe o booleano do próprio curso**
+- [x] **Passo 1: `CardCurso` recebe o booleano do próprio curso**
 
 Renomear a prop de `temAcesso` para `liberado`. O rename é deliberado: força
 cada chamador a ser atualizado conscientemente, e o compilador acusa quem
@@ -309,7 +309,7 @@ e, no selo:
         {!liberado ? (
 ```
 
-- [ ] **Passo 2: `Trilho` passa a receber o conjunto**
+- [x] **Passo 2: `Trilho` passa a receber o conjunto**
 
 Em `app/app/page.tsx`, na assinatura do `Trilho`, trocar
 `temAcesso: boolean` por `direitos: Set<string>`, e no map:
@@ -318,7 +318,7 @@ Em `app/app/page.tsx`, na assinatura do `Trilho`, trocar
             <CardCurso curso={curso} pct={info.get(curso.slug)?.pct ?? 0} liberado={direitos.has(curso.id)} />
 ```
 
-- [ ] **Passo 3: o painel obtém o conjunto**
+- [x] **Passo 3: o painel obtém o conjunto**
 
 No `Promise.all` existente, trocar `verificarAcesso(userId)` por
 `direitosDoAluno(userId)`, renomeando a variável para `direitos`. Continua
@@ -332,7 +332,7 @@ no mesmo `Promise.all`. Confundir os dois aqui faz o banner sumir para quem tem
 acesso a um curso via contrato mas não é assinante — exatamente o bug que a
 etapa 2 traria.
 
-- [ ] **Passo 4: rodar e2e do painel**
+- [x] **Passo 4: rodar e2e do painel**
 
 ```
 npx playwright test e2e/painel.spec.ts e2e/cursos.spec.ts
@@ -340,7 +340,7 @@ npx playwright test e2e/painel.spec.ts e2e/cursos.spec.ts
 A spec do painel conta cards e verifica o selo e o banner — é ela que prova
 que a mudança estrutural não alterou o que o aluno vê. **Sem editar a spec.**
 
-- [ ] **Passo 5: commit**
+- [x] **Passo 5: commit**
 
 ```bash
 git commit -am "refactor: painel decide o cadeado por curso"
@@ -352,7 +352,7 @@ git commit -am "refactor: painel decide o cadeado por curso"
 
 **Arquivos:** modificar `app/app/curso/[slug]/page.tsx`
 
-- [ ] **Passo 1: trocar a checagem**
+- [x] **Passo 1: trocar a checagem**
 
 `buscarCurso(slug)` já rodou antes do `Promise.all`, então `curso.id` está
 disponível:
@@ -368,7 +368,7 @@ disponível:
 Renomear a variável local `temAcesso` para `liberado` e atualizar o uso na
 linha ~123.
 
-- [ ] **Passo 2: rodar e commitar**
+- [x] **Passo 2: rodar e commitar**
 
 ```
 npx playwright test e2e/curso.spec.ts e2e/aula.spec.ts
@@ -379,9 +379,9 @@ git commit -am "refactor: página do curso consulta direito do próprio curso"
 
 ### Tarefa 6: remover `temAcesso` e fechar
 
-- [ ] **Passo 1: remover a função** de `lib/plataforma/dados.ts`.
+- [x] **Passo 1: remover a função** de `lib/plataforma/dados.ts`.
 
-- [ ] **Passo 2: confirmar que ninguém ficou para trás**
+- [x] **Passo 2: confirmar que ninguém ficou para trás**
 
 ```bash
 grep -rn "temAcesso" app lib components e2e
@@ -391,7 +391,7 @@ Esperado: **nenhuma** ocorrência de chamada. Comentários históricos em
 explicar a semântica de "linha mais recente" — atualize o texto para citar
 `ehAssinante`, para o comentário não apontar para função inexistente.
 
-- [ ] **Passo 3: suítes completas**
+- [x] **Passo 3: suítes completas**
 
 ```
 npm run test:unit    # esperado: 222 + os novos, todos verdes
@@ -399,7 +399,7 @@ npm run test:e2e     # esperado: 32 passando, NENHUMA editada
 npx tsc --noEmit
 ```
 
-- [ ] **Passo 4: commit**
+- [x] **Passo 4: commit**
 
 ```bash
 git commit -am "refactor: remover temAcesso — cada chamador declara sua pergunta"
@@ -409,8 +409,8 @@ git commit -am "refactor: remover temAcesso — cada chamador declara sua pergun
 
 ### Tarefa 7: verificar em produção antes da etapa 2
 
-- [ ] **Passo 1:** build local, deploy pelo `scripts/deploy-railway.sh`.
-- [ ] **Passo 2:** conferir `BUILD_ID` local contra o do container por `ssh`
+- [x] **Passo 1:** build local, deploy pelo `scripts/deploy-railway.sh`.
+- [x] **Passo 2:** conferir `BUILD_ID` local contra o do container por `ssh`
       (hash de chunk não serve — armadilha 9).
 - [ ] **Passo 3:** com uma conta real **de assinante**, confirmar em produção:
       catálogo sem cadeado, aula paga abre, progresso grava.
