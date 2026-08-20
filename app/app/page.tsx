@@ -11,7 +11,8 @@ import {
   buscarConcluidas,
   buscarCurso,
   buscarUltimaAula,
-  temAcesso as verificarAcesso,
+  direitosDoAluno,
+  ehAssinante,
 } from "@/lib/plataforma/dados";
 import { derivarProgresso, proximaAula } from "@/lib/plataforma/progresso";
 import type { Aula, Curso } from "@/lib/plataforma/tipos";
@@ -25,13 +26,15 @@ function Trilho({
   titulo,
   cursos,
   info,
-  temAcesso,
+  direitos,
   esmaecido = false,
 }: {
   titulo: string;
   cursos: Curso[];
   info: Map<string, InfoCurso>;
-  temAcesso: boolean;
+  /** IDs dos cursos a que este aluno tem direito. Cada card decide o próprio
+   *  cadeado — até 2026-08-20 era um booleano só para o trilho inteiro. */
+  direitos: Set<string>;
   esmaecido?: boolean;
 }) {
   if (cursos.length === 0) return null;
@@ -44,7 +47,7 @@ function Trilho({
       <div className={`trilho mt-5 ${esmaecido ? "opacity-60" : ""}`}>
         {cursos.map((curso) => (
           <div key={curso.id} className="w-[220px] sm:w-[240px]">
-            <CardCurso curso={curso} pct={info.get(curso.slug)?.pct ?? 0} temAcesso={temAcesso} />
+            <CardCurso curso={curso} pct={info.get(curso.slug)?.pct ?? 0} liberado={direitos.has(curso.id)} />
           </div>
         ))}
       </div>
@@ -133,10 +136,19 @@ export default async function Painel() {
   if (!sessao?.user?.id) redirect("/app/entrar");
   const userId = sessao.user.id;
 
-  const [catalogo, concluidas, temAcesso, destino, ultima] = await Promise.all([
+  /* DUAS perguntas diferentes, de propósito (2026-08-20):
+     - `direitos`: a que cursos este aluno tem direito → decide o cadeado de
+       CADA card.
+     - `assinante`: relação comercial → decide o banner "Assine para acessar"
+       do topo.
+     Confundir as duas aqui faz o banner sumir para quem tem acesso a um curso
+     por contrato B2B mas não assina — pessoa certa, mensagem errada.
+     As duas entram no mesmo Promise.all: nenhuma ida a mais ao banco em série. */
+  const [catalogo, concluidas, direitos, assinante, destino, ultima] = await Promise.all([
     buscarCatalogo(),
     buscarConcluidas(userId),
-    verificarAcesso(userId),
+    direitosDoAluno(userId),
+    ehAssinante(userId),
     destinoCta(),
     buscarUltimaAula(userId),
   ]);
@@ -187,7 +199,7 @@ export default async function Painel() {
     <div>
       <h1 className="sr-only">{plataforma.shell.meusCursos}</h1>
 
-      {!temAcesso ? (
+      {!assinante ? (
         <section className="mb-10 flex flex-col items-start gap-4 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-fg">{t.seloAssine}</p>
           <a
@@ -278,10 +290,10 @@ export default async function Painel() {
         </section>
       )}
 
-      <Trilho titulo={t.emAndamento} cursos={emAndamento} info={info} temAcesso={temAcesso} />
-      <Trilho titulo={t.formacoes} cursos={formacoes} info={info} temAcesso={temAcesso} />
-      <Trilho titulo={t.concluidos} cursos={concluidos} info={info} temAcesso={temAcesso} />
-      <Trilho titulo={t.emGravacao} cursos={emGravacao} info={info} temAcesso={temAcesso} esmaecido />
+      <Trilho titulo={t.emAndamento} cursos={emAndamento} info={info} direitos={direitos} />
+      <Trilho titulo={t.formacoes} cursos={formacoes} info={info} direitos={direitos} />
+      <Trilho titulo={t.concluidos} cursos={concluidos} info={info} direitos={direitos} />
+      <Trilho titulo={t.emGravacao} cursos={emGravacao} info={info} direitos={direitos} esmaecido />
     </div>
   );
 }

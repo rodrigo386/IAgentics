@@ -31,10 +31,15 @@ function AnelProgresso({ pct }: { pct: number }) {
   );
 }
 
-/** Card do catálogo: capa 3:4, nível + carga horária, título. Sem assinatura,
- *  mostra o selo "Assine para acessar" mas o card continua clicável — quem
- *  vende é a página do curso, não o painel. */
-export function CardCurso({ curso, pct, temAcesso }: { curso: Curso; pct: number; temAcesso: boolean }) {
+/** Card do catálogo: capa 3:4, nível + carga horária, título. Sem direito a
+ *  ESTE curso, mostra o selo "Assine para acessar" mas o card continua
+ *  clicável — quem vende é a página do curso, não o painel.
+ *
+ *  `liberado` é por curso desde 2026-08-20 (antes era um booleano global para
+ *  todos os cards). O nome mudou junto com a semântica de propósito: um
+ *  `temAcesso` que na verdade vale só para este card seria armadilha para quem
+ *  ler depois. */
+export function CardCurso({ curso, pct, liberado }: { curso: Curso; pct: number; liberado: boolean }) {
   return (
     <Link
       href={`/app/curso/${curso.slug}`}
@@ -50,7 +55,7 @@ export function CardCurso({ curso, pct, temAcesso }: { curso: Curso; pct: number
           style={{ objectPosition: "center top" }}
           className="object-cover"
         />
-        {!temAcesso ? (
+        {!liberado ? (
           <span className="absolute right-3 top-3 rounded-control bg-brand-ink/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-brand-paper">
             {plataforma.painel.seloAssine}
           </span>
