@@ -176,6 +176,11 @@ export const nav = {
     { label: "Academy", href: "/academy" },
     { label: "Cursos", href: "/cursos" },
     { label: "Spend Lab", href: "/spend-lab" },
+    /* Entrou junto com a primeira publicação (2026-08-20). Fica por último de
+       propósito: os quatro anteriores são produto, artigo é o que sustenta a
+       visita — vem depois do que a pessoa veio procurar. Este array alimenta o
+       menu E o rodapé. */
+    { label: "Artigos", href: "/artigos" },
   ],
 } as const;
 
@@ -967,6 +972,42 @@ export const contact = {
 
 export const footer = {
   note: "Agentes de IA para Compras e Gestão de Gastos.",
+} as const;
+
+/* ---------------------------------------------------------------------------
+   ARTIGOS
+
+   O corpo de cada artigo NÃO mora aqui — mora em `content/artigos/*.md`, e a
+   regra de "toda string visível em content.ts" continua valendo para o que ela
+   sempre cobriu: a copy da interface. Texto longo autoral é outra categoria de
+   conteúdo, tem ciclo de revisão próprio e ganha diff legível em arquivo
+   separado.
+
+   O que está aqui é a moldura: título da listagem, rótulos e estado vazio.
+--------------------------------------------------------------------------- */
+
+export const artigos = {
+  meta: {
+    titulo: "Artigos",
+    descricao:
+      "Textos sobre IA aplicada a Compras: processo, análise de gastos, governança e o que funciona na prática.",
+  },
+  hero: {
+    eyebrow: "IAgentics",
+    titulo: "Artigos",
+    lead: "O que aprendemos implantando IA em Compras — processo, análise de gastos e governança, sem promessa que não se sustenta.",
+  },
+  rotulos: {
+    /* "3 min de leitura" — o número vem calculado do próprio texto. */
+    leitura: "min de leitura",
+    por: "por",
+    voltar: "Todos os artigos",
+    publicadoEm: "Publicado em",
+  },
+  /* A listagem só é linkada quando existe artigo publicado, então este texto
+     é rede de segurança: se alguém chegar por URL direta antes da primeira
+     publicação, encontra uma frase honesta em vez de uma página em branco. */
+  vazio: "Ainda não há artigos publicados. Em breve.",
 } as const;
 
 /**

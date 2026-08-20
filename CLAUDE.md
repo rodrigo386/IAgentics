@@ -12,13 +12,18 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 
 ## Mapa de rotas
 
-- Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/certificados/[codigo]`. `/planos` redireciona 308 para `/cursos`; **`/certificados` sem código é 404** (não existe índice).
+- Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/privacidade`, `/artigos`, `/artigos/[slug]`, `/certificados/[codigo]`. `/planos` redireciona 308 para `/cursos`; **`/certificados` sem código é 404** (não existe índice).
 - Aluno: `/app` (entrar, criar-conta, curso, conta, assinar, confirmar-email, recuperar-senha, redefinir-senha)
 - Admin: `/admin` (alunos, conteudo, configuracoes, metricas-csv)
 
 ## Convenções que valem sempre
 
-- **Toda string visível vive em `lib/content.ts`** (+ `content-plataforma.ts`, `content-admin.ts`), copiada verbatim do deck `IAgentics_Clientes_V2.pptx`. Nunca hardcodar copy em componente.
+- **Toda string visível vive em `lib/content.ts`** (+ `content-plataforma.ts`, `content-admin.ts`), copiada verbatim do deck `IAgentics_Clientes_V2.pptx`. Nunca hardcodar copy em componente. **Exceção deliberada: o corpo dos artigos** mora em `content/artigos/*.md` — a regra cobre copy de interface, não texto longo autoral, que tem ciclo de revisão próprio e ganha diff legível em arquivo separado. A moldura da listagem (`artigos` em `content.ts`) segue a regra.
+- **Artigos**: Markdown com frontmatter em `content/artigos/`, lidos no build por `lib/artigos.ts` (`server-only`, usa `node:fs`). Decisão do Rodrigo em 2026-08-20: **sem editor no admin**, ele escreve pelo repositório. Markdown puro, não MDX — os textos são prosa e não precisam de componente React; MDX só somaria toolchain a um build que já tem armadilha demais.
+  - **`status: "publicado"` é o portão.** Todo artigo nasce `rascunho`; rascunho não aparece na listagem, não entra no sitemap e responde **404** por URL direta (`dynamicParams = false`). Publicar é trocar uma palavra.
+  - `/artigos` só entra no sitemap quando existe ao menos um publicado — listagem vazia anunciada ao Google é rastreamento gasto à toa.
+  - O link no menu **não** foi adicionado ainda, de propósito: entra junto com a primeira publicação.
+  - `slug` do frontmatter tem que ser igual ao nome do arquivo, e a validação completa do frontmatter roda em `lib/artigos.test.ts` para **todos** os arquivos, inclusive rascunhos — o build só valida os publicados, então o teste é quem avisa cedo.
 - **"Nexo" em caixa mista nas strings** — em caps o leitor de tela soletra N-E-X-O. Peso visual vem da tipografia, não de maiúsculas.
 - Datas relativas viram absolutas em docs; commits em pt-BR no padrão `feat:`/`fix:`.
 

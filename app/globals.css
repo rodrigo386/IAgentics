@@ -1377,3 +1377,218 @@
     animation: aula-conquista-entra 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   CORPO DE ARTIGO
+
+   Markdown renderizado não passa por className — as tags nascem do parser —,
+   então a tipografia do texto longo tem que vir daqui.
+
+   Tudo por token semântico (DESIGN.md §5): nenhum hex, nenhuma cor fora da
+   rampa. Acento só onde é permitido — link usa `--accent-text`, que resolve
+   por tema com contraste AA nos dois; violeta puro como texto reprova
+   (2.54:1) e está proibido.
+--------------------------------------------------------------------------- */
+
+.artigo-corpo {
+  color: var(--fg-muted);
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+/* Medida de leitura: ~62ch é o que o resto do site usa em texto corrido.
+   Tabela e citação escapam da medida (regras adiante) porque precisam de
+   largura. */
+.artigo-corpo > * {
+  max-width: 62ch;
+}
+
+.artigo-corpo > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Hierarquia. O h2 ganha fio acima porque o site separa seção por hairline,
+   não por caixa (DESIGN.md §7). */
+/* Sem `max-width` estreito aqui de propósito: o h2 carrega o fio de seção, e
+   fio que para antes do fim da coluna de texto lê como erro de layout, não
+   como escolha. O comprimento da linha é controlado por `text-wrap: balance`. */
+.artigo-corpo h2 {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line-strong);
+  color: var(--fg);
+  font-size: 1.875rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.artigo-corpo h3 {
+  max-width: 40ch;
+  margin-top: 2.5rem;
+  color: var(--fg);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* Negrito puxa o texto para o `fg` cheio: é o recurso de ênfase do artigo, e
+   ênfase que não muda o contraste não é ênfase. */
+.artigo-corpo strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.artigo-corpo em {
+  font-style: italic;
+}
+
+.artigo-corpo a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 200ms;
+}
+
+.artigo-corpo a:hover {
+  opacity: 0.75;
+}
+
+.artigo-corpo ul,
+.artigo-corpo ol {
+  padding-left: 1.25rem;
+}
+
+.artigo-corpo ul {
+  list-style: disc;
+}
+
+.artigo-corpo ol {
+  list-style: decimal;
+}
+
+.artigo-corpo li + li {
+  margin-top: 0.625rem;
+}
+
+.artigo-corpo li::marker {
+  color: var(--fg-subtle);
+}
+
+/* Citação: as falas de cliente são o que dá autoridade a estes textos, então
+   elas saem do cinza do corpo e vão para o `fg`. Fio à esquerda em
+   `line-strong`, não em violeta — a trava de cor só sanciona borda acentuada
+   como indicador de ESTADO (DESIGN.md §1), e citação não é estado. */
+.artigo-corpo blockquote {
+  max-width: 56ch;
+  margin-top: 2rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--line-strong);
+  color: var(--fg);
+  font-style: italic;
+}
+
+.artigo-corpo blockquote p {
+  margin-top: 0.75rem;
+}
+
+.artigo-corpo blockquote p:first-child {
+  margin-top: 0;
+}
+
+/* Tabela. O wrapper vem do renderer em lib/artigos.ts, não daqui: sem ele,
+   tabela larga empurra a página inteira em horizontal no celular — e o
+   checklist do DESIGN.md §9 proíbe overflow horizontal. */
+.artigo-tabela {
+  max-width: 100%;
+  margin-top: 2rem;
+  overflow-x: auto;
+  border-top: 1px solid var(--line-strong);
+}
+
+.artigo-corpo table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  /* Algarismo alinhado em coluna (DESIGN.md §3). */
+  font-variant-numeric: tabular-nums;
+}
+
+.artigo-corpo th {
+  padding: 0.875rem 1rem 0.875rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.artigo-corpo td {
+  padding: 0.875rem 1rem 0.875rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.artigo-corpo tr > *:last-child {
+  padding-right: 0;
+}
+
+/* Piso de largura nas colunas de valor. Sem isto, a coluna de rótulo (texto
+   longo) come a largura e um valor curto como "50 min" quebra em duas linhas —
+   que é o jeito mais rápido de fazer uma tabela de números parecer amadora.
+   Célula com texto longo continua expandindo normalmente. */
+.artigo-corpo th + th,
+.artigo-corpo td + td {
+  min-width: 8ch;
+}
+
+/* Superfícies em raio 0 (DESIGN.md §2). */
+.artigo-corpo code {
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-surface);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.artigo-corpo pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1.25rem;
+  border-radius: var(--radius-surface);
+  background: var(--surface);
+}
+
+.artigo-corpo pre code {
+  padding: 0;
+  background: none;
+}
+
+.artigo-corpo hr {
+  margin-top: 3.5rem;
+  border: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+/* O bloco final de cada artigo (assinatura, CTA, fontes) vem depois de um
+   `---`. Fica menor e mais discreto que o corpo: é nota de rodapé, não
+   continuação do argumento. */
+.artigo-corpo hr ~ p,
+.artigo-corpo hr ~ ul {
+  font-size: 1rem;
+  color: var(--fg-subtle);
+}
+
+.artigo-corpo img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-surface);
+}
