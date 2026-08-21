@@ -2,7 +2,19 @@ import { randomUUID } from "node:crypto";
 import { eq, like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
-import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
+import {
+  contratoCursos,
+  contratoMembros,
+  contratos,
+  courses,
+  empresas,
+  lessonMedia,
+  lessonProgress,
+  lessons,
+  modules,
+  subscriptions,
+  users,
+} from "@/lib/db/schema";
 import {
   buscarAssinatura,
   buscarCatalogo,
@@ -187,9 +199,67 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
   afterAll(async () => {
     // cascade em modules/lessons/lesson_media (via courses) e em
     // subscriptions/lesson_progress (via users) cuida do resto.
+    // empresas cascateia em contratos → contrato_cursos/contrato_membros.
+    await db.delete(empresas).where(like(empresas.nome, `${prefixo}%`));
     await db.delete(courses).where(like(courses.slug, `${prefixo}%`));
     await db.delete(users).where(like(users.email, `${prefixo}%`));
   });
+
+  /**
+   * Monta um cenário de contrato B2B completo e devolve o que os testes
+   * precisam manipular. Cada chamada cria a PRÓPRIA empresa, contrato e
+   * usuário — sem estado compartilhado entre testes, que é o que faz suíte de
+   * integração falhar por ordem de execução.
+   *
+   * `fimEm` tem default de um ano à frente; passar `null` explicitamente é o
+   * caso "não expira".
+   */
+  let contadorArranjo = 0;
+  async function arranjoContrato(opcoes: {
+    cursos: string[];
+    inicioEm?: Date;
+    fimEm?: Date | null;
+    assinatura?: "ativa" | "manual";
+  }) {
+    const n = ++contadorArranjo;
+    const email = `${prefixo}-b2b-${n}@teste.invalido`;
+
+    const [usuario] = await db
+      .insert(users)
+      .values({ nome: `Membro B2B ${n}`, email, senhaHash: "x" })
+      .returning({ id: users.id });
+    if (opcoes.assinatura) {
+      await db.insert(subscriptions).values({ userId: usuario.id, status: opcoes.assinatura });
+    }
+
+    const [empresa] = await db
+      .insert(empresas)
+      .values({ nome: `${prefixo}-empresa-${n}` })
+      .returning({ id: empresas.id });
+
+    const umAnoAFrente = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+    const [contrato] = await db
+      .insert(contratos)
+      .values({
+        empresaId: empresa.id,
+        valor: "10000.00",
+        vagas: 10,
+        inicioEm: opcoes.inicioEm ?? new Date("2020-01-01T00:00:00Z"),
+        fimEm: opcoes.fimEm === undefined ? umAnoAFrente : opcoes.fimEm,
+      })
+      .returning({ id: contratos.id });
+
+    if (opcoes.cursos.length) {
+      await db.insert(contratoCursos).values(opcoes.cursos.map((courseId) => ({ contratoId: contrato.id, courseId })));
+    }
+
+    const [membro] = await db
+      .insert(contratoMembros)
+      .values({ contratoId: contrato.id, email, userId: usuario.id })
+      .returning({ id: contratoMembros.id });
+
+    return { userId: usuario.id, contratoId: contrato.id, membroId: membro.id, email };
+  }
 
   it("mídia de aula gratuita sai para usuário sem assinatura", async () => {
     const midia = await buscarMidia(userSemAssinatura.id, aulaGratuita.id);
@@ -295,6 +365,85 @@ describe.skipIf(!process.env.DATABASE_URL)("autorização da camada de dados", (
     expect(await ehAssinante(userSemAssinatura.id)).toBe(false);
     expect(await ehAssinante(userCanceladaRecente.id)).toBe(false);
     expect(await ehAssinante(userPendente.id)).toBe(false);
+  });
+
+  /* -------------------------------------------------------------------------
+     CONTRATO B2B COMO SEGUNDA FONTE DE DIREITO (etapa 2, 2026-08-20)
+
+     O contrato soma à assinatura em UNIÃO. A asserção mais importante deste
+     bloco é "fim do contrato não derruba assinatura própria" — foi essa
+     armadilha, encontrada ao ler subscriptions, que obrigou a etapa 1 inteira
+     a existir antes de qualquer coisa de B2B.
+
+     Spec: docs/superpowers/specs/2026-08-20-contrato-b2b-design.md
+  ------------------------------------------------------------------------- */
+
+  it("contrato vigente dá direito EXATAMENTE aos cursos do contrato", async () => {
+    const { userId } = await arranjoContrato({ cursos: [cursoPublicadoId] });
+    const direitos = await direitosDoAluno(userId);
+    expect([...direitos]).toEqual([cursoPublicadoId]);
+    expect(await podeAcessarCurso(userId, cursoPublicadoId)).toBe(true);
+  });
+
+  it("contrato vencido não dá direito nenhum", async () => {
+    const { userId } = await arranjoContrato({
+      cursos: [cursoPublicadoId],
+      inicioEm: new Date("2020-01-01T00:00:00Z"),
+      fimEm: new Date("2020-06-01T00:00:00Z"),
+    });
+    expect((await direitosDoAluno(userId)).size).toBe(0);
+  });
+
+  it("contrato sem fimEm não expira", async () => {
+    const { userId } = await arranjoContrato({ cursos: [cursoPublicadoId], fimEm: null });
+    expect((await direitosDoAluno(userId)).has(cursoPublicadoId)).toBe(true);
+  });
+
+  it("curso despublicado não sai, mesmo dentro do contrato", async () => {
+    const { userId } = await arranjoContrato({ cursos: [cursoPublicadoId, cursoOcultoId] });
+    const direitos = await direitosDoAluno(userId);
+    expect(direitos.has(cursoPublicadoId)).toBe(true);
+    expect(direitos.has(cursoOcultoId)).toBe(false);
+  });
+
+  it("membro removido perde o direito", async () => {
+    const { userId, membroId } = await arranjoContrato({ cursos: [cursoPublicadoId] });
+    await db.update(contratoMembros).set({ removidoEm: new Date() }).where(eq(contratoMembros.id, membroId));
+    expect((await direitosDoAluno(userId)).size).toBe(0);
+  });
+
+  /* A prova que justifica a etapa 1. subscriptions é append-only e o acesso
+     costumava sair da LINHA MAIS RECENTE; se o direito ainda funcionasse
+     assim, o fim de um contrato de grupo apagaria a assinatura que a pessoa
+     paga do próprio bolso. */
+  it("fim do contrato NÃO derruba a assinatura própria do aluno", async () => {
+    const { userId } = await arranjoContrato({
+      cursos: [cursoPublicadoId],
+      inicioEm: new Date("2020-01-01T00:00:00Z"),
+      fimEm: new Date("2020-06-01T00:00:00Z"),
+      assinatura: "ativa",
+    });
+    const direitos = await direitosDoAluno(userId);
+    const publicados = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
+    expect([...direitos].sort()).toEqual(publicados.map((c) => c.id).sort());
+  });
+
+  it("assinante + contrato = união, sem duplicar", async () => {
+    const { userId } = await arranjoContrato({ cursos: [cursoPublicadoId], assinatura: "manual" });
+    const direitos = await direitosDoAluno(userId);
+    const publicados = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
+    expect(direitos.size).toBe(publicados.length);
+    expect(direitos.has(cursoPublicadoId)).toBe(true);
+  });
+
+  /* Regressão do I1 por OUTRA porta: até a etapa 2, contaAtiva era checada
+     dentro de ehAssinante. Com o contrato como segunda fonte, uma conta
+     desativada com contrato vigente manteria acesso — por isso contaAtiva
+     subiu para o topo de direitosDoAluno. */
+  it("conta desativada não tem direito nem por contrato vigente", async () => {
+    const { userId } = await arranjoContrato({ cursos: [cursoPublicadoId] });
+    await db.update(users).set({ ativo: false }).where(eq(users.id, userId));
+    expect((await direitosDoAluno(userId)).size).toBe(0);
   });
 
   it("mídia de curso não publicado não sai nem para assinante", async () => {

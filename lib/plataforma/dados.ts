@@ -1,7 +1,18 @@
 import "server-only"; // build falha se um componente client importar isto
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, gt, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { courses, lessonMedia, lessonProgress, lessons, modules, subscriptions, users } from "@/lib/db/schema";
+import {
+  contratoCursos,
+  contratoMembros,
+  contratos,
+  courses,
+  lessonMedia,
+  lessonProgress,
+  lessons,
+  modules,
+  subscriptions,
+  users,
+} from "@/lib/db/schema";
 import { emitirSeConcluido } from "./certificados";
 import type { Aula, Curso, CursoComIndice, Modulo, StatusAssinatura } from "./tipos";
 
@@ -127,27 +138,68 @@ export async function ehAssinante(userId: string): Promise<boolean> {
  * consultas fixas, independentemente de quantos cursos existirem.
  */
 export async function direitosDoAluno(userId: string): Promise<Set<string>> {
-  if (!(await ehAssinante(userId))) return new Set();
-  const linhas = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
-  return new Set(linhas.map((l) => l.id));
+  /* contaAtiva no TOPO, não mais só dentro de ehAssinante (etapa 2): com o
+     contrato como segunda fonte, uma conta desativada com contrato vigente
+     manteria acesso — o buraco do I1 reaberto por outra porta. */
+  if (!(await contaAtiva(userId))) return new Set();
+
+  const direitos = new Set<string>();
+
+  if (await ehAssinante(userId)) {
+    const publicados = await db.select({ id: courses.id }).from(courses).where(eq(courses.publicado, true));
+    for (const c of publicados) direitos.add(c.id);
+  }
+
+  for (const id of await cursosPorContrato(userId)) direitos.add(id);
+
+  return direitos;
+}
+
+/**
+ * Vigente: já começou E (não tem fim OU o fim ainda não chegou).
+ *
+ * Vencimento é DERIVADO, não agendado — não existe job noturno cortando
+ * acesso. No instante em que `fimEm` passa, a consulta para de devolver
+ * aqueles cursos. Nada para sincronizar e nada que possa falhar em silêncio às
+ * 3 da manhã deixando cliente com acesso que já venceu.
+ */
+function contratoVigente() {
+  return and(lte(contratos.inicioEm, sql`now()`), or(isNull(contratos.fimEm), gt(contratos.fimEm, sql`now()`)));
+}
+
+/** Cursos liberados por contrato B2B vigente. Só curso PUBLICADO — contrato
+ *  não ressuscita curso despublicado. */
+async function cursosPorContrato(userId: string): Promise<string[]> {
+  const linhas = await db
+    .select({ id: contratoCursos.courseId })
+    .from(contratoMembros)
+    .innerJoin(contratos, eq(contratos.id, contratoMembros.contratoId))
+    .innerJoin(contratoCursos, eq(contratoCursos.contratoId, contratos.id))
+    .innerJoin(courses, eq(courses.id, contratoCursos.courseId))
+    .where(
+      and(
+        eq(contratoMembros.userId, userId),
+        isNull(contratoMembros.removidoEm),
+        eq(courses.publicado, true),
+        contratoVigente(),
+      ),
+    );
+  return linhas.map((l) => l.id);
 }
 
 /**
  * A pergunta de ACESSO, para um curso só.
  *
- * Confere `publicado` por conta própria de propósito, mesmo quando a chamadora
- * já filtrou: precisa estar correta chamada isoladamente. O custo é uma busca
- * por chave primária; o risco de depender do filtro alheio é conteúdo não
- * publicado vazar quando alguém reordenar as guardas.
+ * Delega a `direitosDoAluno` de propósito (etapa 2): a união de fontes passa a
+ * existir em UM lugar só. Duas implementações da mesma regra divergem na
+ * primeira mudança — e aqui divergir significa alguém assistindo ao que não
+ * comprou, ou sendo barrado do que comprou.
+ *
+ * Custa uma consulta a mais que a versão dedicada, num caminho que já faz
+ * outras. É troca deliberada: correção acima de micro-otimização.
  */
 export async function podeAcessarCurso(userId: string, courseId: string): Promise<boolean> {
-  if (!(await ehAssinante(userId))) return false;
-  const [linha] = await db
-    .select({ id: courses.id })
-    .from(courses)
-    .where(and(eq(courses.id, courseId), eq(courses.publicado, true)))
-    .limit(1);
-  return Boolean(linha);
+  return (await direitosDoAluno(userId)).has(courseId);
 }
 
 export async function buscarCatalogo(): Promise<Curso[]> {
