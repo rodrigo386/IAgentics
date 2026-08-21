@@ -50,6 +50,13 @@
       "when": 1786792897044,
       "tag": "0006_ambitious_newton_destine",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1787275691654,
+      "tag": "0007_contrato_b2b",
+      "breakpoints": true
     }
   ]
 }
