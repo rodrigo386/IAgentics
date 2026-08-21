@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ChartLine,
   UsersThree,
+  Buildings,
   FolderOpen,
   GearSix,
   ArrowSquareOut,
@@ -17,6 +18,7 @@ import { admin } from "@/lib/content-admin";
 const links = [
   { href: "/admin", label: admin.shell.metricas, Icone: ChartLine },
   { href: "/admin/alunos", label: admin.shell.alunos, Icone: UsersThree },
+  { href: "/admin/empresas", label: admin.shell.empresas, Icone: Buildings },
   { href: "/admin/conteudo", label: admin.shell.conteudo, Icone: FolderOpen },
   { href: "/admin/configuracoes", label: admin.shell.configuracoes, Icone: GearSix },
 ];

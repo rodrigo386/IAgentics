@@ -6,6 +6,7 @@ export const admin = {
     recolher: "Recolher menu",
     expandir: "Expandir menu",
     alunos: "Alunos",
+    empresas: "Empresas",
     conteudo: "Conteúdo",
     configuracoes: "Configurações",
     verComoAluno: "Ver como aluno",
@@ -71,6 +72,82 @@ export const admin = {
       aguardeReenvio: "Aguarde 60 segundos entre links.",
     },
   },
+  /* ---------------------------------------------------------------------
+     VENDA B2B EM GRUPO (etapa 2, 2026-08-20)
+
+     A empresa contrata acesso a cursos específicos para N pessoas, cobrado
+     fora do Asaas. A importação registra E-MAILS AUTORIZADOS, não contas:
+     não há canal de e-mail em produção para convidar ninguém, então a
+     pessoa cria a própria conta e o vínculo acontece no cadastro.
+  --------------------------------------------------------------------- */
+  empresas: {
+    titulo: "Empresas",
+    lead: "Contratos de acesso em grupo, cobrados fora do Asaas.",
+    vazio: "Nenhuma empresa cadastrada ainda.",
+    novaEmpresa: "Nova empresa",
+    colunas: {
+      empresa: "Empresa",
+      contratos: "Contratos",
+      vagas: "Vagas",
+      vigencia: "Vigência",
+    },
+    form: {
+      nome: "Nome da empresa",
+      cnpj: "CNPJ (opcional)",
+      salvar: "Criar empresa",
+    },
+    contrato: {
+      titulo: "Contrato",
+      novo: "Novo contrato",
+      valor: "Valor do contrato (R$)",
+      vagas: "Vagas",
+      inicio: "Início",
+      fim: "Fim (deixe vazio para não expirar)",
+      cursos: "Cursos liberados",
+      semCursos: "Nenhum curso selecionado — o contrato não libera nada.",
+      salvar: "Criar contrato",
+      semFim: "Não expira",
+      vigente: "Vigente",
+      vencido: "Vencido",
+      aIniciar: "Ainda não começou",
+      vagasUsadas: "vagas usadas",
+    },
+    membros: {
+      titulo: "Membros",
+      vazio: "Nenhum membro ainda. Importe a lista de e-mails abaixo.",
+      colunaEmail: "E-mail",
+      colunaSituacao: "Situação",
+      comConta: "Conta criada",
+      aguardando: "Aguardando cadastro",
+      removido: "Removido",
+      remover: "Remover",
+      readmitir: "Readmitir",
+    },
+    importar: {
+      titulo: "Importar lista de e-mails",
+      lead: "Cole os e-mails separados por vírgula, ponto-e-vírgula ou quebra de linha. Nada é gravado antes de você confirmar.",
+      campo: "E-mails",
+      previa: "Ver o que será importado",
+      confirmar: "Confirmar importação",
+      resumoNovos: "serão pré-autorizados (ainda sem conta)",
+      resumoComConta: "já têm conta e recebem acesso na hora",
+      resumoJaNoContrato: "já estão no contrato (ignorados)",
+      resumoInvalidos: "não parecem e-mail e foram recusados",
+      naoCabe: "A lista não cabe nas vagas disponíveis. Nada foi importado.",
+    },
+    mensagens: {
+      empresaCriada: "Empresa criada.",
+      contratoCriado: "Contrato criado.",
+      importados: "Lista importada.",
+      membroRemovido: "Membro removido. O acesso dele cessou.",
+      membroReadmitido: "Membro readmitido.",
+      semVagas: "Não há vagas suficientes. Nada foi alterado.",
+      listaVazia: "Nenhum e-mail válido na lista.",
+      naoEncontrado: "Registro não encontrado.",
+      dadosInvalidos: "Confira os dados do formulário.",
+    },
+  },
+
   conteudo: {
     titulo: "Conteúdo",
     vazio: "Nenhum curso cadastrado ainda.",

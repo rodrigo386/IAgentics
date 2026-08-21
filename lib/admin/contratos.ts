@@ -259,3 +259,135 @@ export async function readmitirMembro(membroId: string): Promise<ResultadoSimple
   await db.update(contratoMembros).set({ removidoEm: null }).where(eq(contratoMembros.id, membroId));
   return { ok: true };
 }
+
+/* --------------------------------------------------------------------------
+   LEITURA PARA AS TELAS
+-------------------------------------------------------------------------- */
+
+export type EmpresaLinha = {
+  id: string;
+  nome: string;
+  cnpj: string | null;
+  contratos: number;
+  vagas: number;
+  vagasUsadas: number;
+};
+
+export async function listarEmpresas(): Promise<EmpresaLinha[]> {
+  /* Uma consulta com agregação, não N+1: a lista pode ter dezenas de empresas
+     e o pool do Postgres já é disputado (armadilha 8). O count de membros usa
+     DISTINCT porque o join com contratos multiplicaria linhas. */
+  const linhas = await db
+    .select({
+      id: empresas.id,
+      nome: empresas.nome,
+      cnpj: empresas.cnpj,
+      contratos: sql<number>`count(distinct ${contratos.id})`,
+      vagas: sql<number>`coalesce(sum(distinct ${contratos.vagas}), 0)`,
+      vagasUsadas: sql<number>`count(distinct ${contratoMembros.id}) filter (where ${contratoMembros.removidoEm} is null)`,
+    })
+    .from(empresas)
+    .leftJoin(contratos, eq(contratos.empresaId, empresas.id))
+    .leftJoin(contratoMembros, eq(contratoMembros.contratoId, contratos.id))
+    .groupBy(empresas.id, empresas.nome, empresas.cnpj)
+    .orderBy(empresas.nome);
+
+  return linhas.map((l) => ({
+    ...l,
+    contratos: Number(l.contratos),
+    vagas: Number(l.vagas),
+    vagasUsadas: Number(l.vagasUsadas),
+  }));
+}
+
+export type MembroLinha = {
+  id: string;
+  email: string;
+  temConta: boolean;
+  removidoEm: Date | null;
+};
+
+export type ContratoDetalhe = {
+  id: string;
+  valor: string;
+  vagas: number;
+  vagasUsadas: number;
+  inicioEm: Date;
+  fimEm: Date | null;
+  cursos: { id: string; titulo: string }[];
+  membros: MembroLinha[];
+};
+
+export type EmpresaDetalhe = {
+  id: string;
+  nome: string;
+  cnpj: string | null;
+  contratos: ContratoDetalhe[];
+};
+
+export async function buscarEmpresa(id: string): Promise<EmpresaDetalhe | null> {
+  const [empresa] = await db.select().from(empresas).where(eq(empresas.id, id)).limit(1);
+  if (!empresa) return null;
+
+  const linhasContratos = await db
+    .select()
+    .from(contratos)
+    .where(eq(contratos.empresaId, id))
+    .orderBy(contratos.createdAt);
+
+  const ids = linhasContratos.map((c) => c.id);
+  const cursosDeTodos = ids.length
+    ? await db
+        .select({ contratoId: contratoCursos.contratoId, id: courses.id, titulo: courses.titulo })
+        .from(contratoCursos)
+        .innerJoin(courses, eq(courses.id, contratoCursos.courseId))
+        .where(inArray(contratoCursos.contratoId, ids))
+        .orderBy(courses.ordem)
+    : [];
+  const membrosDeTodos = ids.length
+    ? await db
+        .select({
+          contratoId: contratoMembros.contratoId,
+          id: contratoMembros.id,
+          email: contratoMembros.email,
+          userId: contratoMembros.userId,
+          removidoEm: contratoMembros.removidoEm,
+        })
+        .from(contratoMembros)
+        .where(inArray(contratoMembros.contratoId, ids))
+        .orderBy(contratoMembros.email)
+    : [];
+
+  return {
+    id: empresa.id,
+    nome: empresa.nome,
+    cnpj: empresa.cnpj,
+    contratos: linhasContratos.map((c) => {
+      const membros = membrosDeTodos.filter((m) => m.contratoId === c.id);
+      return {
+        id: c.id,
+        valor: c.valor,
+        vagas: c.vagas,
+        vagasUsadas: membros.filter((m) => !m.removidoEm).length,
+        inicioEm: c.inicioEm,
+        fimEm: c.fimEm,
+        cursos: cursosDeTodos.filter((x) => x.contratoId === c.id).map(({ id, titulo }) => ({ id, titulo })),
+        membros: membros.map((m) => ({
+          id: m.id,
+          email: m.email,
+          temConta: m.userId !== null,
+          removidoEm: m.removidoEm,
+        })),
+      };
+    }),
+  };
+}
+
+/** Vigência para exibição — mesma regra do direito (lib/plataforma/dados.ts),
+ *  derivada da data, sem estado guardado. */
+export function situacaoDoContrato(c: { inicioEm: Date; fimEm: Date | null }): "vigente" | "vencido" | "aIniciar" {
+  const agora = Date.now();
+  if (c.inicioEm.getTime() > agora) return "aIniciar";
+  if (c.fimEm && c.fimEm.getTime() <= agora) return "vencido";
+  return "vigente";
+}
