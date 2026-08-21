@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { criarUsuario, emitirEEnviarConfirmacao } from "@/lib/plataforma/usuarios";
+import { vincularMembroPorEmail } from "@/lib/plataforma/vinculo";
 import { plataforma } from "@/lib/content-plataforma";
 
 export async function criarContaAction(_: unknown, formData: FormData):
@@ -20,6 +21,19 @@ export async function criarContaAction(_: unknown, formData: FormData):
   const resultado = await criarUsuario({ nome, email, senha });
   if (!resultado.ok) {
     return { erro: plataforma.criarConta.emailExiste };
+  }
+
+  /* Venda B2B: se este e-mail foi pré-autorizado num contrato, a conta recém
+     criada assume a vaga agora. Fica AQUI, e não dentro de criarUsuario, de
+     propósito — aquela função é usada por script e por teste, e efeito
+     colateral escondido nela surpreende quem a chamar depois.
+     Antes do redirect da confirmação para valer nos DOIS caminhos (com e sem
+     canal de e-mail ativo). Nunca derruba o cadastro: a conta já existe, e
+     ficar sem acesso é recuperável pelo /admin — perder o cadastro, não. */
+  try {
+    await vincularMembroPorEmail(resultado.id, email);
+  } catch (e) {
+    console.error("[criar-conta] vínculo de contrato falhou", { userId: resultado.id });
   }
 
   if (resultado.confirmacaoPendente) {
