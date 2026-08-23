@@ -152,7 +152,9 @@ async function AbaApp({ periodo, cursoParam }: { periodo: Periodo; cursoParam?: 
   const funil = cursoAtual ? await funilDoCurso(cursoAtual) : null;
   const maximoFunil = funil?.length ? Math.max(...funil.map((f) => f.concluiram), 1) : 1;
   const maiorTopAula = Math.max(...analitico.topAulas.map((a) => a.concluidas), 1);
-  const mrrFormatado = analitico.mrr.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const emReais = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const mrrFormatado = emReais(analitico.mrr);
+  const receitaUnicaFormatada = emReais(analitico.receitaB2B.valorSemVigencia);
 
   const saude: { rotulo: string; valor: number }[] = [
     { rotulo: t.saude.ativas, valor: analitico.status.ativas },
@@ -175,6 +177,18 @@ async function AbaApp({ periodo, cursoParam }: { periodo: Periodo; cursoParam?: 
         />
         <CartaoKpi rotulo={t.cartoes.assinaturasAtivas} valor={dadosResumo.assinaturasAtivas} indice={3} />
         <CartaoKpi rotulo={t.cartoes.mrr} valor={mrrFormatado} nota={t.mrrNota} indice={4} />
+        {/* Só aparece quando existe: cartão zerado permanente é ruído. Fica
+            SEPARADO do MRR de propósito — contrato sem data de fim é receita
+            única, e somá-la ao recorrente inflaria o número com dinheiro que
+            não volta no mês seguinte. */}
+        {analitico.receitaB2B.contratosSemVigencia > 0 ? (
+          <CartaoKpi
+            rotulo={t.receitaUnicaB2B}
+            valor={receitaUnicaFormatada}
+            nota={t.receitaUnicaB2BNota}
+            indice={4}
+          />
+        ) : null}
         <CartaoKpi rotulo={t.cartoes.alunosAtivos} valor={dadosResumo.alunosAtivos} indice={5} />
         <CartaoKpi
           rotulo={t.cartoes.aulasConcluidas}

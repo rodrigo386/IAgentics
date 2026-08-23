@@ -273,7 +273,12 @@ export const admin = {
     },
     /* MRR = assinaturas com status ativa × R$ 39,90 (VALOR_MENSAL). Cortesia
        (manual) fica fora e aparece na saúde das assinaturas. */
-    mrrNota: "assinaturas ativas × R$ 39,90",
+    /* A nota mudou na etapa 4: o MRR deixou de ser só Asaas. Contrato B2B sem
+       data de fim NÃO entra — é pagamento único, não recorrente — e aparece à
+       parte, para o cartão não prometer repetição que não existe. */
+    mrrNota: "assinaturas × R$ 39,90 + contratos B2B com vigência",
+    receitaUnicaB2B: "Receita B2B única",
+    receitaUnicaB2BNota: "contratos vigentes sem data de fim — não recorrente",
     saude: {
       titulo: "Saúde das assinaturas",
       ativas: "Ativas",

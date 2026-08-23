@@ -3,6 +3,7 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { certificates, courses, lessonProgress, lessons, modules, pageViews, subscriptions, users } from "@/lib/db/schema";
 import { VALOR_MENSAL } from "@/lib/asaas/cliente";
+import { receitaB2B, type ReceitaB2B } from "./receita-b2b";
 
 export type Periodo = "7" | "30" | "90" | "tudo";
 
@@ -324,7 +325,10 @@ export type AnaliticoApp = {
   certificadosAnterior: number | null;
   novasAssinaturas: number;
   status: { ativas: number; manuais: number; pendentes: number; inadimplentes: number; canceladas: number };
+  /** Assinaturas Asaas + parcela mensal dos contratos B2B com vigência. */
   mrr: number;
+  /** Aberto por origem: o painel precisa mostrar de onde vem o recorrente. */
+  receitaB2B: ReceitaB2B;
   pendentesConfirmacao: number;
   catalogo: { cursos: number; aulas: number; horas: number };
   topAulas: { aula: string; curso: string; concluidas: number }[];
@@ -423,6 +427,7 @@ export async function analiticoDoApp(p: Periodo): Promise<AnaliticoApp> {
 
   const porStatus = new Map(statusResultado.rows.map((l) => [l.status, l.n]));
   const ativas = porStatus.get("ativa") ?? 0;
+  const b2b = await receitaB2B();
 
   return {
     novosAnterior: novosAnteriorLinha ? (novosAnteriorLinha[0]?.n ?? 0) : null,
@@ -437,9 +442,13 @@ export async function analiticoDoApp(p: Periodo): Promise<AnaliticoApp> {
       inadimplentes: porStatus.get("inadimplente") ?? 0,
       canceladas: porStatus.get("cancelada") ?? 0,
     },
-    // Só assinatura paga entra no MRR; cortesia (manual) fica de fora e
-    // aparece separada na saúde das assinaturas.
-    mrr: ativas * VALOR_MENSAL,
+    /* Só assinatura paga entra no MRR; cortesia (manual) fica de fora e
+       aparece separada na saúde das assinaturas.
+       Etapa 4 (2026-08-22): soma a parcela mensal dos contratos B2B VIGENTES
+       COM data de fim. Contrato sem vigência NÃO entra aqui — não é receita
+       recorrente, é pagamento único, e vem separado em receitaB2B. */
+    mrr: ativas * VALOR_MENSAL + b2b.mrr,
+    receitaB2B: b2b,
     pendentesConfirmacao: pendentesLinha[0]?.n ?? 0,
     catalogo: {
       cursos: cursosLinha[0]?.n ?? 0,
