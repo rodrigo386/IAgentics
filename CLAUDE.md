@@ -5,6 +5,7 @@ Site institucional + plataforma de cursos (IAgentics Academy) + admin. Tudo em *
 - **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` já resolve com CNAME para o apex e proxy do Cloudflare ligado (certificado válido), mas **falta a Redirect Rule 301** — hoje responde 404 com `x-railway-fallback`.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
+- **Roadmap do produto**: ver [docs/ROADMAP-ACADEMY.md](docs/ROADMAP-ACADEMY.md) — ordem aprovada, e o registro do que ficou de fora com o motivo. Antes de propor feature nova para a Academy, conferir se ela já foi descartada lá.
 
 ## Stack
 
