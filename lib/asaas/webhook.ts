@@ -1,9 +1,15 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
+import { avisarInadimplencia } from "@/lib/plataforma/avisos";
 
-export type EventoAsaas = { event?: string; payment?: { subscription?: string; dueDate?: string } };
+export type EventoAsaas = {
+  event?: string;
+  /** `invoiceUrl` é a fatura em aberto no Asaas — vai no e-mail de cobrança
+   *  vencida para poupar um clique. Opcional: nem todo evento a traz. */
+  payment?: { subscription?: string; dueDate?: string; invoiceUrl?: string };
+};
 
 /** dueDate (YYYY-MM-DD) + 1 mês, com clamp de fim de mês, meio-dia UTC. O
  *  meio-dia UTC evita o vencimento "voltar um dia" ao formatar em fuso
@@ -39,7 +45,22 @@ export async function processarEventoAsaas(evento: EventoAsaas): Promise<void> {
     const fim = fimDoPeriodoPago(evento.payment?.dueDate);
     await db.update(subscriptions).set({ status: "ativa", currentPeriodEnd: fim }).where(alvo);
   } else if (event === "PAYMENT_OVERDUE") {
-    await db.update(subscriptions).set({ status: "inadimplente" }).where(alvo);
+    /* O `ne` no WHERE é o que torna o AVISO idempotente, não o UPDATE — este
+       já era. O Asaas reentrega evento, e sem esta cláusula cada reentrega
+       casaria a linha de novo e mandaria mais um e-mail dizendo ao aluno que
+       ele está devendo. Com ela, a segunda entrega não muda linha nenhuma,
+       `returning` volta vazio, e nenhum e-mail sai.
+
+       O aviso fica DEPOIS do update de propósito: se o e-mail explodisse antes,
+       a rota devolveria 500, o Asaas reentregaria, e a assinatura ficaria
+       "ativa" no banco com o pagamento vencido. avisarInadimplencia() também
+       nunca lança, então o 500 não acontece por essa via. */
+    const [mudou] = await db
+      .update(subscriptions)
+      .set({ status: "inadimplente" })
+      .where(and(alvo, ne(subscriptions.status, "inadimplente")))
+      .returning({ userId: subscriptions.userId });
+    if (mudou) await avisarInadimplencia(mudou.userId, evento.payment?.invoiceUrl);
   } else if (event === "PAYMENT_REFUNDED" || event === "PAYMENT_DELETED") {
     await db.update(subscriptions).set({ status: "cancelada" }).where(alvo);
   }

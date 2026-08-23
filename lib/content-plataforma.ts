@@ -10,6 +10,11 @@ export const plataforma = {
     /* Só aparece para admin, conferido no banco (nunca no JWT). */
     administracao: "Administração",
     sair: "Sair",
+    /* Faixa de inadimplência (Onda 1.2). Diz a verdade: inadimplente NÃO é
+       assinante em ehAssinante(), então o acesso está suspenso de fato —
+       prometer que continua liberado seria mentira verificável em um clique. */
+    faixaInadimplente: "A cobrança da sua assinatura não foi concluída, e o acesso aos cursos está suspenso.",
+    faixaInadimplenteCta: "Regularizar",
   },
   entrar: {
     titulo: "Entrar na plataforma",
@@ -198,6 +203,19 @@ export const plataforma = {
       corpo: "Recebemos um pedido para redefinir sua senha. O link vale por 60 minutos e funciona uma única vez.",
       botao: "Redefinir senha",
       ignorar: "Se você não pediu a redefinição, ignore esta mensagem — sua senha continua a mesma.",
+    },
+    /* Cobrança vencida (Onda 1.2). Mesma verdade da faixa: o acesso está
+       suspenso. O tom evita culpa porque a causa quase sempre é cartão vencido
+       ou limite temporário — cobrar o aluno de algo que o banco fez perde o
+       cliente que a mensagem existe para recuperar. */
+    inadimplencia: {
+      assunto: "Não conseguimos concluir sua cobrança — IAgentics Academy",
+      saudacao: (nome: string) => `Olá, ${nome}.`,
+      corpo:
+        "A cobrança da sua assinatura não foi concluída, e por isso o acesso aos cursos está suspenso. Na maioria das vezes é um cartão vencido ou um limite temporário.",
+      corpoDois: "Assim que o pagamento for confirmado, seu acesso e todo o seu progresso voltam automaticamente.",
+      botao: "Regularizar pagamento",
+      ignorar: "Se você já pagou nas últimas horas, pode ignorar esta mensagem.",
     },
     copie: "Ou copie e cole:",
     rodape: "IAgentics Academy · iagentics.com.br",

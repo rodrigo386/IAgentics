@@ -93,6 +93,21 @@ export function emailDeConfirmacao(nome: string, url: string) {
   };
 }
 
+/** Cobrança vencida (Onda 1.2). Diferente dos outros dois, a `url` aqui não é
+ *  um token de uso único: é a fatura do Asaas (ou /app/assinar como reserva),
+ *  então pode ser reenviada e continuar valendo. */
+export function emailDeInadimplencia(nome: string, url: string) {
+  const t = plataforma.emails.inadimplencia;
+  const nomeEscapado = escapeHtml(nome);
+  return {
+    assunto: t.assunto,
+    texto: `${t.saudacao(nome)}\n\n${t.corpo}\n\n${t.corpoDois}\n\n${url}\n\n${t.ignorar}\n\n${plataforma.emails.rodape}`,
+    html: moldura(
+      `<p>${t.saudacao(nomeEscapado)}</p><p>${t.corpo}</p><p>${t.corpoDois}</p>${botao(url, t.botao)}<p style="font-size:12px;color:#5a6070">${t.ignorar}</p>`,
+    ),
+  };
+}
+
 export function emailDeReset(nome: string, url: string) {
   const t = plataforma.emails.reset;
   const nomeEscapado = escapeHtml(nome);

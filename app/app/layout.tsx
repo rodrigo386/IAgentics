@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { auth } from "@/auth";
 import { ShellHeader } from "@/components/plataforma/ShellHeader";
 import { lerConfiguracao } from "@/lib/admin/configuracoes";
+import { plataforma } from "@/lib/content-plataforma";
+import { buscarAssinatura } from "@/lib/plataforma/dados";
 
 export const metadata: Metadata = {
   title: { default: "Plataforma", template: "%s · IAgentics Academy" },
@@ -24,11 +28,30 @@ export const dynamic = "force-dynamic";
 export default async function LayoutPlataforma({ children }: { children: React.ReactNode }) {
   // Faixa opcional definida em /admin/configuracoes ("aviso_topo") — vazia,
   // padrão, não renderiza nada aqui.
-  const aviso = await lerConfiguracao("aviso_topo");
+  const [aviso, sessao] = await Promise.all([lerConfiguracao("aviso_topo"), auth()]);
+
+  /* Faixa de cobrança vencida (Onda 1.2): fica no LAYOUT porque o aluno
+     inadimplente não tem mais motivo para abrir o painel — sem acesso, ele
+     pode cair direto em /app/conta ou numa aula pelo histórico, e a faixa
+     precisa alcançá-lo em qualquer uma. Uma query a mais por request no /app,
+     em paralelo com a do aviso; /app/entrar e /app/criar-conta não têm sessão
+     e não pagam nem isso. */
+  const inadimplente = sessao?.user?.id ? (await buscarAssinatura(sessao.user.id)) === "inadimplente" : false;
 
   return (
     <div className="min-h-dvh bg-bg text-fg">
       <ShellHeader />
+      {inadimplente ? (
+        <div
+          role="status"
+          className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line bg-brand-ink px-5 py-3 text-center text-sm text-brand-paper sm:px-8"
+        >
+          <span>{plataforma.shell.faixaInadimplente}</span>
+          <Link href="/app/assinar" className="font-medium text-brand-paper underline underline-offset-4">
+            {plataforma.shell.faixaInadimplenteCta}
+          </Link>
+        </div>
+      ) : null}
       {aviso ? (
         <div role="status" className="border-b border-line bg-surface px-5 py-3 text-center text-sm text-fg sm:px-8">
           {aviso}
