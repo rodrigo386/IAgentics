@@ -1,5 +1,20 @@
 # Roadmap — IAgentics Academy
 
+> **ENCERRADO EM 2026-08-28.** A IAgentics fechou parceria com o Pecege e a
+> plataforma de ensino própria foi desligada: rotas `/app`, `/admin` e
+> `/certificados` removidas, 14 tabelas dropadas (migração `0008`), `/cursos`
+> convertida em aviso de "em breve". A educação online passa a ser construída
+> em conjunto com o Pecege, em plataforma separada.
+>
+> **O documento fica no repositório de propósito.** Ele não descreve mais o
+> que vamos construir, mas descreve **por que decidimos o que decidimos** — os
+> cinco vazamentos do funil, o raciocínio de MRR versus receita única, o que
+> foi descartado e sob que condição voltaria. Se a plataforma conjunta pedir
+> essas mesmas escolhas, isto aqui poupa a discussão inteira.
+>
+> Só a Onda 1.2 (recuperação de inadimplência) chegou a ser construída, e foi
+> removida junto com o resto.
+
 Levantamento feito em 2026-08-23, cruzando o que a plataforma entrega hoje
 (`app/app/`, `lib/plataforma/`, `lib/admin/`) com o que o mercado de área de
 membros e de LMS corporativo considera obrigatório.

@@ -1,5 +1,4 @@
-import { site, contact, cursos as textoCursos } from "@/lib/content";
-import type { Curso } from "@/lib/plataforma/tipos";
+import { site, contact } from "@/lib/content";
 
 /**
  * Dados estruturados (JSON-LD) e o inventário de rotas do sitemap.
@@ -95,8 +94,7 @@ export function ogDoArtigo(caminho: string, title: string, description: string, 
  * Recebe o artigo por parâmetro em vez de ler do disco porque este módulo é
  * puro de propósito — `lib/artigos.ts` importa `node:fs` e é `server-only`;
  * se seo.ts o importasse, qualquer componente de cliente que tocasse em
- * `ogDaPagina` arrastaria `fs` para o bundle. Mesmo motivo de
- * `cursosJsonLd` receber a lista pronta.
+ * `ogDaPagina` arrastaria `fs` para o bundle.
  */
 export function artigoJsonLd(artigo: {
   slug: string;
@@ -170,55 +168,5 @@ export function academyJsonLd() {
     name: `${site.name} Academy`,
     url: absoluta("/academy"),
     parentOrganization: { "@type": "Organization", name: site.name, url: site.url },
-  };
-}
-
-/**
- * O catálogo da /cursos como lista de Course.
- *
- * `precoMensal` chega de fora (VALOR_MENSAL, em lib/asaas/cliente.ts) porque
- * aquele módulo é `server-only`: importá-lo aqui contaminaria este arquivo e
- * o tiraria do alcance dos testes.
- *
- * Sem `url` por curso de propósito: não existe página pública por curso (o
- * conteúdo vive atrás do login), e apontar todos para /cursos criaria itens
- * duplicados no índice.
- */
-export function cursosJsonLd(lista: Curso[], precoMensal: number) {
-  const oferta = {
-    "@type": "Offer",
-    price: precoMensal.toFixed(2),
-    priceCurrency: "BRL",
-    category: "Subscription",
-    availability: "https://schema.org/InStock",
-    url: absoluta("/cursos"),
-  };
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: textoCursos.catalogo.titulo,
-    numberOfItems: lista.length,
-    itemListElement: lista.map((curso, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Course",
-        name: curso.titulo,
-        description: curso.descricao,
-        educationalLevel: curso.nivel,
-        inLanguage: "pt-BR",
-        isAccessibleForFree: false,
-        provider: { "@type": "Organization", name: `${site.name} Academy`, url: site.url },
-        offers: oferta,
-        hasCourseInstance: {
-          "@type": "CourseInstance",
-          courseMode: "online",
-          /* ISO 8601: 12 horas -> "PT12H". A carga vem do banco, então o
-             número no dado estruturado é o mesmo que a página exibe. */
-          courseWorkload: `PT${curso.cargaHoras}H`,
-        },
-      },
-    })),
   };
 }

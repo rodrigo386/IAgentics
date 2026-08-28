@@ -57,6 +57,13 @@
       "when": 1787275691654,
       "tag": "0007_contrato_b2b",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1787925024457,
+      "tag": "0008_desliga_plataforma",
+      "breakpoints": true
     }
   ]
 }

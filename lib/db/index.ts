@@ -3,10 +3,9 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
-/* max subiu de 5 para 20 em 2026-08-15: o painel analítico dispara ~16
- * consultas em paralelo por render e, com 5 conexões, uma server action que
- * chegasse na fila atrás delas estourava timeout de forma intermitente
- * (actions do /admin/alunos penduradas no e2e foram o sintoma). O Postgres do
- * Railway aguenta isso com folga (max_connections ~100, um container só). */
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 20 });
+/* max voltou de 20 para 5 em 2026-08-28. O 20 existia por causa do painel
+ * analítico do /admin, que disparava ~16 consultas em paralelo por render;
+ * esse painel saiu com a plataforma. O único consumidor do banco agora é o
+ * beacon de visitas — uma escrita curta por página, sem paralelismo. */
+const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5 });
 export const db = drizzle(pool, { schema });

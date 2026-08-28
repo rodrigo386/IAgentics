@@ -414,17 +414,21 @@ export const academy = {
    */
   platform: {
     label: "Plataforma online de cursos",
-    body: "Formações no seu ritmo, conteúdo exclusivo IAgentics.",
+    /* Reescrito em 2026-08-28: a plataforma própria saiu e o que vem é a
+       construída com o Pecege. O quadro continua na home porque a educação
+       segue sendo oferta da casa — o que mudou é com quem. */
+    body: "Em construção com o Pecege: formações de IA aplicada a Compras e Gestão de Gastos.",
     /**
      * O botão da plataforma. `appHref: null` = ainda sem endereço, e o botão
      * aparece desabilitado com a marca "em breve" em vez de fingir que leva a
      * algum lugar. Preencha aqui e ele vira link de verdade sozinho - mesmo
      * padrão dos quadros de mídia do /nexo.
      */
-    appLabel: "Acessar plataforma",
-    /* Aponta para a landing /cursos (pedido de 2026-08-14): quem ainda não é
-       aluno entende o que é a plataforma antes do login; quem já é entra por
-       "Já sou aluno" lá. */
+    appLabel: "Saiba mais",
+    /* Aponta para /cursos, que desde 2026-08-28 é o aviso de "em breve" da
+       parceria. O rótulo deixou de ser "Acessar plataforma" no mesmo dia: não
+       há mais plataforma para acessar, e botão que promete o que não entrega
+       gasta a confiança de quem clica. */
     appHref: "/cursos" as string | null,
   },
 
@@ -1202,73 +1206,47 @@ export const nexoPage = {
     ],
   },
 } as const;
-
 /**
- * Landing pública da plataforma de cursos (/cursos) - a página que deixa claro
- * o que é o /app antes do login. Escolha de layout do Rodrigo em 2026-08-14:
- * "Prateleira viva" (as capas reais do catálogo são o hero).
+ * /cursos - página de "Em breve" da parceria IAgentics + Pecege (2026-08-28).
  *
- * O catálogo em si vem do banco (buscarCatalogo) - aqui mora só a moldura de
- * texto. O funil é o MESMO contrato do antigo /planos: anônimo vai para
- * criar-conta com ?voltar=/app/assinar; logado sem acesso vai direto para
- * /app/assinar; assinante vê "Ir para a plataforma".
+ * Esta rota ERA a landing da plataforma própria, que foi desligada quando a
+ * parceria fechou. A URL foi mantida de propósito: ela tinha acabado de ser
+ * indexada pelo Google, e transformar a visita em expectativa preserva a
+ * autoridade que 404 jogaria fora.
+ *
+ * O layout do hero é o mesmo de antes ("prateleira viva"), por pedido do
+ * Rodrigo - trocam o texto e os logos, somem os botões. As capas da estante
+ * agora são estáticas (CAPAS_ESTANTE): o catálogo saiu do banco junto com a
+ * plataforma, e a estante é decorativa de qualquer forma.
  */
 export const cursos = {
   meta: {
-    titulo: "Cursos",
+    titulo: "Em breve — IAgentics e Pecege",
     descricao:
-      "Plataforma de cursos IAgentics Academy: formações de IA aplicada, progresso salvo e certificado, por R$ 39,90 por mês.",
+      "A IAgentics e o Pecege estão construindo juntos uma nova plataforma de educação online, com formações de IA aplicada a Compras e Gestão de Gastos.",
   },
   hero: {
-    /* O wordmark branco da plataforma (o mesmo do shell do /app), invertido
-       no tema claro - a landing carrega a marca Academy, não só a frase. */
-    logoAlt: "IAgentics Academy",
-    headline: "Todo o acervo, no seu ritmo.",
-    /* 18 palavras - teto de 20 do hero. */
+    logoIagenticsAlt: "IAgentics",
+    logoPecegeAlt: "Pecege",
+    /* "e" em texto, não "+": o símbolo vira ruído em leitor de tela e a
+       parceria se lê melhor por extenso. */
+    eyebrow: "IAgentics e Pecege",
+    headline: "Em breve.",
     subtext:
-      "Formações de IA aplicada, gravadas por quem implementa. Aulas novas toda semana, progresso salvo e certificado ao concluir.",
-    jaSouAluno: "Já sou aluno",
-    estanteAlt: "Capas das formações disponíveis na plataforma",
+      "Estamos construindo, junto com o Pecege, uma nova plataforma de educação online. As formações de IA aplicada a Compras e Gestão de Gastos estarão lá.",
+    estanteAlt: "Capas das formações de IA aplicada da IAgentics",
   },
-  catalogo: {
-    titulo: "O que está dentro",
-    lead: "Formações completas, do fundamento à imersão. O catálogo cresce com a assinatura ativa.",
-    horas: "h",
-  },
-  comoFunciona: {
-    titulo: "Como funciona",
-    passos: [
-      {
-        nome: "Crie sua conta",
-        texto: "Cadastro em um minuto e assinatura no cartão ou Pix, sem fidelidade.",
-      },
-      {
-        nome: "Assista onde quiser",
-        texto: "Player próprio, sem distração, no computador ou no celular.",
-      },
-      {
-        nome: "Avance no seu ritmo",
-        texto: "O progresso fica salvo por aula. Pare e volte de onde parou.",
-      },
-      {
-        nome: "Receba o certificado",
-        texto: "Cada formação concluída emite certificado com verificação online.",
-      },
-    ],
-  },
-  assinatura: {
-    eyebrow: "Assinatura",
-    titulo: "Todo o acervo da Academy. Um plano só.",
-    preco: "R$ 39,90",
-    porMes: "/mês",
-    beneficios: [
-      "Acesso total a todas as formações do catálogo, incluindo as que chegarem",
-      "Aulas novas conforme saem da gravação",
-      "Assista no seu ritmo, de qualquer dispositivo",
-      "Cancele quando quiser, sem multa",
-    ],
-    cta: "Assinar agora",
-    jaAssinante: "Você já é assinante.",
-    irParaPlataforma: "Ir para a plataforma",
-  },
+  /* Estática desde o desligamento da plataforma: a estante é decorativa
+     (aria-hidden) e não vale manter uma consulta ao banco viva só por ela. */
+  capasEstante: [
+    "/academy/copilot-course.jpg",
+    "/academy/design-thinking-ia-course.jpg",
+    "/academy/fundamentos-ia-negocios.jpg",
+    "/academy/imersao-analise-dados-ia.jpg",
+    "/academy/imersao-assistentes-ia.jpg",
+    "/academy/lean-thinking-course.jpg",
+    "/academy/neurociencia-produtividade-course.jpg",
+    "/academy/spend-management-course.jpg",
+    "/academy/transformacao-digital-course.jpg",
+  ],
 } as const;

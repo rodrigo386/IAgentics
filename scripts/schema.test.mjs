@@ -16,7 +16,10 @@ await cli.connect();
 const { rows } = await cli.query(
   `select table_name from information_schema.tables where table_schema='public' order by 1`);
 const nomes = rows.map(r => r.table_name);
-const esperadas = ["courses","lesson_media","lesson_progress","lessons","modules","subscriptions","users"];
+/* Sobrou uma tabela: a plataforma de ensino foi desligada em 2026-08-28
+   (migração 0008) e page_views é a única que não era dela — ela é do beacon
+   do site público. Ver lib/db/schema.ts. */
+const esperadas = ["page_views"];
 const faltam = esperadas.filter(t => !nomes.includes(t));
 // constraint de status também é contrato:
 const { rows: chk } = await cli.query(

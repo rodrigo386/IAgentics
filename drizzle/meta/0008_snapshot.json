@@ -1,0 +1,59 @@
+{
+  "id": "738a70c7-e394-4e86-a773-e43c55bd6934",
+  "prevId": "94a4d574-9a0d-437c-8265-2af818413ad8",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.page_views": {
+      "name": "page_views",
+      "schema": "",
+      "columns": {
+        "dia": {
+          "name": "dia",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rota": {
+          "name": "rota",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "visitas": {
+          "name": "visitas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "page_views_dia_rota_pk": {
+          "name": "page_views_dia_rota_pk",
+          "columns": [
+            "dia",
+            "rota"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
