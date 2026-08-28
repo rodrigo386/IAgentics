@@ -31,25 +31,35 @@ export function CursosEstante() {
     <section className="overflow-hidden border-b border-line">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:py-24">
         <div className="lg:col-span-5">
-          {/* Os dois logos lado a lado, separados por um filete: a parceria é
-              a notícia, então ela abre a página no lugar do wordmark antigo.
+          {/* As TRÊS marcas na abertura, e a ordem conta uma frase: quem
+              produz (IAgentics), com quem (Pecege) e onde vai estar
+              (Solution).
 
-              As duas marcas são inline e dimensionadas por LARGURA, cada uma
-              com sua proporção nativa (IAgentics 4,25:1, Solution 3:1) — as
-              larguras próximas dão peso visual equivalente sem esticar nada.
+              Cada uma é dimensionada pelo eixo que respeita sua proporção
+              nativa: IAgentics 4,25:1 e Solution 3:1 são horizontais e vão por
+              LARGURA; o Pecege é empilhado (1,86:1 — símbolo em cima, palavra
+              embaixo) e vai por ALTURA. Igualar altura nas três deixaria a
+              palavra "pecege" com um terço dela, ilegível; igualar largura
+              faria o Pecege dominar a linha. As medidas abaixo dão peso visual
+              equivalente às três.
 
-              Nenhuma das duas é <Image>, e pelo mesmo motivo: os dois arquivos
-              originais trazem o texto em branco, para fundo escuro, e sumiriam
-              no tema claro. O <Logo> aplica máscara CSS; o <LogoSolution> é o
-              SVG inline com currentColor no texto. */}
-          <div className="flex flex-wrap items-center gap-6">
-            {/* <Logo>, não <Image>: o lockup é um PNG BRANCO sobre transparência
-                e vira invisível no tema claro. O componente o aplica como
-                máscara CSS, então ele herda a cor do texto e funciona nos dois
-                temas — mesmo mecanismo do Nav. */}
-            <Logo label={t.hero.logoIagenticsAlt} className="w-[140px] sm:w-[156px]" />
-            <span aria-hidden="true" className="h-10 w-px bg-line-strong" />
-            <LogoSolution label={t.hero.logoSolutionAlt} className="w-[132px] sm:w-[148px]" />
+              IAgentics e Solution são inline (máscara CSS e SVG com
+              currentColor) porque os arquivos originais trazem o texto em
+              branco e sumiriam no tema claro. O do Pecege já é colorido e
+              funciona nos dois temas, então continua <Image>. */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-5 sm:gap-x-5">
+            <Logo label={t.hero.logoIagenticsAlt} className="w-[124px] sm:w-[136px]" />
+            <span aria-hidden="true" className="hidden h-9 w-px shrink-0 bg-line-strong sm:block" />
+            <Image
+              src="/partner-pecege.png"
+              alt={t.hero.logoPecegeAlt}
+              width={500}
+              height={269}
+              priority
+              className="h-12 w-auto sm:h-[52px]"
+            />
+            <span aria-hidden="true" className="hidden h-9 w-px shrink-0 bg-line-strong sm:block" />
+            <LogoSolution label={t.hero.logoSolutionAlt} className="w-[118px] sm:w-[130px]" />
           </div>
 
           <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted">{t.hero.eyebrow}</p>

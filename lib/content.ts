@@ -1227,10 +1227,15 @@ export const cursos = {
   },
   hero: {
     logoIagenticsAlt: "IAgentics",
+    logoPecegeAlt: "Pecege",
     logoSolutionAlt: "Solution",
-    /* "e" em texto, não "+": o símbolo vira ruído em leitor de tela e a
-       parceria se lê melhor por extenso. */
-    eyebrow: "IAgentics e Solution",
+    /* Três marcas na abertura, e a ordem conta uma frase: QUEM produz
+       (IAgentics), COM QUEM (Pecege) e ONDE vai estar (Solution). O eyebrow
+       nomeia só as duas organizações porque a parceria é entre elas — a
+       Solution é o destino, e quem diz isso é o h1.
+
+       "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
+    eyebrow: "IAgentics e Pecege",
     headline: "Em breve, na Solution.",
     /* O lastro citado é INSTITUCIONAL de propósito (Pecege, MBAs USP/Esalq) e
        não numérico. O site da Solution anunciava, em 2026-08-28, "mais de 70
