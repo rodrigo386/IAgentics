@@ -10,22 +10,24 @@ test("/planos continua redirecionando permanente para /cursos", async ({ page })
   await expect(page).toHaveURL("/cursos");
 });
 
-test("/cursos anuncia a parceria: dois logos, sem preço e sem nenhum CTA de assinatura", async ({ page }) => {
+test("/cursos anuncia a parceria: IAgentics e Solution, sem preço e sem nenhum CTA", async ({ page }) => {
   await page.goto("/cursos");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Em breve." })).toBeVisible();
+  /* Sem `exact`: o que precisa ser verdade é que o h1 anuncia "em breve" — a
+     redação exata é copy e muda sem que a página quebre. */
+  await expect(page.getByRole("heading", { level: 1, name: /em breve/i })).toBeVisible();
   /* Ancorado no <main>: o lockup da IAgentics aparece também no Nav e no
      rodapé, então contar ocorrências na página inteira seria frágil — quebraria
      a cada mudança de layout sem que a hero tivesse problema nenhum. O que
      importa aqui é que as DUAS marcas dividem o hero.
 
-     A IAgentics vem do componente <Logo> (máscara CSS: role=img + aria-label),
-     não de um <img alt>; o Pecege é <Image> de verdade. */
+     As duas marcas são inline (role=img + aria-label), não <img alt>: os
+     arquivos originais têm o texto em branco e sumiriam no tema claro. */
   const hero = page.locator("main");
   /* `exact` é obrigatório: sem ele o match é por substring e a própria
      estante casaria — o aria-label dela termina em "...da IAgentics". */
   await expect(hero.getByRole("img", { name: "IAgentics", exact: true })).toHaveCount(1);
-  await expect(hero.getByAltText("Pecege")).toBeVisible();
+  await expect(hero.getByRole("img", { name: "Solution", exact: true })).toBeVisible();
 
   /* As asserções que dão sentido ao spec: o funil antigo morreu inteiro. Se
      alguma dessas voltar a aparecer, é resto de plataforma vazando numa

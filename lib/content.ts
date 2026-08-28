@@ -1221,19 +1221,25 @@ export const nexoPage = {
  */
 export const cursos = {
   meta: {
-    titulo: "Em breve — IAgentics e Pecege",
+    titulo: "Em breve na Solution — IAgentics e Pecege",
     descricao:
-      "A IAgentics e o Pecege estão construindo juntos uma nova plataforma de educação online, com formações de IA aplicada a Compras e Gestão de Gastos.",
+      "As formações de IA aplicada a Compras e Gestão de Gastos da IAgentics passam a ser oferecidas na Solution, a plataforma de educação online do Pecege.",
   },
   hero: {
     logoIagenticsAlt: "IAgentics",
-    logoPecegeAlt: "Pecege",
+    logoSolutionAlt: "Solution",
     /* "e" em texto, não "+": o símbolo vira ruído em leitor de tela e a
        parceria se lê melhor por extenso. */
-    eyebrow: "IAgentics e Pecege",
-    headline: "Em breve.",
+    eyebrow: "IAgentics e Solution",
+    headline: "Em breve, na Solution.",
+    /* O lastro citado é INSTITUCIONAL de propósito (Pecege, MBAs USP/Esalq) e
+       não numérico. O site da Solution anunciava, em 2026-08-28, "mais de 70
+       cursos", "300 horas de aulas online" e "mais de 20 mil alunos" — números
+       fortes, mas de terceiro e que envelhecem sozinhos. Número desatualizado
+       no nosso site é problema nosso; a associação institucional não muda.
+       Se o Pecege confirmar os números, eles cabem aqui. */
     subtext:
-      "Estamos construindo, junto com o Pecege, uma nova plataforma de educação online. As formações de IA aplicada a Compras e Gestão de Gastos estarão lá.",
+      "As formações de IA aplicada a Compras e Gestão de Gastos da IAgentics passam a ser oferecidas na Solution — a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
     estanteAlt: "Capas das formações de IA aplicada da IAgentics",
   },
   /* Estática desde o desligamento da plataforma: a estante é decorativa

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
+import { LogoSolution } from "@/components/ui/LogoSolution";
 import { cursos as t } from "@/lib/content";
 
 /**
@@ -33,13 +34,14 @@ export function CursosEstante() {
           {/* Os dois logos lado a lado, separados por um filete: a parceria é
               a notícia, então ela abre a página no lugar do wordmark antigo.
 
-              As ALTURAS são deliberadamente diferentes, e isso não é descuido:
-              o lockup da IAgentics é horizontal (4,25:1) e o do Pecege é
-              empilhado (1,86:1 — símbolo em cima, palavra embaixo). Igualar a
-              altura dos dois deixaria a palavra "pecege" com cerca de um terço
-              dela, ilegível. Equilibramos pela massa visual, não pela altura: a
-              IAgentics é dimensionada pela largura (~140px, ~33px de altura) e
-              o Pecege pela altura (h-14, ~104px de largura). */}
+              As duas marcas são inline e dimensionadas por LARGURA, cada uma
+              com sua proporção nativa (IAgentics 4,25:1, Solution 3:1) — as
+              larguras próximas dão peso visual equivalente sem esticar nada.
+
+              Nenhuma das duas é <Image>, e pelo mesmo motivo: os dois arquivos
+              originais trazem o texto em branco, para fundo escuro, e sumiriam
+              no tema claro. O <Logo> aplica máscara CSS; o <LogoSolution> é o
+              SVG inline com currentColor no texto. */}
           <div className="flex flex-wrap items-center gap-6">
             {/* <Logo>, não <Image>: o lockup é um PNG BRANCO sobre transparência
                 e vira invisível no tema claro. O componente o aplica como
@@ -47,14 +49,7 @@ export function CursosEstante() {
                 temas — mesmo mecanismo do Nav. */}
             <Logo label={t.hero.logoIagenticsAlt} className="w-[140px] sm:w-[156px]" />
             <span aria-hidden="true" className="h-10 w-px bg-line-strong" />
-            <Image
-              src="/partner-pecege.png"
-              alt={t.hero.logoPecegeAlt}
-              width={500}
-              height={269}
-              priority
-              className="h-14 w-auto sm:h-16"
-            />
+            <LogoSolution label={t.hero.logoSolutionAlt} className="w-[132px] sm:w-[148px]" />
           </div>
 
           <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted">{t.hero.eyebrow}</p>
