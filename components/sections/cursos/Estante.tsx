@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Logo } from "@/components/ui/Logo";
 import { cursos as t } from "@/lib/content";
 
 /**
@@ -30,24 +31,29 @@ export function CursosEstante() {
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:py-24">
         <div className="lg:col-span-5">
           {/* Os dois logos lado a lado, separados por um filete: a parceria é
-              a notícia, então ela abre a página no lugar do wordmark antigo. */}
-          <div className="flex flex-wrap items-center gap-5">
-            <Image
-              src="/iagentics-lockup.png"
-              alt={t.hero.logoIagenticsAlt}
-              width={640}
-              height={160}
-              priority
-              className="h-9 w-auto sm:h-10"
-            />
-            <span aria-hidden="true" className="h-8 w-px bg-line-strong" />
+              a notícia, então ela abre a página no lugar do wordmark antigo.
+
+              As ALTURAS são deliberadamente diferentes, e isso não é descuido:
+              o lockup da IAgentics é horizontal (4,25:1) e o do Pecege é
+              empilhado (1,86:1 — símbolo em cima, palavra embaixo). Igualar a
+              altura dos dois deixaria a palavra "pecege" com cerca de um terço
+              dela, ilegível. Equilibramos pela massa visual, não pela altura: a
+              IAgentics é dimensionada pela largura (~140px, ~33px de altura) e
+              o Pecege pela altura (h-14, ~104px de largura). */}
+          <div className="flex flex-wrap items-center gap-6">
+            {/* <Logo>, não <Image>: o lockup é um PNG BRANCO sobre transparência
+                e vira invisível no tema claro. O componente o aplica como
+                máscara CSS, então ele herda a cor do texto e funciona nos dois
+                temas — mesmo mecanismo do Nav. */}
+            <Logo label={t.hero.logoIagenticsAlt} className="w-[140px] sm:w-[156px]" />
+            <span aria-hidden="true" className="h-10 w-px bg-line-strong" />
             <Image
               src="/partner-pecege.png"
               alt={t.hero.logoPecegeAlt}
-              width={640}
-              height={160}
+              width={500}
+              height={269}
               priority
-              className="h-9 w-auto sm:h-10"
+              className="h-14 w-auto sm:h-16"
             />
           </div>
 

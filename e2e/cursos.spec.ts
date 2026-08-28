@@ -14,8 +14,18 @@ test("/cursos anuncia a parceria: dois logos, sem preço e sem nenhum CTA de ass
   await page.goto("/cursos");
 
   await expect(page.getByRole("heading", { level: 1, name: "Em breve." })).toBeVisible();
-  await expect(page.getByAltText("IAgentics").first()).toBeVisible();
-  await expect(page.getByAltText("Pecege")).toBeVisible();
+  /* Ancorado no <main>: o lockup da IAgentics aparece também no Nav e no
+     rodapé, então contar ocorrências na página inteira seria frágil — quebraria
+     a cada mudança de layout sem que a hero tivesse problema nenhum. O que
+     importa aqui é que as DUAS marcas dividem o hero.
+
+     A IAgentics vem do componente <Logo> (máscara CSS: role=img + aria-label),
+     não de um <img alt>; o Pecege é <Image> de verdade. */
+  const hero = page.locator("main");
+  /* `exact` é obrigatório: sem ele o match é por substring e a própria
+     estante casaria — o aria-label dela termina em "...da IAgentics". */
+  await expect(hero.getByRole("img", { name: "IAgentics", exact: true })).toHaveCount(1);
+  await expect(hero.getByAltText("Pecege")).toBeVisible();
 
   /* As asserções que dão sentido ao spec: o funil antigo morreu inteiro. Se
      alguma dessas voltar a aparecer, é resto de plataforma vazando numa
