@@ -2,7 +2,7 @@
 
 Site institucional + plataforma de cursos (IAgentics Academy) + admin. Tudo em **pt-BR**.
 
-- **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` já resolve com CNAME para o apex e proxy do Cloudflare ligado (certificado válido), mas **falta a Redirect Rule 301** — hoje responde 404 com `x-railway-fallback`.
+- **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex, proxy do Cloudflare ligado e certificado válido: desde 2026-08-26 ele **serve o site em 200**, não dá mais erro. Mas **ainda falta a Redirect Rule 301**, então o site responde em dois endereços. Não é urgente porque o `canonical` de toda página aponta para o apex e o Google consolida por ele — é higiene, não emergência.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
 - **Roadmap do produto**: ver [docs/ROADMAP-ACADEMY.md](docs/ROADMAP-ACADEMY.md) — ordem aprovada, e o registro do que ficou de fora com o motivo. Antes de propor feature nova para a Academy, conferir se ela já foi descartada lá.
@@ -30,7 +30,7 @@ Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres · Auth.j
 
 ## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
 
-- **Endereço canônico é o apex** `https://iagentics.com.br` (`site.url`); o www redireciona 301 para ele.
+- **Endereço canônico é o apex** `https://iagentics.com.br` (`site.url`). O www **ainda não redireciona** (serve 200 igual, falta a Redirect Rule) — quem sustenta a consolidação hoje é o `canonical` de cada página, não o DNS.
 - **`canonical` e `openGraph` são declarados por página, nunca no layout** — metadata do Next é herdada: um valor no layout faz toda rota se declarar como sendo a home (o `og:url` estava exatamente assim até 2026-08-18). Use `ogDaPagina()` de `lib/seo.ts`.
 - **Dado estruturado sai de `lib/seo.ts`**, sempre derivado de `lib/content.ts` ou do catálogo do banco — JSON-LD que não bate com a página é penalizado. O componente `JsonLd` escapa `<` (título de curso é texto do admin: `</script>` fecharia a tag).
 - **Página nova pública?** Entra em `ROTAS_SITEMAP`. Página com dado pessoal (certificado tem nome de aluno) leva `robots: noindex` na própria página — nunca `Disallow` no robots.txt, que mataria a prévia do LinkedIn.
