@@ -64,6 +64,13 @@
       "when": 1787925024457,
       "tag": "0008_desliga_plataforma",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1787999682287,
+      "tag": "0009_lista_espera",
+      "breakpoints": true
     }
   ]
 }

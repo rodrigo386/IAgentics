@@ -43,13 +43,14 @@ export const naoEncontrada = {
  * Política de privacidade (/privacidade).
  *
  * ESTE TEXTO DESCREVE O QUE O CÓDIGO REALMENTE FAZ — foi escrito lendo o
- * schema do banco, o formulário de contato e o fluxo de assinatura, não um
- * modelo genérico. Se o comportamento mudar, o texto muda junto:
+ * schema do banco e os formulários do site, não um
+ * modelo genérico. Se o comportamento mudar, o texto muda junto — foi
+ * exatamente o que aconteceu em 2026-08-29, quando a plataforma de ensino saiu
+ * e a política ainda declarava senha, CPF e cobrança que já não existiam:
  *
- *   - `users` guarda nome, e-mail e senha em hash bcrypt (schema.ts)
- *   - CPF é validado e enviado ao Asaas, e NUNCA persiste (asaas/assinatura.ts)
+ *   - `lista_espera` guarda nome, e-mail e a data do consentimento (schema.ts)
+ *   - o formulário de contato não persiste: entrega por e-mail e acabou
  *   - `page_views` agrega dia + rota, sem cookie, IP ou identificador
- *   - `auth_tokens` guarda hash SHA-256, uso único
  *
  * A URL existe também por um motivo de campo: /privacidade era a segunda
  * página mais exibida do domínio no Google (19 impressões em 7 dias) e
@@ -59,19 +60,19 @@ export const privacidade = {
   meta: {
     titulo: "Política de Privacidade",
     descricao:
-      "Como a IAgentics trata dados pessoais no site, na plataforma de cursos e na cobrança de assinaturas, conforme a LGPD.",
+      "Como a IAgentics trata dados pessoais no site e na lista de espera do lançamento com o Pecege, conforme a LGPD.",
   },
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 19 de agosto de 2026",
+    atualizado: "Atualizada em 29 de agosto de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
     {
       titulo: "Quem é responsável pelos seus dados",
       paragrafos: [
-        "A controladora dos dados pessoais tratados neste site e na plataforma de cursos da IAgentics Academy é a IAgentics LTDA, inscrita no CNPJ sob o nº 56.920.339/0001-60, com sede na Rua Barão de Teffé, 160, conjunto 505, anexo V140, Jardim Ana Maria, Jundiaí/SP, CEP 13.208-760.",
+        "A controladora dos dados pessoais tratados neste site é a IAgentics LTDA, inscrita no CNPJ sob o nº 56.920.339/0001-60, com sede na Rua Barão de Teffé, 160, conjunto 505, anexo V140, Jardim Ana Maria, Jundiaí/SP, CEP 13.208-760.",
         "Qualquer dúvida ou pedido sobre seus dados pode ser enviado pelos canais no fim desta página.",
       ],
       itens: [],
@@ -88,24 +89,19 @@ export const privacidade = {
             "Nome, e-mail corporativo e a mensagem que você escreve. Servem para responder você, e chegam até nós por e-mail. Sem contato iniciado por você, não há coleta.",
         },
         {
-          termo: "Conta de aluno",
+          termo: "Lista de espera do lançamento",
           texto:
-            "Nome, e-mail e senha. A senha é guardada apenas como hash bcrypt — nem nós conseguimos lê-la. Registramos também seu progresso nas aulas e os certificados emitidos em seu nome.",
-        },
-        {
-          termo: "Assinatura e cobrança",
-          texto:
-            "O CPF é solicitado no momento de assinar, validado e enviado ao Asaas, nosso processador de pagamentos, para emitir a cobrança. Ele NÃO é gravado nos nossos servidores e não aparece em nossos registros técnicos. Guardamos apenas o identificador da assinatura no Asaas e a situação dela.",
+            "Nome e e-mail, informados por você no formulário de /cursos, e a data em que você autorizou o compartilhamento. Servem para avisar você do lançamento das formações na Solution e garantir o desconto prometido. Sem a autorização marcada, nada é gravado.",
         },
         {
           termo: "Medição de visitas do site",
           texto:
-            "Contamos quantas visitas cada página pública recebe por dia. Esse contador registra apenas a data e o endereço da página — sem cookie, sem endereço IP e sem qualquer identificador de pessoa. Ele não funciona nas áreas de aluno e de administração.",
+            "Contamos quantas visitas cada página pública recebe por dia. Esse contador registra apenas a data e o endereço da página — sem cookie, sem endereço IP e sem qualquer identificador de pessoa.",
         },
         {
           termo: "Google Analytics",
           texto:
-            "Usamos o Google Analytics nas páginas públicas para entender o uso do site. Ele grava cookies no seu navegador e trata dados conforme a política do Google. As áreas de aluno e de administração ficam fora dessa medição, de propósito.",
+            "Usamos o Google Analytics nas páginas públicas para entender o uso do site. Ele grava cookies no seu navegador e trata dados conforme a política do Google.",
         },
       ],
     },
@@ -115,8 +111,12 @@ export const privacidade = {
         "Compartilhamos dados apenas com os serviços necessários para o site funcionar, e apenas o que cada um precisa para cumprir sua função:",
       ],
       itens: [
-        { termo: "Asaas", texto: "Processamento de pagamentos da assinatura, incluindo emissão de cobrança por Pix e cartão." },
-        { termo: "Resend", texto: "Envio dos e-mails do site: mensagem de contato, confirmação de cadastro e redefinição de senha." },
+        {
+          termo: "Pecege e plataforma Solution",
+          texto:
+            "Se você entrou na lista de espera, seu nome e e-mail são compartilhados com o Pecege, responsável pela plataforma Solution, onde as formações serão oferecidas. É por causa desse compartilhamento que o formulário pede uma autorização explícita: sem ela marcada, não gravamos nem compartilhamos nada. A autorização pode ser revogada a qualquer momento pelos canais no fim desta página.",
+        },
+        { termo: "Resend", texto: "Envio dos e-mails do site: mensagem de contato e confirmação de inscrição na lista de espera." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
       ],
@@ -131,7 +131,7 @@ export const privacidade = {
     {
       titulo: "Como protegemos",
       paragrafos: [
-        "Senhas são guardadas em hash bcrypt, nunca em texto. Links de confirmação de e-mail e de redefinição de senha usam token de uso único, guardado como hash, com validade curta — e nunca aparecem em registros técnicos. Todo o tráfego do site é cifrado por HTTPS. O acesso administrativo é restrito e exige autenticação.",
+        "Todo o tráfego do site é cifrado por HTTPS. Os dados da lista de espera ficam em banco de acesso restrito, e o site não guarda senha alguma — não existe área de login. Endereços de e-mail não aparecem em registros técnicos.",
       ],
       itens: [],
     },
@@ -146,7 +146,7 @@ export const privacidade = {
     {
       titulo: "Cookies",
       paragrafos: [
-        "O site usa cookies em dois casos: os do Google Analytics, nas páginas públicas, e os necessários para manter você conectado na área do aluno. Você pode bloquear cookies nas configurações do seu navegador — os de medição sem prejuízo algum ao uso do site; os de sessão impedirão o login na plataforma.",
+        "O site usa cookies em um caso só: os do Google Analytics, nas páginas públicas. Não existe área de login e, portanto, nenhum cookie de sessão. Você pode bloquear cookies nas configurações do seu navegador, sem prejuízo algum ao uso do site.",
       ],
       itens: [],
     },
@@ -1236,16 +1236,38 @@ export const cursos = {
 
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
-    headline: "Em breve, na Solution.",
-    /* O lastro citado é INSTITUCIONAL de propósito (Pecege, MBAs USP/Esalq) e
-       não numérico. O site da Solution anunciava, em 2026-08-28, "mais de 70
-       cursos", "300 horas de aulas online" e "mais de 20 mil alunos" — números
-       fortes, mas de terceiro e que envelhecem sozinhos. Número desatualizado
-       no nosso site é problema nosso; a associação institucional não muda.
-       Se o Pecege confirmar os números, eles cabem aqui. */
+    headline: "Em breve",
+    /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
+       primeiro informa, o segundo posiciona. */
     subtext:
-      "As formações de IA aplicada a Compras e Gestão de Gastos da IAgentics passam a ser oferecidas na Solution — a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+      "As formações online da IAgentics serão disponibilizadas na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+    subtextDois: "Uma parceria que traz o melhor da IA com o melhor do mundo acadêmico para nossos clientes!",
     estanteAlt: "Capas das formações de IA aplicada da IAgentics",
+  },
+  /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
+     com o Pecege — decisão do Rodrigo na mesma data.
+
+     O texto do consentimento nomeia o Pecege EXPLICITAMENTE porque a lista vai
+     ser compartilhada com ele. Consentimento para compartilhar dado pessoal
+     com terceiro precisa dizer com quem, antes — "parceiros" no genérico não
+     serve, e avisar depois não conserta. Se este texto mudar, a coluna
+     consentimento_em é quem diz quem aceitou sob qual versão. */
+  listaEspera: {
+    titulo: "Entre na lista de espera",
+    lead: "Quem entrar na lista recebe 10% de desconto no lançamento e é avisado em primeiro lugar.",
+    nome: "Nome",
+    email: "E-mail",
+    consentimento:
+      "Aceito receber novidades sobre o lançamento e que meus dados sejam compartilhados com o Pecege, responsável pela plataforma Solution.",
+    botao: "Quero 10% de desconto",
+    enviando: "Enviando…",
+    sucessoTitulo: "Pronto, você está na lista.",
+    sucessoTexto: "Avisamos você assim que as formações entrarem no ar, com o desconto garantido.",
+    erroNome: "Escreva seu nome.",
+    erroEmail: "Confira o e-mail digitado.",
+    erroConsentimento: "Marque a autorização para entrar na lista.",
+    erroGeral: "Não foi possível concluir agora. Tente de novo em instantes.",
+    privacidade: "Ver política de privacidade",
   },
   /* Estática desde o desligamento da plataforma: a estante é decorativa
      (aria-hidden) e não vale manter uma consulta ao banco viva só por ela. */

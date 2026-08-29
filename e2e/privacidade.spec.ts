@@ -15,10 +15,22 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
 
   // Os pontos que a política PRECISA declarar, porque descrevem tratamento real.
   await expect(page.getByRole("heading", { name: "O que coletamos, e só isso" })).toBeVisible();
-  // Aparece duas vezes de propósito (o que guardamos, e como protegemos).
-  await expect(page.getByText("hash bcrypt").first()).toBeVisible();
-  await expect(page.getByText(/CPF é solicitado/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Seus direitos" })).toBeVisible();
+
+  /* O compartilhamento com o Pecege é a asserção que mais importa aqui: é ele
+     que exige consentimento no formulário, e a LGPD manda declarar com QUEM se
+     compartilha ANTES de compartilhar. Se este texto sumir da política, o
+     consentimento coletado em /cursos perde o amparo que o sustenta. */
+  await expect(page.getByText(/Lista de espera do lançamento/)).toBeVisible();
+  await expect(page.getByText(/compartilhados com o Pecege/)).toBeVisible();
+
+  /* E o que NÃO pode mais estar lá: a plataforma de ensino saiu em 2026-08-28
+     e a política declarava senha, CPF e cobrança por meses depois disso.
+     Declarar tratamento que não existe é tão errado quanto omitir o que
+     existe — as duas coisas fazem o documento deixar de descrever a realidade. */
+  await expect(page.getByText(/bcrypt/)).toHaveCount(0);
+  await expect(page.getByText(/CPF/)).toHaveCount(0);
+  await expect(page.getByText(/Asaas/)).toHaveCount(0);
 
   // Identificação da controladora: sem CNPJ, a política não cumpre seu papel
   // de dizer QUEM responde pelos dados.

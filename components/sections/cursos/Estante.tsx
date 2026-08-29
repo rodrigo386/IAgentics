@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ListaEspera } from "@/components/sections/cursos/ListaEspera";
 import { Logo } from "@/components/ui/Logo";
 import { LogoSolution } from "@/components/ui/LogoSolution";
 import { cursos as t } from "@/lib/content";
@@ -67,6 +68,8 @@ export function CursosEstante() {
             {t.hero.headline}
           </h1>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtext}</p>
+          <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtextDois}</p>
+          <ListaEspera />
         </div>
 
         <div
