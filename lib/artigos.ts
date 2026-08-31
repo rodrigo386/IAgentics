@@ -120,6 +120,13 @@ export function todosOsArtigos(): Artigo[] {
     .sort((a, b) => b.data.localeCompare(a.data) || a.ordem - b.ordem);
 }
 
+/** Só os slugs publicados. É a lista branca que o contador de visitas usa para
+ *  aceitar "/artigos/<slug>" como rota própria sem deixar um POST forjado
+ *  inventar linhas novas em page_views (ver lib/estatisticas.ts). */
+export function slugsPublicados(): string[] {
+  return todosOsArtigos().map((a) => a.slug);
+}
+
 export function artigoPorSlug(slug: string): Artigo | undefined {
   return todosOsArtigos().find((a) => a.slug === slug);
 }

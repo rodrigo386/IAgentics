@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { pageViews } from "@/lib/db/schema";
 import { normalizarRota } from "@/lib/estatisticas";
+import { slugsPublicados } from "@/lib/artigos";
 
 /**
  * Coletor de visitas do site (alvo do sendBeacon de components/site/Beacon.tsx).
@@ -15,7 +16,10 @@ import { normalizarRota } from "@/lib/estatisticas";
 export async function POST(req: Request) {
   try {
     const corpo = (await req.json()) as { rota?: unknown };
-    const rota = normalizarRota(corpo.rota);
+    /* Os slugs vêm do disco a cada request, e isso é barato: lib/artigos.ts
+       lê seis arquivos .md pequenos. É essa lista que impede um POST forjado
+       de inventar rotas novas em page_views. */
+    const rota = normalizarRota(corpo.rota, slugsPublicados());
     if (rota) {
       const dia = new Date().toISOString().slice(0, 10);
       await db

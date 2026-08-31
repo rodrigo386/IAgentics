@@ -41,7 +41,10 @@ test("/cursos anuncia a parceria: as três marcas, sem preço e sem nenhum CTA",
 });
 
 test("as rotas da plataforma desligada não respondem mais", async ({ page }) => {
-  for (const rota of ["/app", "/app/entrar", "/admin", "/certificados/QUALQUER"]) {
+  /* /admin saiu desta lista em 2026-08-31: voltou como painel de visitas e
+     lista de espera, e responde 401 atrás do Basic Auth — quem cobre isso é
+     e2e/admin.spec.ts. As demais continuam mortas. */
+  for (const rota of ["/app", "/app/entrar", "/certificados/QUALQUER"]) {
     const resposta = await page.goto(rota);
     expect(resposta?.status(), `${rota} deveria ser 404`).toBe(404);
   }
