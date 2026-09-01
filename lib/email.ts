@@ -85,21 +85,36 @@ ${conteudo}
 export function emailListaEspera(nome: string) {
   const primeiroNome = nome.trim().split(/\s+/)[0];
   const seguro = escapeHtml(primeiroNome);
-  const linhas = [
-    `Olá, ${primeiroNome}.`,
-    "Obrigado pelo seu interesse. Sua inscrição na pré-venda está confirmada.",
-    "As formações online da IAgentics serão disponibilizadas na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
-    "Você será avisado em primeiro lugar quando elas entrarem no ar, com os 10% de desconto de lançamento garantidos.",
-  ];
+  const URL_SOLUTION = "https://plataformasolution.com.br/";
+
+  /* O corpo é montado em duas versões porque só o HTML pode ter link. No texto
+     puro a URL aparece por extenso — cliente que só lê texto ainda consegue
+     chegar na plataforma. */
+  const agradecimento = "Obrigado pelo seu interesse. Sua inscrição na pré-venda está confirmada.";
+  const ondeAntes = "As formações online da IAgentics serão disponibilizadas na ";
+  const ondeDepois = ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.";
+  const promessa =
+    "Você será avisado em primeiro lugar quando elas entrarem no ar, com os 10% de desconto de lançamento garantidos.";
+
+  const paragrafo = (conteudo: string) =>
+    `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+
   return {
     assunto: "Sua inscrição na pré-venda está confirmada — IAgentics e Pecege",
-    texto: `${linhas.join("\n\n")}\n\nIAgentics · iagentics.com.br`,
+    texto: [
+      `Olá, ${primeiroNome}.`,
+      agradecimento,
+      `${ondeAntes}Solution (${URL_SOLUTION})${ondeDepois}`,
+      promessa,
+      "IAgentics · iagentics.com.br",
+    ].join("\n\n"),
     html: moldura(
       `<p style="margin:0 0 16px;font-size:16px">Olá, ${seguro}.</p>` +
-        linhas
-          .slice(1)
-          .map((l) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${l}</p>`)
-          .join(""),
+        paragrafo(agradecimento) +
+        paragrafo(
+          `${ondeAntes}<a href="${URL_SOLUTION}" style="color:#7607e8;text-decoration:underline">Solution</a>${ondeDepois}`,
+        ) +
+        paragrafo(promessa),
     ),
   };
 }

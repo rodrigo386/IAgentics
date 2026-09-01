@@ -1239,8 +1239,14 @@ export const cursos = {
     headline: "Em breve",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
-    subtext:
-      "As formações online da IAgentics serão disponibilizadas na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+    /* Quebrado em três partes para o nome da plataforma virar link sem
+       dangerouslySetInnerHTML: a string continua inteira e revisável aqui, e o
+       componente monta o <a> no meio. */
+    subtextAntes: "As formações online da IAgentics serão disponibilizadas na ",
+    subtextLink: "Solution",
+    subtextDepois:
+      ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+    urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Uma parceria que traz o melhor da IA com o melhor do mundo acadêmico para nossos clientes!",
     estanteAlt: "Capas das formações de IA aplicada da IAgentics",
   },

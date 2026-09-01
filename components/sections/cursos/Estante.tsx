@@ -67,7 +67,22 @@ export function CursosEstante() {
           <h1 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
             {t.hero.headline}
           </h1>
-          <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtext}</p>
+          <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">
+            {t.hero.subtextAntes}
+            {/* Link para o parceiro em aba nova: quem está lendo o anúncio não
+                deveria perder a página para conhecer a plataforma. `noopener`
+                é obrigatório com target=_blank — sem ele a página aberta ganha
+                referência ao nosso window. */}
+            <a
+              href={t.hero.urlSolution}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-fg underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-fg"
+            >
+              {t.hero.subtextLink}
+            </a>
+            {t.hero.subtextDepois}
+          </p>
           <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtextDois}</p>
           <ListaEspera />
         </div>
