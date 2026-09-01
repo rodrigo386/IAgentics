@@ -17,16 +17,17 @@ Site institucional em **pt-BR**.
 
 ## Stack
 
-Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (uma tabela só) · Remotion (vídeos) · vitest + Playwright.
+Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (duas tabelas) · Remotion (vídeos) · vitest + Playwright.
 
 Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacional de e-mail.
 
 ## Mapa de rotas
 
 - Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/privacidade`, `/artigos`, `/artigos/[slug]`.
-- API: `/api/contato` (formulário, envia por Resend) e `/api/estatisticas` (beacon de visitas).
+- API: `/api/contato` (Resend), `/api/estatisticas` (beacon de visitas) e `/api/lista-espera` (formulário de /cursos).
+- **`/admin`** (2026-08-31): painel de visitas + lista de espera, e `/admin/lista-espera.csv` para exportar. **Atrás de Basic Auth no `middleware.ts`** — `ADMIN_USUARIO` e `ADMIN_SENHA`. Sem as variáveis, responde **503**: falha fechada de propósito, porque deploy sem variável não pode virar vazamento de dado pessoal.
 - `/planos` redireciona 308 para `/cursos`.
-- **Não existem mais** `/app`, `/admin`, `/certificados` nem `/api/auth`. O `Disallow` delas segue no robots.txt e o filtro segue em `lib/estatisticas.ts` — custo zero e defesa se algo voltar.
+- **Não existem mais** `/app`, `/certificados` nem `/api/auth`.
 
 ## Convenções que valem sempre
 
@@ -47,10 +48,16 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - As 13 URLs do sitemap foram **indexadas pelo Google em 2026-08-28**.
 - O **robots.txt que o robô lê não é só o nosso**: o Cloudflare injeta o "Managed Content Signals" na frente, hoje com `Disallow: /` para ClaudeBot/GPTBot/Google-Extended. Isso não afeta o Googlebot, mas bloqueia citação em assistentes de IA.
 
+## Medição de visitas
+
+- `page_views` é agregada por dia+rota, sem cookie, IP ou identificador. O normalizador (`lib/estatisticas.ts`) é quem limita a **cardinalidade** — o endpoint é público, então o que ele aceita define quantas linhas o banco ganha por dia.
+- **Cada artigo publicado é rota própria** desde 2026-08-31: saber qual texto traz tráfego decide a próxima pauta. A lista de slugs válidos vem de `slugsPublicados()` e é **injetada** no normalizador — sem ela, um POST forjado inventaria linhas com URLs falsas.
+- O painel diz na tela que conta **visitas, não visitantes**. Não remover esse aviso: sem ele o número vira apresentação errada.
+
 ## Testes
 
-- `npm run test:unit` (vitest, 67) · `npm run test:e2e` (Playwright, 8, **workers: 1**).
-- Banco local: `npm run db:local` / `db:migrar` / `db:gerar`.
+- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 18, **workers: 1**).
+- Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)
 
@@ -63,7 +70,8 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 ## Segredos
 
 - `.env.local` nunca vai para git/docker/railway. Valores de chave **nunca no chat** — "no arquivo, nunca no chat".
-- **`RESEND_API_KEY` continua ATIVA e necessária**: o formulário de contato (`app/api/contato/route.ts`) envia por ela. Ela NÃO saiu com a plataforma.
+- **`RESEND_API_KEY` continua ATIVA e necessária**: o formulário de contato e a confirmação da lista de espera enviam por ela.
+- **`ADMIN_USUARIO` / `ADMIN_SENHA`**: Basic Auth do painel. Valor no `.env.local` e no Railway, nunca no chat. Definidas com `railway variables --set-from-stdin ... --skip-deploys` — credencial **nunca** em argumento de linha de comando: em 2026-08-31 uma flag inválida ecoou a senha na mensagem de erro e ela teve de ser rotacionada.
 - **`EMAIL_CAIXA_TESTE` nunca vai para o Railway.**
 - `ASAAS_*` e `AUTH_*` ficaram órfãs em 2026-08-28 (a cobrança e o login saíram com a plataforma). Ainda estão no Railway; removê-las é higiene — e exige `railway up` depois (armadilha 14).
 - CPF nunca persiste nem vai a log.
