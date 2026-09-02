@@ -14,6 +14,7 @@ Site institucional em **pt-BR**.
 - **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex, proxy do Cloudflare ligado e certificado válido: desde 2026-08-26 ele **serve o site em 200**. Mas **ainda falta a Redirect Rule 301**, então o site responde em dois endereços. Não é urgente porque o `canonical` de toda página aponta para o apex e o Google consolida por ele — é higiene, não emergência.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
+- **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 módulos do Nexo, time, "90 dias").
 
 ## Stack
 
@@ -31,7 +32,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Convenções que valem sempre
 
-- **Toda string visível vive em `lib/content.ts`**, copiada verbatim do deck `IAgentics_Clientes_V2.pptx`. Nunca hardcodar copy em componente. **Exceção deliberada: o corpo dos artigos** mora em `content/artigos/*.md` — a regra cobre copy de interface, não texto longo autoral, que tem ciclo de revisão próprio e ganha diff legível em arquivo separado. A moldura da listagem (`artigos` em `content.ts`) segue a regra.
+- **Toda string visível vive em `lib/content.ts`**, copiada verbatim do deck — hoje o `IAgentics_Pitch_Hacktown.pdf` (ver docs/PITCH-HACKTOWN-2026.md), que substituiu o `IAgentics_Clientes_V2.pptx` em 2026-09-01. Nunca hardcodar copy em componente. **Exceção deliberada: o corpo dos artigos** mora em `content/artigos/*.md` — a regra cobre copy de interface, não texto longo autoral, que tem ciclo de revisão próprio e ganha diff legível em arquivo separado. A moldura da listagem (`artigos` em `content.ts`) segue a regra.
 - **Artigos**: Markdown com frontmatter em `content/artigos/`, lidos no build por `lib/artigos.ts` (`server-only`, usa `node:fs`). Decisão do Rodrigo em 2026-08-20: **sem editor**, ele escreve pelo repositório. Markdown puro, não MDX — os textos são prosa e não precisam de componente React.
   - **`status: "publicado"` é o portão.** Todo artigo nasce `rascunho`; rascunho não aparece na listagem, não entra no sitemap e responde **404** por URL direta (`dynamicParams = false`). Publicar é trocar uma palavra.
   - `/artigos` só entra no sitemap quando existe ao menos um publicado — listagem vazia anunciada ao Google é rastreamento gasto à toa.
