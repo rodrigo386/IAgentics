@@ -14,7 +14,7 @@ Site institucional em **pt-BR**.
 - **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex, proxy do Cloudflare ligado e certificado válido: desde 2026-08-26 ele **serve o site em 200**. Mas **ainda falta a Redirect Rule 301**, então o site responde em dois endereços. Não é urgente porque o `canonical` de toda página aponta para o apex e o Google consolida por ele — é higiene, não emergência.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
-- **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 módulos do Nexo, time, "90 dias").
+- **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 módulos do Nexo, time, "90 dias"). O plano aprovado para fechar essa distância, em 4 fases, está em [docs/PLANO-ALINHAMENTO-PITCH.md](docs/PLANO-ALINHAMENTO-PITCH.md).
 
 ## Stack
 
