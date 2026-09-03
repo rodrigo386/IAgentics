@@ -32,7 +32,7 @@ Três sócios, 100% do tempo dedicado, 100% do capital, zero rodadas.
   insights (2017, 2019). Cada 1% economizado vai direto à margem; soluções
   digitais destravam **3% a 10%** de economia anual.
 
-## A solução: Nexo, orquestrador de 10 módulos
+## A solução: Nexo, orquestrador de nove módulos
 
 Compras · Gestão de Ativos · Otimização Spend Logístico · Spend via dados da NF
 · Contas a Pagar · Benchmark de Preços Varejo · Orçamento · Contratos ·
@@ -100,7 +100,7 @@ com o Pecege/Solution é linha paralela e não entra no pitch de investimento.
 Cruzamento com `lib/content.ts` na data. **Nada disto foi alterado** — é o
 mapa para quando a revisão de copy for pedida.
 
-- Dos 10 módulos do Nexo, o site descreve só o de **Compras** (RC, RFP,
+- Dos nove módulos do Nexo, o site descreve só o de **Compras** (RC, RFP,
   Contratos, Homologação). Ausentes: Spend Logístico, Benchmark Varejo, Spend
   via NF, Orçamento, Gestão de Ativos, Contas a Pagar.
 - **Time** não aparece no site — nenhum dos três nomes, nem o lastro (Bayer,

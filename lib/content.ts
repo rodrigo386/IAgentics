@@ -1147,6 +1147,154 @@ export const nexoPage = {
     ],
   },
 
+  /* ------------------------------------------------------------------------
+     Fase 1 do alinhamento ao pitch Hacktown (docs/PLANO-ALINHAMENTO-PITCH.md).
+     Três blocos novos, verbatim dos slides 5, 6 e 8–11. Renderizados primeiro
+     em /preview/nexo (noindex, fora do sitemap) para aprovação do Rodrigo; só
+     depois substituem a /nexo.
+     ------------------------------------------------------------------------ */
+
+  /** Slide 5: Nexo no centro, NOVE módulos ao redor. `compras` aponta para o
+   *  fluxo que a página já conta (#fluxo-compras) em vez de repeti-lo — foi o
+   *  Rodrigo quem lembrou que "Compras" é o Nexo Compras atual. Os demais não
+   *  têm descrição no pitch e entram só com nome, como no slide. */
+  orquestrador: {
+    eyebrow: "A plataforma",
+    titulo: ["Nexo orquestra", "toda a gestão de gastos"],
+    centro: { nome: "Nexo", papel: "Orquestrador" },
+    modulos: [
+      { id: "compras", nome: "Compras", href: "#fluxo-compras" },
+      { id: "ativos", nome: "Gestão de Ativos" },
+      { id: "logistico", nome: "Otimização Spend Logístico", href: "#na-pratica-logistico" },
+      { id: "nf", nome: "Spend via dados da NF", href: "#na-pratica-nf" },
+      { id: "contas", nome: "Contas a Pagar" },
+      { id: "varejo", nome: "Benchmark de Preços Varejo", href: "#na-pratica-varejo" },
+      { id: "orcamento", nome: "Orçamento", href: "#na-pratica-orcamento" },
+      { id: "contratos", nome: "Contratos" },
+      { id: "homologacao", nome: "Homologação Fornecedores" },
+    ],
+  },
+
+  /** Slide 6: as três camadas do Nexo Compras. */
+  camadas: {
+    eyebrow: "Como o Nexo é construído",
+    titulo: "Três camadas",
+    itens: [
+      {
+        numero: "Camada 1",
+        nome: "Agentes",
+        texto: "IA suportando o humano durante todo o processo.",
+        agentes: [
+          { sigla: "RC", nome: "Requisição de Compra" },
+          { sigla: "RFP", nome: "Cotação e concorrência" },
+          { sigla: "Contratos", nome: "Ciclo contratual" },
+          { sigla: "Onboarding", nome: "Homologação de fornecedor" },
+          { sigla: "Spend", nome: "Análise de gastos" },
+        ],
+      },
+      {
+        numero: "Camada 2",
+        nome: "Orquestração",
+        texto: "Motor de raciocínio Anthropic. O Nexo usa o Claude para ler, classificar e recomendar — a decisão continua com uma pessoa.",
+        selo: "Claude · Anthropic",
+      },
+      {
+        numero: "Camada 3",
+        nome: "Ambiente do cliente",
+        texto: "Entrega embarcada, integrada ao ERP do cliente. Certificação ISO/IEC 27001.",
+        placas: [
+          { src: "/partner-microsoft.png", alt: "Microsoft AI Cloud Partner", w: 640, h: 200 },
+          { src: "/partner-deskmanager.png", alt: "Desk Manager", w: 640, h: 200 },
+          { src: "/selo-iso27001-v1.jpg", alt: "Certificação ISO/IEC 27001", w: 400, h: 400 },
+        ],
+      },
+    ],
+  },
+
+  /** Slides 8–11: um módulo por seção, no formato do pitch — três passos, um
+   *  número de prova, uma frase. As telas são prints reais do produto
+   *  (~/Documents/Prints, 2026-09-01), convertidas em public/nexo/. Orçamento
+   *  não tem print: a seção sai com número e texto, e a tela entra quando
+   *  existir. */
+  naPratica: {
+    eyebrow: "Na prática",
+    itens: [
+      {
+        id: "logistico",
+        nome: ["Nexo", "Spend Logístico"],
+        passos: [
+          { nome: "Recebe os inputs das cargas", texto: "Pedidos, pesos, cidades e SLA de cada entrega" },
+          { nome: "Otimiza rotas, veículo e modal", texto: "Mais de 900 cenários de rota, ocupação e FTL vs. LTL calculados em minutos" },
+          { nome: "Entrega a carga mais lucrativa", texto: "Otimizando o custo de frete para sua empresa" },
+        ],
+        prova: {
+          rotulo: "Saving por otimização",
+          numero: "+900",
+          unidade: "cenários comparados por corte",
+          texto: "O motor escolhe o cenário de menor custo total e maior margem, respeitando SLA e restrições adicionadas pelo cliente.",
+        },
+        telas: [
+          { src: "/nexo/logistico-rota.jpg", alt: "Malha desenhada pelo motor: rota otimizada com 6 paradas e 3.107 km", w: 1800, h: 1154, legenda: "Rota otimizada · 6 paradas · 3.107 km" },
+          { src: "/nexo/logistico-ocupacao.jpg", alt: "Gráfico de ocupação das cargas FTL, com média de 86,6%", w: 1800, h: 1718, legenda: "Ocupação das cargas FTL" },
+        ],
+      },
+      {
+        id: "varejo",
+        nome: ["Nexo", "Benchmarking Preços Varejo"],
+        passos: [
+          { nome: "Recebe o preço de compra", texto: "SKUs, fabricantes e custo de aquisição do cliente" },
+          { nome: "Varre os grandes e-commerces", texto: "Coleta ofertas nas lojas consagradas e calcula menor preço, mediana e teto por produto" },
+          { nome: "Aponta onde está o ganho", texto: "Compara mercado x preço de compra e revela margem e oportunidades" },
+        ],
+        prova: {
+          rotulo: "Economia identificada",
+          numero: "28%",
+          unidade: "de dispersão de preço no mesmo produto",
+          texto: "O motor mostra a referência real de mercado e quanto o cliente pode economizar por SKU. Ideal para varejistas, distribuidores e e-commerces.",
+        },
+        telas: [
+          { src: "/nexo/varejo-painel.jpg", alt: "Painel de benchmarking com menor preço, mediana e maior preço por produto", w: 1800, h: 925, legenda: "Painel de benchmarking · menor, mediana e maior preço" },
+          { src: "/nexo/varejo-faixa.jpg", alt: "Faixa de preço por produto, do menor ao maior encontrado", w: 1800, h: 754, legenda: "Faixa de preço por produto" },
+        ],
+      },
+      {
+        id: "nf",
+        nome: ["Nexo", "Spend via NF"],
+        passos: [
+          { nome: "Recebe a nota fiscal", texto: "Lê os dados da NF e cadastra fornecedor, itens e valores no banco de dados" },
+          { nome: "Classifica cada gasto", texto: "Define categoria, subcategoria, país e cadência de compra automaticamente" },
+          { nome: "Gera insights de economia", texto: "Detecta consolidação e recorrência e recomenda ações de sourcing priorizadas" },
+        ],
+        prova: {
+          rotulo: "Oportunidade mapeada",
+          numero: "$216k",
+          unidade: "de gasto endereçável em 6 oportunidades de consolidação",
+          texto: "O agente transforma NFs em inteligência de compras: consolida fornecedores, formaliza contratos e reduz o custo de processo.",
+        },
+        telas: [
+          { src: "/nexo/nf-visao-geral.jpg", alt: "Visão geral do spend por país, categoria e fornecedor", w: 1800, h: 793, legenda: "Visão geral · spend por país, categoria e fornecedor" },
+          { src: "/nexo/nf-recomendacoes.jpg", alt: "Recomendações de sourcing ordenadas por score de oportunidade", w: 1800, h: 800, legenda: "Recomendações de sourcing por score" },
+        ],
+      },
+      {
+        id: "orcamento",
+        nome: ["Nexo", "Orçamento"],
+        passos: [
+          { nome: "Organiza o fluxo anual", texto: "Coleta estruturada por área, com prazos, versões e aprovações em um só lugar" },
+          { nome: "Elimina planilhas", texto: "Consolidação automática substitui planilhas e o retrabalho manual do time financeiro" },
+          { nome: "Dá visibilidade à liderança", texto: "Painéis com insights e analytics por IA: desvios, tendências e recomendações" },
+        ],
+        prova: {
+          rotulo: "Fonte única",
+          numero: "100%",
+          unidade: "do orçamento consolidado sem planilhas paralelas",
+          texto: "A IA lê o orçamento consolidado e entrega insights e analytics para a liderança: desvios, tendências e recomendações em tempo real.",
+        },
+        telas: [],
+      },
+    ],
+  },
+
   /**
    * Perguntas e respostas, transcritas do deck IAgentics_DeskManager_Promo.pptx
    * (Documentos/IAgentics/PPTS) — cada resposta usa os fatos da lâmina indicada,

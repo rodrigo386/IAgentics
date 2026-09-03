@@ -11,12 +11,14 @@ import { site } from "@/lib/content";
  * decisão do Rodrigo (ver docs/PLANO-SEO.md, Fase 2) - o /llms.txt convida
  * os assistentes de IA que aquele bloco barra.
  *
- * /app e /admin já mandam `noindex` na própria página; o Disallow aqui evita
- * o gasto de rastreio.
+ * /admin e /preview já mandam `noindex` na própria página; o Disallow aqui
+ * evita o gasto de rastreio. /preview/ são páginas em construção esperando
+ * aprovação do Rodrigo — nunca podem ser descobertas antes de virarem a
+ * página oficial.
  */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/", disallow: ["/app/", "/admin/", "/api/"] }],
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/app/", "/admin/", "/api/", "/preview/"] }],
     sitemap: `${site.url}/sitemap.xml`,
     host: site.domain,
   };

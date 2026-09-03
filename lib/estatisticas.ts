@@ -30,7 +30,9 @@ export function normalizarRota(bruta: unknown, slugsDeArtigo: readonly string[] 
   const partes = semSufixo.split("/");
   const primeiroSegmento = "/" + (partes[1] ?? "");
 
-  if (primeiroSegmento === "/app" || primeiroSegmento === "/admin" || primeiroSegmento === "/api") return null;
+  /* /preview não conta: é página em construção, e quem a visita é quem a
+     está aprovando — não é tráfego. */
+  if (["/app", "/admin", "/api", "/preview"].includes(primeiroSegmento)) return null;
 
   /* Artigo publicado vira rota própria; qualquer outro slug sob /artigos cai em
      "/outras". A checagem vem ANTES da lista de seções porque "/artigos"

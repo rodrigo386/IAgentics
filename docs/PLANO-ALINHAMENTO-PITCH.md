@@ -3,7 +3,7 @@
 Aprovado pelo Rodrigo em 2026-09-01. Fonte: [PITCH-HACKTOWN-2026.md](PITCH-HACKTOWN-2026.md).
 
 **Diagnóstico em uma frase:** o site vende um módulo do Nexo; o pitch vende um
-orquestrador de dez. Time, prazo e diferenciais são consequência dessa distância.
+orquestrador de nove. Time, prazo e diferenciais são consequência dessa distância.
 
 ## As decisões que moldam o plano
 
@@ -18,7 +18,7 @@ orquestrador de dez. Time, prazo e diferenciais são consequência dessa distân
 
 Hoje a página conta o fluxo de Compras (RC → RFP → Contratos → Spend) e para.
 
-- **Mapa dos dez módulos** (slide 5): Nexo no centro, módulos ao redor. É o que
+- **Mapa dos nove módulos** (slide 5): Nexo no centro, módulos ao redor. É o que
   muda a leitura de "ferramenta de cotação" para "plataforma de gestão de gastos".
 - **As três camadas** (slide 6): agentes → orquestração Anthropic → ambiente do
   cliente. O site já cita ISO, Claude e Desk Manager soltos; falta a arquitetura.

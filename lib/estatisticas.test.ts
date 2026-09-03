@@ -46,6 +46,8 @@ describe("normalizarRota", () => {
     expect(normalizarRota("/app")).toBeNull();
     expect(normalizarRota("/app/curso/x")).toBeNull();
     expect(normalizarRota("/admin")).toBeNull();
+    // /preview é página em construção: quem a visita está aprovando, não visitando.
+    expect(normalizarRota("/preview/nexo")).toBeNull();
     expect(normalizarRota("/api/estatisticas")).toBeNull();
   });
 
