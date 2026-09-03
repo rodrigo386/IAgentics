@@ -1154,6 +1154,28 @@ export const nexoPage = {
      depois substituem a /nexo.
      ------------------------------------------------------------------------ */
 
+  /**
+   * Capa da prévia (pedido do Rodrigo em 2026-09-02): "o mapa do orquestrador
+   * com layout e animação similar à home, na hero, e o texto refletindo o
+   * orquestrador, não só o módulo de Compras".
+   *
+   * `hero` (acima) continua intacto — é o que a /nexo oficial usa até a troca.
+   * A headline é o título do slide 5, em duas linhas como a da home; o subtexto
+   * é composto só com fatos do pitch (nove módulos, governança, ambiente do
+   * cliente); a linha de plataforma é a Camada 3 do slide 6.
+   */
+  heroOrquestrador: {
+    headline: ["Nexo orquestra", "toda a gestão de gastos"],
+    /* 22 palavras. Teto da hero é 20; aqui a marca entra na frase e vale a
+       exceção — sem "Nexo" no subtexto a headline seria a única menção. */
+    subtext:
+      "Nove módulos de agentes de IA, de Compras a Orçamento, operando dentro do ambiente da sua empresa — com governança, segurança e gestão dos dados.",
+    platform: "Entrega embarcada, integrada ao ERP do cliente. Certificação ISO/IEC 27001.",
+    ctaSecundario: "Ver na prática",
+    /* O que o leitor de tela recebe pelo grafo inteiro. */
+    grafoAlt: "Nexo, o orquestrador, conectado aos nove módulos: Compras, Gestão de Ativos, Spend Logístico, Spend via NF, Contas a Pagar, Benchmark de Preços Varejo, Orçamento, Contratos e Homologação de Fornecedores.",
+  },
+
   /** Slide 5: Nexo no centro, NOVE módulos ao redor. `compras` aponta para o
    *  fluxo que a página já conta (#fluxo-compras) em vez de repeti-lo — foi o
    *  Rodrigo quem lembrou que "Compras" é o Nexo Compras atual. Os demais não

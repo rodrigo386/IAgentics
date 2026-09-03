@@ -22,10 +22,13 @@ test("a /nexo atual continua intacta — sem as seções novas", async ({ page }
   await expect(page.locator("#na-pratica")).toHaveCount(0);
 });
 
-test("o orquestrador lista os nove módulos e liga os que têm seção própria", async ({ page }) => {
+test("a capa é o orquestrador: h1 sobre o orquestrador, nove módulos no grafo, links para as seções", async ({ page }) => {
   await page.goto("/preview/nexo");
   const mapa = page.locator("#orquestrador");
-  await expect(mapa.getByRole("heading", { level: 2 })).toContainText("Nexo orquestra");
+  /* A manchete fala do orquestrador, não do módulo de Compras — era o ponto
+     do pedido. E é h1: a capa é a primeira coisa da página. */
+  await expect(mapa.getByRole("heading", { level: 1 })).toContainText("Nexo orquestra");
+  await expect(mapa.getByRole("img", { name: /orquestrador, conectado aos nove módulos/ })).toBeAttached();
 
   /* Nove, não dez: o Nexo é o orquestrador, não um módulo. O erro de contagem
      aconteceu uma vez e o teste existe para não acontecer de novo. */
@@ -40,8 +43,7 @@ test("o orquestrador lista os nove módulos e liga os que têm seção própria"
     "Contratos",
     "Homologação Fornecedores",
   ]) {
-    // Aparece duas vezes (lista mobile + radial lg); basta existir.
-    await expect(mapa.getByText(nome, { exact: true }).first()).toBeAttached();
+    await expect(mapa.getByText(nome, { exact: true })).toBeAttached();
   }
 
   // Compras aponta para o fluxo que a página já conta, não repete o conteúdo.

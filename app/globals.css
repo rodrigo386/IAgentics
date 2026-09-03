@@ -826,6 +826,82 @@
 }
 
 /* ---------------------------------------------------------------------------
+   ORQUESTRADOR - ciclo de execução com NOVE módulos (capa da /nexo)
+
+   Mesma coreografia do grafo da home (EXECUTION CYCLE acima): o Nexo entrega
+   uma tarefa a um módulo, o módulo acende enquanto trabalha, o resultado volta,
+   e a vez passa. A diferença é aritmética: nove voltas por lap em vez de cinco,
+   então cada janela é 11,1% do lap e não 20% — e keyframe é percentual, logo
+   não dá para reaproveitar os da home só trocando a duração.
+
+   TURN = 1,2s × 9 = lap de 10,8s (declarado aqui e em OrquestradorGraph.tsx).
+   As proporções internas da janela são as mesmas da home, escaladas por
+   0,556: sai (0→3,9%), espera (3,9→7,2%), volta (7,2→10,6%), some (11,1%).
+
+   Repouso: tudo invisível ou apagado a 0%, dentro de reduced-motion:
+   no-preference. Sem JS ou com movimento reduzido, é o grafo pronto e parado.
+--------------------------------------------------------------------------- */
+
+.orq-pulse,
+.orq-core,
+.orq-ping,
+.orq-hub-ring {
+  opacity: 0;
+}
+
+.orq-core,
+.orq-ping,
+.orq-hub-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.orq-pulse {
+  stroke-dasharray: 16 84;
+}
+
+.orq-label {
+  color: var(--fg-muted);
+}
+
+@keyframes orq-pulse {
+  0% { stroke-dashoffset: 0; opacity: 0; }
+  0.5% { stroke-dashoffset: 0; opacity: 1; }
+  3.9% { stroke-dashoffset: -84; opacity: 1; }
+  7.2% { stroke-dashoffset: -84; opacity: 1; }
+  10.6% { stroke-dashoffset: 0; opacity: 1; }
+  11.1%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes orq-core {
+  0%, 3.5% { opacity: 0; transform: scale(0.4); }
+  4.4%, 7.2% { opacity: 1; transform: scale(1); }
+  9%, 100% { opacity: 0; transform: scale(1); }
+}
+
+@keyframes orq-ping {
+  0%, 3.5% { opacity: 0; transform: scale(1); }
+  3.9% { opacity: 0.9; transform: scale(1); }
+  9%, 100% { opacity: 0; transform: scale(3); }
+}
+
+@keyframes orq-label {
+  0%, 3% { color: var(--fg-muted); }
+  4.4%, 7.2% { color: var(--fg); }
+  9.5%, 100% { color: var(--fg-muted); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .orq-pulse { animation: orq-pulse 10.8s cubic-bezier(0.4, 0, 0.2, 1) infinite backwards; }
+  .orq-core { animation: orq-core 10.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite backwards; }
+  .orq-ping { animation: orq-ping 10.8s cubic-bezier(0.16, 1, 0.3, 1) infinite backwards; }
+  .orq-label { animation: orq-label 10.8s ease-in-out infinite backwards; }
+  /* Um anel por resultado que volta: nove por lap, de um loop de 1,2s. O
+     atraso inicial é dado inline pelo componente (CYCLE_START + RETURN_AT). */
+  .orq-hub-ring { animation: hub-receive 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite backwards; }
+}
+
+/* ---------------------------------------------------------------------------
    COVER AURORA - abstract field for the Nexo cover
 
    Built from the official brand ramp rather than a generated picture: an image
