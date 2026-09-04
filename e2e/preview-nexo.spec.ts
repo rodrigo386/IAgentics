@@ -68,3 +68,18 @@ test("cada módulo 'na prática' traz três passos e o número de prova do pitch
   await expect(page.locator("#na-pratica-orcamento img")).toHaveCount(0);
   await expect(page.locator("#na-pratica-logistico img")).toHaveCount(2);
 });
+
+test("o comparativo compara com 'SaaS de Compras' e não nomeia concorrentes", async ({ page }) => {
+  await page.goto("/preview/nexo");
+  const sec = page.locator("#comparativo");
+  await expect(sec.getByRole("table")).toBeVisible();
+  await expect(sec.getByRole("row")).toHaveCount(6); // cabeçalho + 5 critérios
+  await expect(sec.getByText("Agente operando em 90 dias")).toBeVisible();
+  /* Decisões registradas no plano: sem nomes de concorrentes (propaganda
+     comparativa contestável) e sem "única" na ISO (exclusividade pública
+     difícil de sustentar). Se algum dos dois voltar, o teste avisa. */
+  for (const nome of ["GEP", "Coupa", "Ariba", "Nimbi", "Mercado Eletrônico"]) {
+    await expect(sec.getByText(nome)).toHaveCount(0);
+  }
+  await expect(sec.getByText(/única/i)).toHaveCount(0);
+});

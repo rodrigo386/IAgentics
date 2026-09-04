@@ -205,6 +205,67 @@ export const hero = {
   product: "Nexo App",
 } as const;
 
+/**
+ * PRÉVIA DA HOME (2026-09-04, /preview/home) — as mesmas mudanças da prévia
+ * da /nexo, aplicadas à home. Os blocos oficiais (`hero`, `solutions`, `site`)
+ * ficam intactos até a troca.
+ */
+export const homePreview = {
+  meta: {
+    titulo: "IAgentics · Orquestrador de IA para Compras e Gestão de Gastos",
+    descricao:
+      "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa, certificação ISO/IEC 27001.",
+  },
+  hero: {
+    /* A manchete é a mesma da home oficial (hero.headline): é o título do
+       pitch. O que muda é o subtexto — o oficial diz "trabalho operacional de
+       suprimentos", que é o recorte de Compras. 19 palavras, no teto de 20. */
+    subtext: "Nove módulos de agentes de IA para Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa.",
+  },
+  /* Cartão do Nexo em "As 3 soluções": só a promessa e os chips mudam. Os
+     nove módulos em nome curto — decisão do Rodrigo em 2026-09-04. */
+  nexoCard: {
+    promise: "Orquestrador de gestão de gastos",
+    scope: ["Compras", "Ativos", "Logístico", "NF", "Contas a Pagar", "Varejo", "Orçamento", "Contratos", "Homologação"],
+  },
+} as const;
+
+/**
+ * "O problema" (pitch Hacktown, slides 3 e 4) — seção nova da home, entre a
+ * hero e as soluções. Dois painéis, cada um com o número, a fonte e as três
+ * dores. Tudo verbatim do deck; a fonte fica VISÍVEL, não em nota de rodapé —
+ * número sem fonte na tela é o que a regra de copy proíbe.
+ */
+export const problema = {
+  eyebrow: "O problema",
+  paineis: [
+    {
+      numero: "57%",
+      legenda: "das horas de trabalho já podem ser automatizadas com a tecnologia atual",
+      fonte: "McKinsey Global Institute — “Agents, robots, and us” (2025)",
+      titulo: ["As áreas de Compras estão", "presas no operacional"],
+      lead: "Horas gastas todos os dias em tarefas manuais e repetitivas",
+      itens: [
+        { nome: "Atendimento", texto: "Cliente interno solicita atualizações constantes" },
+        { nome: "Gerenciamento no Excel", texto: "Requisições, pedidos, contratos, savings" },
+        { nome: "Disparo manual", texto: "E-mails, cotações, cobranças" },
+      ],
+    },
+    {
+      numero: "70%",
+      legenda: "do custo total de uma empresa pode estar em gastos externos com fornecedores",
+      fonte: "McKinsey & Company — Procurement insights (2017, 2019)",
+      titulo: ["Gestão de gastos é a", "maior alavanca de valor"],
+      lead: "Gerir bem os gastos é a oportunidade mais subestimada da organização",
+      itens: [
+        { nome: "Baixa visibilidade", texto: "Gastos fragmentados em planilhas, sem visão por categoria" },
+        { nome: "Impacto direto na margem", texto: "Cada 1% economizado em compras vai direto para o resultado" },
+        { nome: "Potencial não capturado", texto: "Soluções digitais destravam de 3% a 10% de economia anual" },
+      ],
+    },
+  ],
+} as const;
+
 export const partners = {
   /** The strip carries a single label now; the badges do the talking. */
   label: "Parcerias",
@@ -1328,6 +1389,31 @@ export const nexoPage = {
         },
         telas: [],
       },
+    ],
+  },
+
+  /**
+   * Comparativo (pitch Hacktown, slide 12). Fase 2 do plano; o Rodrigo decidiu
+   * em 2026-09-04 que fica só na /nexo, não na home.
+   *
+   * Duas decisões de copy registradas em docs/PLANO-ALINHAMENTO-PITCH.md:
+   *  - a coluna da esquerda é "SaaS de Compras", sem nomear GEP, Coupa, Ariba,
+   *    ME e Nimbi — afirmar "ROI não demonstrado" sobre empresa nomeada é
+   *    propaganda comparativa contestável;
+   *  - ISO 27001 vira "Certificada", não "única no mercado" — exclusividade
+   *    pública é difícil de sustentar se um concorrente certificar amanhã.
+   * A linha "Tempo até valor" carrega o "90 dias", publicado como está.
+   */
+  comparativo: {
+    eyebrow: "Concorrência e diferenciais",
+    titulo: ["Eles vendem software.", "Nós entregamos os agentes operando."],
+    colunas: ["SaaS de Compras", "IAgentics Nexo"],
+    linhas: [
+      { criterio: "Onde ficam os dados", saas: "Na base do fornecedor, fora da empresa", nexo: "No ERP e no servidor do cliente" },
+      { criterio: "Custo de entrada", saas: "Licença anual e implantação longa", nexo: "Sem licença de plataforma" },
+      { criterio: "Tempo até valor", saas: "12 a 18 meses de implantação", nexo: "Agente operando em 90 dias" },
+      { criterio: "ROI comprovado", saas: "Não demonstrado", nexo: "Horas de redução de trabalho manual" },
+      { criterio: "ISO/IEC 27001", saas: "Não", nexo: "Certificada" },
     ],
   },
 

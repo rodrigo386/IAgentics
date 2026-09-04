@@ -6,6 +6,7 @@ import { NexoAssurance } from "@/components/sections/nexo/Assurance";
 import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
 import { NexoNaPratica } from "@/components/sections/nexo/NaPratica";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
+import { NexoComparativo } from "@/components/sections/nexo/Comparativo";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
@@ -49,6 +50,9 @@ export default function Page() {
         </div>
         <NexoNaPratica />
         <NexoDifferentiators />
+        {/* Comparativo depois dos diferenciais: primeiro o que o Nexo é, depois
+            contra o que ele se mede. Só aqui, não na home (decisão 2026-09-04). */}
+        <NexoComparativo />
         <SecaoFaq eyebrow={nexoPage.faq.eyebrow} titulo={nexoPage.faq.titulo} itens={nexoPage.faq.itens} />
         <Contact />
       </main>
