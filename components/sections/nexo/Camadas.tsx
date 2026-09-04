@@ -33,12 +33,15 @@ export function NexoCamadas() {
               <div className="lg:col-span-8">
                 <p className="max-w-[52ch] text-lg leading-relaxed text-fg-muted">{c.texto}</p>
 
-                {"agentes" in c ? (
-                  <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
-                    {c.agentes.map((a) => (
-                      <li key={a.sigla} className="border-t border-line-strong pt-3">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent-text">{a.sigla}</p>
-                        <p className="mt-1 text-sm leading-snug text-fg">{a.nome}</p>
+                {"modulos" in c ? (
+                  /* Nove em três colunas: o nome carrega, o papel explica. Módulo
+                     sem papel no pitch mostra só o nome — sem linha vazia
+                     fingindo texto. */
+                  <ul className="mt-6 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {c.modulos.map((m) => (
+                      <li key={m.nome} className="border-t border-line-strong pt-3">
+                        <p className="text-sm font-medium leading-snug text-fg">{m.nome}</p>
+                        {"papel" in m ? <p className="mt-1 text-sm leading-snug text-fg-muted">{m.papel}</p> : null}
                       </li>
                     ))}
                   </ul>

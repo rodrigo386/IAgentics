@@ -1205,13 +1205,27 @@ export const nexoPage = {
       {
         numero: "Camada 1",
         nome: "Agentes",
-        texto: "IA suportando o humano durante todo o processo.",
-        agentes: [
-          { sigla: "RC", nome: "Requisição de Compra" },
-          { sigla: "RFP", nome: "Cotação e concorrência" },
-          { sigla: "Contratos", nome: "Ciclo contratual" },
-          { sigla: "Onboarding", nome: "Homologação de fornecedor" },
-          { sigla: "Spend", nome: "Análise de gastos" },
+        /* Reescrito em 2026-09-04 a pedido do Rodrigo: a versão anterior
+           listava os cinco agentes do Nexo Compras (RC, RFP, Contratos,
+           Onboarding, Spend) como se fossem a camada inteira. A camada de
+           agentes é o conjunto dos NOVE módulos — Compras é um deles, e os
+           cinco agentes vivem dentro dele.
+
+           O `papel` de cada módulo vem do pitch (slides 6 e 8–11). Gestão de
+           Ativos e Contas a Pagar não têm descrição em slide nenhum e entram
+           só com o nome: papel inventado aqui seria copy sem fonte. */
+        texto:
+          "Nove módulos de agentes de IA, um para cada frente da gestão de gastos — de Compras a Orçamento. Em todos, a IA suporta o humano durante o processo: a decisão continua com uma pessoa.",
+        modulos: [
+          { nome: "Compras", papel: "Requisição, cotação, contratos, homologação e análise de gastos" },
+          { nome: "Gestão de Ativos" },
+          { nome: "Otimização Spend Logístico", papel: "Rotas, veículo e modal otimizados por carga" },
+          { nome: "Spend via dados da NF", papel: "Cada nota fiscal vira inteligência de compras" },
+          { nome: "Contas a Pagar" },
+          { nome: "Benchmark de Preços Varejo", papel: "Referência real de mercado por produto" },
+          { nome: "Orçamento", papel: "Fonte única, sem planilhas paralelas" },
+          { nome: "Contratos", papel: "Ciclo contratual de ponta a ponta" },
+          { nome: "Homologação Fornecedores", papel: "Onboarding e homologação de fornecedor" },
         ],
       },
       {
