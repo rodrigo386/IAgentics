@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
-import { NexoCover } from "@/components/sections/nexo/Cover";
-import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
+import { NexoCoverOrquestrador } from "@/components/sections/nexo/CoverOrquestrador";
+import { NexoCamadas } from "@/components/sections/nexo/Camadas";
 import { NexoAssurance } from "@/components/sections/nexo/Assurance";
+import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
+import { NexoNaPratica } from "@/components/sections/nexo/NaPratica";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
+import { NexoComparativo } from "@/components/sections/nexo/Comparativo";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
@@ -19,22 +22,19 @@ export const metadata: Metadata = {
 };
 
 /**
- * Nexo, laid out as an editorial dossier.
+ * Nexo como dossiê editorial, alinhado ao pitch Hacktown em 2026-09-04 depois
+ * de aprovado em /preview/nexo (docs/PLANO-ALINHAMENTO-PITCH.md, Fases 1 e 2).
  *
- * The device is print: a typographic cover, plates that run edge to edge with their
- * captions in the margin, oversized folios, wide measures and no cards anywhere. The
- * frames belong to the plates alone, so every other section is set with hairlines and
- * hanging headings.
- *
- * Four content sections, four distinct layout families:
- *   Cover ............. full-height type, indented second line
- *   AgentsIndex ....... contents index, code in the margin
- *   Plates ............ full-bleed media sequence  (RESERVED slots)
- *   Differentiators ... hanging headings
- *   Contact ........... form split
- *
- * Note there is no pinned scroll sequence here: the pan was dropped with the previous
- * layout, because a scroll hijack is agency language and this page is a dossier.
+ * Ordem do argumento:
+ *   Cover ............ o orquestrador: manchete + grafo dos nove módulos
+ *   Camadas .......... o que o Nexo É (agentes → orquestração → ambiente)
+ *   Assurance ........ onde os dados ficam — pré-requisito, antes de operar
+ *   FluxoCompras ..... o módulo de Compras, passo a passo, com as telas
+ *   NaPratica ........ os outros quatro módulos com prova, no formato do pitch
+ *   Differentiators .. por que é diferente
+ *   Comparativo ...... contra o que se mede ("SaaS de Compras", sem nomes)
+ *   FAQ .............. as objeções que sobram — e o bloco citável por IA
+ *   Contact
  */
 export default function Page() {
   return (
@@ -42,17 +42,15 @@ export default function Page() {
       <JsonLd dados={faqJsonLd(nexoPage.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
-        <NexoCover />
-        {/* Onde os dados ficam vem ANTES dos agentes: para quem compra, isso é
-            pré-requisito, não diferencial. Não faz sentido apresentar cinco agentes
-            operando sobre os dados de compras da empresa e só depois dizer onde
-            esses dados moram. */}
+        <NexoCoverOrquestrador />
+        <NexoCamadas />
         <NexoAssurance />
-        <NexoFluxoCompras />
+        <div id="fluxo-compras">
+          <NexoFluxoCompras />
+        </div>
+        <NexoNaPratica />
         <NexoDifferentiators />
-        {/* O FAQ fecha o argumento, logo antes do contato: são as objeções que
-            sobram depois de ver o processo e os diferenciais - e é o bloco que
-            um assistente de IA cita quando alguém pergunta sobre o Nexo. */}
+        <NexoComparativo />
         <SecaoFaq eyebrow={nexoPage.faq.eyebrow} titulo={nexoPage.faq.titulo} itens={nexoPage.faq.itens} />
         <Contact />
       </main>

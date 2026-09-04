@@ -1,34 +1,37 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/sections/Hero";
+import { Problema } from "@/components/sections/Problema";
 import { Solutions } from "@/components/sections/Solutions";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizacaoJsonLd, ogDaPagina } from "@/lib/seo";
-import { site } from "@/lib/content";
+import { site, hero } from "@/lib/content";
 
 /* Canonical e og:url são declarados PÁGINA A PÁGINA, nunca no layout:
    metadata do Next é herdada, então um valor no layout faria toda rota sem
    valor próprio se declarar como sendo a home. */
 export const metadata: Metadata = {
+  description: hero.descricao,
   alternates: { canonical: "/" },
-  openGraph: ogDaPagina("/", `${site.name} · ${site.tagline}`, site.description),
+  openGraph: ogDaPagina("/", `${site.name} · ${site.tagline}`, hero.descricao),
 };
 
 /**
- * Landing page, kept deliberately short: the value prop, the three solutions, and the
- * way to start a conversation. Each solution is detailed on its own route
- * (/nexo, /academy, /spend-lab) rather than inline, so this page stays scannable.
+ * Landing page: a proposta de valor, o problema que ela ataca, as três
+ * soluções e o caminho para uma conversa. Cada solução tem a própria rota
+ * (/nexo, /academy, /spend-lab); esta página fica escaneável.
  *
- * Three content sections, three distinct layout families:
- *   Hero ........ agent graph + partner band
- *   Solutions ... editorial index, image on hover
- *   Contact ..... form split
+ * Quatro seções, quatro famílias de layout:
+ *   Hero ........ grafo do orquestrador + faixa de parceiros
+ *   Problema .... dois painéis numéricos com fonte (pitch Hacktown, slides 3–4)
+ *   Solutions ... índice editorial, imagem no hover
+ *   Contact ..... formulário em duas colunas
+ *
+ * Alinhada ao pitch Hacktown em 2026-09-04 (docs/PLANO-ALINHAMENTO-PITCH.md),
+ * depois de aprovada em /preview/home.
  */
-/* cache-bust 2026-08-12: o build cache do Railway reaproveitava o módulo
-   compilado da home do deploy original (que redirecionava para /app/entrar).
-   Conteúdo novo neste arquivo força a recompilação da rota raiz. */
 export default function Home() {
   return (
     <>
@@ -36,6 +39,7 @@ export default function Home() {
       <Nav />
       <main id="conteudo">
         <Hero />
+        <Problema />
         <Solutions />
         <Contact />
       </main>

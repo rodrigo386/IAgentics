@@ -20,21 +20,7 @@ import { solutions } from "@/lib/content";
  * On hover the row becomes a dark photographic band, so every piece of text in it flips
  * to the fixed paper token; the scrim keeps that legible over any part of the image.
  */
-type Item = {
-  id: string;
-  name: string;
-  promise: string;
-  platform: string;
-  scope: readonly string[];
-  href: string;
-  image: string;
-  imageAlt: string;
-};
-
-/* `items` opcional, com o padrão sendo o conteúdo oficial: a prévia da home
-   passa o cartão do Nexo reescrito sem duplicar a seção inteira. Sem o
-   parâmetro, nada muda para a home oficial. */
-export function Solutions({ items = solutions.items }: { items?: readonly Item[] } = {}) {
+export function Solutions() {
   return (
     <section id="solucoes" className="py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
@@ -49,7 +35,7 @@ export function Solutions({ items = solutions.items }: { items?: readonly Item[]
         </Reveal>
 
         <div className="mt-16">
-          {items.map((item) => (
+          {solutions.items.map((item) => (
             <Reveal key={item.id}>
               <Link
                 href={item.href}

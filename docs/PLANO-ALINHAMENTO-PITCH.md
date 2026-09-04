@@ -14,7 +14,11 @@ orquestrador de nove. Time, prazo e diferenciais são consequência dessa distâ
 | Academy e Cursos no menu | **Manter os dois** | A Fase 4 perde o item de menu; sobra só metadados |
 | Ordem | **/nexo → home → time → metadados** | Começa pela maior lacuna; cada fase sobe com testes e deploy próprios |
 
-## Fase 1 · `/nexo` vira o orquestrador
+## Fase 1 · `/nexo` vira o orquestrador — **no ar em 2026-09-04**
+
+Executada em `/preview/nexo`, aprovada e promovida. A capa virou o próprio mapa
+do orquestrador (grafo da home com nove nós), a pedido do Rodrigo; a Camada 1
+descreve os nove módulos, não os cinco agentes do Compras.
 
 Hoje a página conta o fluxo de Compras (RC → RFP → Contratos → Spend) e para.
 
@@ -32,7 +36,11 @@ Hoje a página conta o fluxo de Compras (RC → RFP → Contratos → Spend) e p
 **Depende do Rodrigo:** as telas dos módulos em resolução de site. Sem elas, a
 seção sai com números e texto; com elas, muito mais forte.
 
-## Fase 2 · Home ganha o problema e a tese
+## Fase 2 · Home ganha o problema e a tese — **no ar em 2026-09-04**
+
+Executada em `/preview/home`, aprovada e promovida. O quadro de diferenciais
+ficou **só na `/nexo`** (decisão do Rodrigo em 2026-09-04), com o "90 dias" na
+linha "Tempo até valor".
 
 - **Seção "O problema"** entre a hero e as soluções (slides 3–4): 57% das horas
   automatizáveis e 70% do custo em fornecedores, com fonte McKinsey visível, e

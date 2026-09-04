@@ -12,12 +12,13 @@ import { nexoPage, cta, partners } from "@/lib/content";
  * O que é da /nexo e não da home: o fundo (aurora + grão da capa anterior, que
  * dão a esta página a identidade dela) e a linha de plataforma sob os CTAs.
  *
- * Substitui a NexoCover na prévia. Os três prints em perspectiva que a capa
- * antiga carregava saem daqui — o Nexo Compras continua tendo seu palco no
- * fluxo (FluxoCompras), onde as telas têm o passo que as explica.
+ * Capa oficial da /nexo desde 2026-09-04 (nasceu em /preview/nexo). Os três
+ * prints em perspectiva que a capa anterior carregava saíram — o Nexo Compras
+ * continua tendo seu palco no fluxo (FluxoCompras), onde as telas têm o passo
+ * que as explica.
  */
 export function NexoCoverOrquestrador() {
-  const t = nexoPage.heroOrquestrador;
+  const t = nexoPage.hero;
 
   return (
     <section id="orquestrador" className="relative isolate flex min-h-[100dvh] flex-col overflow-hidden border-b border-line pb-14 pt-24">

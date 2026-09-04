@@ -3,7 +3,8 @@ import { nexoPage } from "@/lib/content";
 /**
  * ORQUESTRADOR GRAPH - o visual da capa da /nexo.
  *
- * É o AgentGraph da home com nove nós em vez de cinco: o mesmo hub (o ícone
+ * Descende do grafo dos cinco agentes que a home teve até 2026-09-04
+ * (AgentGraph, hoje removido), com nove nós: o mesmo hub (o ícone
  * real do app Nexo, geometria copiada verbatim do kit), as mesmas linhas
  * desenhando para fora, o mesmo ciclo de execução em que o Nexo entrega uma
  * tarefa, o módulo acende enquanto trabalha e o resultado volta. O pedido foi
@@ -20,8 +21,8 @@ import { nexoPage } from "@/lib/content";
  *    porque com nove em volta, "acima ou abaixo" só não basta — os das
  *    laterais invadiriam o vizinho.
  *
- * O que NÃO muda, e é deliberado (as três armadilhas documentadas no
- * AgentGraph): posicionar e animar em elementos separados; pulsos pintados
+ * O que NÃO muda, e é deliberado (as três armadilhas que aquele grafo
+ * documentava): posicionar e animar em elementos separados; pulsos pintados
  * ANTES do hub e dos nós, que são opacos; e repouso = grafo pronto, sem JS e
  * com movimento reduzido.
  *
@@ -92,7 +93,7 @@ export function OrquestradorGraph() {
           viewBox="0 0 100 100"
           className="absolute inset-0 h-full w-full text-accent-text"
           role="img"
-          aria-label={nexoPage.heroOrquestrador.grafoAlt}
+          aria-label={nexoPage.hero.grafoAlt}
         >
           <defs>
             <linearGradient id="orq-hub" x1="0" y1="0" x2="1" y2="1">

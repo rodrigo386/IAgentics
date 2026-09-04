@@ -14,7 +14,7 @@ Site institucional em **pt-BR**.
 - **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex, proxy do Cloudflare ligado e certificado válido: desde 2026-08-26 ele **serve o site em 200**. Mas **ainda falta a Redirect Rule 301**, então o site responde em dois endereços. Não é urgente porque o `canonical` de toda página aponta para o apex e o Google consolida por ele — é higiene, não emergência.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
-- **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 dos 9 módulos do Nexo, time, "90 dias"). O plano aprovado para fechar essa distância, em 4 fases, está em [docs/PLANO-ALINHAMENTO-PITCH.md](docs/PLANO-ALINHAMENTO-PITCH.md).
+- **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 dos 9 módulos do Nexo, time, "90 dias"). O plano aprovado para fechar essa distância, em 4 fases, está em [docs/PLANO-ALINHAMENTO-PITCH.md](docs/PLANO-ALINHAMENTO-PITCH.md) — **Fases 1 e 2 no ar desde 2026-09-04** (home e `/nexo` com o orquestrador de nove módulos); faltam os sócios (fotos) e os metadados.
 
 ## Stack
 
@@ -27,7 +27,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/privacidade`, `/artigos`, `/artigos/[slug]`.
 - API: `/api/contato` (Resend), `/api/estatisticas` (beacon de visitas) e `/api/lista-espera` (formulário de /cursos).
 - **`/admin`** (2026-08-31): painel de visitas + lista de espera, e `/admin/lista-espera.csv` para exportar. **Atrás de Basic Auth no `middleware.ts`** — `ADMIN_USUARIO` e `ADMIN_SENHA`. Sem as variáveis, responde **503**: falha fechada de propósito, porque deploy sem variável não pode virar vazamento de dado pessoal.
-- **`/preview/*`** (2026-09-02): páginas em construção esperando aprovação do Rodrigo — pedido dele: "não substitua a atual, crie uma paralela para eu visualizar antes". Três travas para não vazar: `robots: noindex` na página, `/preview/` no Disallow do robots.txt, fora de `ROTAS_SITEMAP` e sem link no site. O beacon de visitas ignora o prefixo (quem visita está aprovando, não visitando). Sem `canonical`: apontá-lo para a página oficial diria ao Google que são a mesma, e ainda não são. Aprovada, o conteúdo vira a página oficial e a prévia some. Hoje: `/preview/nexo` (Fase 1 do plano de alinhamento).
+- **`/preview/*`** (2026-09-02): páginas em construção esperando aprovação do Rodrigo — pedido dele: "não substitua a atual, crie uma paralela para eu visualizar antes". Três travas para não vazar: `robots: noindex` na página, `/preview/` no Disallow do robots.txt, fora de `ROTAS_SITEMAP` e sem link no site. O beacon de visitas ignora o prefixo (quem visita está aprovando, não visitando). Sem `canonical`: apontá-lo para a página oficial diria ao Google que são a mesma, e ainda não são. Aprovada, o conteúdo vira a página oficial e a prévia some — foi assim com `/preview/nexo` e `/preview/home` (aprovadas e promovidas em 2026-09-04). Hoje não há prévia no ar; o mecanismo (robots, beacon) fica pronto para a próxima.
 - `/planos` redireciona 308 para `/cursos`.
 - **Não existem mais** `/app`, `/certificados` nem `/api/auth`.
 
@@ -58,7 +58,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Testes
 
-- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 22, **workers: 1**).
+- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 26, **workers: 1**).
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)

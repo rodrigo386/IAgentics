@@ -187,9 +187,13 @@ export const nav = {
 export const hero = {
   /** Split so both lines are close in length, which keeps the hero at exactly 2 lines. */
   headline: ["Automações Inteligentes para", "Compras e Gestão de Gastos"],
-  /** 19 words. Hero subtext cap is 20. */
-  subtext:
-    "Agentes de IA que assumem o trabalho operacional de suprimentos rodando dentro da plataforma que sua empresa já usa.",
+  /* 19 palavras, no teto de 20. Reescrito em 2026-09-04 (alinhamento ao pitch):
+     a versão anterior falava em "trabalho operacional de suprimentos" — o
+     recorte de Compras. O Nexo é o orquestrador de nove módulos. */
+  subtext: "Nove módulos de agentes de IA para Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa.",
+  /** Description da home (title vem do layout: nome · tagline, que é o título do pitch). */
+  descricao:
+    "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa, certificação ISO/IEC 27001.",
   imageAlt:
     "Edifício corporativo iluminado à noite, com dezenas de estações de trabalho visíveis pelas janelas",
   /**
@@ -203,31 +207,6 @@ export const hero = {
    * no conteúdo faz alguns leitores de tela soletrarem "N-E-X-O".
    */
   product: "Nexo App",
-} as const;
-
-/**
- * PRÉVIA DA HOME (2026-09-04, /preview/home) — as mesmas mudanças da prévia
- * da /nexo, aplicadas à home. Os blocos oficiais (`hero`, `solutions`, `site`)
- * ficam intactos até a troca.
- */
-export const homePreview = {
-  meta: {
-    titulo: "IAgentics · Orquestrador de IA para Compras e Gestão de Gastos",
-    descricao:
-      "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa, certificação ISO/IEC 27001.",
-  },
-  hero: {
-    /* A manchete é a mesma da home oficial (hero.headline): é o título do
-       pitch. O que muda é o subtexto — o oficial diz "trabalho operacional de
-       suprimentos", que é o recorte de Compras. 19 palavras, no teto de 20. */
-    subtext: "Nove módulos de agentes de IA para Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa.",
-  },
-  /* Cartão do Nexo em "As 3 soluções": só a promessa e os chips mudam. Os
-     nove módulos em nome curto — decisão do Rodrigo em 2026-09-04. */
-  nexoCard: {
-    promise: "Orquestrador de gestão de gastos",
-    scope: ["Compras", "Ativos", "Logístico", "NF", "Contas a Pagar", "Varejo", "Orçamento", "Contratos", "Homologação"],
-  },
 } as const;
 
 /**
@@ -291,9 +270,11 @@ export const solutions = {
     {
       id: "nexo",
       name: "Nexo",
-      promise: "Agentes de IA para Compras",
+      /* 2026-09-04: era "Agentes de IA para Compras" com os cinco agentes em
+         chips. O Nexo é o orquestrador; os nove módulos entram em nome curto. */
+      promise: "Orquestrador de gestão de gastos",
       platform: "Microsoft · Desk Manager",
-      scope: ["RC", "RFP", "Spend", "Onboarding", "Contratos"],
+      scope: ["Compras", "Ativos", "Logístico", "NF", "Contas a Pagar", "Varejo", "Orçamento", "Contratos", "Homologação"],
       href: "/nexo",
       image: "/agent-contratos.jpg",
       imageAlt: "Mãos revisando e anotando um documento impresso",
@@ -353,13 +334,6 @@ export const nexo = {
     alt: "Tela do Nexo aberta dentro do Desk Manager, com a abertura de requisição de compra e os agentes na navegação lateral",
     caption: "Nexo rodando dentro do Desk Manager",
   },
-  agents: [
-    { code: "RC", name: "Requisição de Compra" },
-    { code: "RFP", name: "Cotação e concorrência" },
-    { code: "Spend", name: "Análise de gastos" },
-    { code: "Onboarding", name: "Homologação de fornecedor" },
-    { code: "Contratos", name: "Ciclo contratual" },
-  ],
   /** O processo de compras de ponta a ponta (deck IAgentics_DeskManager_Promo,
    *  slide 3), com um print real por passo (slides 4-13). Substituiu o índice
    *  de agentes como seção principal da página em 2026-08-14. */
@@ -1105,50 +1079,6 @@ export const photoCredits = [
 --------------------------------------------------------------------------- */
 
 export const nexoPage = {
-  hero: {
-    /**
-     * A capa virou o lockup da marca: o ícone do app ao lado desta palavra, os dois
-     * em escala de display (ver Cover.tsx). Substituiu a antiga headline em duas
-     * linhas ("Agentes de IA / para Compras") a pedido do time - a frase que
-     * descrevia o produto continua abaixo, em `subtext`.
-     *
-     * Caixa mista de propósito, mesmo grande na tela: é a mesma grafia usada no
-     * resto do site (título da página, sidebar), não um SHOUT em caixa alta.
-     */
-    marca: "Nexo",
-    subtext:
-      "Cinco agentes de IA, conduzindo seus processos de compras, com governança, segurança e gestão dos dados.",
-    /**
-     * Esta capa usava a mesma frase da hero da home. Quando a home passou a exibir
-     * só "Nexo", a frase ficou morando aqui em vez de sumir junto: a instrução era
-     * sobre a hero, e esta é outra página. Se quiser tirar daqui também, é só apagar
-     * esta linha e o <p> em Cover.tsx.
-     */
-    platform: "Nexo, o app de Compras, dentro do Desk Manager",
-  },
-
-  /**
-   * O palco de telas da capa: três prints reais do produto, empilhados em perspectiva
-   * com deriva lenta (ver .palco-nexo em globals.css e o bloco correspondente em
-   * Cover.tsx). Puramente decorativo - a manchete carrega o significado, então o
-   * conjunto inteiro é aria-hidden e os `alt` ficam vazios de propósito.
-   *
-   * Ordem de empilhamento (fundo -> frente): classificação (lista) -> RFQ (central de
-   * cotações) -> relatório (modal com a recomendação verde, a tela mais "viva").
-   */
-  heroStage: {
-    prints: [
-      { src: "/nexo-hero-classificacao-v1.png", alt: "" },
-      { src: "/nexo-hero-rfq-v1.png", alt: "" },
-      { src: "/nexo-hero-relatorio-v1.png", alt: "" },
-    ],
-  },
-
-  /* As telas do produto aparecem em UM lugar só: o painel do índice "Entrega
-     embarcada". A sequência de pranchas que existia abaixo do vídeo mostrava
-     exatamente as mesmas imagens e foi removida. `agent` amarra cada tela ao código
-     do agente em nexo.agents; preencha `src` e a tela entra no painel sozinha. */
-
   differentiators: {
     title: "Por que o Nexo é diferente",
     items: [
@@ -1210,22 +1140,20 @@ export const nexoPage = {
 
   /* ------------------------------------------------------------------------
      Fase 1 do alinhamento ao pitch Hacktown (docs/PLANO-ALINHAMENTO-PITCH.md).
-     Três blocos novos, verbatim dos slides 5, 6 e 8–11. Renderizados primeiro
-     em /preview/nexo (noindex, fora do sitemap) para aprovação do Rodrigo; só
-     depois substituem a /nexo.
+     Três blocos novos, verbatim dos slides 5, 6 e 8–11. Nasceram em /preview/nexo
+     para aprovação do Rodrigo e viraram a /nexo oficial em 2026-09-04.
      ------------------------------------------------------------------------ */
 
   /**
-   * Capa da prévia (pedido do Rodrigo em 2026-09-02): "o mapa do orquestrador
-   * com layout e animação similar à home, na hero, e o texto refletindo o
-   * orquestrador, não só o módulo de Compras".
+   * Capa (oficial desde 2026-09-04; nasceu como prévia a pedido do Rodrigo:
+   * "o mapa do orquestrador com layout e animação similar à home, na hero, e o
+   * texto refletindo o orquestrador, não só o módulo de Compras").
    *
-   * `hero` (acima) continua intacto — é o que a /nexo oficial usa até a troca.
    * A headline é o título do slide 5, em duas linhas como a da home; o subtexto
    * é composto só com fatos do pitch (nove módulos, governança, ambiente do
    * cliente); a linha de plataforma é a Camada 3 do slide 6.
    */
-  heroOrquestrador: {
+  hero: {
     headline: ["Nexo orquestra", "toda a gestão de gastos"],
     /* 22 palavras. Teto da hero é 20; aqui a marca entra na frase e vale a
        exceção — sem "Nexo" no subtexto a headline seria a única menção. */

@@ -95,18 +95,17 @@ instagram.com/iagentics
 Nenhuma menção a Academy, cursos ou educação. O Nexo é o produto; a parceria
 com o Pecege/Solution é linha paralela e não entra no pitch de investimento.
 
-## Onde o site diverge (levantado em 2026-09-01)
+## Onde o site diverge
 
-Cruzamento com `lib/content.ts` na data. **Nada disto foi alterado** — é o
-mapa para quando a revisão de copy for pedida.
+Levantado em 2026-09-01; **fechado em grande parte em 2026-09-04** (Fases 1 e 2
+do plano). O que resta:
 
-- Dos nove módulos do Nexo, o site descreve só o de **Compras** (RC, RFP,
-  Contratos, Homologação). Ausentes: Spend Logístico, Benchmark Varejo, Spend
-  via NF, Orçamento, Gestão de Ativos, Contas a Pagar.
-- **Time** não aparece no site — nenhum dos três nomes, nem o lastro (Bayer,
-  Anhembi, Warner).
-- **"90 dias"** e o **comparativo com concorrentes** não aparecem.
-- Os números de mercado (146.848 / 137 mil / 93%) e de problema (57% / 70%)
-  não aparecem.
-- O que já bate: título da home, ISO 27001, Anthropic/Claude, Microsoft, Desk
-  Manager, telefone.
+- **Time** não aparece no site — depende das três fotos (Fase 3).
+- **Metadados** de title/description por página ainda são os antigos (Fase 4).
+- **Gestão de Ativos e Contas a Pagar** aparecem só com o nome: o pitch não os
+  descreve em slide nenhum.
+- **Orçamento** está sem print na seção "na prática".
+
+O que já bate: hero e `/nexo` com o orquestrador de nove módulos, "O problema"
+com 57%/70% e fonte, comparativo contra "SaaS de Compras" com "90 dias", ISO
+27001, Anthropic/Claude, Microsoft, Desk Manager, telefone.

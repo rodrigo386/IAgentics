@@ -667,120 +667,6 @@
    works on every line regardless of its real length.
 --------------------------------------------------------------------------- */
 
-.agent-pulse,
-.agent-core,
-.agent-ping,
-.hub-ring {
-  opacity: 0;
-}
-
-.agent-core,
-.agent-ping,
-.hub-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-/* The Nexo tile hides the first ~38% of every line and the node circle hides the last
-   ~10%, so only the middle half of the travel is ever on screen. The dash is sized
-   against that visible band, not against the whole line - a shorter comet spends most
-   of its trip behind opaque geometry and reads as a flicker. */
-.agent-pulse {
-  stroke-dasharray: 16 84;
-}
-
-/* Resting colour of the label; the loop lifts it to --fg on the agent's turn. */
-.agent-label {
-  color: var(--fg-muted);
-}
-
-/* The task travels out to the agent, waits while it works, and carries the
-   result back. Both ends vanish behind opaque geometry - the Nexo tile at one
-   end, the node circle at the other - so it reads as entering and leaving. */
-@keyframes agent-pulse {
-  0% {
-    stroke-dashoffset: 0;
-    opacity: 0;
-  }
-  1% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-  /* arrives at the agent */
-  7% {
-    stroke-dashoffset: -84;
-    opacity: 1;
-  }
-  /* waits there while the agent works - the core is lit across this stretch */
-  13% {
-    stroke-dashoffset: -84;
-    opacity: 1;
-  }
-  /* carries the result home */
-  19% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-  20%,
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 0;
-  }
-}
-
-/* The agent lights up while it holds the task. A separate circle rather than a
-   restyled node: the node already owns a transform for its entry pop, and two
-   animations fighting over one transform is the bug this file keeps re-learning. */
-@keyframes agent-core {
-  0%,
-  6% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  8%,
-  13% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  16%,
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-
-@keyframes agent-ping {
-  0%,
-  6% {
-    opacity: 0;
-    transform: scale(1);
-  }
-  7% {
-    opacity: 0.9;
-    transform: scale(1);
-  }
-  16%,
-  100% {
-    opacity: 0;
-    transform: scale(3);
-  }
-}
-
-@keyframes agent-label {
-  0%,
-  5% {
-    color: var(--fg-muted);
-  }
-  8%,
-  13% {
-    color: var(--fg);
-  }
-  17%,
-  100% {
-    color: var(--fg-muted);
-  }
-}
-
 /* Fires once per returning result - five times per lap, from one 1.5s loop.
    0% MUST be invisible: `backwards` fill holds this frame throughout the delay, so a
    ring that starts at opacity 0.5 would sit frozen around the tile until the first
@@ -802,33 +688,12 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .agent-pulse {
-    animation: agent-pulse 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite backwards;
-  }
-
-  .agent-core {
-    animation: agent-core 7.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite backwards;
-  }
-
-  .agent-ping {
-    animation: agent-ping 7.5s cubic-bezier(0.16, 1, 0.3, 1) infinite backwards;
-  }
-
-  .agent-label {
-    animation: agent-label 7.5s ease-in-out infinite backwards;
-  }
-
-  .hub-ring {
-    animation: hub-receive 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.125s infinite
-      backwards;
-  }
-}
 
 /* ---------------------------------------------------------------------------
-   ORQUESTRADOR - ciclo de execução com NOVE módulos (capa da /nexo)
+   ORQUESTRADOR - ciclo de execução com NOVE módulos (hero da home e da /nexo)
 
-   Mesma coreografia do grafo da home (EXECUTION CYCLE acima): o Nexo entrega
+   Coreografia herdada do grafo dos cinco agentes que a home teve até
+   2026-09-04 (o keyframe hub-receive, logo acima, é o que sobrou dele): o Nexo entrega
    uma tarefa a um módulo, o módulo acende enquanto trabalha, o resultado volta,
    e a vez passa. A diferença é aritmética: nove voltas por lap em vez de cinco,
    então cada janela é 11,1% do lap e não 20% — e keyframe é percentual, logo
