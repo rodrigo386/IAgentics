@@ -2,24 +2,38 @@
 
 > Automações Inteligentes para Compras e Gestão de Gastos. A IAgentics coloca agentes de IA para rodar dentro da plataforma que sua empresa já usa; os dados permanecem no servidor da sua empresa. Site em português do Brasil (pt-BR).
 
-A IAgentics tem três soluções: Nexo (agentes de IA para Compras), IAgentics Academy (escola de negócios de IA) e IA Spend Lab (consultoria de implementação de IA em Compras). Parcerias: Microsoft AI Cloud Partner, Oracle, SAP, Desk Manager e Anthropic (Claude Partner Network).
+A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAgentics Academy (escola de negócios de IA) e IA Spend Lab (consultoria de implementação de IA em Compras). Parcerias: Microsoft AI Cloud Partner, Oracle, SAP, Desk Manager e Anthropic (Claude Partner Network). Certificação ISO/IEC 27001.
 
 ## Soluções
 
-- [Nexo](https://iagentics.com.br/nexo): cinco agentes de IA conduzindo o processo de compras de ponta a ponta — abertura de requisição (RC), triagem e aprovação por alçada, RFQ com seleção de fornecedores, propostas via Portal do Fornecedor, negociação com suporte de IA, aprovação final e pedido de compras no ERP. Roda dentro do Desk Manager, integra ao ERP e ao e-procurement já em uso, e os dados sensíveis não saem do ambiente do cliente.
-- [IAgentics Academy](https://iagentics.com.br/academy): escola de negócios de IA — formações in company, mentorias, imersões e plataforma online de cursos. Trilhas práticas de Fundamentos, Assistentes e Agentes de IA.
+- [Nexo](https://iagentics.com.br/nexo): orquestrador de nove módulos de agentes de IA para gestão de gastos — Compras, Gestão de Ativos, Otimização de Spend Logístico, Spend via dados da NF, Contas a Pagar, Benchmark de Preços de Varejo, Orçamento, Contratos e Homologação de Fornecedores. Construído em três camadas: os agentes, a orquestração com o Claude (Anthropic) e o ambiente do cliente. Roda embarcado, integra ao ERP em uso, e os dados sensíveis não saem do servidor do cliente. O módulo de Compras conduz o processo de ponta a ponta: requisição (RC), triagem e aprovação por alçada, RFQ com seleção de fornecedores, propostas via Portal do Fornecedor, negociação com suporte de IA, aprovação final e pedido no ERP.
+- [IAgentics Academy](https://iagentics.com.br/academy): escola de negócios de IA — formações in company, mentorias e imersões. Trilhas práticas de Fundamentos, Assistentes e Agentes de IA.
 - [IA Spend Lab](https://iagentics.com.br/spend-lab): consultoria de implementação de IA em Compras — diagnóstico de maturidade e governança, design e mapeamento de fluxos, transformação digital e formação aplicada em programa de 8 semanas.
 
-## Plataforma de cursos
+## Formação online
 
-- [Cursos](https://iagentics.com.br/cursos): catálogo da IAgentics Academy — formações de IA aplicada gravadas por quem implementa, com progresso salvo por aula e certificado ao concluir. Assinatura única de R$ 39,90/mês, sem fidelidade.
-- [Verificação de certificados](https://iagentics.com.br/certificados): validação online dos certificados emitidos pela plataforma, por código.
+- [Cursos](https://iagentics.com.br/cursos): as formações online da IAgentics serão oferecidas na [Solution](https://plataformasolution.com.br/), a plataforma de educação online do Pecege — a mesma organização por trás dos MBAs USP/Esalq. A página recebe inscrições para a lista de espera do lançamento. A plataforma própria de cursos da IAgentics foi desligada em agosto de 2026, quando a parceria foi fechada.
 
 ## Resultados publicados
 
 - Indústria química brasileira (Compras e Jurídico): −50% no ciclo de contratos — o agente revisa e sinaliza cláusulas, analisa riscos pela política interna e sugere melhorias.
 - Indústria de alimentos brasileira (Compras): −90% do tempo na análise de gastos — o agente classifica mais de 10 mil linhas por categoria no modelo UNSPSC e aprende com o feedback do time.
+- Spend Logístico: mais de 900 cenários de rota, ocupação e FTL vs. LTL comparados por corte.
+- Benchmark de Preços de Varejo: 28% de dispersão de preço identificada no mesmo produto entre lojas.
+- Spend via NF: US$ 216 mil de gasto endereçável mapeados em 6 oportunidades de consolidação.
+
+## Diferenciais
+
+- Os dados ficam no ERP e no servidor do cliente, não na base de um fornecedor.
+- Sem licença de plataforma.
+- Agente operando em 90 dias, contra 12 a 18 meses de implantação típicos de um SaaS de Compras.
+- Certificação ISO/IEC 27001.
+
+## Artigos
+
+- [Artigos](https://iagentics.com.br/artigos): textos sobre IA aplicada a Compras — ROI para o CFO, os sete passos do processo de compras com IA, a diferença entre agente de IA em Compras e agentic commerce, guia de tail spend em português, biblioteca de prompts para Compras e como começar.
 
 ## Institucional
 
-- [Página inicial](https://iagentics.com.br/): apresentação das três soluções, parcerias e formulário de contato ("Vamos conversar").
+- [Página inicial](https://iagentics.com.br/): a proposta de valor, o problema (57% das horas de trabalho automatizáveis; 70% do custo em gastos externos com fornecedores), as três soluções e o formulário de contato.
+- [Política de privacidade](https://iagentics.com.br/privacidade): quais dados o site coleta, com quem compartilha e como pedir remoção, conforme a LGPD.

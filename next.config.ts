@@ -20,7 +20,38 @@ const nextConfig: NextConfig = {
     return [{ source: "/planos", destination: "/cursos", permanent: true }];
   },
   async headers() {
+    /* Link headers para descoberta por agentes (RFC 8288), pedido de
+       2026-09-06 a partir de um verificador de "agent readiness".
+
+       DOIS rels, e só dois, porque só dois têm alvo REAL:
+         - describedby → /llms.txt, a descrição do site para agentes;
+         - privacy-policy → /privacidade.
+       Ambos são relation types registrados na IANA e ambos respondem 200.
+
+       O que ficou DE FORA de propósito: `api-catalog`, `service-desc` e
+       `service-doc`, que o verificador também aceita. A IAgentics não expõe
+       API pública — anunciar um catálogo que não existe passa no teste
+       automático e mente para o agente que seguir o link. É a mesma regra que
+       tirou o `cursosJsonLd` do site em 2026-08-28: não anunciar o que não
+       está lá. Se um dia houver API, o rel entra junto com ela.
+
+       Aplicado a páginas HTML, não a assets: a primeira entrada é a home, a
+       segunda são os caminhos sem ponto (logo, sem extensão) fora de /_next e
+       /api. Um Link header em cima de um JPEG não serve a ninguém. */
+    /* UM header com os dois valores separados por vírgula, não dois headers
+       com a mesma chave: o Next deduplica por `key` e só o último sobreviveria
+       (medido — a resposta vinha só com privacy-policy). A RFC 8288 aceita as
+       duas formas; esta é a que atravessa o framework. */
+    const descoberta = [
+      {
+        key: "Link",
+        value: '</llms.txt>; rel="describedby"; type="text/plain", </privacidade>; rel="privacy-policy"',
+      },
+    ];
+
     return [
+      { source: "/", headers: descoberta },
+      { source: "/:caminho((?!_next/|api/)[^.]*)", headers: descoberta },
       {
         source: "/plataforma/:path*.mp4",
         headers: [

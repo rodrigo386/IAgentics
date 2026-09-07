@@ -48,6 +48,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - **Dado estruturado sai de `lib/seo.ts`**, sempre derivado de `lib/content.ts` — JSON-LD que não bate com a página é penalizado. O `cursosJsonLd` foi removido em 2026-08-28 junto com o catálogo: anunciar curso que não está à venda é exatamente o caso que a regra proíbe.
 - **Página nova pública?** Entra em `ROTAS_SITEMAP`.
 - As 13 URLs do sitemap foram **indexadas pelo Google em 2026-08-28**.
+- **Descoberta por agentes**: as páginas HTML devolvem `Link` header (RFC 8288) com `describedby` → `/llms.txt` e `privacy-policy` → `/privacidade` (`next.config.ts`). **Um header só, valores separados por vírgula** — o Next deduplica por chave e dois headers `Link` fariam o primeiro sumir. **Nunca anunciar `api-catalog`/`service-desc`/`service-doc`**: não há API pública, e rel sem alvo real é a mesma mentira do `cursosJsonLd`. O `/llms.txt` descreve o site ATUAL — ele ficou desatualizado por uma semana depois do desligamento da plataforma (anunciava certificados e assinatura), e `e2e/descoberta-agentes.spec.ts` existe para avisar.
 - O **robots.txt que o robô lê não é só o nosso**: o Cloudflare injeta o "Managed Content Signals" na frente, hoje com `Disallow: /` para ClaudeBot/GPTBot/Google-Extended. Isso não afeta o Googlebot, mas bloqueia citação em assistentes de IA.
 
 ## Medição de visitas
@@ -58,7 +59,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Testes
 
-- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 26, **workers: 1**).
+- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 31, **workers: 1**).
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)
