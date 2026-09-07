@@ -29,16 +29,30 @@ export async function GET(req: Request) {
     });
   }
 
-  const origem = new URL(req.url).origin;
+  /* LOOPBACK, não a origem pública. Usar `new URL(req.url).origin` derrubou a
+     rota em produção com "SSL routines: wrong version number": atrás do
+     Cloudflare a URL chega como https, mas o processo escuta HTTP na porta
+     interna — o fetch abria TLS contra uma porta em texto puro. Local passava,
+     porque lá origem pública e processo são o mesmo http://localhost:3000, e o
+     erro só apareceu no deploy.
+
+     127.0.0.1 na PORT do processo é o endereço certo em qualquer ambiente, e
+     de quebra a busca não sai para a internet nem paga a volta pelo CDN. */
+  const origem = `http://127.0.0.1:${process.env.PORT ?? 3000}`;
   const markdown = await markdownDaRota(rota, async (r) => {
     /* Accept explícito de HTML: sem ele, o fetch herdaria o padrão e o
        middleware poderia reescrever esta busca de volta para cá — um laço.
        O header sentinela é a segunda trava, caso o padrão mude. */
-    const resposta = await fetch(`${origem}${r}`, {
-      headers: { Accept: "text/html", "x-markdown-render": "1" },
-      cache: "no-store",
-    });
-    return resposta.ok ? resposta.text() : null;
+    try {
+      const resposta = await fetch(`${origem}${r}`, {
+        headers: { Accept: "text/html", "x-markdown-render": "1" },
+        cache: "no-store",
+      });
+      return resposta.ok ? resposta.text() : null;
+    } catch (erro) {
+      console.error("[markdown] falha ao buscar", r, erro instanceof Error ? erro.message : erro);
+      return null;
+    }
   });
 
   if (!markdown) {
