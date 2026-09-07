@@ -120,6 +120,25 @@ export function todosOsArtigos(): Artigo[] {
     .sort((a, b) => b.data.localeCompare(a.data) || a.ordem - b.ordem);
 }
 
+/**
+ * O corpo do artigo em MARKDOWN, como foi escrito — sem frontmatter e sem
+ * passar pelo renderizador.
+ *
+ * Existe para a negociação de conteúdo (lib/markdown-agentes.ts): quando um
+ * agente pede `text/markdown`, servir o arquivo original é melhor que
+ * converter de volta o HTML que saiu dele. Devolve null para rascunho ou slug
+ * inexistente, pela mesma porta que o resto do módulo: `status: publicado` é
+ * o portão, e ele não pode ter uma saída lateral.
+ */
+export function corpoMarkdown(slug: string): string | null {
+  if (!todosOsArtigos().some((a) => a.slug === slug)) return null;
+  try {
+    return matter(readFileSync(join(DIRETORIO, `${slug}.md`), "utf8")).content.trim();
+  } catch {
+    return null;
+  }
+}
+
 /** Só os slugs publicados. É a lista branca que o contador de visitas usa para
  *  aceitar "/artigos/<slug>" como rota própria sem deixar um POST forjado
  *  inventar linhas novas em page_views (ver lib/estatisticas.ts). */

@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
+ * Middleware: negociação de markdown para agentes, e Basic Auth do /admin.
+ *
  * Basic Auth do /admin.
  *
  * Vive no MIDDLEWARE, não em cada página: assim nenhuma rota sob /admin pode
@@ -16,6 +18,41 @@ import { NextResponse, type NextRequest } from "next/server";
  * como um deploy sem variável vira vazamento de dado pessoal.
  */
 export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  /* Negociação de conteúdo (RFC 9110 §12): quem pede `Accept: text/markdown`
+     recebe a página em markdown; navegador, que pede text/html, não vê
+     diferença nenhuma.
+     
+     A checagem é por substring e não por parse do Accept com qualidade
+     relativa: agentes mandam `text/markdown` puro ou no topo da lista, e um
+     parser de q-values aqui seria precisão que ninguém exercita. O que
+     importa é não capturar o navegador — e navegador não pede markdown.
+     
+     `x-markdown-render` é a trava anti-laço: é o próprio conversor buscando o
+     HTML desta página, e ele não pode ser mandado de volta para si mesmo. */
+  if (
+    !pathname.startsWith("/admin") &&
+    !req.headers.get("x-markdown-render") &&
+    (req.headers.get("accept") ?? "").includes("text/markdown")
+  ) {
+    /* A rota viaja em HEADER, não em query string. Num rewrite, o Route
+       Handler enxerga a URL ORIGINAL em `request.url` — a query que o
+       middleware acrescenta ao destino não chega lá. O sintoma foi silencioso
+       e uniforme: /nexo, /cursos e todos os artigos devolviam a home, porque
+       `searchParams.get("rota")` vinha null e caía no padrão "/".
+       `request.headers` é o canal que o Next garante do middleware ao
+       handler. */
+    const cabecalhos = new Headers(req.headers);
+    cabecalhos.set("x-md-rota", pathname);
+
+    const destino = req.nextUrl.clone();
+    destino.pathname = "/api/markdown";
+    return NextResponse.rewrite(destino, { request: { headers: cabecalhos } });
+  }
+
+  if (!pathname.startsWith("/admin")) return NextResponse.next();
+
   const usuario = process.env.ADMIN_USUARIO;
   const senha = process.env.ADMIN_SENHA;
 
@@ -57,4 +94,20 @@ function confere(base64: string, usuario: string, senha: string): boolean {
   return diferenca === 0;
 }
 
-export const config = { matcher: ["/admin/:path*", "/admin"] };
+/* O matcher cobre /admin (Basic Auth) e as rotas HTML públicas (negociação de
+   markdown). Assets e /api ficam de fora: nem um nem outro tem versão em
+   markdown, e rodar middleware em cada imagem é custo sem retorno. */
+export const config = {
+  matcher: [
+    "/admin/:path*",
+    "/admin",
+    "/",
+    "/nexo",
+    "/academy",
+    "/cursos",
+    "/spend-lab",
+    "/privacidade",
+    "/artigos",
+    "/artigos/:slug",
+  ],
+};

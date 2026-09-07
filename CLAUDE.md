@@ -49,6 +49,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - **Página nova pública?** Entra em `ROTAS_SITEMAP`.
 - As 13 URLs do sitemap foram **indexadas pelo Google em 2026-08-28**.
 - **Descoberta por agentes**: as páginas HTML devolvem `Link` header (RFC 8288) com `describedby` → `/llms.txt` e `privacy-policy` → `/privacidade` (`next.config.ts`). **Um header só, valores separados por vírgula** — o Next deduplica por chave e dois headers `Link` fariam o primeiro sumir. **Nunca anunciar `api-catalog`/`service-desc`/`service-doc`**: não há API pública, e rel sem alvo real é a mesma mentira do `cursosJsonLd`. O `/llms.txt` descreve o site ATUAL — ele ficou desatualizado por uma semana depois do desligamento da plataforma (anunciava certificados e assinatura), e `e2e/descoberta-agentes.spec.ts` existe para avisar.
+- **Markdown para agentes** (negociação de conteúdo): `Accept: text/markdown` na mesma URL devolve a página em markdown; navegador segue recebendo HTML. O `middleware.ts` reescreve para `/api/markdown`, e **a rota viaja em header (`x-md-rota`), nunca em query**: num rewrite o Route Handler enxerga a URL ORIGINAL, então a query do destino não chega — o sintoma é silencioso e uniforme (toda página devolvendo a home, com content-type e contagem corretos). Artigo é servido do `.md` original; o resto converte o `<main>` com turndown. `Vary: Accept` nos dois lados, senão o CDN serve a representação errada. Não usamos o "Markdown for Agents" do Cloudflare: **não existe no plano free**.
 - O **robots.txt que o robô lê não é só o nosso**: o Cloudflare injeta o "Managed Content Signals" na frente, hoje com `Disallow: /` para ClaudeBot/GPTBot/Google-Extended. Isso não afeta o Googlebot, mas bloqueia citação em assistentes de IA.
 
 ## Medição de visitas
@@ -59,7 +60,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Testes
 
-- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 31, **workers: 1**).
+- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 38, **workers: 1**).
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)

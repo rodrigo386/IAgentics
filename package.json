@@ -25,6 +25,7 @@
     "@phosphor-icons/react": "^2.1.7",
     "@remotion/google-fonts": "^4.0.508",
     "@remotion/player": "^4.0.508",
+    "@types/turndown": "^5.0.6",
     "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
     "gsap": "^3.13.0",
@@ -36,7 +37,8 @@
     "react-dom": "^19.1.1",
     "remotion": "^4.0.508",
     "server-only": "^0.0.1",
-    "simple-icons": "^16.28.0"
+    "simple-icons": "^16.28.0",
+    "turndown": "^7.2.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

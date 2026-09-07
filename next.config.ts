@@ -47,6 +47,12 @@ const nextConfig: NextConfig = {
         key: "Link",
         value: '</llms.txt>; rel="describedby"; type="text/plain", </privacidade>; rel="privacy-policy"',
       },
+      /* A MESMA URL responde HTML ou markdown conforme o Accept (ver
+         middleware.ts). Sem `Vary: Accept` aqui, um cache intermediário
+         guardaria a resposta HTML e a devolveria a um agente que pediu
+         markdown — e vice-versa. O header vai nos dois lados da negociação:
+         a resposta markdown também o declara. */
+      { key: "Vary", value: "Accept" },
     ];
 
     return [
