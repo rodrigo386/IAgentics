@@ -60,3 +60,24 @@ test("a duração fica escrita na página", async ({ page }) => {
      é informação que muda a decisão de assistir, e precisa estar em texto. */
   await expect(page.locator("#convite")).toContainText("7 min 31");
 });
+
+/* A posição do vídeo é decisão do Rodrigo (2026-09-09), não acidente de
+   montagem: ele saiu de junto do contato e passou a abrir a página, entre as
+   duas faixas de prova. Sem este teste, um reagrupamento de seções o devolveria
+   ao fim sem ninguém perceber. */
+test("o convite fica entre os apoiadores e a faixa de clientes", async ({ page }) => {
+  await page.goto("/academy");
+
+  const marcas = await page.locator("main > section").evaluateAll((secoes) =>
+    secoes.map((s) => {
+      if (s.id) return `#${s.id}`;
+      if (s.classList.contains("assurance-band")) return "clientes";
+      return s.textContent?.includes("Apoiadores") ? "apoiadores" : "outra";
+    }),
+  );
+
+  const posicao = (marca: string) => marcas.indexOf(marca);
+  expect(posicao("apoiadores"), "faixa de apoiadores não encontrada").toBeGreaterThanOrEqual(0);
+  expect(posicao("#convite")).toBe(posicao("apoiadores") + 1);
+  expect(posicao("clientes")).toBe(posicao("#convite") + 1);
+});

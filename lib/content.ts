@@ -731,10 +731,12 @@ export const academy = {
    * método co-construído com RH e liderança, os formatos, os clientes e o
    * convite para conversar.
    *
-   * Fica LOGO ANTES do contato, e a posição é argumento: o vídeo termina
-   * literalmente com "contate a gente", então ele desemboca no formulário. Pôr
-   * sete minutos e meio no topo competiria com as seções que dizem o mesmo em
-   * texto escaneável — quem chega quer varrer a página, não assistir.
+   * Fica ENTRE OS APOIADORES E OS CLIENTES desde 2026-09-09, a pedido do
+   * Rodrigo. Ele nasceu colado ao contato porque termina literalmente com
+   * "contate a gente" — esse encaixe foi trocado pela primeira dobra. O custo
+   * de subir sete minutos e meio é competir com as seções que dizem o mesmo em
+   * texto escaneável, e o que o compensa é `preload="none"`: quem só varre a
+   * página não baixa um byte do vídeo.
    *
    * A duração fica ESCRITA porque com `preload="none"` o navegador não sabe
    * quanto dura até alguém apertar play: o controle mostraria "0:00" para quem
