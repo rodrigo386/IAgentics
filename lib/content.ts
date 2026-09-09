@@ -702,6 +702,51 @@ export const academy = {
     ],
   },
 
+  /**
+   * O depoimento em vídeo da Gabriela Junqueira, Head de Compras na Santa Helena
+   * (gravado em 2026-08-29, 2min30, vertical). Fica na faixa de clientes, e a
+   * Santa Helena já está entre os logotipos que correm ali — o vídeo põe rosto e
+   * nome em cima de um logotipo que o visitante acabou de ver passar.
+   *
+   * É O ÚNICO DEPOIMENTO NOMEADO. Os três de `testimonials` são anônimos de
+   * propósito, e continuam. A diferença não é hierarquia: é que uma pessoa
+   * identificável falando com o rosto na câmera pesa diferente de uma frase sem
+   * dono, e por isso ele vem primeiro e maior, com os anônimos abaixo.
+   *
+   * AS LEGENDAS DESTE VÍDEO ESTÃO QUEIMADAS NA IMAGEM — o arquivo chegou assim,
+   * de uma edição para redes. Isso resolve para quem enxerga e não resolve para
+   * máquina nenhuma, então a transcrição vai em TEXTO na página. Não colocamos
+   * `<track>`: as legendas do navegador apareceriam por cima das gravadas, duas
+   * camadas do mesmo texto na mesma tela. É o oposto da escolha do convite, onde
+   * o arquivo não tinha legenda e o VTT era o jeito certo.
+   */
+  depoimento: {
+    eyebrow: "Depoimento",
+    nome: "Gabriela Junqueira",
+    cargo: "Head de Compras",
+    empresa: "Santa Helena",
+    /* Verbatim, a primeira frase do vídeo — ela abre dizendo exatamente o que o
+       resto dos 2min30 sustenta. */
+    citacao:
+      "Realmente é um treinamento que transforma e que foi construído dentro da nossa necessidade.",
+    duracao: "Vídeo · 2 min 30",
+    src: "/academy/depoimento-gabriela.mp4",
+    poster: "/academy/depoimento-gabriela-poster.jpg",
+    label:
+      "Depoimento em vídeo de Gabriela Junqueira, Head de Compras na Santa Helena, com 2 minutos e 30 segundos e legendas gravadas na imagem",
+    transcricaoLabel: "Ler a transcrição",
+    notaTranscricao:
+      "Transcrição gerada por reconhecimento de fala, com os nomes próprios revisados. As legendas deste vídeo estão gravadas na imagem.",
+    transcricao: [
+      "Realmente é um treinamento que transforma e que foi construído dentro da nossa necessidade. Eu tive o prazer de conhecer os meninos da IAgentics num treinamento aprofundado para compras, que foi incrível. E dali pra frente passei a ter bastante contato ali com Rodrigo, com Vinícius.",
+      "Eu tava começando um desafio aqui na Santa Helena, como head da área de suprimentos. E quando fiz o meu mapeamento, meu diagnóstico aqui da área, eu entendi que eu precisava trabalhar a parte de formação dos meus compradores com um olhar mais estratégico — um time que tava muito focado em emitir pedido. Meu time aqui brincava que era a padaria, achava que tinha que sair na hora ali a compra, e não tinha um olhar estratégico para como entregar isso de forma melhor para a empresa.",
+      "Nesse contexto, o Vinícius veio para dar uma trilha de formação para os nossos compradores, que tá só começando e que a gente já tá colhendo os benefícios. A gente tá desenvolvendo toda a parte de procedimento da área, documentando os procedimentos para poder otimizar os nossos processos e facilitar a forma como a gente trabalha no dia a dia. A gente tá contratando sistemas, o time tá trabalhando em projetos maiores, mais estratégicos, já com entregas de resultados muito bons em termos de redução de custo.",
+      "Tudo muito direcionado nessa primeira conversa que a gente teve com o Vinícius. Foi um dia de treinamento, de seis dias que a gente ainda tem pela frente, e já tá sendo transformador. É o reconhecimento para o time, da gente tá investindo no desenvolvimento deles, e como que isso vai impactar também a empresa.",
+      "Eu acho que uma coisa muito legal do treinamento foi trazer para a prática: como que o que a gente tá aprendendo aqui a gente leva para a transformação na prática, porque não adianta nada a gente ter o conceito e não trazer para o dia a dia. O Vinícius fez todo um processo de mapeamento, de conhecer cada um dos compradores para entender a necessidade, os pontos de oportunidade de desenvolvimento, e trabalhou a trilha em cima disso, alinhada comigo, para que a gente pudesse gerar o melhor resultado para a empresa e entregar algo que fizesse sentido, e não algo de prateleira. Foi realmente pensado e desenvolvido para a nossa necessidade.",
+      "Obrigada, meninos. E se precisarem trocar ideia aí, os novos clientes que tiverem interesse em contratar, estou à disposição para conversar também.",
+    ],
+  },
+
   /** Os quatro artigos ainda não têm destino neste site - falta o blog. */
   articles: {
     kicker: "Degustação livre",
@@ -731,12 +776,20 @@ export const academy = {
    * método co-construído com RH e liderança, os formatos, os clientes e o
    * convite para conversar.
    *
-   * Fica ENTRE OS APOIADORES E OS CLIENTES desde 2026-09-09, a pedido do
-   * Rodrigo. Ele nasceu colado ao contato porque termina literalmente com
-   * "contate a gente" — esse encaixe foi trocado pela primeira dobra. O custo
-   * de subir sete minutos e meio é competir com as seções que dizem o mesmo em
-   * texto escaneável, e o que o compensa é `preload="none"`: quem só varre a
-   * página não baixa um byte do vídeo.
+   * Fica LOGO ABAIXO DA CAPA desde 2026-09-09, a pedido do Rodrigo — logo
+   * depois da faixa da plataforma online, que é o último bloco do hero. Ele
+   * nasceu colado ao contato porque termina literalmente com "contate a gente";
+   * esse encaixe foi trocado pela primeira dobra. O custo de subir sete minutos
+   * e meio é competir com as seções que dizem o mesmo em texto escaneável, e o
+   * que o compensa é `preload="none"`: quem só varre a página não baixa um byte
+   * do vídeo.
+   *
+   * TOCA A 1,25× POR PADRÃO, a pedido do Rodrigo. O arquivo continua com 7min31
+   * de mídia — o que muda é o tempo que o visitante gasta, ~6min01, e é esse o
+   * número que a página anuncia, porque é ele que decide se alguém assiste. A
+   * velocidade fica ESCRITA na tela junto da duração: som de fala acelerada sem
+   * aviso lê como defeito de gravação, e quem preferir 1× troca no menu do
+   * próprio player.
    *
    * A duração fica ESCRITA porque com `preload="none"` o navegador não sabe
    * quanto dura até alguém apertar play: o controle mostraria "0:00" para quem
@@ -745,9 +798,13 @@ export const academy = {
    */
   convite: {
     eyebrow: "Convite",
-    titulo: "A escola, em sete minutos",
+    titulo: "A escola, em seis minutos",
     lead: "Como a IAgentics Academy monta um programa com a sua empresa: o diagnóstico com RH e liderança, os formatos que saem disso, e o que acontece depois da aula.",
-    duracao: "Vídeo · 7 min 31",
+    duracao: "Vídeo · 6 min a 1,25×",
+    /* O player nasce nesta velocidade; o visitante pode trocar. Ver o comentário
+       acima para o porquê de o número anunciado ser o tempo dele, não o do
+       arquivo. */
+    velocidade: 1.25,
     src: "/academy/academy-convite.mp4",
     poster: "/academy/academy-convite-poster.jpg",
     legendas: "/academy/academy-convite.vtt",

@@ -54,30 +54,53 @@ test("o vídeo e o poster respondem, e o poster é leve", async ({ request }) =>
   expect(video.headers()["content-type"]).toContain("video");
 });
 
-test("a duração fica escrita na página", async ({ page }) => {
+test("a duração e a velocidade ficam escritas na página", async ({ page }) => {
   await page.goto("/academy");
-  /* Com preload="none" o controle mostra 0:00 até o play: sete minutos e meio
-     é informação que muda a decisão de assistir, e precisa estar em texto. */
-  await expect(page.locator("#convite")).toContainText("7 min 31");
+  /* Com preload="none" o controle mostra 0:00 até o play: o tempo que a pessoa
+     vai gastar é informação que muda a decisão de assistir, e precisa estar em
+     texto. O número anunciado é o do visitante (6 min a 1,25×), não os 7min31 de
+     mídia — e a velocidade vai junto, porque fala acelerada sem aviso lê como
+     defeito de gravação. */
+  await expect(page.locator("#convite")).toContainText("6 min");
+  await expect(page.locator("#convite")).toContainText("1,25");
+});
+
+/* O `playbackRate` não tem atributo em HTML: se o componente client quebrar ou
+   deixar de ser client, o vídeo volta a 1× em silêncio e a página segue
+   anunciando 1,25×. */
+test("o vídeo nasce em 1,25×", async ({ page }) => {
+  await page.goto("/academy");
+  const velocidade = await page.locator("#convite video").evaluate((v: HTMLVideoElement) => v.playbackRate);
+  expect(velocidade).toBe(1.25);
 });
 
 /* A posição do vídeo é decisão do Rodrigo (2026-09-09), não acidente de
-   montagem: ele saiu de junto do contato e passou a abrir a página, entre as
-   duas faixas de prova. Sem este teste, um reagrupamento de seções o devolveria
-   ao fim sem ninguém perceber. */
-test("o convite fica entre os apoiadores e a faixa de clientes", async ({ page }) => {
+   montagem: ele saiu de junto do contato e passou a vir logo abaixo da capa,
+   que termina na faixa da plataforma online. Sem este teste, um reagrupamento
+   de seções o devolveria ao fim da página sem ninguém perceber. */
+test("o convite vem logo depois da capa, antes dos apoiadores", async ({ page }) => {
   await page.goto("/academy");
 
   const marcas = await page.locator("main > section").evaluateAll((secoes) =>
     secoes.map((s) => {
       if (s.id) return `#${s.id}`;
+      if (s.classList.contains("academy-cover")) return "capa";
       if (s.classList.contains("assurance-band")) return "clientes";
       return s.textContent?.includes("Apoiadores") ? "apoiadores" : "outra";
     }),
   );
 
   const posicao = (marca: string) => marcas.indexOf(marca);
-  expect(posicao("apoiadores"), "faixa de apoiadores não encontrada").toBeGreaterThanOrEqual(0);
-  expect(posicao("#convite")).toBe(posicao("apoiadores") + 1);
-  expect(posicao("clientes")).toBe(posicao("#convite") + 1);
+  expect(posicao("capa"), "capa não encontrada").toBe(0);
+  expect(posicao("#convite")).toBe(1);
+  expect(posicao("apoiadores")).toBe(2);
+  expect(posicao("clientes")).toBe(3);
+});
+
+/* A faixa da plataforma online é o bloco que o vídeo tem de seguir. Se ela sair
+   da capa, a posição pedida deixa de existir e este teste avisa. */
+test("a faixa da plataforma online fecha a capa, logo acima do vídeo", async ({ page }) => {
+  await page.goto("/academy");
+  const capa = page.locator("section.academy-cover");
+  await expect(capa).toContainText("Plataforma online de cursos");
 });

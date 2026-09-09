@@ -26,10 +26,11 @@ export const metadata: Metadata = {
  * Academy, com o conteúdo do site atual de vocês e o desenho deste.
  *
  * A ordem responde às perguntas de quem compra treinamento, nesta sequência:
- * o que é e para quantos já funcionou (capa), quem chancela (apoiadores), quem
- * é a escola pela própria voz (o convite em vídeo), quem contratou e o que dizem
- * (clientes e depoimentos), por que vocês e de que jeito (abordagem), o que
- * exatamente eu compro (cursos), e como falo com vocês (contato).
+ * o que é (capa, que termina na faixa da plataforma online), quem é a escola
+ * pela própria voz (o convite em vídeo), quem chancela (apoiadores), quem
+ * contratou e o que dizem (clientes e depoimentos, com o vídeo da Gabriela),
+ * por que vocês e de que jeito (abordagem), o que exatamente eu compro (cursos),
+ * e como falo com vocês (contato).
  *
  * A prova vem ANTES do argumento de propósito. Quem decide treinamento corporativo
  * gasta a primeira dúvida em "isso já funcionou em algum lugar?", não em filosofia
@@ -43,13 +44,16 @@ export default function Page() {
       <Nav />
       <main id="conteudo" className="pt-16">
         <AcademyCover />
-        <AcademyProof />
-        {/* O convite em vídeo entra entre as duas faixas de prova, a pedido do
-            Rodrigo (2026-09-09). Ele ficava colado no contato porque termina
-            com "contate a gente"; aqui ganha a primeira dobra em troca de
-            perder esse encaixe, e quem assistir até o fim rola por toda a
-            página antes de chegar ao formulário. */}
+        {/* O convite em vídeo vem LOGO ABAIXO DA CAPA, a pedido do Rodrigo
+            (2026-09-09): a faixa da plataforma online é o último bloco do hero,
+            e ele pediu o vídeo imediatamente depois dela. Fica FORA da capa e
+            não dentro: o hero é medido para caber em 100dvh (ver Cover.tsx), e
+            um vídeo lá dentro empurraria o manifesto para fora da dobra.
+
+            Ele ficava colado ao contato porque termina com "contate a gente";
+            esse encaixe foi trocado pela primeira dobra. */}
         <AcademyConvite />
+        <AcademyProof />
         <AcademyClients />
         <AcademyApproach />
         <AcademyFormats />

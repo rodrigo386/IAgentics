@@ -38,6 +38,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
   - **`status: "publicado"` é o portão.** Todo artigo nasce `rascunho`; rascunho não aparece na listagem, não entra no sitemap e responde **404** por URL direta (`dynamicParams = false`). Publicar é trocar uma palavra.
   - `/artigos` só entra no sitemap quando existe ao menos um publicado — listagem vazia anunciada ao Google é rastreamento gasto à toa.
   - `slug` do frontmatter tem que ser igual ao nome do arquivo, e a validação completa roda em `lib/artigos.test.ts` para **todos** os arquivos, inclusive rascunhos — o build só valida os publicados, então o teste é quem avisa cedo.
+- **Vídeo com voz nunca toca sozinho.** `AutoplayVideo` é para fundo mudo em loop; onde alguém fala, é `<video controls preload="none">` com poster — os megabytes só saem do servidor para quem aperta play, e a duração fica ESCRITA na página, porque até o play o controle mostra "0:00". Os dois vídeos da Academy (2026-09-09) mostram a regra da legenda: o convite do Vinícius chegou sem legenda e ganhou `<track>` VTT (transcrição local com Whisper, nomes próprios revisados); o depoimento da Gabriela chegou com legenda **queimada na imagem** e por isso NÃO leva `<track>` — duas camadas do mesmo texto na tela — e a transcrição vai em `<details>` de texto, que é o que leitor de tela, buscador e o markdown para agentes alcançam. O convite toca a **1,25× por padrão** (`velocidade` em `content.ts`, aplicada por `VideoComVelocidade`, o único client component nisso): `playbackRate` não tem atributo em HTML.
 - **"Nexo" em caixa mista nas strings** — em caps o leitor de tela soletra N-E-X-O. Peso visual vem da tipografia, não de maiúsculas.
 - Datas relativas viram absolutas em docs; commits em pt-BR no padrão `feat:`/`fix:`.
 
@@ -61,7 +62,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Testes
 
-- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 38, **workers: 1**).
+- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 50, **workers: 1**).
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)

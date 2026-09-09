@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { VideoComVelocidade } from "@/components/ui/VideoComVelocidade";
 import { academy } from "@/lib/content";
 
 /**
@@ -18,7 +19,13 @@ import { academy } from "@/lib/content";
  * Lab tem as legendas dentro do pixel: elas aparecem para quem vê, mas não são
  * texto que um leitor de tela alcance nem que um buscador leia. Aqui o VTT é um
  * arquivo à parte, então o navegador pode exibi-las, o usuário pode desligá-las
- * e a máquina pode lê-las.
+ * e a máquina pode lê-las. (O depoimento da Gabriela, na faixa de clientes,
+ * chegou com legenda gravada na imagem e por isso segue o caminho oposto: sem
+ * <track>, com a transcrição em texto na página.)
+ *
+ * A VELOCIDADE PADRÃO VEM DE content.ts e é o motivo de o player ser um
+ * componente client — `playbackRate` não tem atributo em HTML. Só o <video>
+ * atravessa a fronteira; esta seção continua renderizando no servidor.
  */
 export function AcademyConvite() {
   const { convite } = academy;
@@ -39,17 +46,14 @@ export function AcademyConvite() {
           {/* Fundo tinta atrás do quadro: se a proporção do arquivo não bater
               exatamente com 16:9, a sobra lê como moldura e não como falha. */}
           <div className="aspect-video w-full overflow-hidden border border-line bg-brand-ink">
-            <video
+            <VideoComVelocidade
               className="h-full w-full"
               src={convite.src}
               poster={convite.poster}
-              controls
-              preload="none"
-              playsInline
-            >
-              <track kind="captions" src={convite.legendas} srcLang="pt-BR" label="Português" default />
-              {convite.label}
-            </video>
+              legendas={convite.legendas}
+              label={convite.label}
+              velocidade={convite.velocidade}
+            />
           </div>
           <p className="mt-3 text-xs text-fg-subtle">{convite.notaLegendas}</p>
         </Reveal>

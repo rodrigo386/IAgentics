@@ -140,7 +140,77 @@ export function AcademyClients() {
           </h2>
         </Reveal>
 
-        <ul className="mt-12 grid grid-cols-1 gap-x-10 lg:grid-cols-3">
+        {/* O DEPOIMENTO NOMEADO VEM PRIMEIRO, e maior. Uma pessoa com rosto,
+            nome e empresa na tela pesa diferente de uma frase sem dono - os três
+            anônimos abaixo continuam valendo, mas como coro, não como abertura.
+            A Santa Helena acabou de passar na fileira de logotipos acima, então
+            o vídeo põe cara em cima de uma marca que o visitante já viu.
+
+            O vídeo é VERTICAL (9:16, gravado no celular) e por isso ocupa uma
+            coluna estreita em vez da largura do bloco: esticado, ele viraria
+            uma tira de 300px de altura no meio de uma faixa larga.
+
+            SEM <track>: as legendas deste arquivo estão gravadas na imagem, e
+            as do navegador apareceriam por cima delas. O que a máquina não
+            alcança no pixel está na transcrição em texto, logo abaixo. */}
+        <Reveal className="mt-12">
+          <div
+            className="grid grid-cols-1 gap-y-10 border-t pt-12 lg:grid-cols-12 lg:gap-x-14"
+            style={{ borderColor: "rgb(248 248 248 / 0.28)" }}
+          >
+            <div className="lg:col-span-3">
+              <div
+                className="aspect-[9/16] w-full max-w-[300px] overflow-hidden border bg-brand-ink"
+                style={{ borderColor: "rgb(248 248 248 / 0.28)" }}
+              >
+                <video
+                  className="h-full w-full object-cover"
+                  src={academy.depoimento.src}
+                  poster={academy.depoimento.poster}
+                  controls
+                  preload="none"
+                  playsInline
+                >
+                  {academy.depoimento.label}
+                </video>
+              </div>
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] opacity-60">
+                {academy.depoimento.duracao}
+              </p>
+            </div>
+
+            <div className="lg:col-span-9">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] opacity-70">
+                {academy.depoimento.eyebrow}
+              </p>
+              <blockquote className="mt-5 max-w-[22ch] text-3xl font-medium leading-tight tracking-[-0.03em] sm:text-4xl">
+                {academy.depoimento.citacao}
+              </blockquote>
+              <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] opacity-80">
+                {academy.depoimento.nome} · {academy.depoimento.cargo} · {academy.depoimento.empresa}
+              </p>
+
+              {/* A transcrição existe porque a legenda deste vídeo é pixel: sem
+                  ela, 2min30 de depoimento não seriam texto para leitor de tela,
+                  buscador ou agente - e este site serve markdown para agentes.
+                  Fechada por padrão para não empurrar as outras vozes página
+                  abaixo. */}
+              <details className="mt-8 max-w-[72ch]">
+                <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.16em] opacity-70 transition-opacity hover:opacity-100">
+                  {academy.depoimento.transcricaoLabel}
+                </summary>
+                <div className="mt-5 space-y-4 leading-relaxed opacity-85">
+                  {academy.depoimento.transcricao.map((paragrafo) => (
+                    <p key={paragrafo.slice(0, 32)}>{paragrafo}</p>
+                  ))}
+                </div>
+                <p className="mt-5 text-xs opacity-60">{academy.depoimento.notaTranscricao}</p>
+              </details>
+            </div>
+          </div>
+        </Reveal>
+
+        <ul className="mt-16 grid grid-cols-1 gap-x-10 lg:grid-cols-3">
           {academy.testimonials.items.map((item) => (
             <Reveal key={item.role + item.quote.slice(0, 24)}>
               <li
