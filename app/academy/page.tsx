@@ -5,6 +5,7 @@ import { AcademyProof } from "@/components/sections/academy/Proof";
 import { AcademyApproach } from "@/components/sections/academy/Approach";
 import { AcademyFormats } from "@/components/sections/academy/Formats";
 import { AcademyCourses } from "@/components/sections/academy/Courses";
+import { AcademyConvite } from "@/components/sections/academy/Convite";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/Footer";
 import { academy } from "@/lib/content";
@@ -48,6 +49,9 @@ export default function Page() {
         {/* O FAQ antes do contato: as objeções de quem compra treinamento
             corporativo, respondidas em texto que um assistente de IA cita. */}
         <SecaoFaq eyebrow={academy.faq.eyebrow} titulo={academy.faq.titulo} itens={academy.faq.itens} />
+        {/* O convite em vídeo desemboca no contato: ele termina com "contate a
+            gente", e o formulário é a próxima coisa na página. */}
+        <AcademyConvite />
         <Contact />
       </main>
       <Footer />

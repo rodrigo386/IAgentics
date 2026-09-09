@@ -725,6 +725,37 @@ export const academy = {
   /** Perguntas e respostas da lâmina "IAgentics Academy" do deck
    *  IAgentics_Clientes_V3.pptx. Mesmas regras do FAQ do Nexo: resposta que se
    *  sustenta sozinha, em uma ou duas frases, sem accordion. */
+  /**
+   * O convite em vídeo (2026-09-09). Gravação de 7min31 em que a escola se
+   * apresenta: a pergunta que abre ("quanto custa não ter conhecimento?"), o
+   * método co-construído com RH e liderança, os formatos, os clientes e o
+   * convite para conversar.
+   *
+   * Fica LOGO ANTES do contato, e a posição é argumento: o vídeo termina
+   * literalmente com "contate a gente", então ele desemboca no formulário. Pôr
+   * sete minutos e meio no topo competiria com as seções que dizem o mesmo em
+   * texto escaneável — quem chega quer varrer a página, não assistir.
+   *
+   * A duração fica ESCRITA porque com `preload="none"` o navegador não sabe
+   * quanto dura até alguém apertar play: o controle mostraria "0:00" para quem
+   * só passou o olho, e sete minutos é informação que muda a decisão de
+   * assistir.
+   */
+  convite: {
+    eyebrow: "Convite",
+    titulo: "A escola, em sete minutos",
+    lead: "Como a IAgentics Academy monta um programa com a sua empresa: o diagnóstico com RH e liderança, os formatos que saem disso, e o que acontece depois da aula.",
+    duracao: "Vídeo · 7 min 31",
+    src: "/academy/academy-convite.mp4",
+    poster: "/academy/academy-convite-poster.jpg",
+    legendas: "/academy/academy-convite.vtt",
+    label: "Convite em vídeo da IAgentics Academy, 7 minutos e 31 segundos, com legendas em português",
+    /* O aviso é honesto e fica na tela: as legendas saíram de reconhecimento
+       automático de fala e passaram por revisão dos nomes próprios, não por
+       revisão palavra a palavra. Quem depende delas merece saber. */
+    notaLegendas: "Legendas em português geradas por reconhecimento de fala, com os nomes próprios revisados.",
+  },
+
   faq: {
     eyebrow: "Perguntas frequentes",
     titulo: "O que perguntam sobre a Academy",
