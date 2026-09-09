@@ -54,15 +54,16 @@ test("o vídeo e o poster respondem, e o poster é leve", async ({ request }) =>
   expect(video.headers()["content-type"]).toContain("video");
 });
 
-test("a duração e a velocidade ficam escritas na página", async ({ page }) => {
+/* A linha de duração e a nota das legendas saíram a pedido do Rodrigo
+   (2026-09-09). O título passou a ser a única pista do tamanho antes do clique,
+   já que com preload="none" o controle mostra 0:00 até alguém apertar play. */
+test("o título diz o tamanho, e as duas linhas removidas não voltaram", async ({ page }) => {
   await page.goto("/academy");
-  /* Com preload="none" o controle mostra 0:00 até o play: o tempo que a pessoa
-     vai gastar é informação que muda a decisão de assistir, e precisa estar em
-     texto. O número anunciado é o do visitante (6 min a 1,25×), não os 7min31 de
-     mídia — e a velocidade vai junto, porque fala acelerada sem aviso lê como
-     defeito de gravação. */
-  await expect(page.locator("#convite")).toContainText("6 min");
-  await expect(page.locator("#convite")).toContainText("1,25");
+  const secao = page.locator("#convite");
+
+  await expect(secao).toContainText("seis minutos");
+  await expect(secao).not.toContainText("1,25");
+  await expect(secao).not.toContainText("reconhecimento de fala");
 });
 
 /* O `playbackRate` não tem atributo em HTML: se o componente client quebrar ou

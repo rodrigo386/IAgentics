@@ -39,7 +39,6 @@ export function AcademyConvite() {
             {convite.titulo}
           </h2>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{convite.lead}</p>
-          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-subtle">{convite.duracao}</p>
         </Reveal>
 
         <Reveal className="lg:col-span-7">
@@ -55,7 +54,6 @@ export function AcademyConvite() {
               velocidade={convite.velocidade}
             />
           </div>
-          <p className="mt-3 text-xs text-fg-subtle">{convite.notaLegendas}</p>
         </Reveal>
       </div>
     </section>

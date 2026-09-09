@@ -785,34 +785,27 @@ export const academy = {
    * do vídeo.
    *
    * TOCA A 1,25× POR PADRÃO, a pedido do Rodrigo. O arquivo continua com 7min31
-   * de mídia — o que muda é o tempo que o visitante gasta, ~6min01, e é esse o
-   * número que a página anuncia, porque é ele que decide se alguém assiste. A
-   * velocidade fica ESCRITA na tela junto da duração: som de fala acelerada sem
-   * aviso lê como defeito de gravação, e quem preferir 1× troca no menu do
-   * próprio player.
+   * de mídia; o visitante gasta ~6min01. Nem esse número nem a velocidade
+   * aparecem na tela — o Rodrigo pediu as duas linhas fora em 2026-09-09, junto
+   * com a nota das legendas. Quem quiser 1× troca no menu do próprio player, e
+   * quem quiser o tempo devolvido à página tem só que devolver `duracao` aqui e
+   * a linha correspondente em Convite.tsx.
    *
-   * A duração fica ESCRITA porque com `preload="none"` o navegador não sabe
-   * quanto dura até alguém apertar play: o controle mostraria "0:00" para quem
-   * só passou o olho, e sete minutos é informação que muda a decisão de
-   * assistir.
+   * O TÍTULO É O QUE SOBROU DIZENDO O TAMANHO: "em seis minutos". Sem a linha
+   * de duração, e com `preload="none"` fazendo o controle mostrar "0:00" até
+   * alguém apertar play, ele é a única pista de quanto o vídeo dura antes do
+   * clique. Quem mexer no título, saiba que está mexendo nisso também.
    */
   convite: {
     eyebrow: "Convite",
     titulo: "A escola, em seis minutos",
     lead: "Como a IAgentics Academy monta um programa com a sua empresa: o diagnóstico com RH e liderança, os formatos que saem disso, e o que acontece depois da aula.",
-    duracao: "Vídeo · 6 min a 1,25×",
-    /* O player nasce nesta velocidade; o visitante pode trocar. Ver o comentário
-       acima para o porquê de o número anunciado ser o tempo dele, não o do
-       arquivo. */
+    /* O player nasce nesta velocidade; o visitante pode trocar no menu dele. */
     velocidade: 1.25,
     src: "/academy/academy-convite.mp4",
     poster: "/academy/academy-convite-poster.jpg",
     legendas: "/academy/academy-convite.vtt",
     label: "Convite em vídeo da IAgentics Academy, 7 minutos e 31 segundos, com legendas em português",
-    /* O aviso é honesto e fica na tela: as legendas saíram de reconhecimento
-       automático de fala e passaram por revisão dos nomes próprios, não por
-       revisão palavra a palavra. Quem depende delas merece saber. */
-    notaLegendas: "Legendas em português geradas por reconhecimento de fala, com os nomes próprios revisados.",
   },
 
   faq: {
