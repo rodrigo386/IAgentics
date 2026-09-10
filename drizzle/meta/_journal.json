@@ -71,6 +71,13 @@
       "when": 1787999682287,
       "tag": "0009_lista_espera",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788998913363,
+      "tag": "0010_entradas",
+      "breakpoints": true
     }
   ]
 }

@@ -18,7 +18,7 @@ Site institucional em **pt-BR**.
 
 ## Stack
 
-Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (duas tabelas) · Remotion (vídeos) · vitest + Playwright.
+Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (três tabelas) · Remotion (vídeos) · vitest + Playwright.
 
 Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacional de e-mail.
 
@@ -57,12 +57,16 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 ## Medição de visitas
 
 - `page_views` é agregada por dia+rota, sem cookie, IP ou identificador. O normalizador (`lib/estatisticas.ts`) é quem limita a **cardinalidade** — o endpoint é público, então o que ele aceita define quantas linhas o banco ganha por dia.
+- **`entradas` (2026-09-09) NÃO é recorte de `page_views`**, e por isso é tabela separada: `page_views` conta toda visualização, `entradas` conta só a PRIMEIRA de cada documento — a chegada — com a origem. Quem entra pela busca e lê quatro páginas soma 4 e 1. A diferença entre os totais é a navegação dentro do site. O beacon manda `origem` só na primeira visualização; **`document.referrer` não muda em navegação de cliente do App Router**, então mandá-lo sempre contaria a mesma chegada uma vez por página lida.
+- **A origem viaja como HOSTNAME e é gravada como BALDE** (`normalizarOrigem`, seis valores fechados). Caminho e querystring do referrer nunca saem do navegador: é lá que moram termo de busca, id de campanha e token colado em link. Assistente de IA é checado ANTES de busca — `gemini.google.com` termina em `google.com` e cairia em "busca", apagando justamente o número que mede se a prontidão para agentes traz alguém.
+- **Tráfego interno**: `lib/nao-contar.ts` guarda uma marca em localStorage e o beacon respeita antes de qualquer coisa. O interruptor mora no **/admin**, atrás do Basic Auth, de propósito — botão desses numa página pública seria um jeito de qualquer um sumir do relatório. Vale por navegador/dispositivo, e **não alcança o Google Analytics** (`G-R26J12D835`), cuja exclusão é filtro de tráfego interno por IP no painel do GA4.
+- **A política de privacidade descreve isto** (`privacidade` em content.ts, item "De onde você chegou"). Mudou o que se coleta? Muda o texto junto — é a regra que o próprio arquivo registra.
 - **Cada artigo publicado é rota própria** desde 2026-08-31: saber qual texto traz tráfego decide a próxima pauta. A lista de slugs válidos vem de `slugsPublicados()` e é **injetada** no normalizador — sem ela, um POST forjado inventaria linhas com URLs falsas.
 - O painel diz na tela que conta **visitas, não visitantes**. Não remover esse aviso: sem ele o número vira apresentação errada.
 
 ## Testes
 
-- `npm run test:unit` (vitest, 75) · `npm run test:e2e` (Playwright, 50, **workers: 1**).
+- `npm run test:unit` (vitest, 82) · `npm run test:e2e` (Playwright, 55, **workers: 1**).
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)

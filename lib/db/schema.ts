@@ -30,6 +30,32 @@ export const pageViews = pgTable("page_views", {
 }, (t) => [primaryKey({ columns: [t.dia, t.rota] })]);
 
 /**
+ * ENTRADAS: de onde a pessoa veio, contadas uma vez por visita (2026-09-09).
+ *
+ * NÃO é um recorte de `page_views`, e por isso é tabela separada em vez de uma
+ * coluna lá. As duas medem coisas diferentes e nenhuma é derivável da outra:
+ * `page_views` conta TODA visualização de página, e `entradas` conta só a
+ * PRIMEIRA de cada documento — a chegada. Quem entra pela busca e clica em
+ * quatro páginas soma 4 em `page_views` e 1 em `entradas`, o que é justamente
+ * o que faz "quantos chegaram pelo Google" ser uma pergunta respondível.
+ *
+ * A diferença entre os dois totais é a navegação dentro do site, de graça.
+ *
+ * `origem` é um balde fechado (ver lib/estatisticas.ts), nunca a URL de quem
+ * indicou: o beacon manda só o hostname do referrer, sem caminho nem
+ * querystring. Cardinalidade máxima: |rotas| × 6 por dia.
+ *
+ * `rota` aqui é a PÁGINA DE ENTRADA, e é o cruzamento que decide pauta: um
+ * artigo que aparece com origem "busca" está trazendo gente de fora.
+ */
+export const entradas = pgTable("entradas", {
+  dia: date("dia").notNull(),
+  rota: text("rota").notNull(),
+  origem: text("origem").notNull(),
+  visitas: integer("visitas").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.rota, t.origem] })]);
+
+/**
  * Lista de espera do lançamento das formações na Solution (2026-08-29).
  *
  * É a PRIMEIRA tabela do site com dado pessoal desde o desligamento da

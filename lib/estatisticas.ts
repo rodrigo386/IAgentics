@@ -1,3 +1,5 @@
+import { site } from "@/lib/content";
+
 /**
  * Normalização de rota para o contador de visitas do site.
  *
@@ -45,4 +47,72 @@ export function normalizarRota(bruta: unknown, slugsDeArtigo: readonly string[] 
 
   if ((ROTAS_RASTREADAS as readonly string[]).includes(primeiroSegmento)) return primeiroSegmento;
   return ROTA_OUTRAS;
+}
+
+/**
+ * De ONDE a visita entrou — o balde, nunca a URL.
+ *
+ * O beacon manda só o HOSTNAME do `document.referrer`: sem caminho e sem
+ * querystring, então nada que possa carregar dado pessoal (um termo de busca,
+ * um id de campanha, um token colado num link) sai do navegador. O que esta
+ * função faz com o hostname é reduzi-lo a um dos baldes abaixo, e é o balde
+ * que vai para o banco.
+ *
+ * A LISTA É FECHADA, pela mesma razão que a de rotas: o endpoint é público, e
+ * o que ele aceita define quantas linhas a tabela ganha por dia. Hostname que
+ * não reconhecemos vira "indicacao" — nunca uma linha nova.
+ *
+ * ORDEM IMPORTA. Assistente de IA é checado ANTES de busca porque
+ * `gemini.google.com` termina em `google.com` e cairia em "busca", apagando
+ * exatamente o número que este site tem motivo para querer ver: se o trabalho
+ * de prontidão para agentes (llms.txt, markdown negociado) traz alguém.
+ */
+export const ORIGENS = ["direto", "busca", "ia", "social", "indicacao", "site"] as const;
+export type Origem = (typeof ORIGENS)[number];
+
+/** Histórico: linhas gravadas antes de a origem existir (2026-09-09). Não é um
+ *  balde que o normalizador devolve — é o que o painel mostra para o passado. */
+export const ORIGEM_DESCONHECIDA = "desconhecida";
+
+const IA = [
+  "chatgpt.com", "chat.openai.com", "openai.com", "claude.ai", "perplexity.ai",
+  "gemini.google.com", "copilot.microsoft.com", "you.com", "poe.com",
+];
+
+const BUSCA = [
+  "bing.com", "duckduckgo.com", "search.yahoo.com", "yahoo.com", "ecosia.org",
+  "search.brave.com", "yandex.com", "yandex.ru", "baidu.com", "qwant.com", "startpage.com",
+];
+
+const SOCIAL = [
+  "linkedin.com", "lnkd.in", "instagram.com", "facebook.com", "fb.com", "x.com",
+  "twitter.com", "t.co", "youtube.com", "youtu.be", "whatsapp.com", "wl.co",
+  "t.me", "telegram.org", "tiktok.com", "reddit.com",
+];
+
+/* google.com, google.com.br, google.co.uk, news.google.com — todos busca. */
+const GOOGLE = /^(?:.+\.)?google(?:\.[a-z]{2,3}){1,2}$/;
+
+/** O próprio site: navegação com recarga de página cheia. Não é indicação de
+ *  terceiro, e misturar as duas estragaria o número que importa. */
+const PROPRIO = [new URL(site.url).hostname, "localhost", "127.0.0.1"];
+
+function casa(host: string, dominios: readonly string[]): boolean {
+  return dominios.some((d) => host === d || host.endsWith(`.${d}`));
+}
+
+export function normalizarOrigem(bruto: unknown): Origem {
+  if (typeof bruto !== "string" || bruto.length === 0) return "direto";
+
+  const host = bruto.trim().toLowerCase().replace(/^www\./, "");
+  if (host.length === 0) return "direto";
+  /* Hostname malformado é POST forjado ou navegador exótico: cai no balde
+     genérico, nunca cria linha. */
+  if (host.length > 253 || !/^[a-z0-9.-]+$/.test(host)) return "indicacao";
+
+  if (casa(host, PROPRIO)) return "site";
+  if (casa(host, IA)) return "ia";
+  if (casa(host, SOCIAL)) return "social";
+  if (casa(host, BUSCA) || GOOGLE.test(host)) return "busca";
+  return "indicacao";
 }

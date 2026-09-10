@@ -25,6 +25,47 @@ export const admin = {
     nota: "Contamos visitas, não visitantes únicos — o medidor não identifica ninguém, por decisão de privacidade. Serve para comparar períodos, não como número absoluto de pessoas.",
   },
 
+  /* De onde vêm (2026-09-09). Os rótulos explicam o balde, porque "site" e
+     "indicacao" não se explicam sozinhos para quem abre o painel uma vez por
+     semana. */
+  origem: {
+    titulo: "De onde vêm",
+    entradas: "Entradas",
+    paginasPorEntrada: "Páginas por entrada",
+    desde: (dia: string) => `Medindo origem desde ${dia}`,
+    semDados:
+      "A medição de origem começou agora e ainda não registrou nenhuma chegada. Ela conta a PRIMEIRA página de cada visita, então aparece aqui a partir da próxima pessoa que abrir o site.",
+    colunaOrigem: "Origem",
+    colunaEntradas: "Entradas",
+    porPagina: "Páginas de entrada (30 dias)",
+    porPaginaNota:
+      "Por onde as pessoas chegam, tirando quem veio de outra página do próprio site. É o que diz qual conteúdo traz gente de fora — diferente da tabela acima, onde um artigo aparece mesmo quando a pessoa chegou pela home.",
+    nota: "Entrada é a primeira página de cada visita; a origem sai do hostname de quem indicou, sem caminho nem termo de busca. O balde é fechado: o que não reconhecemos vira Indicação.",
+    rotulos: {
+      direto: "Direto (sem referência)",
+      busca: "Busca",
+      ia: "Assistentes de IA",
+      social: "Redes sociais",
+      indicacao: "Indicação de outro site",
+      site: "Do próprio site (recarga)",
+      desconhecida: "Antes da medição",
+    } as Record<string, string>,
+  },
+
+  /* O controle de "não me conte" (2026-09-09). Mora aqui, atrás do Basic Auth,
+     porque só quem tem a credencial pode se descontar da medição. */
+  interno: {
+    titulo: "Este navegador",
+    contando: "Suas visitas estão sendo contadas no painel.",
+    contandoAviso:
+      "A ~30 visitas por dia útil, algumas conferências internas já mexem no número. Desligue aqui se este navegador é da casa.",
+    naoContando: "Este navegador não entra na medição.",
+    desligar: "Parar de contar este navegador",
+    ligar: "Voltar a contar este navegador",
+    carregando: "Verificando…",
+    nota: "A marca vale só para este navegador e este dispositivo — janela anônima e outra máquina recomeçam contando. Não alcança o Google Analytics, cuja exclusão é filtro de tráfego interno no painel do GA4.",
+  },
+
   lista: {
     titulo: "Lista de espera",
     total: "Inscritos",

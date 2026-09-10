@@ -23,6 +23,11 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
      consentimento coletado em /cursos perde o amparo que o sustenta. */
   await expect(page.getByText(/Lista de espera do lançamento/)).toBeVisible();
   await expect(page.getByText(/compartilhados com o Pecege/)).toBeVisible();
+  /* A medição de origem entrou em 2026-09-09. A política deste site descreve o
+     que o código faz de verdade — e o que ela promete aqui é o recorte: o
+     domínio de quem indicou vira categoria e não é gravado. */
+  await expect(page.getByText(/De onde você chegou/)).toBeVisible();
+  await expect(page.getByText(/nunca o endereço completo nem o termo que você pesquisou/)).toBeVisible();
 
   /* E o que NÃO pode mais estar lá: a plataforma de ensino saiu em 2026-08-28
      e a política declarava senha, CPF e cobrança por meses depois disso.

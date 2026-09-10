@@ -51,6 +51,9 @@ export const naoEncontrada = {
  *   - `lista_espera` guarda nome, e-mail e a data do consentimento (schema.ts)
  *   - o formulário de contato não persiste: entrega por e-mail e acabou
  *   - `page_views` agrega dia + rota, sem cookie, IP ou identificador
+ *   - `entradas` agrega dia + rota + BALDE de origem (2026-09-09): o navegador
+ *     manda só o hostname de quem indicou, e o servidor o reduz a uma de seis
+ *     categorias antes de gravar — a URL nunca é persistida
  *
  * A URL existe também por um motivo de campo: /privacidade era a segunda
  * página mais exibida do domínio no Google (19 impressões em 7 dias) e
@@ -65,7 +68,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 29 de agosto de 2026",
+    atualizado: "Atualizada em 9 de setembro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -97,6 +100,11 @@ export const privacidade = {
           termo: "Medição de visitas do site",
           texto:
             "Contamos quantas visitas cada página pública recebe por dia. Esse contador registra apenas a data e o endereço da página — sem cookie, sem endereço IP e sem qualquer identificador de pessoa.",
+        },
+        {
+          termo: "De onde você chegou",
+          texto:
+            "Na primeira página de cada visita, registramos o TIPO de site que trouxe você — busca, rede social, assistente de IA, indicação de outro site, ou nenhum. Seu navegador nos envia apenas o domínio de quem indicou (por exemplo, google.com), nunca o endereço completo nem o termo que você pesquisou, e esse domínio vira categoria antes de ser gravado. É a categoria que fica; o domínio, não.",
         },
         {
           termo: "Google Analytics",

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
+import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
 import {
   conversaoCursos,
   inscritos,
+  origensDasEntradas,
+  paginasDeEntrada,
+  resumoEntradas,
   resumoListaEspera,
   resumoVisitas,
   rotasMaisVistas,
@@ -40,17 +44,22 @@ function variacao(atual: number, anterior: number): string {
 }
 
 export default async function PaginaAdmin() {
-  const [visitas, porDia, porRota, lista, pessoas, conv] = await Promise.all([
+  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada] = await Promise.all([
     resumoVisitas(),
     visitasPorDia(30),
     rotasMaisVistas(30),
     resumoListaEspera(),
     inscritos(),
     conversaoCursos(30),
+    resumoEntradas(30),
+    origensDasEntradas(30),
+    paginasDeEntrada(30),
   ]);
 
   const pico = Math.max(1, ...porDia.map((d) => d.visitas));
   const maiorRota = Math.max(1, ...porRota.map((r) => r.visitas));
+  const maiorOrigem = Math.max(1, ...porOrigem.map((o) => o.visitas));
+  const maiorEntrada = Math.max(1, ...porEntrada.map((r) => r.visitas));
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-12 px-5 py-12 sm:px-8">
@@ -58,6 +67,10 @@ export default async function PaginaAdmin() {
         <h1 className="text-3xl font-medium tracking-[-0.03em] text-fg">{t.titulo}</h1>
         <p className="mt-2 text-fg-muted">{t.lead}</p>
       </header>
+
+      {/* Antes dos números, não depois: quem abre o painel é da casa, e cada
+          visita dele some ou entra na conta que ele está prestes a ler. */}
+      <MarcadorInterno />
 
       <section className="flex flex-col gap-5">
         <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.visitas.titulo}</h2>
@@ -131,6 +144,95 @@ export default async function PaginaAdmin() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section className="flex flex-col gap-5 border-t border-line pt-10">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.origem.titulo}</h2>
+
+        {entradas.desde === null ? (
+          <p className="max-w-[70ch] text-fg-muted">{t.origem.semDados}</p>
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Cartao
+                rotulo={t.origem.entradas}
+                valor={numero.format(entradas.entradas)}
+                nota={t.origem.desde(dataCurta.format(new Date(`${entradas.desde}T12:00:00Z`)))}
+              />
+              <Cartao
+                rotulo={t.origem.paginasPorEntrada}
+                valor={entradas.paginasPorEntrada === null ? "—" : entradas.paginasPorEntrada.toFixed(1)}
+                nota={`${numero.format(entradas.visualizacoes)} ${t.visitas.colunaVisitas.toLowerCase()}`}
+              />
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px] border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-line text-left text-fg-muted">
+                    <th className="py-2 font-normal">{t.origem.colunaOrigem}</th>
+                    <th className="w-24 py-2 text-right font-normal">{t.origem.colunaEntradas}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {porOrigem.map((o) => (
+                    <tr key={o.origem} className="border-b border-line/60">
+                      <td className="py-2 pr-4 text-fg">
+                        <span className="inline-flex w-full items-center gap-3">
+                          <span className="shrink-0">{t.origem.rotulos[o.origem] ?? o.origem}</span>
+                          <span
+                            aria-hidden="true"
+                            className="h-1.5 bg-accent/40"
+                            style={{ width: `${(o.visitas / maiorOrigem) * 100}%` }}
+                          />
+                        </span>
+                      </td>
+                      <td className="py-2 text-right tabular-nums text-fg">{numero.format(o.visitas)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {porEntrada.length > 0 ? (
+              <div className="flex flex-col gap-3 pt-4">
+                <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">
+                  {t.origem.porPagina}
+                </h3>
+                <p className="max-w-[70ch] text-xs text-fg-muted">{t.origem.porPaginaNota}</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[420px] border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-line text-left text-fg-muted">
+                        <th className="py-2 font-normal">{t.visitas.coluna}</th>
+                        <th className="w-24 py-2 text-right font-normal">{t.origem.colunaEntradas}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {porEntrada.map((r) => (
+                        <tr key={r.rota} className="border-b border-line/60">
+                          <td className="py-2 pr-4 text-fg">
+                            <span className="inline-flex w-full items-center gap-3">
+                              <span className="shrink-0">{r.rota}</span>
+                              <span
+                                aria-hidden="true"
+                                className="h-1.5 bg-accent/40"
+                                style={{ width: `${(r.visitas / maiorEntrada) * 100}%` }}
+                              />
+                            </span>
+                          </td>
+                          <td className="py-2 text-right tabular-nums text-fg">{numero.format(r.visitas)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : null}
+          </>
+        )}
+
+        <p className="max-w-[70ch] text-xs text-fg-muted">{t.origem.nota}</p>
       </section>
 
       <section className="flex flex-col gap-5 border-t border-line pt-10">

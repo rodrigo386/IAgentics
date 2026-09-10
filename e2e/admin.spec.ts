@@ -71,6 +71,32 @@ test("o CSV sai como anexo, com ponto e vírgula e cabeçalho", async ({ browser
   await contexto.close();
 });
 
+test("o painel traz o controle de tráfego interno e a seção de origem", async ({ browser }) => {
+  const contexto = await browser.newContext({ httpCredentials: { username: cred!.usuario, password: cred!.senha } });
+  const page = await contexto.newPage();
+  await page.goto("/admin");
+
+  /* O interruptor precisa dizer o estado ANTES de pedir a ação: quem abre o
+     painel é da casa, e cada visita dele entra na conta que está prestes a
+     ler. */
+  await expect(page.getByText("Este navegador", { exact: true })).toBeVisible();
+  const botao = page.getByRole("button", { name: /contar este navegador/ });
+  await expect(botao).toBeVisible();
+
+  await botao.click();
+  await expect(page.getByText("Este navegador não entra na medição.")).toBeVisible();
+  /* A marca vive no navegador: sobrevive à recarga, senão não separa nada. */
+  await page.reload();
+  await expect(page.getByText("Este navegador não entra na medição.")).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("iagentics:nao-contar"))).toBe("1");
+
+  await page.getByRole("button", { name: "Voltar a contar este navegador" }).click();
+  await expect(page.getByText("Suas visitas estão sendo contadas no painel.")).toBeVisible();
+
+  await expect(page.getByRole("heading", { name: "De onde vêm" })).toBeVisible();
+  await contexto.close();
+});
+
 test("o painel não é indexável", async ({ browser }) => {
   const contexto = await browser.newContext({ httpCredentials: { username: cred!.usuario, password: cred!.senha } });
   const page = await contexto.newPage();

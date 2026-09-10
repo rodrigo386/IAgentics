@@ -1,11 +1,12 @@
 import "server-only";
 import { desc, gte, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { listaEspera, pageViews } from "@/lib/db/schema";
+import { entradas, listaEspera, pageViews } from "@/lib/db/schema";
 
 /**
- * Consultas do painel. Tudo derivado das duas únicas tabelas do site:
- * `page_views` (beacon) e `lista_espera` (formulário de /cursos).
+ * Consultas do painel. Tudo derivado das três tabelas do site: `page_views`
+ * (toda visualização), `entradas` (a chegada, com a origem) e `lista_espera`
+ * (formulário de /cursos).
  *
  * As janelas são calculadas em SQL, com `current_date`, e não em JS: o
  * container roda em UTC e o Rodrigo lê em GMT-3. Com data montada no
@@ -119,4 +120,75 @@ export async function conversaoCursos(dias = 30): Promise<{ visitas: number; ins
 
   const taxa = v.visitas > 0 ? (i.inscricoes / v.visitas) * 100 : 0;
   return { visitas: v.visitas, inscricoes: i.inscricoes, taxa };
+}
+
+/* ------------------------------------------------------------------ */
+/* De onde vêm (2026-09-09)                                            */
+/* ------------------------------------------------------------------ */
+
+export type LinhaOrigem = { origem: string; visitas: number };
+
+/** Chegadas por balde de origem na janela. */
+export async function origensDasEntradas(dias = 30): Promise<LinhaOrigem[]> {
+  return db
+    .select({ origem: entradas.origem, visitas: sql<number>`sum(visitas)::int` })
+    .from(entradas)
+    .where(gte(entradas.dia, sql`${diasAtras(dias)}`))
+    .groupBy(entradas.origem)
+    .orderBy(desc(sql`sum(visitas)`));
+}
+
+/**
+ * Páginas por onde as pessoas ENTRAM, tirando quem veio do próprio site.
+ *
+ * É o cruzamento que decide pauta: um artigo que aparece aqui está trazendo
+ * gente de fora, e não só sendo lido por quem já estava na casa. A tabela de
+ * "páginas mais visitadas" não responde isso — lá o artigo aparece igual se
+ * chegou pela home.
+ */
+export async function paginasDeEntrada(dias = 30): Promise<LinhaRota[]> {
+  return db
+    .select({ rota: entradas.rota, visitas: sql<number>`sum(visitas)::int` })
+    .from(entradas)
+    .where(sql`dia > ${diasAtras(dias)} and origem <> 'site'`)
+    .groupBy(entradas.rota)
+    .orderBy(desc(sql`sum(visitas)`));
+}
+
+export type ResumoEntradas = {
+  entradas: number;
+  /** Visualizações no MESMO período em que houve medição de entrada. */
+  visualizacoes: number;
+  /** Páginas por chegada. `null` sem base — nunca 0, que leria como "ninguém leu". */
+  paginasPorEntrada: number | null;
+  /** Primeiro dia com entrada medida. A medição nasceu depois do contador de
+   *  visitas, e o painel não pode comparar janelas que não coincidem. */
+  desde: string | null;
+};
+
+export async function resumoEntradas(dias = 30): Promise<ResumoEntradas> {
+  const [e] = await db
+    .select({
+      total: sql<number>`coalesce(sum(visitas), 0)::int`,
+      desde: sql<string | null>`min(dia)::text`,
+    })
+    .from(entradas)
+    .where(gte(entradas.dia, sql`${diasAtras(dias)}`));
+
+  if (!e.desde) return { entradas: 0, visualizacoes: 0, paginasPorEntrada: null, desde: null };
+
+  /* A janela das visualizações é recortada pelo primeiro dia de entrada: sem
+     isso a razão dividiria 26 dias de visita por 1 dia de chegada e devolveria
+     um número absurdo com cara de métrica. */
+  const [v] = await db
+    .select({ total: sql<number>`coalesce(sum(visitas), 0)::int` })
+    .from(pageViews)
+    .where(gte(pageViews.dia, sql`${e.desde}::date`));
+
+  return {
+    entradas: e.total,
+    visualizacoes: v.total,
+    paginasPorEntrada: e.total > 0 ? v.total / e.total : null,
+    desde: e.desde,
+  };
 }
