@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { OrquestradorGraph } from "@/components/ui/OrquestradorGraph";
 import { PartnersRow } from "@/components/ui/PartnersRow";
@@ -30,14 +31,25 @@ export function NexoCoverOrquestrador() {
           <div className="lg:col-span-7">
             <h1 className="font-medium tracking-[-0.03em] text-fg">
               {t.headline.map((linha, i) => (
-                <span key={linha} className="block overflow-hidden pb-[0.08em]">
-                  <span
-                    className="hero-line block whitespace-nowrap text-[min(5.6vw,1.9rem)] leading-[1.1] sm:text-[min(5vw,2.6rem)] lg:text-[min(3.5vw,3.2rem)]"
-                    style={{ animationDelay: `${60 + i * 80}ms` }}
-                  >
-                    {linha}
+                <Fragment key={linha}>
+                  <span className="block overflow-hidden pb-[0.08em]">
+                    <span
+                      className="hero-line block whitespace-nowrap text-[min(5.6vw,1.9rem)] leading-[1.1] sm:text-[min(5vw,2.6rem)] lg:text-[min(3.5vw,3.2rem)]"
+                      style={{ animationDelay: `${60 + i * 80}ms` }}
+                    >
+                      {linha}
+                    </span>
                   </span>
-                </span>
+                  {/* O ESPAÇO ENTRE AS t.headline É TEXTO, e precisa existir no DOM.
+                      Cada linha da manchete é um <span class="block">, e spans
+                      colados no HTML viram uma palavra só no textContent: o
+                      leitor de tela lia "paraCompras" e o buscador indexava
+                      isso. Entre blocos, um nó de espaço não gera caixa
+                      visível — o layout não muda, a frase volta a ser frase.
+                      (lib/markdown-agentes.ts tem a regra irmã, para o
+                      markdown servido a agentes.) */}
+                  {i < t.headline.length - 1 ? " " : null}
+                </Fragment>
               ))}
             </h1>
 

@@ -15,7 +15,11 @@ import { nexoPage } from "@/lib/content";
 import { ogDaPagina, faqJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Nexo",
+  /* "Nexo" sozinho dava 16 caracteres com o sufixo do template, e o Bing
+     marcou como título curto demais (2026-09-14). Título curto não é só
+     penalidade de checklist: é a linha que a pessoa lê no resultado da busca,
+     e "Nexo · IAgentics" não diz a ninguém o que o produto faz. */
+  title: "Nexo: agentes de IA para Compras e gestão de gastos",
   description: nexoPage.hero.subtext,
   alternates: { canonical: "/nexo" },
   openGraph: ogDaPagina("/nexo", "Nexo · IAgentics", nexoPage.hero.subtext),

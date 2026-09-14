@@ -13,10 +13,14 @@ import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { academyJsonLd, ogDaPagina, faqJsonLd } from "@/lib/seo";
 
-const DESCRICAO_ACADEMY = "Escola de experiências com IA para pessoas, times e empresas.";
+/* Reescrita em 2026-09-14: a anterior tinha 61 caracteres e o Bing marcou
+   como curta. O tamanho importa porque é o texto que o buscador exibe abaixo
+   do título — curta demais, ele inventa um trecho da página no lugar. */
+const DESCRICAO_ACADEMY =
+  "A escola de IA aplicada da IAgentics: trilhas in company, workshops e mentoria executiva para times e lideranças, com projeto aplicado ao fim de cada formação.";
 
 export const metadata: Metadata = {
-  title: "Academy",
+  title: "Academy: capacitação em IA para times e lideranças",
   description: DESCRICAO_ACADEMY,
   alternates: { canonical: "/academy" },
   openGraph: ogDaPagina("/academy", "IAgentics Academy", DESCRICAO_ACADEMY),

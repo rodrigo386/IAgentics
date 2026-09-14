@@ -199,9 +199,14 @@ export const hero = {
      a versão anterior falava em "trabalho operacional de suprimentos" — o
      recorte de Compras. O Nexo é o orquestrador de nove módulos. */
   subtext: "Nove módulos de agentes de IA para Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa.",
-  /** Description da home (title vem do layout: nome · tagline, que é o título do pitch). */
+  /** Description da home (title vem do layout: nome · tagline, que é o título do pitch).
+   *
+   *  CABE NO QUE O BUSCADOR MOSTRA. A versão anterior tinha 192 caracteres e
+   *  terminava em "certificação ISO/IEC 27001" — que era exatamente a parte
+   *  cortada nos ~160 que o Google e o Bing exibem. O selo continua na página,
+   *  onde a pessoa chega; aqui fica o que a faz clicar. */
   descricao:
-    "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa, certificação ISO/IEC 27001.",
+    "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa.",
   imageAlt:
     "Edifício corporativo iluminado à noite, com dezenas de estações de trabalho visíveis pelas janelas",
   /**
@@ -1117,10 +1122,14 @@ export const footer = {
 --------------------------------------------------------------------------- */
 
 export const artigos = {
+  /* `meta` é o que vai para <title> e <meta description>; `hero.titulo` é o
+     H1 na tela, e os dois NÃO são a mesma coisa. Na página, "Artigos" basta:
+     a pessoa já sabe onde está. No resultado de busca ela não sabe, e foi por
+     isso que o Bing marcou os dois como curtos em 2026-09-14. */
   meta: {
-    titulo: "Artigos",
+    titulo: "Artigos sobre IA aplicada a Compras",
     descricao:
-      "Textos sobre IA aplicada a Compras: processo, análise de gastos, governança e o que funciona na prática.",
+      "Textos sobre IA aplicada a Compras: processo, análise de gastos, tail spend, ROI e governança. O que aprendemos implantando, sem promessa que não se sustenta.",
   },
   hero: {
     eyebrow: "IAgentics",

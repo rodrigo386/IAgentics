@@ -18,7 +18,10 @@ const DESCRICAO_SPEND_LAB =
   "Implemente IA com Mente, Método e Cultura. Diagnóstico de maturidade, consultoria e formação aplicada em 8 semanas.";
 
 export const metadata: Metadata = {
-  title: "IA Spend Lab",
+  /* "IA Spend Lab" dava 24 caracteres com o sufixo do template. O Bing não
+     marcou (o limiar dele parece ser 20), mas o nome sozinho não diz a
+     ninguém o que se compra ali — e é essa a linha do resultado de busca. */
+  title: "IA Spend Lab: diagnóstico de maturidade em IA",
   description: DESCRICAO_SPEND_LAB,
   alternates: { canonical: "/spend-lab" },
   openGraph: ogDaPagina("/spend-lab", "IA Spend Lab · IAgentics", DESCRICAO_SPEND_LAB),
