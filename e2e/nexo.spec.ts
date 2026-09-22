@@ -68,3 +68,20 @@ test("o comparativo compara com 'SaaS de Compras' e não nomeia concorrentes", a
   }
   await expect(sec.getByText(/única/i)).toHaveCount(0);
 });
+
+/* A capa do /nexo passava 64px da dobra (2026-09-22): nesta página o <main>
+   tem `pt-16`, então `min-h-[100dvh]` somava a altura do nav à da tela, e a
+   faixa de parcerias que fecha a capa ficava cortada pela borda da janela —
+   medido, parcerias até y=907 numa janela de 900. O que este teste trava é o
+   efeito visível, não a classe: a faixa inteira na primeira tela. */
+test("a faixa de parcerias da capa cabe inteira na primeira tela", async ({ browser }) => {
+  for (const [largura, altura] of [[1440, 900], [1280, 800]]) {
+    const contexto = await browser.newContext({ viewport: { width: largura, height: altura } });
+    const page = await contexto.newPage();
+    await page.goto("/nexo");
+    const caixa = await page.locator('#orquestrador ul[aria-label="Parcerias"]').boundingBox();
+    expect(caixa, `${largura}x${altura}: faixa não encontrada`).not.toBeNull();
+    expect(caixa!.y + caixa!.height, `${largura}x${altura}: faixa passa da dobra`).toBeLessThanOrEqual(altura);
+    await contexto.close();
+  }
+});

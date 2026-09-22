@@ -21,8 +21,18 @@ import { nexoPage, cta, partners } from "@/lib/content";
 export function NexoCoverOrquestrador() {
   const t = nexoPage.hero;
 
+  /* ALTURA: `100dvh - 4rem`, e aqui não é gosto — é conta. Nesta página o
+     <main> tem `pt-16`: o nav fica ACIMA da capa, não por cima. Com
+     `min-h-[100dvh]` a capa começava em y=64 e media a tela inteira, então
+     terminava 64px abaixo da dobra — e a faixa de parcerias, que fecha a capa,
+     ficava cortada pela borda da janela (medido em 1440x900: parcerias até
+     y=907, dobra em 900). Tela menos nav é exatamente o que sobra. É a mesma
+     altura da /academy e do /spend-lab, que têm a mesma estrutura.
+
+     (Na home o número é o mesmo mas o motivo não: lá o <main> não tem padding
+     e o nav fica POR CIMA da hero. Ver Hero.tsx.) */
   return (
-    <section id="orquestrador" className="relative isolate flex min-h-[100dvh] flex-col overflow-hidden border-b border-line pb-14 pt-24">
+    <section id="orquestrador" className="relative isolate flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden border-b border-line pb-12 pt-24">
       <div className="cover-aurora -z-10" aria-hidden="true" />
       <div className="cover-grain -z-10" aria-hidden="true" />
 
