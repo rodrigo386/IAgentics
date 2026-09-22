@@ -18,7 +18,10 @@ import { calcularCarrinho, DESCONTO_MAXIMO_PCT, formatarReais } from "@/lib/cata
 const CHAVE = "iagentics:carrinho";
 
 const ROTULO = "font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted";
-const CAMPO = "rounded-control border border-line bg-bg px-4 py-3 text-fg outline-none focus-visible:border-fg";
+/* Campo é superfície, não controle: raio 0 pela trava de forma (DESIGN.md).
+   Sem outline-none de propósito — o anel global de :focus-visible é o foco
+   visível do site, e trocar por 1px de borda o deixaria fraco demais. */
+const CAMPO = "border border-line-strong bg-bg px-4 py-3 text-fg transition-colors duration-200 focus:border-fg motion-reduce:transition-none";
 const BOTAO_CHEIO =
   "rounded-control bg-accent px-6 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none";
 const BOTAO_CONTORNO =
@@ -256,7 +259,16 @@ export function Catalogo({ precoBaseCentavos, urlCheckout }: Props) {
             <button type="submit" disabled={enviando} className={BOTAO_CHEIO}>
               {enviando ? t.checkout.enviando : t.checkout.pagar}
             </button>
-            <button type="button" onClick={() => setEtapa("carrinho")} className={BOTAO_CONTORNO}>
+            <button
+              type="button"
+              disabled={enviando}
+              onClick={() => {
+                // O erro é da tentativa que ficou para trás; voltar e reabrir não pode mostrá-lo de novo.
+                setErro(null);
+                setEtapa("carrinho");
+              }}
+              className={`${BOTAO_CONTORNO} disabled:pointer-events-none disabled:opacity-50`}
+            >
               {t.checkout.voltar}
             </button>
 
