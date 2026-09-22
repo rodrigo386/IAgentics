@@ -16,7 +16,7 @@ export function redigirCpfs(texto: string): string {
   return texto.replace(/\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g, "[cpf-redigido]").replace(/\d{11}/g, "[cpf-redigido]");
 }
 
-async function chamar(caminho: string, corpo: unknown): Promise<any> {
+async function chamar<T>(caminho: string, corpo: unknown): Promise<T> {
   const base = process.env.ASAAS_URL_BASE;
   if (!base) throw new Error("ASAAS_URL_BASE ausente");
   const chave = process.env.ASAAS;
@@ -38,7 +38,7 @@ async function chamar(caminho: string, corpo: unknown): Promise<any> {
 }
 
 export async function criarCliente(d: { nome: string; email: string; cpf: string; telefone: string }): Promise<{ id: string }> {
-  const r = await chamar("/customers", { name: d.nome, email: d.email, cpfCnpj: d.cpf, mobilePhone: d.telefone });
+  const r = await chamar<{ id: string }>("/customers", { name: d.nome, email: d.email, cpfCnpj: d.cpf, mobilePhone: d.telefone });
   return { id: r.id };
 }
 
@@ -53,7 +53,7 @@ export async function criarCobranca(d: {
   referencia: string;
   urlRetorno: string;
 }): Promise<{ id: string; urlFatura: string }> {
-  const r = await chamar("/payments", {
+  const r = await chamar<{ id: string; invoiceUrl: string }>("/payments", {
     customer: d.clienteId,
     billingType: "UNDEFINED",
     value: d.valorCentavos / 100,
