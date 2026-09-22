@@ -1585,3 +1585,32 @@ export const cursos = {
     "/academy/transformacao-digital-course.jpg",
   ],
 } as const;
+
+/**
+ * Catálogo de cursos com checkout (2026-09-22) — hoje só na prévia
+ * /preview/catalogo, atrás de senha.
+ *
+ * A lista é PROVISÓRIA: os cursos OnDemand da Academy. A definitiva é a do
+ * Pecege, com o que a Solution vai entregar de fato; quando chegar, troca aqui
+ * e mais nada. O `slug` é o que viaja no carrinho e fica gravado na venda —
+ * não renomeie um slug de curso que já foi vendido.
+ */
+export const catalogo = {
+  precoBaseCentavos: 20000,
+  cursos: [
+    {
+      slug: "fundamentos-ia-negocios",
+      nome: "Fundamentos de IA aplicado aos Negócios",
+      horas: "8 horas",
+      frase: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
+      capa: "/academy/fundamentos-ia-negocios.jpg",
+    },
+    {
+      slug: "fundamentos-ia-copilot",
+      nome: "Fundamentos de IA com Copilot",
+      horas: "6 horas",
+      frase: "Domine o Microsoft Copilot para acelerar tarefas do dia a dia com IA generativa.",
+      capa: "/academy/copilot-course.jpg",
+    },
+  ],
+} as const;

@@ -1,24 +1,32 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Middleware: negociação de markdown para agentes, e Basic Auth do /admin.
+ * Middleware: negociação de markdown para agentes, e Basic Auth do /admin e
+ * da prévia do catálogo (/preview/catalogo).
  *
- * Basic Auth do /admin.
+ * Basic Auth do /admin e de /preview/catalogo.
  *
- * Vive no MIDDLEWARE, não em cada página: assim nenhuma rota sob /admin pode
- * nascer desprotegida por esquecimento — inclusive a que exporta o CSV com
- * nome e e-mail dos inscritos. Proteção que depende de lembrar de aplicar
- * é proteção que uma hora não é aplicada.
+ * Vive no MIDDLEWARE, não em cada página: assim nenhuma rota sob /admin ou
+ * /preview/catalogo pode nascer desprotegida por esquecimento — inclusive a
+ * que exporta o CSV com nome e e-mail dos inscritos, e a que cobra de verdade
+ * pelo checkout de teste. Proteção que depende de lembrar de aplicar é
+ * proteção que uma hora não é aplicada.
  *
  * Basic Auth é proporcional ao problema: um operador, nenhuma sessão, nenhuma
  * tabela de usuários, nenhuma dependência nova. O prompt é o do navegador.
  *
- * SEM as variáveis definidas, o /admin responde 503 e não abre — falha
+ * SEM as variáveis definidas, as duas rotas respondem 503 e não abrem — falha
  * FECHADA. O contrário (abrir quando a credencial não está configurada) é
  * como um deploy sem variável vira vazamento de dado pessoal.
  */
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  /* /preview/catalogo cobra de verdade (preço de teste, dinheiro real): sem
+     senha, quem achasse o link compraria curso por R$ 5. Mesma trava do
+     /admin, e ANTES da negociação de markdown — senão um Accept: text/markdown
+     reescreveria a página para /api/markdown por fora da senha. */
+  const protegida = pathname.startsWith("/admin") || pathname.startsWith("/preview/catalogo");
 
   /* Negociação de conteúdo (RFC 9110 §12): quem pede `Accept: text/markdown`
      recebe a página em markdown; navegador, que pede text/html, não vê
@@ -32,7 +40,7 @@ export function middleware(req: NextRequest) {
      `x-markdown-render` é a trava anti-laço: é o próprio conversor buscando o
      HTML desta página, e ele não pode ser mandado de volta para si mesmo. */
   if (
-    !pathname.startsWith("/admin") &&
+    !protegida &&
     !req.headers.get("x-markdown-render") &&
     (req.headers.get("accept") ?? "").includes("text/markdown")
   ) {
@@ -51,7 +59,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.rewrite(destino, { request: { headers: cabecalhos } });
   }
 
-  if (!pathname.startsWith("/admin")) return NextResponse.next();
+  if (!protegida) return NextResponse.next();
 
   const usuario = process.env.ADMIN_USUARIO;
   const senha = process.env.ADMIN_SENHA;
@@ -94,13 +102,16 @@ function confere(base64: string, usuario: string, senha: string): boolean {
   return diferenca === 0;
 }
 
-/* O matcher cobre /admin (Basic Auth) e as rotas HTML públicas (negociação de
-   markdown). Assets e /api ficam de fora: nem um nem outro tem versão em
-   markdown, e rodar middleware em cada imagem é custo sem retorno. */
+/* O matcher cobre /admin e /preview/catalogo (Basic Auth) e as rotas HTML
+   públicas (negociação de markdown). Assets e /api ficam de fora: nem um nem
+   outro tem versão em markdown, e rodar middleware em cada imagem é custo sem
+   retorno. */
 export const config = {
   matcher: [
     "/admin/:path*",
     "/admin",
+    "/preview/catalogo",
+    "/preview/catalogo/:path*",
     "/",
     "/nexo",
     "/academy",
