@@ -195,10 +195,16 @@ export const nav = {
 export const hero = {
   /** Split so both lines are close in length, which keeps the hero at exactly 2 lines. */
   headline: ["Automações Inteligentes para", "Compras e Gestão de Gastos"],
-  /* 19 palavras, no teto de 20. Reescrito em 2026-09-04 (alinhamento ao pitch):
-     a versão anterior falava em "trabalho operacional de suprimentos" — o
-     recorte de Compras. O Nexo é o orquestrador de nove módulos. */
-  subtext: "Nove módulos de agentes de IA para Compras e Gestão de Gastos, rodando dentro da plataforma que sua empresa já usa.",
+  /* Reescrito em 2026-09-22, ditado pelo Rodrigo. Passou de 19 para 34 palavras
+     e de uma afirmação de produto para uma de POSIÇÃO DE MERCADO ("primeira
+     empresa brasileira"), que é uma reivindicação que alguém pode cobrar —
+     diferente de "nove módulos", que se verifica na própria página.
+
+     Três correções de concordância sobre o ditado: "multi agêntica" →
+     "multiagênticas", "integrado" → "integradas" (concordam com "soluções") e
+     "ISO27001" → "ISO/IEC 27001", que é como o resto do site escreve. */
+  subtext:
+    "Primeira empresa brasileira de soluções multiagênticas de IA para gestão de gastos, integradas ao seu ERP e dentro do ambiente Microsoft e do Space da Desk Manager, oferecendo segurança certificada ISO/IEC 27001 e governança de dados.",
   /** Description da home (title vem do layout: nome · tagline, que é o título do pitch).
    *
    *  CABE NO QUE O BUSCADOR MOSTRA. A versão anterior tinha 192 caracteres e
@@ -209,17 +215,9 @@ export const hero = {
     "O Nexo orquestra nove módulos de agentes de IA em Compras e Gestão de Gastos, dentro da plataforma que sua empresa já usa. Dados no servidor da sua empresa.",
   imageAlt:
     "Edifício corporativo iluminado à noite, com dezenas de estações de trabalho visíveis pelas janelas",
-  /**
-   * O nome do produto, sob o grafo. Só o nome: a frase que dizia onde o Nexo roda
-   * saiu daqui a pedido do time. O fato não se perdeu da landing - ele continua em
-   * solutions.items[0].platform ("Microsoft · Desk Manager") e nos selos de parceria
-   * logo abaixo da hero.
-   *
-   * Guardado em caixa mista de propósito, mesmo aparecendo em CAIXA ALTA na tela: a
-   * caixa é decisão de tipografia e vive no CSS (text-transform). String em caixa alta
-   * no conteúdo faz alguns leitores de tela soletrarem "N-E-X-O".
-   */
-  product: "Nexo App",
+  /* O "NEXO APP" sob o grafo SAIU em 2026-09-22, a pedido do Rodrigo. Com ele
+     foi embora o único link da hero para /nexo — o caminho para o produto
+     agora é o "Nexo" do menu e o cartão em "Ver as soluções". */
 } as const;
 
 /**

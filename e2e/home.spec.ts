@@ -9,9 +9,14 @@ test("a hero usa o grafo do orquestrador e mantém a manchete do pitch", async (
   await expect(page.locator("#topo .orq-pulse")).toHaveCount(9);
   // O subtexto não fala mais só de "suprimentos".
   await expect(page.locator("#topo")).not.toContainText("suprimentos");
-  await expect(page.locator("#topo")).toContainText("Nove módulos");
-  // O link do produto sob o grafo continua existindo.
-  await expect(page.locator('#topo a[href="/nexo"]')).toHaveCount(1);
+  /* Subtexto reescrito em 2026-09-22: saiu "Nove módulos" e entrou a posição
+     de mercado, com os dois ambientes e a certificação. */
+  await expect(page.locator("#topo")).toContainText("Primeira empresa brasileira");
+  await expect(page.locator("#topo")).toContainText("ISO/IEC 27001");
+  /* O "NEXO APP" sob o grafo saiu no mesmo dia, e com ele o ÚNICO link da hero
+     para /nexo. Se voltar a existir um, foi decisão — não acidente. */
+  await expect(page.locator('#topo a[href="/nexo"]')).toHaveCount(0);
+  await expect(page.locator("#topo")).not.toContainText("NEXO APP");
 });
 
 test("'O problema' traz os dois números do pitch com a fonte visível", async ({ page }) => {

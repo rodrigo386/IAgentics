@@ -14,9 +14,8 @@ import { hero, cta, partners } from "@/lib/content";
  * prefers-reduced-motion nada anima.
  *
  * O grafo (OrquestradorGraph) é o Nexo com os nove módulos ao redor — desde
- * 2026-09-04, quando substituiu o grafo dos cinco agentes do Nexo Compras. O
- * link "Nexo App" sob ele fica aqui, e não dentro do grafo, porque o mesmo
- * grafo abre a /nexo, onde o link seria para a própria página.
+ * 2026-09-04, quando substituiu o grafo dos cinco agentes do Nexo Compras.
+ * Havia um link "NEXO APP" sob ele, removido em 2026-09-22 a pedido do time.
  *
  * A faixa de parceiros tem a própria banda, presa ao pé do quadro. Cada
  * parceiro aparece uma vez só.
@@ -78,24 +77,11 @@ export function Hero() {
           </div>
 
           <div className="hero-fade relative lg:col-span-5 lg:pr-6" style={{ animationDelay: "180ms" }}>
+            {/* O "NEXO APP" que ficava sob o grafo saiu em 2026-09-22, a
+                pedido do Rodrigo. Era o único link da hero para /nexo; o
+                caminho para o produto é o menu e o cartão em "Ver as
+                soluções". O grafo continua sendo só ilustração. */}
             <OrquestradorGraph />
-            {/* O nome do produto sob o grafo, como na home: link, e com cara de
-                link — mesmo idioma de seta que os CTAs. Escala atrelada ao H1
-                (~80%): um nome de produto maior que a manchete no celular
-                inverteria a hierarquia da página. */}
-            <div className="hero-fade mt-4 flex justify-center" style={{ animationDelay: "260ms" }}>
-              <a
-                href="/nexo"
-                className="group inline-flex items-center gap-[0.35em] text-[min(4.5vw,1.5rem)] font-medium uppercase tracking-[0.02em] text-fg transition-colors duration-200 hover:text-accent-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-text motion-reduce:transition-none sm:text-[min(4vw,2.1rem)] lg:text-[min(2.8vw,2.6rem)]"
-              >
-                {hero.product}
-                <ArrowRight
-                  weight="regular"
-                  aria-hidden="true"
-                  className="size-[0.62em] shrink-0 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none"
-                />
-              </a>
-            </div>
           </div>
         </div>
       </div>
