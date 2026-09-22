@@ -1,12 +1,12 @@
 import "server-only";
-import { desc, gte, sql } from "drizzle-orm";
+import { desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { entradas, listaEspera, pageViews } from "@/lib/db/schema";
+import { entradas, listaEspera, pageViews, vendas, type ModoVenda, type ItemVenda, type StatusVenda } from "@/lib/db/schema";
 
 /**
- * Consultas do painel. Tudo derivado das três tabelas do site: `page_views`
- * (toda visualização), `entradas` (a chegada, com a origem) e `lista_espera`
- * (formulário de /cursos).
+ * Consultas do painel. Tudo derivado das quatro tabelas do site: `page_views`
+ * (toda visualização), `entradas` (a chegada, com a origem), `lista_espera`
+ * (formulário de /cursos) e `vendas` (catálogo de cursos e checkout Asaas).
  *
  * As janelas são calculadas em SQL, com `current_date`, e não em JS: o
  * container roda em UTC e o Rodrigo lê em GMT-3. Com data montada no
@@ -191,4 +191,54 @@ export async function resumoEntradas(dias = 30): Promise<ResumoEntradas> {
     paginasPorEntrada: e.total > 0 ? v.total / e.total : null,
     desde: e.desde,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Vendas do catálogo (2026-09-22)                                     */
+/* ------------------------------------------------------------------ */
+
+export type LinhaVenda = {
+  id: string;
+  criadaEm: Date;
+  nome: string;
+  email: string;
+  telefone: string;
+  itens: ItemVenda[];
+  totalCentavos: number;
+  status: StatusVenda;
+  pagoEm: Date | null;
+  acessoLiberadoEm: Date | null;
+};
+
+/** Vendas do modo pedido, mais recentes primeiro. Teste e real nunca se
+ *  misturam na mesma tabela da tela. */
+export async function listarVendas(modo: ModoVenda): Promise<LinhaVenda[]> {
+  return db
+    .select({
+      id: vendas.id,
+      criadaEm: vendas.criadaEm,
+      nome: vendas.nome,
+      email: vendas.email,
+      telefone: vendas.telefone,
+      itens: vendas.itens,
+      totalCentavos: vendas.totalCentavos,
+      status: vendas.status,
+      pagoEm: vendas.pagoEm,
+      acessoLiberadoEm: vendas.acessoLiberadoEm,
+    })
+    .from(vendas)
+    .where(eq(vendas.modo, modo))
+    .orderBy(desc(vendas.criadaEm));
+}
+
+export async function resumoVendas(modo: ModoVenda) {
+  const [r] = await db
+    .select({
+      pagas: sql<number>`count(*) filter (where status = 'pago')::int`,
+      aguardandoLiberacao: sql<number>`count(*) filter (where status = 'pago' and acesso_liberado_em is null)::int`,
+      recebidoCentavos: sql<number>`coalesce(sum(total_centavos) filter (where status = 'pago'), 0)::int`,
+    })
+    .from(vendas)
+    .where(eq(vendas.modo, modo));
+  return r;
 }

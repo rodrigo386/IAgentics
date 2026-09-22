@@ -1,4 +1,5 @@
 import { inscritos } from "@/lib/admin/dados";
+import { campoCsv } from "@/lib/admin/csv";
 
 /**
  * Exportação da lista de espera em CSV.
@@ -13,15 +14,6 @@ import { inscritos } from "@/lib/admin/dados";
  */
 export const dynamic = "force-dynamic";
 
-function campo(valor: string): string {
-  /* Aspas duplicadas e o campo entre aspas: nome com ponto e vírgula ou quebra
-     de linha não pode partir a coluna. O `=` inicial é neutralizado porque o
-     Excel interpretaria como fórmula — um nome que começa com "=" viraria
-     execução na planilha de quem abrir. */
-  const seguro = /^[=+\-@]/.test(valor) ? `'${valor}` : valor;
-  return `"${seguro.replace(/"/g, '""')}"`;
-}
-
 export async function GET() {
   const linhas = await inscritos();
   const fmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
@@ -29,7 +21,9 @@ export async function GET() {
   const csv = [
     ["nome", "email", "inscricao", "consentimento"].join(";"),
     ...linhas.map((l) =>
-      [campo(l.nome), campo(l.email), campo(fmt.format(l.criadoEm)), campo(fmt.format(l.consentimentoEm))].join(";"),
+      [campoCsv(l.nome), campoCsv(l.email), campoCsv(fmt.format(l.criadoEm)), campoCsv(fmt.format(l.consentimentoEm))].join(
+        ";",
+      ),
     ),
   ].join("\r\n");
 

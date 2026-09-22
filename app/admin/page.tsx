@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
 import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
+import { liberarAcesso } from "./acoes";
+import { formatarReais } from "@/lib/catalogo/preco";
 import {
   conversaoCursos,
   inscritos,
+  listarVendas,
   origensDasEntradas,
   paginasDeEntrada,
   resumoEntradas,
   resumoListaEspera,
+  resumoVendas,
   resumoVisitas,
   rotasMaisVistas,
   visitasPorDia,
@@ -43,18 +47,23 @@ function variacao(atual: number, anterior: number): string {
   return p > 0 ? t.variacao.subiu(texto) : t.variacao.caiu(texto);
 }
 
-export default async function PaginaAdmin() {
-  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada] = await Promise.all([
-    resumoVisitas(),
-    visitasPorDia(30),
-    rotasMaisVistas(30),
-    resumoListaEspera(),
-    inscritos(),
-    conversaoCursos(30),
-    resumoEntradas(30),
-    origensDasEntradas(30),
-    paginasDeEntrada(30),
-  ]);
+export default async function PaginaAdmin({ searchParams }: { searchParams: Promise<{ vendas?: string }> }) {
+  const modo = (await searchParams).vendas === "teste" ? "teste" : "real";
+
+  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas] =
+    await Promise.all([
+      resumoVisitas(),
+      visitasPorDia(30),
+      rotasMaisVistas(30),
+      resumoListaEspera(),
+      inscritos(),
+      conversaoCursos(30),
+      resumoEntradas(30),
+      origensDasEntradas(30),
+      paginasDeEntrada(30),
+      listarVendas(modo),
+      resumoVendas(modo),
+    ]);
 
   const pico = Math.max(1, ...porDia.map((d) => d.visitas));
   const maiorRota = Math.max(1, ...porRota.map((r) => r.visitas));
@@ -233,6 +242,88 @@ export default async function PaginaAdmin() {
         )}
 
         <p className="max-w-[70ch] text-xs text-fg-muted">{t.origem.nota}</p>
+      </section>
+
+      <section className="flex flex-col gap-5 border-t border-line pt-10">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.vendas.titulo}</h2>
+          <div className="flex flex-wrap items-center gap-4">
+            <a href={modo === "teste" ? "?vendas=real" : "?vendas=teste"} className="text-sm text-fg-muted underline">
+              {modo === "teste" ? t.vendas.verReal : t.vendas.verTeste}
+            </a>
+            {listaVendas.length > 0 ? (
+              <a
+                href={`/admin/vendas.csv?modo=${modo}`}
+                className="rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
+              >
+                {t.vendas.exportar}
+              </a>
+            ) : null}
+          </div>
+        </div>
+
+        {modo === "teste" ? <p className="text-sm text-fg-muted">{t.vendas.modoTeste}</p> : null}
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Cartao rotulo={t.vendas.aguardando} valor={numero.format(somaVendas.aguardandoLiberacao)} />
+          <Cartao rotulo={t.vendas.pagas} valor={numero.format(somaVendas.pagas)} />
+          <Cartao rotulo={t.vendas.recebido} valor={formatarReais(somaVendas.recebidoCentavos)} />
+        </div>
+
+        {listaVendas.length === 0 ? (
+          <p className="text-fg-muted">{t.vendas.nenhuma}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-line text-left text-fg-muted">
+                  <th className="py-2 font-normal">{t.vendas.colunaData}</th>
+                  <th className="py-2 font-normal">{t.vendas.colunaComprador}</th>
+                  <th className="py-2 font-normal">{t.vendas.colunaCursos}</th>
+                  <th className="py-2 text-right font-normal">{t.vendas.colunaTotal}</th>
+                  <th className="py-2 font-normal">{t.vendas.colunaStatus}</th>
+                  <th className="py-2 font-normal">{t.vendas.colunaAcesso}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listaVendas.map((v) => (
+                  <tr key={v.id} className="border-b border-line/60">
+                    <td className="py-2 pr-4 text-fg-muted">{dataHora.format(v.criadaEm)}</td>
+                    <td className="py-2 pr-4 text-fg">
+                      {v.nome}
+                      <br />
+                      <span className="text-fg-muted">
+                        {v.email} · {v.telefone}
+                      </span>
+                    </td>
+                    <td className="py-2 pr-4 text-fg">{v.itens.map((i) => i.nome).join(", ")}</td>
+                    <td className="py-2 text-right tabular-nums text-fg">{formatarReais(v.totalCentavos)}</td>
+                    <td className="py-2 pr-4 text-fg">{t.vendas.status[v.status]}</td>
+                    <td className="py-2 pr-4 text-fg">
+                      {v.acessoLiberadoEm ? (
+                        t.vendas.liberadoEm(dataHora.format(v.acessoLiberadoEm))
+                      ) : v.status === "pago" ? (
+                        <form action={liberarAcesso}>
+                          <input type="hidden" name="id" value={v.id} />
+                          <button
+                            type="submit"
+                            className="rounded-control border border-line px-3 py-1.5 text-xs font-medium text-fg transition-colors hover:bg-surface"
+                          >
+                            {t.vendas.liberar}
+                          </button>
+                        </form>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <p className="max-w-[70ch] text-xs text-fg-muted">{t.vendas.lgpd}</p>
       </section>
 
       <section className="flex flex-col gap-5 border-t border-line pt-10">

@@ -6,7 +6,7 @@
 export const admin = {
   meta: { titulo: "Painel" },
   titulo: "Painel",
-  lead: "Visitas do site e lista de espera do lançamento na Solution.",
+  lead: "Visitas do site, vendas do catálogo e lista de espera do lançamento na Solution.",
 
   visitas: {
     titulo: "Visitas",
@@ -64,6 +64,37 @@ export const admin = {
     ligar: "Voltar a contar este navegador",
     carregando: "Verificando…",
     nota: "A marca vale só para este navegador e este dispositivo — janela anônima e outra máquina recomeçam contando. Não alcança o Google Analytics, cuja exclusão é filtro de tráfego interno no painel do GA4.",
+  },
+
+  /* Vendas do catálogo (2026-09-22). Sem aviso automático ao Pecege — decisão
+     do Rodrigo —, então o contador de "aguardando liberação" é o que impede
+     uma venda paga de ficar sem acesso. */
+  vendas: {
+    titulo: "Vendas",
+    aguardando: "Pagas aguardando liberação",
+    pagas: "Vendas pagas",
+    recebido: "Recebido",
+    verTeste: "Ver vendas de teste",
+    verReal: "Ver vendas reais",
+    modoTeste: "Mostrando vendas de TESTE (prévia, preço reduzido).",
+    exportar: "Exportar CSV",
+    nenhuma: "Nenhuma venda ainda.",
+    colunaData: "Data",
+    colunaComprador: "Comprador",
+    colunaCursos: "Cursos",
+    colunaTotal: "Total",
+    colunaStatus: "Status",
+    colunaAcesso: "Acesso",
+    liberar: "Marcar acesso liberado",
+    liberadoEm: (data: string) => `Liberado em ${data}`,
+    status: {
+      pendente: "Aguardando pagamento",
+      pago: "Pago",
+      cancelado: "Cancelado",
+      estornado: "Estornado",
+      falhou: "Falhou",
+    } as Record<string, string>,
+    lgpd: "Dados pessoais coletados com consentimento para compartilhamento com o Pecege. O CPF não fica aqui: está no painel do Asaas.",
   },
 
   lista: {
