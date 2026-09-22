@@ -74,6 +74,22 @@ export function Hero() {
                 <span className="whitespace-nowrap">{cta.solutions}</span>
               </a>
             </div>
+
+            {/* AS PARCERIAS SUBIRAM PARA DENTRO DA COLUNA, logo abaixo dos
+                CTAs (2026-09-22, a pedido do Rodrigo). Eram uma faixa de
+                largura total presa ao pé da hero, e lá dependiam de a pessoa
+                rolar até o fim da primeira tela para existirem.
+
+                Aqui a fileira não pode carregar a própria calha: `max-w` e o
+                `px` da grade do pai já se aplicam, e os dela virariam padding
+                em cima de padding — daí o className. A /nexo segue com a faixa
+                larga, que é o padrão do componente. */}
+            <div className="hero-fade mt-10" style={{ animationDelay: "460ms" }}>
+              <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">
+                {partners.label}
+              </p>
+              <PartnersRow variante="coluna" />
+            </div>
           </div>
 
           <div className="hero-fade relative lg:col-span-5 lg:pr-6" style={{ animationDelay: "180ms" }}>
@@ -84,13 +100,6 @@ export function Hero() {
             <OrquestradorGraph />
           </div>
         </div>
-      </div>
-
-      <div className="hero-fade mt-8 shrink-0" style={{ animationDelay: "460ms" }}>
-        <p className="mx-auto mb-4 w-full max-w-[1400px] px-5 font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted sm:px-8">
-          {partners.label}
-        </p>
-        <PartnersRow />
       </div>
     </section>
   );

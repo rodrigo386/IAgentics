@@ -17,6 +17,12 @@ test("a hero usa o grafo do orquestrador e mantém a manchete do pitch", async (
      para /nexo. Se voltar a existir um, foi decisão — não acidente. */
   await expect(page.locator('#topo a[href="/nexo"]')).toHaveCount(0);
   await expect(page.locator("#topo")).not.toContainText("NEXO APP");
+  /* As parcerias subiram para dentro da coluna, logo abaixo dos CTAs
+     (2026-09-22). O que importa travar é que continuem na primeira tela e com
+     as cinco placas — no pé da seção, onde estavam, dependiam de rolar. */
+  const parcerias = page.locator('#topo ul[aria-label="Parcerias"]');
+  await expect(parcerias.getByRole("listitem")).toHaveCount(5);
+  await expect(parcerias).toBeVisible();
 });
 
 test("'O problema' traz os dois números do pitch com a fonte visível", async ({ page }) => {

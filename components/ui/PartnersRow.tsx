@@ -18,14 +18,47 @@ import { partners } from "@/lib/content";
  * recoloured or redrawn, so they sit at their own colours on a neutral brand plate.
  * Logos only. No category labels underneath.
  */
-export function PartnersRow() {
-  const plateClass =
-    "flex h-20 items-center justify-center border border-line bg-brand-paper px-4 sm:px-6";
+/**
+ * DUAS VARIANTES, porque a fileira vive em dois lugares de largura muito
+ * diferente desde 2026-09-22.
+ *
+ * `faixa` é a original: largura total da página, com a calha do site. É a da
+ * /nexo, e segue sendo o padrão.
+ *
+ * `coluna` é a da home, onde as parcerias subiram para dentro da coluna da
+ * hero, logo abaixo dos CTAs. Ali não cabem cinco placas numa linha: a coluna
+ * dá ~766px, cinco placas sobram ~116px de conteúdo cada, e o lockup da
+ * Microsoft (3,9:1) encolhe até 30px de altura — ilegível, que é o oposto do
+ * motivo de tê-las subido. Em três colunas cada placa ganha ~224px e o badge
+ * volta a render inteiro. As duas linhas (3+2) custam ~60px a mais de altura
+ * e entregam logotipos que dá para ler.
+ *
+ * `max-w` e `px` só aparecem na variante `faixa`: dentro da coluna, a grade do
+ * pai já aplicou os dois, e repeti-los seria padding em cima de padding.
+ */
+const VARIANTES = {
+  faixa: {
+    grade: "mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-5",
+    placa: "flex h-20 items-center justify-center border border-line bg-brand-paper px-4 sm:px-6",
+    largo: "max-h-10 sm:max-h-11 lg:max-h-12",
+    quadrado: "max-h-12 sm:max-h-13 lg:max-h-14",
+  },
+  coluna: {
+    grade: "grid w-full grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3",
+    placa: "flex h-[4.5rem] items-center justify-center border border-line bg-brand-paper px-4",
+    largo: "max-h-9 sm:max-h-10",
+    quadrado: "max-h-11 sm:max-h-12",
+  },
+} as const;
+
+export function PartnersRow({ variante = "faixa" }: { variante?: keyof typeof VARIANTES }) {
+  const v = VARIANTES[variante];
+  const plateClass = v.placa;
 
   return (
     <ul
       aria-label={partners.label}
-      className="mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-5"
+      className={v.grade}
     >
       {partners.logos.map((logo) => (
         <li key={logo.name} className={plateClass}>
@@ -45,9 +78,7 @@ export function PartnersRow() {
             width={logo.w}
             height={logo.h}
             className={`w-auto max-w-full object-contain ${
-              logo.w / logo.h > 2
-                ? "max-h-10 sm:max-h-11 lg:max-h-12"
-                : "max-h-12 sm:max-h-13 lg:max-h-14"
+              logo.w / logo.h > 2 ? v.largo : v.quadrado
             }`}
           />
         </li>
