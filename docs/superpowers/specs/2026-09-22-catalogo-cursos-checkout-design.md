@@ -23,8 +23,14 @@ teste) e, aprovada, substitui a `/cursos`.
 | 8 | Dados do comprador | Nome, e-mail, CPF, telefone. **CPF vai ao Asaas e não é gravado.** |
 | 9 | Como testar | **Chave de produção**, com preço base de teste de R$ 5. |
 
-Assumidos por falta de resposta (corrigíveis): Pix, boleto e cartão; cartão em
-até 3× sem juros para o comprador; card no catálogo sem página por curso.
+Assumidos por falta de resposta (corrigíveis): Pix, boleto e cartão; card no
+catálogo sem página por curso.
+
+**Pagamento à vista na prévia** (decisão de 2026-09-22, depois do spec): a
+cobrança avulsa do Asaas não deixa o comprador escolher parcelas, e o link de
+pagamento — que deixa — pode ser pago mais de uma vez e pede os dados de novo.
+A prévia usa cobrança avulsa em 1×; o "até 3×" volta a ser discutido na
+publicação.
 
 ## 1. Rota e acesso
 
@@ -33,7 +39,7 @@ até 3× sem juros para o comprador; card no catálogo sem página por curso.
 - Herda as travas de prévia já existentes: `robots: noindex`, `/preview/` no
   Disallow, fora de `ROTAS_SITEMAP`, ignorada pelo beacon.
 - **Atrás do mesmo Basic Auth do /admin** (`middleware.ts` passa a cobrir
-  `/preview/catalogo` e `/api/checkout`). Motivo: a prévia cobra de verdade a
+  `/preview/catalogo` e tudo abaixo dele, inclusive o checkout). Motivo: a prévia cobra de verdade a
   R$ 5; sem senha, quem achasse o link compraria curso por R$ 5.
 - O webhook (`/api/asaas/webhook`) **não** fica atrás do Basic Auth — o Asaas
   não tem a senha. Ele se autentica pelo token (seção 4).
@@ -43,7 +49,7 @@ até 3× sem juros para o comprador; card no catálogo sem página por curso.
 `lib/catalogo/preco.ts`, função pura, sem I/O:
 
 ```ts
-calcularCarrinho(slugs: string[], precoBaseCentavos: number): {
+calcularCarrinho(slugs: readonly string[], validos: readonly string[], precoBaseCentavos: number): {
   itens: { slug: string; descontoPct: number; precoCentavos: number }[];
   totalCentavos: number;
   proximo: { descontoPct: number; precoCentavos: number } | null;
@@ -91,10 +97,13 @@ calcularCarrinho(slugs: string[], precoBaseCentavos: number): {
 consentimento obrigatória — "Seus dados serão compartilhados com o Pecege,
 responsável pela plataforma Solution, para liberar seu acesso aos cursos."
 
-**`POST /api/checkout`** (Route Handler, `server-only`):
+**`POST /preview/catalogo/checkout`** (Route Handler). Mora DENTRO da prévia de
+propósito: o caminho é que decide o modo `teste` e o preço de R$ 5 — nada que o
+navegador mande escolhe isso — e herda o Basic Auth do middleware. A publicação
+ganha a sua própria rota, com preço real.
 
 1. Valida nome, e-mail, telefone, consentimento e CPF (dígitos verificadores;
-   `lib/asaas/cpf.ts` recuperado do histórico, commit `8b59eea`).
+   `lib/catalogo/cpf.ts`, recuperado do histórico — commit `8b59eea`).
 2. Recalcula o carrinho com `calcularCarrinho`.
 3. Grava a venda `pendente` (sem CPF), com os itens e preços do momento.
 4. No Asaas: cria o cliente (`POST /customers`) e a cobrança, com
@@ -104,13 +113,8 @@ responsável pela plataforma Solution, para liberar seu acesso aos cursos."
 Erro do Asaas: a venda fica `falhou`, o log recebe o corpo **redigido**
 (`redigirCpfs`, recuperado do histórico) e a tela mostra mensagem genérica.
 
-**Parcelamento — a confirmar na implementação.** Cobrança simples do Asaas nasce
-com número de parcelas fixo. Para o comprador escolher "até 3×", provavelmente é
-preciso o recurso de link de pagamento (`maxInstallmentCount`). A primeira tarefa
-do plano verifica na documentação do Asaas qual recurso permite: valor por
-pedido, `externalReference` (ou equivalente rastreável no webhook), Pix/boleto/
-cartão e escolha de parcelas. Se nenhum permitir tudo, o Rodrigo decide o que
-cede.
+Cobrança: `POST /payments` com `billingType: "UNDEFINED"` (o comprador escolhe
+Pix, boleto ou cartão na fatura), vencimento em 3 dias, à vista.
 
 **`POST /api/asaas/webhook`** — mesmo caminho do webhook antigo, que continua
 registrado no Asaas:
@@ -125,8 +129,9 @@ registrado no Asaas:
 - Sempre 200 para evento que não interessa.
 
 **Retorno**: `/preview/catalogo/pedido/[id]` mostra os cursos, o status atual da
-venda e o texto "o acesso na Solution é liberado pelo Pecege em até N dias
-úteis" (N em `content.ts`, a definir pelo Rodrigo antes da publicação). O id é
+venda e o texto "o Pecege libera seu acesso na Solution e avisa você no e-mail
+informado". O prazo em dias úteis entra no texto na publicação, quando o Rodrigo
+o acertar com o Pecege. O id é
 UUID aleatório — não se adivinha pedido de outro.
 
 ## 5. Banco — tabela `vendas`
@@ -173,8 +178,9 @@ Sem CPF, em nenhuma coluna.
   (`GET /webhook`). O endpoint respondeu 404 desde 2026-08-28; se a fila estiver
   pausada (`interrupted`), reativar.
 - **Testes automatizados nunca chamam o Asaas real.** O cliente HTTP lê a URL base
-  de `ASAAS_URL_BASE` (padrão `https://api.asaas.com/v3`), e o e2e aponta para um
-  Asaas falso local. Unitários: `calcularCarrinho` (tabela inteira, teto,
+  de `ASAAS_URL_BASE`, **sem valor padrão**: sem a variável, nenhuma chamada sai
+  (falha fechada). Produção define `https://api.asaas.com/v3`; o `.env.local` não
+  define, e o e2e aponta para um Asaas falso local. Unitários: `calcularCarrinho` (tabela inteira, teto,
   duplicados, inexistentes, arredondamento), CPF, redação de CPF, transições do
   webhook. E2E: adicionar/remover e ver o preço mudar, carrinho sobrevive ao
   reload, checkout sem consentimento é recusado, checkout válido redireciona para
@@ -184,7 +190,7 @@ Sem CPF, em nenhuma coluna.
 ## Fica para a publicação em /cursos (fora deste escopo)
 
 - Preço base R$ 200 e remoção do Basic Auth.
-- Limite de tentativas no `/api/checkout` (sem senha, qualquer um cria clientes
+- Limite de tentativas no checkout público (sem senha, qualquer um cria clientes
   no Asaas).
 - Saída da lista de espera e da promessa de 10%.
 - Prazo de liberação definido com o Pecege; `canonical`, sitemap, JSON-LD de
