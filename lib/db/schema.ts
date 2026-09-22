@@ -1,20 +1,24 @@
 import { sql } from "drizzle-orm";
-import { date, integer, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { check, date, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Schema do site público.
  *
- * Sobrou UMA tabela. Em 2026-08-28 a plataforma de ensino própria foi
- * desligada (parceria com o Pecege — ver docs/ROADMAP-ACADEMY.md) e com ela
- * saíram as 14 tabelas de aluno, curso, assinatura, certificado e contrato
- * B2B. O histórico delas está no git e nas migrações anteriores.
+ * Quatro tabelas. Em 2026-08-28 a plataforma de ensino própria foi desligada
+ * (parceria com o Pecege — ver docs/ROADMAP-ACADEMY.md) e com ela saíram as 14
+ * tabelas de aluno, curso, assinatura, certificado e contrato B2B. O
+ * histórico delas está no git e nas migrações anteriores.
  *
  * `page_views` ficou porque nunca foi da plataforma: ela é do site
  * institucional, escrita pelo beacon a cada visita. Dropá-la junto teria
  * quebrado o site que continua no ar.
  *
- * `lista_espera` nasceu depois (2026-08-29), com o formulário de espera do
+ * `entradas` nasceu em 2026-09-09, para medir de onde a visita chegou.
+ *
+ * `lista_espera` nasceu antes (2026-08-29), com o formulário de espera do
  * lançamento na Solution.
+ *
+ * `vendas` nasceu em 2026-09-22, com o catálogo de cursos e checkout Asaas.
  */
 
 /** Visitas do site público, agregadas por dia+rota - alimentadas pelo beacon
@@ -78,3 +82,48 @@ export const listaEspera = pgTable("lista_espera", {
   criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
   consentimentoEm: timestamp("consentimento_em", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("lista_espera_email_unico").on(sql`lower(${t.email})`)]);
+
+export type ItemVenda = { slug: string; nome: string; descontoPct: number; precoCentavos: number };
+export type StatusVenda = "pendente" | "pago" | "cancelado" | "estornado" | "falhou";
+export type ModoVenda = "teste" | "real";
+
+/**
+ * Vendas do catálogo de cursos (2026-09-22).
+ *
+ * A IAgentics vende e recebe pelo Asaas; o acesso é liberado pelo Pecege na
+ * Solution, a partir desta lista no /admin (sem aviso automático, decisão do
+ * Rodrigo). `acesso_liberado_em` é quem diz que ninguém pagou e ficou sem curso.
+ *
+ * SEM CPF, em nenhuma coluna: o Asaas exige o CPF para cobrar e é ele quem o
+ * guarda. Aqui fica o suficiente para saber quem liberar.
+ *
+ * `itens` congela nome e preço no momento da compra: se o catálogo mudar
+ * depois, a venda continua dizendo o que foi vendido e por quanto.
+ *
+ * `modo` separa as compras da prévia (preço de teste, dinheiro real) das
+ * vendas de verdade — o painel nunca soma uma com a outra.
+ */
+export const vendas = pgTable(
+  "vendas",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    criadaEm: timestamp("criada_em", { withTimezone: true }).notNull().defaultNow(),
+    nome: text("nome").notNull(),
+    email: text("email").notNull(),
+    telefone: text("telefone").notNull(),
+    itens: jsonb("itens").$type<ItemVenda[]>().notNull(),
+    totalCentavos: integer("total_centavos").notNull(),
+    modo: text("modo").$type<ModoVenda>().notNull(),
+    status: text("status").$type<StatusVenda>().notNull().default("pendente"),
+    asaasClienteId: text("asaas_cliente_id"),
+    asaasCobrancaId: text("asaas_cobranca_id"),
+    urlFatura: text("url_fatura"),
+    consentimentoEm: timestamp("consentimento_em", { withTimezone: true }).notNull().defaultNow(),
+    pagoEm: timestamp("pago_em", { withTimezone: true }),
+    acessoLiberadoEm: timestamp("acesso_liberado_em", { withTimezone: true }),
+  },
+  (t) => [
+    check("vendas_modo_valido", sql`${t.modo} in ('teste', 'real')`),
+    check("vendas_status_valido", sql`${t.status} in ('pendente', 'pago', 'cancelado', 'estornado', 'falhou')`),
+  ],
+);

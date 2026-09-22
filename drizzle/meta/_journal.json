@@ -78,6 +78,13 @@
       "when": 1788998913363,
       "tag": "0010_entradas",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790119667396,
+      "tag": "0011_vendas",
+      "breakpoints": true
     }
   ]
 }
