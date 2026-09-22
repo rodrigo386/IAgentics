@@ -13,9 +13,14 @@ import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
  * o Basic Auth do middleware cobre esta rota junto com a página. Na
  * publicação, /cursos ganha a sua rota com o preço real.
  *
- * Ordem: grava a venda ANTES de falar com o Asaas. Se o Asaas falhar, a venda
- * fica "falhou" e o painel mostra a tentativa; o contrário (cobrança criada
- * sem venda gravada) seria dinheiro sem dono.
+ * Ordem: grava a venda ANTES de falar com o Asaas. Se o Asaas falhar ANTES de
+ * criar a cobrança, a venda vira "falhou" e o painel mostra a tentativa. Mas
+ * se a cobrança já foi criada e só o passo seguinte (gravar o id dela na
+ * venda) falhar, a venda NÃO pode virar "falhou" — a cobrança já existe no
+ * Asaas, com fatura já mandada ao comprador, e "falhou" faria o webhook
+ * perder o pagamento (só transiciona de "pendente"/"cancelado" para "pago").
+ * Nesse caso a venda fica "pendente" e a resposta ainda devolve a URL da
+ * fatura — dinheiro sem dono é exatamente o que essa ordem evita.
  */
 export async function POST(request: Request) {
   let payload: unknown;
@@ -44,9 +49,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "falha" }, { status: 502 });
   }
 
+  let cobranca: { id: string; urlFatura: string } | undefined;
   try {
     const cliente = await criarCliente({ nome, email, cpf, telefone });
-    const cobranca = await criarCobranca({
+    cobranca = await criarCobranca({
       clienteId: cliente.id,
       valorCentavos: carrinho.totalCentavos,
       vencimento: vencimentoEm(3),
@@ -57,7 +63,29 @@ export async function POST(request: Request) {
     await anexarCobranca(id, { clienteId: cliente.id, cobrancaId: cobranca.id, urlFatura: cobranca.urlFatura });
     return NextResponse.json({ url: cobranca.urlFatura });
   } catch (erro) {
-    await marcarFalha(id).catch(() => {});
+    if (cobranca) {
+      /* A cobrança já existe no Asaas (e o Asaas já mandou a fatura por
+         e-mail) — só `anexarCobranca` falhou. Marcar a venda "falhou" aqui
+         seria dinheiro sem dono: o webhook casa por `externalReference` e só
+         transiciona de "pendente"/"cancelado" para "pago", nunca de "falhou".
+         Deixa a venda em "pendente" (o estado em que `criarVenda` já a
+         gravou) e devolve a URL da fatura para quem está comprando —
+         a venda continua encontrável pelo id quando o pagamento chegar. */
+      console.error(
+        "[checkout] anexarCobranca falhou após cobrança criada no Asaas",
+        id,
+        cobranca.id,
+        erro instanceof Error ? erro.message : erro,
+      );
+      return NextResponse.json({ url: cobranca.urlFatura });
+    }
+    await marcarFalha(id).catch((erroMarcar) => {
+      console.error(
+        "[checkout] marcarFalha falhou",
+        id,
+        erroMarcar instanceof Error ? erroMarcar.message : erroMarcar,
+      );
+    });
     console.error("[checkout] falha no Asaas", redigirCpfs(erro instanceof Error ? erro.message : String(erro)));
     return NextResponse.json({ error: "falha" }, { status: 502 });
   }
