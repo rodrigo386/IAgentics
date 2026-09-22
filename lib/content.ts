@@ -1613,4 +1613,68 @@ export const catalogo = {
       capa: "/academy/copilot-course.jpg",
     },
   ],
+  meta: {
+    titulo: "Catálogo de cursos (prévia)",
+    descricao: "Prévia de teste do catálogo de formações online da IAgentics na Solution.",
+  },
+  eyebrow: "Formações online · IAgentics e Pecege",
+  titulo: "Monte sua trilha de IA",
+  lead: (preco: string) =>
+    `Cada curso custa ${preco}. A partir do segundo, cada curso novo sai 5% mais barato que o anterior, até 25% de desconto.`,
+  /* Na tela, não só no código: quem abre a prévia precisa saber que a
+     cobrança é real, só que pequena. */
+  avisoTeste: "Prévia de teste: preços reduzidos, cobrança real pelo Asaas.",
+  card: {
+    adicionar: "Adicionar",
+    remover: "Remover",
+    entraPor: (preco: string) => `Entra por ${preco}`,
+  },
+  carrinho: {
+    titulo: "Seu carrinho",
+    vazio: "Escolha um curso para começar. O segundo já sai com 5% de desconto.",
+    desconto: (pct: number) => `${pct}% off`,
+    total: "Total",
+    economia: (valor: string) => `Você economiza ${valor}`,
+    proximo: (preco: string, pct: number) => `Adicione mais um e ele sai por ${preco} (${pct}% off).`,
+    teto: "Você chegou ao desconto máximo de 25%.",
+    finalizar: "Finalizar compra",
+  },
+  checkout: {
+    titulo: "Seus dados",
+    nome: "Nome completo",
+    email: "E-mail",
+    cpf: "CPF",
+    telefone: "Celular com DDD",
+    notaCpf: "O CPF é exigido pelo Asaas para emitir a cobrança. Ele vai direto para o Asaas e não fica guardado no nosso site.",
+    consentimento:
+      "Autorizo que meus dados sejam compartilhados com o Pecege, responsável pela plataforma Solution, para liberar meu acesso aos cursos.",
+    pagar: "Ir para o pagamento",
+    enviando: "Gerando a cobrança…",
+    voltar: "Voltar ao carrinho",
+    privacidade: "Ver política de privacidade",
+    erros: {
+      nome: "Escreva seu nome completo.",
+      email: "Confira o e-mail digitado.",
+      telefone: "Informe o celular com DDD.",
+      cpf: "Confira o CPF digitado.",
+      cursos: "Seu carrinho está vazio.",
+      consentimento: "Marque a autorização para continuar.",
+      geral: "Não foi possível gerar a cobrança agora. Tente de novo em instantes.",
+    } as Record<string, string>,
+  },
+  pedido: {
+    titulo: "Pedido recebido",
+    status: {
+      pendente: "Aguardando pagamento",
+      pago: "Pagamento confirmado",
+      cancelado: "Cobrança cancelada",
+      estornado: "Pagamento estornado",
+      falhou: "Não foi possível gerar a cobrança",
+    } as Record<string, string>,
+    proximos: "O Pecege libera seu acesso na plataforma Solution e avisa você no e-mail informado.",
+    abrirFatura: "Abrir a fatura",
+    cursos: "Cursos",
+    total: "Total",
+    voltar: "Voltar ao catálogo",
+  },
 } as const;
