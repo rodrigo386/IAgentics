@@ -14,8 +14,13 @@ import { problema } from "@/lib/content";
  * (5/7), hairlines, sem cartão.
  */
 export function Problema() {
+  /* RESPIRO DE CIMA MENOR QUE O DE BAIXO, e esta é a única seção do site
+     assim. Ela vem logo depois de uma hero de tela cheia, que já termina com
+     a própria sobra: com `pt-32` os dois respiros somavam ~276px e o vão lia
+     como buraco. Cortado, a manchete desta seção espia acima da dobra numa
+     janela de 900px, que é o que convida a rolar. */
   return (
-    <section id="problema" className="border-t border-line py-24 sm:py-32">
+    <section id="problema" className="border-t border-line pb-24 pt-12 sm:pb-32 sm:pt-16">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <Reveal>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{problema.eyebrow}</p>

@@ -21,8 +21,14 @@ import { hero, cta, partners } from "@/lib/content";
  * parceiro aparece uma vez só.
  */
 export function Hero() {
+  /* ALTURA: `100dvh - 4rem`, não `100dvh`. O nav mede 4rem e fica POR CIMA da
+     hero, então a tela cheia menos o nav é a medida honesta do que sobra para
+     o conteúdo — é a mesma das capas da /academy e do /spend-lab. A regra do
+     DESIGN.md (nunca `h-screen`, sempre `min-h` em dvh) continua valendo; o
+     que muda é quanto de vazio a seção se obriga a criar depois que o
+     conteúdo acabou. */
   return (
-    <section id="topo" className="relative flex min-h-[100dvh] flex-col overflow-hidden pb-14 pt-24">
+    <section id="topo" className="relative flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden pb-12 pt-24">
       <div className="flex flex-1 items-center">
         <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
