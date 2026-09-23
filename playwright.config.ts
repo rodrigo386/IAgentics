@@ -12,7 +12,7 @@ export default defineConfig({
      cliente do Asaas não tem valor padrão, então um servidor subido à mão sem
      ela faz o checkout FALHAR em vez de cobrar de verdade. Ao reaproveitar um
      servidor já de pé (reuseExistingServer), suba-o com
-     `ASAAS_URL_BASE=http://127.0.0.1:4010 npm run start`. */
+     `ASAAS_URL_BASE=http://127.0.0.1:4010 ASAAS=chave-falsa-do-e2e npm run start`. */
   webServer: [
     { command: "node e2e/asaas-falso.mjs", url: "http://127.0.0.1:4010/__estado", reuseExistingServer: true, timeout: 10_000 },
     {
@@ -20,7 +20,11 @@ export default defineConfig({
       url: "http://localhost:3000",
       reuseExistingServer: true,
       timeout: 120_000,
-      env: { ASAAS_URL_BASE: "http://127.0.0.1:4010" },
+      /* ASAAS vai com chave falsa de propósito: este servidor só conversa com
+         o Asaas falso. E o Next nem carregaria a chave do .env.local — valor
+         que começa com `$` é lido como referência a variável e vira vazio,
+         então sem esta linha o checkout falha com "env ASAAS ausente". */
+      env: { ASAAS_URL_BASE: "http://127.0.0.1:4010", ASAAS: "chave-falsa-do-e2e" },
     },
   ],
 });

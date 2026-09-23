@@ -68,7 +68,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 9 de setembro de 2026",
+    atualizado: "Atualizada em 22 de setembro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -97,6 +97,11 @@ export const privacidade = {
             "Nome e e-mail, informados por você no formulário de /cursos, e a data em que você autorizou o compartilhamento. Servem para avisar você do lançamento das formações na Solution e garantir o desconto prometido. Sem a autorização marcada, nada é gravado.",
         },
         {
+          termo: "Compra de cursos",
+          texto:
+            "Nome, e-mail, celular, os cursos escolhidos, o valor e a situação do pagamento, além da data em que você autorizou o compartilhamento com o Pecege. Servem para liberar seu acesso na plataforma Solution. O CPF é pedido porque o Asaas, que emite a cobrança, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
+        },
+        {
           termo: "Medição de visitas do site",
           texto:
             "Contamos quantas visitas cada página pública recebe por dia. Esse contador registra apenas a data e o endereço da página — sem cookie, sem endereço IP e sem qualquer identificador de pessoa.",
@@ -122,7 +127,11 @@ export const privacidade = {
         {
           termo: "Pecege e plataforma Solution",
           texto:
-            "Se você entrou na lista de espera, seu nome e e-mail são compartilhados com o Pecege, responsável pela plataforma Solution, onde as formações serão oferecidas. É por causa desse compartilhamento que o formulário pede uma autorização explícita: sem ela marcada, não gravamos nem compartilhamos nada. A autorização pode ser revogada a qualquer momento pelos canais no fim desta página.",
+            "Se você comprou um curso, seu nome, e-mail, celular e os cursos comprados são compartilhados com o Pecege para liberar seu acesso na Solution. Se você entrou na lista de espera, seu nome e e-mail são compartilhados com o Pecege, responsável pela plataforma Solution, onde as formações serão oferecidas. É por causa desse compartilhamento que o formulário pede uma autorização explícita: sem ela marcada, não gravamos nem compartilhamos nada. A autorização pode ser revogada a qualquer momento pelos canais no fim desta página.",
+        },
+        {
+          termo: "Asaas",
+          texto: "Emissão e processamento das cobranças dos cursos: recebe nome, e-mail, celular e CPF para gerar a cobrança, e os dados de pagamento que você informa na fatura.",
         },
         { termo: "Resend", texto: "Envio dos e-mails do site: mensagem de contato e confirmação de inscrição na lista de espera." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },

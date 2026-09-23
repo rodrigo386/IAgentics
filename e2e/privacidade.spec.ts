@@ -29,13 +29,18 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
   await expect(page.getByText(/De onde você chegou/)).toBeVisible();
   await expect(page.getByText(/nunca o endereço completo nem o termo que você pesquisou/)).toBeVisible();
 
+  /* A compra de cursos entrou em 2026-09-22: a política declara o que é
+     gravado e — o ponto que mais importa — que o CPF NÃO fica no site. */
+  await expect(page.getByText(/Compra de cursos/)).toBeVisible();
+  await expect(page.getByText(/não é gravado no nosso site/)).toBeVisible();
+
   /* E o que NÃO pode mais estar lá: a plataforma de ensino saiu em 2026-08-28
-     e a política declarava senha, CPF e cobrança por meses depois disso.
-     Declarar tratamento que não existe é tão errado quanto omitir o que
-     existe — as duas coisas fazem o documento deixar de descrever a realidade. */
+     e a política declarava senha por meses depois disso. Declarar tratamento
+     que não existe é tão errado quanto omitir o que existe — as duas coisas
+     fazem o documento deixar de descrever a realidade. (CPF e Asaas voltaram
+     à política em 2026-09-22, com a compra de cursos — agora descrevem
+     tratamento real, então a asserção de ausência saiu para eles.) */
   await expect(page.getByText(/bcrypt/)).toHaveCount(0);
-  await expect(page.getByText(/CPF/)).toHaveCount(0);
-  await expect(page.getByText(/Asaas/)).toHaveCount(0);
 
   // Identificação da controladora: sem CNPJ, a política não cumpre seu papel
   // de dizer QUEM responde pelos dados.

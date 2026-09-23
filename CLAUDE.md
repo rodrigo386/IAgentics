@@ -18,16 +18,16 @@ Site institucional em **pt-BR**.
 
 ## Stack
 
-Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (três tabelas) · Remotion (vídeos) · vitest + Playwright.
+Next.js 15 App Router · React 19 · Tailwind v4 · Drizzle + Postgres (quatro tabelas) · Remotion (vídeos) · vitest + Playwright.
 
-Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacional de e-mail.
+Saíram com a plataforma: Auth.js, bcryptjs e o canal transacional de e-mail. O cliente Asaas também saiu e **voltou em 2026-09-22**, só para o checkout do catálogo (`lib/asaas/cliente.ts`).
 
 ## Mapa de rotas
 
 - Público: `/` (home), `/nexo`, `/academy`, `/cursos`, `/spend-lab`, `/privacidade`, `/artigos`, `/artigos/[slug]`.
-- API: `/api/contato` (Resend), `/api/estatisticas` (beacon de visitas) e `/api/lista-espera` (formulário de /cursos).
-- **`/admin`** (2026-08-31): painel de visitas + lista de espera, e `/admin/lista-espera.csv` para exportar. **Atrás de Basic Auth no `middleware.ts`** — `ADMIN_USUARIO` e `ADMIN_SENHA`. Sem as variáveis, responde **503**: falha fechada de propósito, porque deploy sem variável não pode virar vazamento de dado pessoal.
-- **`/preview/*`** (2026-09-02): páginas em construção esperando aprovação do Rodrigo — pedido dele: "não substitua a atual, crie uma paralela para eu visualizar antes". Três travas para não vazar: `robots: noindex` na página, `/preview/` no Disallow do robots.txt, fora de `ROTAS_SITEMAP` e sem link no site. O beacon de visitas ignora o prefixo (quem visita está aprovando, não visitando). Sem `canonical`: apontá-lo para a página oficial diria ao Google que são a mesma, e ainda não são. Aprovada, o conteúdo vira a página oficial e a prévia some — foi assim com `/preview/nexo` e `/preview/home` (aprovadas e promovidas em 2026-09-04). Hoje não há prévia no ar; o mecanismo (robots, beacon) fica pronto para a próxima.
+- API: `/api/contato` (Resend), `/api/estatisticas` (beacon de visitas), `/api/lista-espera` (formulário de /cursos) e `POST /api/asaas/webhook` (confirmação de pagamento do catálogo).
+- **`/admin`** (2026-08-31): painel de visitas + lista de espera, e `/admin/lista-espera.csv` para exportar. Desde 2026-09-22 também as vendas do catálogo (`/admin?vendas=teste` mostra as da prévia) e `/admin/vendas.csv`. **Atrás de Basic Auth no `middleware.ts`** — `ADMIN_USUARIO` e `ADMIN_SENHA`. Sem as variáveis, responde **503**: falha fechada de propósito, porque deploy sem variável não pode virar vazamento de dado pessoal.
+- **`/preview/*`** (2026-09-02): páginas em construção esperando aprovação do Rodrigo — pedido dele: "não substitua a atual, crie uma paralela para eu visualizar antes". Três travas para não vazar: `robots: noindex` na página, `/preview/` no Disallow do robots.txt, fora de `ROTAS_SITEMAP` e sem link no site. O beacon de visitas ignora o prefixo (quem visita está aprovando, não visitando). Sem `canonical`: apontá-lo para a página oficial diria ao Google que são a mesma, e ainda não são. Aprovada, o conteúdo vira a página oficial e a prévia some — foi assim com `/preview/nexo` e `/preview/home` (aprovadas e promovidas em 2026-09-04). Hoje a prévia no ar é **`/preview/catalogo`** (2026-09-22): catálogo com carrinho e checkout, **atrás do mesmo Basic Auth do /admin** — ela cobra de verdade, a preço de teste — com `POST /preview/catalogo/checkout` e `/preview/catalogo/pedido/[id]` embaixo. Ver a seção Catálogo e checkout.
 - `/planos` redireciona 308 para `/cursos`.
 - **Não existem mais** `/app`, `/certificados` nem `/api/auth`.
 
@@ -42,6 +42,20 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - **Altura de capa depende de quem empurra o nav** (2026-09-22). Na home o `<main>` NÃO tem padding e o nav fica POR CIMA da hero; em `/nexo`, `/academy`, `/spend-lab` e `/cursos` o `<main>` tem `pt-16` e o nav fica ACIMA. Nessas quatro, `min-h-[100dvh]` soma a altura do nav à da tela e a capa termina 64px abaixo da dobra — foi o que cortou a faixa de parcerias do `/nexo`. Lá a altura certa é `min-h-[calc(100dvh-4rem)]`, e é conta, não gosto. `e2e/nexo.spec.ts` trava o efeito visível (a faixa inteira na primeira tela), não a classe.
 - **"Nexo" em caixa mista nas strings** — em caps o leitor de tela soletra N-E-X-O. Peso visual vem da tipografia, não de maiúsculas.
 - Datas relativas viram absolutas em docs; commits em pt-BR no padrão `feat:`/`fix:`.
+
+## Catálogo e checkout (2026-09-22)
+
+Prévia da venda direta dos cursos em `/preview/catalogo`, esperando aprovação do Rodrigo antes de virar `/cursos`. Plano em `docs/superpowers/specs/2026-09-22-catalogo-cursos-checkout-design.md`.
+
+- **Desconto progressivo**: o curso na posição `i` (a partir de 0) sai com `min(5 × i, 25)`% — o 6º em diante fica em 25%. Mora em `lib/catalogo/preco.ts`, em centavos inteiros; o carrinho e o servidor usam a MESMA função, então o que a tela mostra é o que o Asaas cobra.
+- **O navegador manda só slugs.** O servidor recalcula o preço e descarta slug duplicado ou inexistente — preço no corpo do POST é ignorado (o e2e forja um e confere).
+- **Checkout dentro da prévia fixa modo e preço pelo caminho**: `/preview/catalogo/checkout` grava `modo: "teste"` e cobra a base de teste (`PRECO_TESTE_CENTAVOS`, R$ 5). Não há parâmetro que troque isso — quem chega pela prévia não consegue pedir preço real.
+- **`ASAAS_URL_BASE` não tem valor padrão: sem ela o cliente recusa antes de qualquer requisição.** Falha fechada, porque o `.env.local` guarda a chave de PRODUÇÃO e um padrão apontando para o Asaas real faria teste cobrar de verdade. Produção define a variável no Railway; o `.env.local` NÃO a define. O e2e sobe um Asaas falso (`e2e/asaas-falso.mjs`, porta 4010) e o `playwright.config.ts` passa a URL dele só para o `next start` que ele mesmo sobe — **servidor subido à mão para o e2e precisa de `ASAAS_URL_BASE=http://127.0.0.1:4010 ASAAS=chave-falsa-do-e2e`**, senão o checkout falha.
+- **O Next não carrega o `ASAAS` do `.env.local`**: a chave começa com `$`, e o dotenv-expand do Next lê isso como referência a variável — o valor vira vazio e o checkout morre em "env ASAAS ausente". Por isso o e2e recebe uma chave falsa de propósito (ele só fala com o Asaas falso). Em produção não há problema: o Railway injeta a variável direto no processo, sem expansão.
+- **CPF só no Asaas.** É pedido porque o Asaas exige para emitir cobrança; vai direto para lá e nunca é gravado no banco nem aparece em log (todo log de erro do Asaas passa por `redigirCpfs`). O e2e confere que o CSV de vendas não o contém.
+- **Webhook no caminho antigo** (`/api/asaas/webhook`, o da plataforma desligada, que continua registrado na conta do Asaas — não precisou recadastrar). Fica fora do Basic Auth e autentica pelo header `asaas-access-token` = `ASAAS_WEBHOOK_TOKEN`. **Responde 200 para tudo que não é falha nossa** (evento irrelevante, venda desconhecida, reentrega): o Asaas pausa a fila depois de erros seguidos, e fila pausada é pagamento confirmado que nunca chega. Só banco fora devolve 500, para ele reentregar.
+- **A liberação no Pecege é manual**: venda paga aparece no /admin, alguém libera o acesso na Solution e aperta "Marcar acesso liberado". Não há integração com a Solution.
+- **Falta para publicar em `/cursos`**: preço real (base de R$ 200), rota própria fora de `/preview`, sem senha, limite de tentativas no checkout, tirar a lista de espera e a promessa dos 10%, escrever o prazo de liberação em dias úteis e decidir o "até 3×" — a cobrança avulsa do Asaas não deixa o comprador escolher parcelas, e a prévia cobra em 1×.
 
 ## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
 
@@ -67,7 +81,7 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 ## Testes
 
-- `npm run test:unit` (vitest, 82) · `npm run test:e2e` (Playwright, 59, **workers: 1**).
+- `npm run test:unit` (vitest, 115) · `npm run test:e2e` (Playwright, 66, **workers: 1**). O `webServer` do Playwright sobe dois servidores: o Asaas falso (4010) e o `next start` com `ASAAS_URL_BASE` e `ASAAS` falsos.
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 
 ## Deploy (Railway)
@@ -84,7 +98,8 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 - **`RESEND_API_KEY` continua ATIVA e necessária**: o formulário de contato e a confirmação da lista de espera enviam por ela.
 - **`ADMIN_USUARIO` / `ADMIN_SENHA`**: Basic Auth do painel. Valor no `.env.local` e no Railway, nunca no chat. Definidas com `railway variables --set-from-stdin ... --skip-deploys` — credencial **nunca** em argumento de linha de comando: em 2026-08-31 uma flag inválida ecoou a senha na mensagem de erro e ela teve de ser rotacionada.
 - **`EMAIL_CAIXA_TESTE` nunca vai para o Railway.**
-- `ASAAS_*` e `AUTH_*` ficaram órfãs em 2026-08-28 (a cobrança e o login saíram com a plataforma). Ainda estão no Railway; removê-las é higiene — e exige `railway up` depois (armadilha 14).
+- **`ASAAS`, `ASAAS_WEBHOOK_TOKEN` e `ASAAS_URL_BASE` voltaram a ser NECESSÁRIAS em 2026-09-22** (checkout do catálogo). Tinham ficado órfãs com o desligamento da plataforma; não remover. `ASAAS_URL_BASE` existe no Railway e **nunca** no `.env.local` (ver Catálogo e checkout).
+- `AUTH_*` continua órfã desde 2026-08-28 (o login saiu com a plataforma). Ainda está no Railway; removê-la é higiene — e exige `railway up` depois (armadilha 11).
 - CPF nunca persiste nem vai a log.
 
 ## Armadilhas que já quebraram o build (não repetir)
@@ -107,4 +122,4 @@ Saíram com a plataforma: Auth.js, bcryptjs, o cliente Asaas e o canal transacio
 
 - **Redirect Rule 301 do www** no Cloudflare — higiene, o canonical já protege.
 - **Logo do Pecege**: `public/partner-pecege.png` precisa do arquivo real.
-- **Variáveis órfãs no Railway** (`ASAAS_*`, `AUTH_*`) — remover quando houver um `railway up` de qualquer forma.
+- **Variáveis órfãs no Railway** (`AUTH_*`; as `ASAAS_*` voltaram a ser usadas) — remover quando houver um `railway up` de qualquer forma.
