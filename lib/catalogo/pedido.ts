@@ -18,8 +18,8 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function validarPedido(entrada: unknown, validos: readonly string[]): ValidacaoPedido {
   const { nome, email, telefone, cpf, slugs, consentimento } = (entrada ?? {}) as Record<string, unknown>;
 
-  if (typeof nome !== "string" || nome.trim().length < 2) return { ok: false, motivo: "nome" };
-  if (typeof email !== "string" || !EMAIL.test(email.trim())) return { ok: false, motivo: "email" };
+  if (typeof nome !== "string" || nome.trim().length < 2 || nome.trim().length > 200) return { ok: false, motivo: "nome" };
+  if (typeof email !== "string" || email.trim().length > 254 || !EMAIL.test(email.trim())) return { ok: false, motivo: "email" };
 
   // DDD + número: 10 dígitos (fixo) ou 11 (celular).
   const fone = typeof telefone === "string" ? telefone.replace(/\D/g, "") : "";

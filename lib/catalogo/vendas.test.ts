@@ -68,9 +68,25 @@ describe("vendas", () => {
     expect(await marcarAcessoLiberado(id)).toBe(false);
   });
 
-  it("marcarFalha só atinge venda pendente", async () => {
+  it("marcarFalha só atinge venda pendente, e não mexe em venda já paga", async () => {
     const id = await nova();
     await marcarFalha(id);
     expect((await buscarVenda(id))!.status).toBe("falhou");
+
+    const idPaga = await nova();
+    await aplicarEventoAsaas({ event: "PAYMENT_RECEIVED", payment: { externalReference: idPaga } });
+    await marcarFalha(idPaga);
+    expect((await buscarVenda(idPaga))!.status).toBe("pago");
+  });
+
+  it("webhook: venda marcada falhou (cobrança criada no Asaas mas anexarCobranca não gravou) recupera para pago ao confirmar", async () => {
+    const id = await nova();
+    await marcarFalha(id);
+    expect((await buscarVenda(id))!.status).toBe("falhou");
+
+    expect(await aplicarEventoAsaas({ event: "PAYMENT_RECEIVED", payment: { externalReference: id } })).toBe("atualizado");
+    const v = await buscarVenda(id);
+    expect(v?.status).toBe("pago");
+    expect(v?.pagoEm).toBeInstanceOf(Date);
   });
 });

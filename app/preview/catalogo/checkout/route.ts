@@ -45,7 +45,9 @@ export async function POST(request: Request) {
   try {
     id = await criarVenda({ nome, email, telefone, itens, totalCentavos: carrinho.totalCentavos, modo: "teste" });
   } catch (erro) {
-    console.error("[checkout] falha ao gravar a venda", erro instanceof Error ? erro.message : erro);
+    // Mensagem fixa: erro do Drizzle inclui a query com nome/email/telefone
+    // ("Failed query ... params: ..."), e isso não pode ir para o log.
+    console.error("[checkout] falha ao gravar a venda", (erro as { code?: string })?.code ?? "sem_codigo");
     return NextResponse.json({ error: "falha" }, { status: 502 });
   }
 
@@ -71,11 +73,13 @@ export async function POST(request: Request) {
          Deixa a venda em "pendente" (o estado em que `criarVenda` já a
          gravou) e devolve a URL da fatura para quem está comprando —
          a venda continua encontrável pelo id quando o pagamento chegar. */
+      // Só ids e código do erro no log — a mensagem do Drizzle pode trazer
+      // nome/email/telefone embutidos na query.
       console.error(
         "[checkout] anexarCobranca falhou após cobrança criada no Asaas",
         id,
         cobranca.id,
-        erro instanceof Error ? erro.message : erro,
+        (erro as { code?: string })?.code ?? "sem_codigo",
       );
       return NextResponse.json({ url: cobranca.urlFatura });
     }

@@ -33,6 +33,13 @@ describe("validarPedido", () => {
     expect(validarPedido({ ...valido, cpf: "529.982.247-24" }, VALIDOS)).toEqual({ ok: false, motivo: "cpf" });
   });
 
+  it("recusa nome e e-mail longos demais", () => {
+    expect(validarPedido({ ...valido, nome: "A".repeat(201) }, VALIDOS)).toEqual({ ok: false, motivo: "nome" });
+    expect(validarPedido({ ...valido, nome: "A".repeat(200) }, VALIDOS).ok).toBe(true);
+    const emailLongo = `${"a".repeat(250)}@x.co`;
+    expect(validarPedido({ ...valido, email: emailLongo }, VALIDOS)).toEqual({ ok: false, motivo: "email" });
+  });
+
   it("recusa carrinho vazio ou só com cursos inexistentes, e limpa duplicados", () => {
     expect(validarPedido({ ...valido, slugs: [] }, VALIDOS)).toEqual({ ok: false, motivo: "cursos" });
     expect(validarPedido({ ...valido, slugs: ["x"] }, VALIDOS)).toEqual({ ok: false, motivo: "cursos" });

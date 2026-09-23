@@ -55,7 +55,7 @@ Prévia da venda direta dos cursos em `/preview/catalogo`, esperando aprovação
 - **CPF só no Asaas.** É pedido porque o Asaas exige para emitir cobrança; vai direto para lá e nunca é gravado no banco nem aparece em log (todo log de erro do Asaas passa por `redigirCpfs`). O e2e confere que o CSV de vendas não o contém.
 - **Webhook no caminho antigo** (`/api/asaas/webhook`, o da plataforma desligada, que continua registrado na conta do Asaas — não precisou recadastrar). Fica fora do Basic Auth e autentica pelo header `asaas-access-token` = `ASAAS_WEBHOOK_TOKEN`. **Responde 200 para tudo que não é falha nossa** (evento irrelevante, venda desconhecida, reentrega): o Asaas pausa a fila depois de erros seguidos, e fila pausada é pagamento confirmado que nunca chega. Só banco fora devolve 500, para ele reentregar.
 - **A liberação no Pecege é manual**: venda paga aparece no /admin, alguém libera o acesso na Solution e aperta "Marcar acesso liberado". Não há integração com a Solution.
-- **Falta para publicar em `/cursos`**: preço real (base de R$ 200), rota própria fora de `/preview`, sem senha, limite de tentativas no checkout, tirar a lista de espera e a promessa dos 10%, escrever o prazo de liberação em dias úteis e decidir o "até 3×" — a cobrança avulsa do Asaas não deixa o comprador escolher parcelas, e a prévia cobra em 1×.
+- **Falta para publicar em `/cursos`**: preço real (base de R$ 200), rota própria fora de `/preview`, sem senha, limite de tentativas no checkout, tirar a lista de espera e a promessa dos 10%, escrever o prazo de liberação em dias úteis e decidir o "até 3×" — a cobrança avulsa do Asaas não deixa o comprador escolher parcelas, e a prévia cobra em 1×. Também falta: **eventos de chargeback não são tratados** (`PAYMENT_CHARGEBACK_REQUESTED`/`_DISPUTE`, `PAYMENT_REFUND_IN_PROGRESS`) — hoje uma contestação deixa a venda "pago" e aguardando liberação, sem sinalizar que o dinheiro pode voltar; **o Asaas cria um cliente novo a cada tentativa** de checkout (`criarCliente` não busca por CPF/e-mail existente), então uma pessoa que tenta comprar mais de uma vez duplica cadastro no Asaas; e as **notificações padrão do Asaas** (que usam o `mobilePhone` que mandamos) podem despachar SMS/WhatsApp de cobrança paga — falta decidir a política de notificação antes de publicar.
 
 ## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
 
@@ -81,8 +81,9 @@ Prévia da venda direta dos cursos em `/preview/catalogo`, esperando aprovação
 
 ## Testes
 
-- `npm run test:unit` (vitest, 115) · `npm run test:e2e` (Playwright, 66, **workers: 1**). O `webServer` do Playwright sobe dois servidores: o Asaas falso (4010) e o `next start` com `ASAAS_URL_BASE` e `ASAAS` falsos.
+- `npm run test:unit` (vitest, 117) · `npm run test:e2e` (Playwright, 66, **workers: 1**). O `webServer` do Playwright sobe dois servidores: o Asaas falso (4010) e o `next start` com `ASAAS_URL_BASE` e `ASAAS` falsos.
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
+- **`drizzle/meta` não tem snapshot para as migrações `0010`/`0011`** (foram escritas à mão, direto o `.sql`, sem passar por `drizzle-kit generate`). Um `db:gerar` futuro compararia o schema atual contra o snapshot da `0009` e tentaria recriar `entradas`/`vendas` do zero. Antes de rodar `drizzle-kit generate` de novo, regenerar os snapshots que faltam.
 
 ## Deploy (Railway)
 

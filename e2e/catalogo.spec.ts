@@ -32,8 +32,12 @@ async function ultimaCobranca(request: APIRequestContext) {
 }
 
 /* A prévia cobra de verdade: sem senha, nada abre — nem pelo caminho do
-   markdown para agentes, que reescreve a rota. */
+   markdown para agentes, que reescreve a rota. Sem ADMIN_USUARIO/ADMIN_SENHA
+   no .env.local o middleware falha fechado com 503 em vez de 401 (mesma
+   regra do /admin, ver e2e/admin.spec.ts) — pula em vez de afirmar o status
+   errado por motivo que não é o código. */
 test("sem credencial, a prévia, o checkout e o markdown recusam", async ({ request }) => {
+  test.skip(!usuario || !senha, "sem ADMIN_USUARIO/ADMIN_SENHA no .env.local");
   expect((await request.get("/preview/catalogo")).status()).toBe(401);
   expect((await request.get("/preview/catalogo", { headers: { Accept: "text/markdown" } })).status()).toBe(401);
   expect((await request.post("/preview/catalogo/checkout", { data: pedido() })).status()).toBe(401);
