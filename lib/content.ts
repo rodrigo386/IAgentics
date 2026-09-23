@@ -1597,7 +1597,7 @@ export const cursos = {
 
 /**
  * Catálogo de cursos com checkout (2026-09-22) — hoje só na prévia
- * /preview/catalogo, atrás de senha.
+ * /preview/catalogo, escondida (sem senha desde 2026-09-22).
  *
  * A lista é PROVISÓRIA: os cursos OnDemand da Academy. A definitiva é a do
  * Pecege, com o que a Solution vai entregar de fato; quando chegar, troca aqui

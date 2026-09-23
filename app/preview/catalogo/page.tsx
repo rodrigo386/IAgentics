@@ -6,7 +6,7 @@ import { catalogo as t } from "@/lib/content";
 import { formatarReais, PRECO_TESTE_CENTAVOS } from "@/lib/catalogo/preco";
 
 /* Prévia: noindex, sem canonical (a página oficial ainda é outra), fora do
-   sitemap e atrás do Basic Auth do middleware. */
+   sitemap e sem link no site. Sem senha desde 2026-09-22, a pedido do Rodrigo. */
 export const metadata: Metadata = {
   title: t.meta.titulo,
   description: t.meta.descricao,

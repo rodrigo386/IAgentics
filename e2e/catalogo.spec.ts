@@ -31,16 +31,15 @@ async function ultimaCobranca(request: APIRequestContext) {
   return estado.cobrancas.at(-1);
 }
 
-/* A prévia cobra de verdade: sem senha, nada abre — nem pelo caminho do
-   markdown para agentes, que reescreve a rota. Sem ADMIN_USUARIO/ADMIN_SENHA
-   no .env.local o middleware falha fechado com 503 em vez de 401 (mesma
-   regra do /admin, ver e2e/admin.spec.ts) — pula em vez de afirmar o status
-   errado por motivo que não é o código. */
-test("sem credencial, a prévia, o checkout e o markdown recusam", async ({ request }) => {
-  test.skip(!usuario || !senha, "sem ADMIN_USUARIO/ADMIN_SENHA no .env.local");
-  expect((await request.get("/preview/catalogo")).status()).toBe(401);
-  expect((await request.get("/preview/catalogo", { headers: { Accept: "text/markdown" } })).status()).toBe(401);
-  expect((await request.post("/preview/catalogo/checkout", { data: pedido() })).status()).toBe(401);
+/* Sem senha desde 2026-09-22 (pedido do Rodrigo), mas continua escondida:
+   abre para qualquer um e diz ao buscador para não indexar. */
+test("a prévia abre sem senha e não é indexável", async ({ request }) => {
+  const r = await request.get("/preview/catalogo");
+  expect(r.status()).toBe(200);
+  expect(await r.text()).toMatch(/<meta name="robots" content="noindex/);
+  // O checkout também responde sem senha: aqui recusa pela validação, não pela autenticação.
+  const c = await request.post("/preview/catalogo/checkout", { data: pedido({ consentimento: false }) });
+  expect(c.status()).toBe(422);
 });
 
 test("webhook sem o token certo é recusado", async ({ request }) => {
@@ -48,7 +47,8 @@ test("webhook sem o token certo é recusado", async ({ request }) => {
   expect((await request.post("/api/asaas/webhook", { data: {}, headers: { "asaas-access-token": "errado" } })).status()).toBe(401);
 });
 
-test.describe("com credencial", () => {
+/* A credencial ainda é necessária: o fluxo completo termina no /admin. */
+test.describe("fluxo de compra", () => {
   test.skip(!usuario || !senha || !tokenWebhook, "sem ADMIN_USUARIO/ADMIN_SENHA/ASAAS_WEBHOOK_TOKEN no .env.local");
   test.use({ httpCredentials: { username: usuario ?? "", password: senha ?? "" } });
 

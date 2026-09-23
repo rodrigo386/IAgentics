@@ -9,9 +9,10 @@ import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
  * Checkout da PRÉVIA do catálogo.
  *
  * Mora dentro de /preview/catalogo de propósito: é o CAMINHO que fixa o modo
- * "teste" e o preço de R$ 5 — nada do que o navegador manda escolhe isso — e
- * o Basic Auth do middleware cobre esta rota junto com a página. Na
- * publicação, /cursos ganha a sua rota com o preço real.
+ * "teste" e o preço de R$ 5 — nada do que o navegador manda escolhe isso. Na
+ * publicação, /cursos ganha a sua rota com o preço real (e limite de
+ * tentativas: sem senha, qualquer um que ache esta rota cria cliente e
+ * cobrança no Asaas).
  *
  * Ordem: grava a venda ANTES de falar com o Asaas. Se o Asaas falhar ANTES de
  * criar a cobrança, a venda vira "falhou" e o painel mostra a tentativa. Mas

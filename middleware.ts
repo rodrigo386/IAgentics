@@ -1,32 +1,34 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Middleware: negociação de markdown para agentes, e Basic Auth do /admin e
- * da prévia do catálogo (/preview/catalogo).
+ * Middleware: negociação de markdown para agentes, e Basic Auth do /admin.
  *
- * Basic Auth do /admin e de /preview/catalogo.
+ * Basic Auth do /admin.
  *
- * Vive no MIDDLEWARE, não em cada página: assim nenhuma rota sob /admin ou
- * /preview/catalogo pode nascer desprotegida por esquecimento — inclusive a
- * que exporta o CSV com nome e e-mail dos inscritos, e a que cobra de verdade
- * pelo checkout de teste. Proteção que depende de lembrar de aplicar é
+ * Vive no MIDDLEWARE, não em cada página: assim nenhuma rota sob /admin pode
+ * nascer desprotegida por esquecimento — inclusive a que exporta o CSV com
+ * nome e e-mail dos inscritos. Proteção que depende de lembrar de aplicar é
  * proteção que uma hora não é aplicada.
+ *
+ * A prévia do catálogo (/preview/catalogo) ficou atrás desta senha no
+ * primeiro dia e saiu dela em 2026-09-22, a pedido do Rodrigo, para ser
+ * testada sem senha. Ela segue escondida (noindex, fora do sitemap, sem link)
+ * e cobra a preço de teste; as vendas entram no painel marcadas "teste", e
+ * ninguém ganha curso sem que alguém libere o acesso à mão.
  *
  * Basic Auth é proporcional ao problema: um operador, nenhuma sessão, nenhuma
  * tabela de usuários, nenhuma dependência nova. O prompt é o do navegador.
  *
- * SEM as variáveis definidas, as duas rotas respondem 503 e não abrem — falha
+ * SEM as variáveis definidas, o /admin responde 503 e não abrem — falha
  * FECHADA. O contrário (abrir quando a credencial não está configurada) é
  * como um deploy sem variável vira vazamento de dado pessoal.
  */
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  /* /preview/catalogo cobra de verdade (preço de teste, dinheiro real): sem
-     senha, quem achasse o link compraria curso por R$ 5. Mesma trava do
-     /admin, e ANTES da negociação de markdown — senão um Accept: text/markdown
-     reescreveria a página para /api/markdown por fora da senha. */
-  const protegida = pathname.startsWith("/admin") || pathname.startsWith("/preview/catalogo");
+  /* Calculado ANTES da negociação de markdown: senão um Accept: text/markdown
+     reescreveria o /admin para /api/markdown por fora da senha. */
+  const protegida = pathname.startsWith("/admin");
 
   /* Negociação de conteúdo (RFC 9110 §12): quem pede `Accept: text/markdown`
      recebe a página em markdown; navegador, que pede text/html, não vê
@@ -102,7 +104,7 @@ function confere(base64: string, usuario: string, senha: string): boolean {
   return diferenca === 0;
 }
 
-/* O matcher cobre /admin e /preview/catalogo (Basic Auth) e as rotas HTML
+/* O matcher cobre /admin (Basic Auth) e as rotas HTML
    públicas (negociação de markdown). Assets e /api ficam de fora: nem um nem
    outro tem versão em markdown, e rodar middleware em cada imagem é custo sem
    retorno. */
@@ -110,8 +112,6 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/admin",
-    "/preview/catalogo",
-    "/preview/catalogo/:path*",
     "/",
     "/nexo",
     "/academy",
