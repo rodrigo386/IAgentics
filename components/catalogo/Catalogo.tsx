@@ -143,7 +143,10 @@ export function Catalogo({ precoBaseCentavos, urlCheckout }: Props) {
                     dentro ? "border-accent" : "border-line"
                   }`}
                 >
-                  <p className={ROTULO}>{t.niveis[c.nivel]}</p>
+                  {/* O introdutório leva o selo no lugar do nível: é por ele que toda trilha começa. */}
+                  <p className={c.introdutorio ? `${ROTULO} text-accent-text` : ROTULO}>
+                    {c.introdutorio ? t.introdutorio : t.niveis[c.nivel]}
+                  </p>
                   <h3 className="mt-2 text-lg font-medium tracking-[-0.01em] text-fg">{c.nome}</h3>
                   <p className="mt-2 text-sm text-fg-muted">{c.temas.map((tema) => t.temas[tema]).join(" · ")}</p>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-5">

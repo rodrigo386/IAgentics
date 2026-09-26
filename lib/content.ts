@@ -1616,6 +1616,11 @@ export const catalogo = {
      conteúdo editorial, revisável aqui mesmo — mudar um tema muda a
      recomendação e mais nada. */
   cursos: [
+    /* O curso introdutório (pedido do Rodrigo, 2026-09-26): abre o catálogo e
+       toda trilha recomendada. Não está na planilha do Pecege — é o
+       "Fundamentos de IA aplicado aos Negócios" da Academy, que já estava na
+       prévia, com o mesmo slug. */
+    { slug: "fundamentos-ia-negocios", nome: "Fundamentos de IA aplicado aos Negócios", nivel: 0, temas: ["ia"], introdutorio: true },
     { slug: "funcao-objetivo-de-compras", nome: "Função Objetivo de Compras", nivel: 0, temas: ["rotina", "estrategia"] },
     { slug: "processos-e-areas-de-atuacao", nome: "Processos e áreas de atuação", nivel: 0, temas: ["rotina"] },
     { slug: "papel-do-profissional", nome: "Papel do Profissional", nivel: 0, temas: ["rotina", "pessoas"] },
@@ -1678,7 +1683,8 @@ export const catalogo = {
     { slug: "ai-first", nome: "AI First", nivel: 3, temas: ["ia", "estrategia"] },
     { slug: "esg", nome: "ESG", nivel: 3, temas: ["estrategia"] },
     { slug: "inovacao-aberta", nome: "Inovação Aberta", nivel: 3, temas: ["estrategia", "ia"] },
-  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[] }[],
+  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[]; introdutorio?: boolean }[],
+  introdutorio: "Curso introdutório",
   niveis: ["Iniciante", "Intermediário", "Especialista", "Avançado"],
   temas: {
     rotina: "Processo e rotina",
@@ -1765,6 +1771,7 @@ export const catalogo = {
     resultadoTexto: (n: number) => `${n} cursos, na ordem em que recomendamos estudar.`,
     motivo: (tema: string) => `Para: ${tema.toLowerCase()}`,
     motivoBase: "Base do seu nível",
+    motivoIntro: "Toda trilha começa aqui",
     totalTrilha: "Com o desconto progressivo",
     aplicar: "Colocar a trilha no carrinho",
     refazer: "Refazer as perguntas",

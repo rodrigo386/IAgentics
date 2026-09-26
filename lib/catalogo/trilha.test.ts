@@ -78,8 +78,21 @@ describe("recomendarTrilha", () => {
     expect(r.filter((i) => i.motivo === "pessoas").length).toBe(2);
     expect(r.filter((i) => nivel(i.slug) === 2).length).toBe(2);
     expect(r.filter((i) => i.motivo === "custos").length).toBeGreaterThanOrEqual(3);
-    // Ordem de estudo: o nível atual inteiro antes do próximo.
-    expect(r.map((i) => nivel(i.slug))).toEqual([1, 1, 1, 1, 2, 2]);
+    // O introdutório abre; depois o nível atual inteiro antes do próximo.
+    expect(r.map((i) => nivel(i.slug))).toEqual([0, 1, 1, 1, 2, 2]);
+  });
+
+  /* Pedido do Rodrigo (2026-09-26): Fundamentos de IA é o curso introdutório,
+     e toda trilha começa por ele — dentro do tamanho pedido, para as trilhas
+     de 6 e 9 continuarem batendo com o desconto que as opções anunciam. */
+  it("com o catálogo real, toda trilha começa pelo curso introdutório", () => {
+    for (const momento of [0, 1, 2, 3] as const)
+      for (const tamanho of [3, 6, 9] as const) {
+        const r = recomendarTrilha({ momento, objetivo: "custos", junto: "pessoas", alcance: 1, tamanho }, catalogo.cursos);
+        expect(r[0]).toEqual({ slug: "fundamentos-ia-negocios", motivo: null, introdutorio: true });
+        expect(r).toHaveLength(tamanho);
+        expect(r.slice(1).every((i) => !i.introdutorio)).toBe(true);
+      }
   });
 
   it("com o catálogo real, quem quer IA recebe cursos de IA", () => {

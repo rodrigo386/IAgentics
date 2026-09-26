@@ -155,7 +155,9 @@ export function Trilha({ precoBaseCentavos, aoAplicar }: Props) {
               <span className="tnum text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
               <span className="text-fg">{curso.nome}</span>
               <span className={`${ROTULO} col-start-2 sm:col-start-3 sm:text-right`}>
-                {t.niveis[curso.nivel]} · {item.motivo ? t.trilha.motivo(t.temas[item.motivo]) : t.trilha.motivoBase}
+                {item.introdutorio
+                  ? `${t.introdutorio} · ${t.trilha.motivoIntro}`
+                  : `${t.niveis[curso.nivel]} · ${item.motivo ? t.trilha.motivo(t.temas[item.motivo]) : t.trilha.motivoBase}`}
               </span>
             </li>
           );

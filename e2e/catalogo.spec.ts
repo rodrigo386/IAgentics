@@ -156,6 +156,8 @@ test("o questionário monta a trilha e ela entra no carrinho", async ({ page }) 
 
   const trilha = page.getByTestId("trilha");
   await expect(trilha.getByRole("listitem")).toHaveCount(3);
+  // Toda trilha abre pelo curso introdutório.
+  await expect(trilha.getByRole("listitem").first()).toContainText("Fundamentos de IA aplicado aos Negócios");
   await expect(trilha).toContainText("Coleta de Dados");
   // Três cursos: 5,00 + 4,75 + 4,50 no preço de teste.
   await expect(page.getByText(/R\$\s14,25/)).toBeVisible();
@@ -171,5 +173,6 @@ test("o filtro por nível mostra só os cursos daquele nível", async ({ page })
   await page.getByRole("button", { name: "Avançado", exact: true }).click();
   await expect(page.getByRole("article")).toHaveCount(10);
   await page.getByRole("button", { name: "Todos", exact: true }).click();
-  await expect(page.getByRole("article")).toHaveCount(62);
+  // 62 da lista do Pecege + o introdutório.
+  await expect(page.getByRole("article")).toHaveCount(63);
 });
