@@ -1686,6 +1686,29 @@ export const catalogo = {
   ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[]; introdutorio?: boolean }[],
   introdutorio: "Curso introdutório",
   niveis: ["Iniciante", "Intermediário", "Especialista", "Avançado"],
+  /* Packs por jornada (2026-09-26, pedido do Rodrigo): todos os cursos de um
+     nível por R$ 99. O Avançado não tem pack. Regras de preço em
+     lib/catalogo/preco.ts (calcularPedido). O `slug` do pack viaja no carrinho
+     e fica gravado na venda, como o de um curso — não renomeie depois de vender. */
+  packPrecoCentavos: 9900,
+  packs: [
+    { slug: "pack-iniciante", nivel: 0 },
+    { slug: "pack-intermediario", nivel: 1 },
+    { slug: "pack-especialista", nivel: 2 },
+  ],
+  pack: {
+    titulo: "Packs por jornada",
+    texto: "Todos os cursos de um nível num pack só, por um preço fechado.",
+    nome: (nivel: string) => `Pack ${nivel}`,
+    nomeVenda: (nivel: string, n: number) => `Pack ${nivel} · ${n} cursos`,
+    cursos: (n: number) => `${n} cursos inclusos`,
+    economia: (valor: string) => `Economize ${valor}`,
+    cheio: (valor: string) => `${valor} em cursos avulsos`,
+    adicionar: "Adicionar pack",
+    noCarrinho: "Pack no carrinho",
+    remover: "Remover pack",
+    coberto: "No pack",
+  },
   temas: {
     rotina: "Processo e rotina",
     dados: "Dados e análise de gastos",
@@ -1694,15 +1717,10 @@ export const catalogo = {
     pessoas: "Comunicação e liderança",
     ia: "IA e tecnologia",
   } as Record<Tema, string>,
-  filtro: { todos: "Todos", rotulo: "Filtrar por nível" },
   meta: {
     titulo: "Catálogo de cursos (prévia)",
     descricao: "Prévia de teste do catálogo de formações online da IAgentics na Solution.",
   },
-  eyebrow: "Formações online · IAgentics e Pecege",
-  titulo: "Monte sua trilha em Compras",
-  lead: (preco: string) =>
-    `Cada curso custa ${preco}. A partir do segundo, cada curso novo sai 5% mais barato que o anterior, até 25% de desconto.`,
   /* Na tela, não só no código: quem abre a prévia precisa saber que a
      cobrança é real, só que pequena. */
   avisoTeste: "Prévia de teste: preços reduzidos, cobrança real pelo Asaas.",
@@ -1711,12 +1729,8 @@ export const catalogo = {
      resposta sai do computador de quem responde. A regra que transforma
      respostas em cursos está em lib/catalogo/trilha.ts. */
   trilha: {
-    chamadaTitulo: "Não sabe por onde começar?",
-    chamadaTexto: "Responda cinco perguntas rápidas e montamos uma trilha de cursos para o seu momento. Leva menos de dois minutos.",
-    comecar: "Montar minha trilha",
     passo: (atual: number, total: number) => `Pergunta ${atual} de ${total}`,
     voltar: "Voltar",
-    fechar: "Fechar",
     perguntas: [
       {
         id: "momento",
@@ -1775,19 +1789,6 @@ export const catalogo = {
     totalTrilha: "Com o desconto progressivo",
     aplicar: "Colocar a trilha no carrinho",
     refazer: "Refazer as perguntas",
-    aplicada: "Trilha no carrinho. Você ainda pode tirar ou incluir cursos à mão.",
-  },
-  /* Opções de layout da prévia (2026-09-26): a página atual e três propostas
-     ousadas, para o Rodrigo comparar. A escolhida vira a página; as outras
-     somem junto com este seletor. */
-  opcoes: {
-    rotulo: "Opções de layout",
-    lista: [
-      { href: "/preview/catalogo", nome: "Atual" },
-      { href: "/preview/catalogo/vitrine", nome: "Vitrine" },
-      { href: "/preview/catalogo/jornada", nome: "Jornada" },
-      { href: "/preview/catalogo/mural", nome: "Mural" },
-    ],
   },
   barra: {
     rotulo: "Resumo do carrinho",
@@ -1800,38 +1801,38 @@ export const catalogo = {
     degraus: "Escada do desconto",
   },
   gaveta: { fechar: "Fechar", carrinho: "Seu carrinho", trilha: "Monte sua trilha" },
+  /* Vitrine (2026-09-26): o layout escolhido pelo Rodrigo, claro, com a hero no
+     conceito da /cursos — as três marcas e a estante viva de capas — e uma
+     animação que explica a plataforma em quatro passos. */
   vitrine: {
-    destaqueEyebrow: "Comece por aqui",
-    // Frase do curso na Academy (academy.courses.items), verbatim.
-    destaqueFrase: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
-    destaqueNota: "Curso introdutório · toda trilha começa por ele",
-    adicionar: "Adicionar ao carrinho",
+    hero: {
+      logoIagenticsAlt: "IAgentics",
+      logoPecegeAlt: "Pecege",
+      logoSolutionAlt: "Solution",
+      eyebrow: "IAgentics e Pecege · formação online em Compras",
+      titulo: "Sua trilha em Compras, montada para o seu momento.",
+      lead: "Cursos de Compras e Gestão de Gastos criados pela IAgentics, na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+      conceitoRotulo: "Como funciona",
+      passos: [
+        { titulo: "Responda 5 perguntas", texto: "Em menos de dois minutos, montamos uma trilha para o seu nível e o seu objetivo." },
+        { titulo: "Escolha seus cursos", texto: "63 cursos de Compras, do Iniciante ao Avançado. Fique com a trilha ou monte a sua." },
+        { titulo: "Quanto mais cursos, menor o preço", texto: "Cada curso novo no carrinho sai 5% mais barato que o anterior, até 25% de desconto." },
+        { titulo: "Estude na Solution", texto: "Acesso liberado pelo Pecege na plataforma online, no seu ritmo." },
+      ],
+      montar: "Montar minha trilha em 2 minutos",
+      verCursos: "Ver os cursos",
+      estanteAlt: "Capas dos cursos de Compras do catálogo",
+    },
     noCarrinho: "No carrinho",
-    montar: "Montar minha trilha em 2 minutos",
     contagem: (n: number) => `${n} cursos`,
     temasTitulo: "Por tema",
     anterior: "Ver anteriores",
     seguinte: "Ver seguintes",
   },
-  jornada: {
-    eyebrow: "Formação em Compras · 4 níveis",
-    titulo: "Suba de nível. O desconto sobe junto.",
-    texto: "Cada curso novo no carrinho sai 5% mais barato que o anterior, até 25%. A escada mostra quanto o próximo custa.",
-    escada: "Escada do desconto",
-    degrau: (i: number) => `${i}º curso`,
-    voce: "Próximo",
-    cheio: "Máximo",
-  },
-  mural: {
-    eyebrow: "63 cursos · 6 temas",
-    titulo: "Escolha pelo que você quer resolver.",
-    todos: "Todos os temas",
-    filtro: "Filtrar por tema",
-  },
+
   card: {
     adicionar: "Adicionar",
     remover: "Remover",
-    entraPor: (preco: string) => `Entra por ${preco}`,
   },
   carrinho: {
     titulo: "Seu carrinho",

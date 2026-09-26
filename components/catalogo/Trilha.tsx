@@ -21,67 +21,32 @@ const BOTAO_CHEIO =
 const BOTAO_CONTORNO =
   "rounded-control border border-line-strong px-6 py-3 font-medium text-fg transition-colors hover:border-fg active:translate-y-px motion-reduce:transition-none";
 
-type Props = {
-  precoBaseCentavos: number;
-  aoAplicar: (slugs: string[]) => void;
-  /** Dentro da gaveta (layouts da prévia): já abre na primeira pergunta, e
-   *  "Fechar" e "Colocar no carrinho" fecham a gaveta em vez de recolher. */
-  modal?: boolean;
-  aoFechar?: () => void;
-};
+/* Vive dentro da gaveta da Vitrine (Gaveta centro): abre na primeira
+   pergunta, e quem decide o que acontece depois de aplicar é a casca. */
+type Props = { precoBaseCentavos: number; aoAplicar: (slugs: string[]) => void };
 
-export function Trilha({ precoBaseCentavos, aoAplicar, modal = false, aoFechar }: Props) {
+export function Trilha({ precoBaseCentavos, aoAplicar }: Props) {
   const perguntas = t.trilha.perguntas;
-  // null = fechado; 0..n-1 = pergunta; n = resultado.
-  const [passo, setPasso] = useState<number | null>(modal ? 0 : null);
+  // 0..n-1 = pergunta; n = resultado.
+  const [passo, setPasso] = useState(0);
   const [respostas, setRespostas] = useState<string[]>([]);
-  const [aplicada, setAplicada] = useState(false);
   const titulo = useRef<HTMLHeadingElement>(null);
 
   /* A cada passo o foco vai para o título novo: quem navega por teclado ou
      leitor de tela ouve a pergunta seguinte, em vez de ficar no botão que
      acabou de sumir. */
   useEffect(() => {
-    if (passo !== null) titulo.current?.focus();
+    titulo.current?.focus();
   }, [passo]);
 
   function responder(valor: string) {
-    const novas = [...respostas.slice(0, passo!), valor];
-    setRespostas(novas);
-    setPasso(passo! + 1);
+    setRespostas([...respostas.slice(0, passo), valor]);
+    setPasso(passo + 1);
   }
 
   function comecar() {
     setRespostas([]);
-    setAplicada(false);
     setPasso(0);
-  }
-
-  function fechar() {
-    if (modal) aoFechar?.();
-    else setPasso(null);
-  }
-
-  if (passo === null) {
-    if (modal) return null;
-    return (
-      <section aria-labelledby="trilha-chamada" className="flex flex-col gap-5 border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-        <div className="max-w-[56ch]">
-          <h2 id="trilha-chamada" className="text-2xl font-medium tracking-[-0.02em] text-fg">
-            {t.trilha.chamadaTitulo}
-          </h2>
-          <p className="mt-2 text-fg-muted">{t.trilha.chamadaTexto}</p>
-          {aplicada ? (
-            <p role="status" className="mt-3 border-l-2 border-accent pl-3 text-sm text-fg">
-              {t.trilha.aplicada}
-            </p>
-          ) : null}
-        </div>
-        <button type="button" onClick={comecar} className={`${BOTAO_CHEIO} shrink-0`}>
-          {aplicada ? t.trilha.refazer : t.trilha.comecar}
-        </button>
-      </section>
-    );
   }
 
   const cabecalho = (
@@ -89,12 +54,6 @@ export function Trilha({ precoBaseCentavos, aoAplicar, modal = false, aoFechar }
       <p className={ROTULO}>
         {passo < perguntas.length ? t.trilha.passo(passo + 1, perguntas.length) : t.trilha.resultadoTitulo}
       </p>
-      {/* No modal a gaveta já tem o próprio botão de fechar. */}
-      {modal ? null : (
-        <button type="button" onClick={fechar} className="text-sm text-fg-muted underline-offset-4 hover:underline">
-          {t.trilha.fechar}
-        </button>
-      )}
     </div>
   );
 
@@ -111,7 +70,7 @@ export function Trilha({ precoBaseCentavos, aoAplicar, modal = false, aoFechar }
   if (passo < perguntas.length) {
     const p = perguntas[passo];
     return (
-      <section aria-labelledby="trilha-pergunta" className={modal ? "flex flex-col gap-6" : "flex flex-col gap-6 border border-accent bg-surface p-6 sm:p-8"}>
+      <section aria-labelledby="trilha-pergunta" className="flex flex-col gap-6">
         {cabecalho}
         {progresso}
         <h2 id="trilha-pergunta" ref={titulo} tabIndex={-1} className="text-2xl font-medium tracking-[-0.02em] text-fg outline-none">
@@ -154,7 +113,7 @@ export function Trilha({ precoBaseCentavos, aoAplicar, modal = false, aoFechar }
   const porSlug = new Map(t.cursos.map((c) => [c.slug, c]));
 
   return (
-    <section aria-labelledby="trilha-resultado" className={modal ? "flex flex-col gap-6" : "flex flex-col gap-6 border border-accent bg-surface p-6 sm:p-8"}>
+    <section aria-labelledby="trilha-resultado" className="flex flex-col gap-6">
       {cabecalho}
       {progresso}
       <div>
@@ -191,9 +150,6 @@ export function Trilha({ precoBaseCentavos, aoAplicar, modal = false, aoFechar }
           type="button"
           onClick={() => {
             aoAplicar(slugs);
-            setAplicada(true);
-            // No modal quem decide o próximo passo é a casca (abre o carrinho).
-            if (!modal) setPasso(null);
           }}
           className={BOTAO_CHEIO}
         >

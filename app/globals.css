@@ -1586,7 +1586,7 @@
   .vitrine-card:focus-within {
     transform: scale(1.04);
     z-index: 2;
-    box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.6);
+    box-shadow: 0 24px 48px -20px rgb(var(--shadow-tint) / 0.35);
   }
 }
 
@@ -1670,5 +1670,97 @@ dialog.gaveta.gaveta-centro[open] {
   dialog.gaveta[open],
   dialog.gaveta.gaveta-centro[open] {
     animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   VITRINE - "COMO FUNCIONA" E PACKS (2026-09-26)
+
+   - .conceito-passo / .conceito-barra: explicação - os quatro passos da
+     plataforma se acendem um de cada vez, em laço de 16s, e a barra do passo
+     em foco enche. Os atrasos são NEGATIVOS (i*4s - 16s): no primeiro quadro
+     cada passo já está na sua fase, o 1º aceso e os outros esperando — com
+     atraso positivo, os quatro nasceriam acesos até a vez de cada um.
+     Sem animação, os quatro ficam acesos: o texto não depende do movimento.
+   - .pack-leque: convite - as três capas do pack se abrem sob o cursor, como
+     cartas na mão.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .conceito-passo {
+    animation: conceito-foco 16s ease-in-out infinite both;
+    animation-delay: calc(var(--i, 0) * 4s - 16s);
+  }
+  .conceito-barra {
+    animation: conceito-enche 16s linear infinite both;
+    animation-delay: calc(var(--i, 0) * 4s - 16s);
+  }
+}
+.conceito-barra {
+  transform: scaleX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .conceito-barra {
+    transform: scaleX(1);
+  }
+}
+@keyframes conceito-foco {
+  0%,
+  22% {
+    opacity: 1;
+  }
+  27%,
+  95% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes conceito-enche {
+  0% {
+    transform: scaleX(0);
+  }
+  24% {
+    transform: scaleX(1);
+  }
+  25%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+.pack-leque {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 18px 30px -12px rgb(0 0 0 / 0.55);
+}
+.pack-leque-0 {
+  left: 8%;
+  transform: rotate(-8deg) translateY(10px);
+}
+.pack-leque-1 {
+  left: 29%;
+  z-index: 1;
+}
+.pack-leque-2 {
+  left: 50%;
+  transform: rotate(8deg) translateY(10px);
+}
+@media (hover: hover) {
+  .pack-card:hover .pack-leque-0,
+  .pack-card:focus-within .pack-leque-0 {
+    transform: rotate(-14deg) translate(-14%, 4px);
+  }
+  .pack-card:hover .pack-leque-1,
+  .pack-card:focus-within .pack-leque-1 {
+    transform: translateY(-8px);
+  }
+  .pack-card:hover .pack-leque-2,
+  .pack-card:focus-within .pack-leque-2 {
+    transform: rotate(14deg) translate(14%, 4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pack-leque {
+    transition: none;
   }
 }

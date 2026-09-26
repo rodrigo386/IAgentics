@@ -57,19 +57,21 @@ test.describe("fluxo de compra", () => {
     await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
     await page.reload();
 
-    const total = page.getByTestId("total");
+    const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
     await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
-    await expect(total).toHaveText(/R\$\s5,00/);
-    await expect(page.getByText(/Adicione mais um e ele sai por R\$\s4,75/)).toBeVisible();
+    await expect(barra).toContainText("1 curso");
+    await expect(barra).toContainText(/R\$\s5,00/);
+    await expect(barra).toContainText("Mais 1 curso e ele sai com 5% off");
 
     await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
-    await expect(total).toHaveText(/R\$\s9,75/);
+    await expect(barra).toContainText(/R\$\s9,75/);
 
     await page.reload();
-    await expect(page.getByTestId("total")).toHaveText(/R\$\s9,75/);
+    await expect(barra).toContainText(/R\$\s9,75/);
 
-    await page.getByRole("button", { name: /^Remover Processos e áreas de atuação/ }).click();
-    await expect(page.getByTestId("total")).toHaveText(/R\$\s5,00/);
+    await barra.getByRole("button", { name: "Ver carrinho" }).click();
+    const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
+    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s9,75/);
   });
 
   test("o servidor recusa pedido sem consentimento", async ({ request }) => {
@@ -95,6 +97,7 @@ test.describe("fluxo de compra", () => {
 
     await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
     await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
+    await page.getByRole("button", { name: "Ver carrinho" }).click();
     await page.getByRole("button", { name: "Finalizar compra" }).click();
 
     const nome = `Compra Completa ${Date.now()}`;
@@ -138,75 +141,73 @@ test.describe("fluxo de compra", () => {
   });
 });
 
-/* "Monte sua trilha": cinco cliques e a trilha vai para o carrinho. Roda no
-   navegador, sem senha e sem gravar nada. As respostas abaixo pedem uma trilha
-   curta de Intermediário com foco em dados. */
-test("o questionário monta a trilha e ela entra no carrinho", async ({ page }) => {
+/* "Monte sua trilha": cinco cliques na gaveta e a trilha vai para o carrinho,
+   que abre sozinho em seguida. Roda no navegador, sem senha e sem gravar nada. */
+test("o questionário monta a trilha e abre o carrinho com ela", async ({ page }) => {
   await page.goto("/preview/catalogo");
   await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
   await page.reload();
 
-  await page.getByRole("button", { name: "Montar minha trilha" }).click();
+  await page.getByRole("button", { name: "Montar minha trilha em 2 minutos" }).click();
   await expect(page.getByText("Pergunta 1 de 5")).toBeVisible();
-  await page.getByRole("button", { name: "Já opero compras no dia a dia" }).click();
-  await page.getByRole("button", { name: "Entender os gastos com dados" }).click();
-  await page.getByRole("button", { name: "Só o foco principal" }).click();
-  await page.getByRole("button", { name: "Firmar a base do meu nível" }).click();
-  await page.getByRole("button", { name: "Trilha curta: 3 cursos" }).click();
-
+  for (const o of ["Já opero compras no dia a dia", "Entender os gastos com dados", "Só o foco principal", "Firmar a base do meu nível", "Trilha curta: 3 cursos"]) {
+    await page.getByRole("button", { name: o }).click();
+  }
   const trilha = page.getByTestId("trilha");
   await expect(trilha.getByRole("listitem")).toHaveCount(3);
-  // Toda trilha abre pelo curso introdutório.
   await expect(trilha.getByRole("listitem").first()).toContainText("Fundamentos de IA aplicado aos Negócios");
   await expect(trilha).toContainText("Coleta de Dados");
-  // Três cursos: 5,00 + 4,75 + 4,50 no preço de teste.
-  await expect(page.getByText(/R\$\s14,25/)).toBeVisible();
 
   await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Trilha no carrinho" })).toBeVisible();
-  await expect(page.getByTestId("total")).toHaveText(/R\$\s14,25/);
-  await expect(page.getByRole("button", { name: /^Remover Coleta de Dados/ })).toBeVisible();
+  const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
+  await expect(gaveta).toBeVisible();
+  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s14,25/);
+  await expect(page.getByRole("complementary", { name: "Resumo do carrinho" })).toContainText("3 cursos");
 });
 
-test("o filtro por nível mostra só os cursos daquele nível", async ({ page }) => {
+/* A hero explica a plataforma e mostra as três marcas da parceria. */
+test("a hero traz as três marcas e os quatro passos de como funciona", async ({ page }) => {
   await page.goto("/preview/catalogo");
-  await page.getByRole("button", { name: "Avançado", exact: true }).click();
-  await expect(page.getByRole("article")).toHaveCount(10);
-  await page.getByRole("button", { name: "Todos", exact: true }).click();
-  // 62 da lista do Pecege + o introdutório.
-  await expect(page.getByRole("article")).toHaveCount(63);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  for (const alt of ["IAgentics", "Pecege", "Solution"]) await expect(page.getByRole("img", { name: alt }).first()).toBeVisible();
+  const passos = page.getByRole("region", { name: "Como funciona" }).getByRole("listitem");
+  await expect(passos).toHaveCount(4);
+  await expect(passos.nth(2)).toContainText("Quanto mais cursos, menor o preço");
 });
 
-/* Opções de layout da prévia (2026-09-26): Vitrine, Jornada e Mural dividem o
-   carrinho (mesma chave de localStorage), a barra com a escada do desconto e
-   as gavetas. Cada uma precisa abrir, somar curso na barra e levar a trilha do
-   questionário até a gaveta do carrinho. */
-for (const layout of ["vitrine", "jornada", "mural"]) {
-  test(`layout ${layout}: carrinho pela barra e trilha que abre o carrinho`, async ({ page }) => {
-    await page.goto(`/preview/catalogo/${layout}`);
-    await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
-    await page.reload();
+/* Packs por jornada: o pack cobre o nível inteiro — o curso avulso daquele
+   nível vira "No pack" e não é cobrado de novo. */
+test("pack no carrinho cobre o nível e bloqueia o avulso do mesmo nível", async ({ page }) => {
+  await page.goto("/preview/catalogo");
+  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
+  await page.reload();
 
-    await expect(page.getByRole("navigation", { name: "Opções de layout" }).getByRole("link", { name: /vitrine|jornada|mural/i, exact: false }).first()).toBeVisible();
-    const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
-    await expect(barra).toContainText("Monte sua trilha e ganhe até 25% de desconto.");
+  const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
+  await page.getByRole("button", { name: /^Adicionar Coleta de Dados/ }).first().click();
+  await expect(barra).toContainText("1 curso");
 
-    await page.getByRole("button", { name: /^Adicionar Coleta de Dados/ }).first().click();
-    await expect(barra).toContainText("1 curso");
-    await expect(barra).toContainText("Mais 1 curso e ele sai com 5% off");
+  await page.getByRole("button", { name: "Adicionar pack Intermediário" }).click();
+  // O avulso intermediário saiu; o pack traz os 22 cursos do nível, a R$ 5 na prévia.
+  await expect(barra).toContainText("22 cursos");
+  await expect(barra).toContainText(/R\$\s5,00/);
+  const avulso = page.getByRole("button", { name: /^Adicionar Coleta de Dados · No pack/ }).first();
+  await expect(avulso).toBeDisabled();
 
-    await page.getByRole("button", { name: /^Remover Coleta de Dados/ }).first().click();
-    await barra.getByRole("button", { name: "Montar minha trilha" }).click();
-    for (const o of ["Já opero compras no dia a dia", "Entender os gastos com dados", "Só o foco principal", "Firmar a base do meu nível", "Trilha curta: 3 cursos"]) {
-      await page.getByRole("button", { name: o }).click();
-    }
-    await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
+  await barra.getByRole("button", { name: "Ver carrinho" }).click();
+  const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
+  await expect(gaveta).toContainText("Pack Intermediário");
+  await expect(gaveta).toContainText("22 cursos inclusos");
+  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s5,00/);
+});
 
-    // A gaveta do carrinho abre com a trilha: introdutório + dois de dados, R$ 14,25.
-    const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
-    await expect(gaveta).toBeVisible();
-    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s14,25/);
-    await expect(gaveta).toContainText("Fundamentos de IA aplicado aos Negócios");
-    await expect(barra).toContainText("3 cursos");
+/* No servidor: pack mais curso do mesmo nível custa só o pack, e a venda
+   registra o pack com o nome que o Pecege lê no CSV. */
+test("o checkout cobra o pack uma vez só, mesmo com curso do nível junto", async ({ request }) => {
+  const r = await request.post("/preview/catalogo/checkout", {
+    data: pedido({ slugs: ["coleta-de-dados", "pack-intermediario", "saneamento-de-dados"] }),
   });
-}
+  expect(r.status()).toBe(200);
+  const cobranca = await ultimaCobranca(request);
+  expect(cobranca.value).toBe(5);
+  expect(cobranca.description).toContain("Pack Intermediário · 22 cursos");
+});

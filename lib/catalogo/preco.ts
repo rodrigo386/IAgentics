@@ -74,3 +74,52 @@ const REAIS = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL
 export function formatarReais(centavos: number): string {
   return REAIS.format(centavos / 100);
 }
+
+/* ---------------------------------------------------------------------------
+   PACKS (2026-09-26, pedido do Rodrigo): todos os cursos de um nível —
+   Iniciante, Intermediário, Especialista — por um preço fixo (R$ 99).
+
+   Regras, na ordem em que o cálculo as aplica:
+   - pack é item de preço FIXO e não entra na escada de desconto, que continua
+     sendo só dos cursos avulsos;
+   - pack no carrinho COBRE o nível: curso avulso daquele nível é descartado
+     do cálculo (ninguém paga duas vezes pelo mesmo curso), e o "próximo curso"
+     do gatilho só considera o que ainda não está coberto;
+   - `cheioCentavos` do pack é o preço cheio dos cursos que ele contém — é daí
+     que sai a economia mostrada ao lado dele.
+--------------------------------------------------------------------------- */
+
+/** Pack na PRÉVIA: R$ 5, o mínimo de uma cobrança no Asaas. Mesmo raciocínio
+ *  do PRECO_TESTE_CENTAVOS: constante no código, nunca variável de ambiente. */
+export const PRECO_TESTE_PACK_CENTAVOS = 500;
+
+export type CursoDoPedido = { slug: string; nivel: number };
+export type PackDoPedido = { slug: string; nivel: number };
+export type ItemPack = { slug: string; nivel: number; cursos: number; precoCentavos: number; cheioCentavos: number };
+export type Pedido = Carrinho & { packs: ItemPack[] };
+
+export function calcularPedido(
+  slugs: readonly string[],
+  cursos: readonly CursoDoPedido[],
+  packs: readonly PackDoPedido[],
+  precos: { cursoCentavos: number; packCentavos: number },
+): Pedido {
+  const porSlug = new Map(packs.map((p) => [p.slug, p]));
+  const escolhidos = [...new Set(slugs)].filter((s) => porSlug.has(s)).map((s) => porSlug.get(s)!);
+  const cobertos = new Set(escolhidos.map((p) => p.nivel));
+
+  const disponiveis = cursos.filter((c) => !cobertos.has(c.nivel)).map((c) => c.slug);
+  const avulsos = calcularCarrinho(slugs, disponiveis, precos.cursoCentavos);
+
+  const itensPack = escolhidos.map((p) => {
+    const n = cursos.filter((c) => c.nivel === p.nivel).length;
+    return { slug: p.slug, nivel: p.nivel, cursos: n, precoCentavos: precos.packCentavos, cheioCentavos: n * precos.cursoCentavos };
+  });
+
+  return {
+    ...avulsos,
+    packs: itensPack,
+    totalCentavos: avulsos.totalCentavos + itensPack.reduce((s, p) => s + p.precoCentavos, 0),
+    cheioCentavos: avulsos.cheioCentavos + itensPack.reduce((s, p) => s + p.cheioCentavos, 0),
+  };
+}

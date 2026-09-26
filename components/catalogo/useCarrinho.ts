@@ -1,23 +1,25 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { catalogo as t } from "@/lib/content";
-import { calcularCarrinho } from "@/lib/catalogo/preco";
+import { calcularPedido } from "@/lib/catalogo/preco";
 
 /**
- * Estado do carrinho do catálogo, compartilhado pelos layouts (2026-09-26).
+ * Estado do carrinho do catálogo (2026-09-26).
  *
  * Mora em localStorage — conveniência por navegador. Tudo com try/catch:
  * janela anônima ou armazenamento bloqueado só fazem o carrinho não
- * sobreviver ao recarregar; a página funciona igual. A MESMA chave em todos os
- * layouts: trocar de opção de layout na prévia não esvazia o carrinho.
+ * sobreviver ao recarregar; a página funciona igual.
  *
- * O preço exibido sai da MESMA calcularCarrinho que o servidor usa; o servidor
- * recalcula de qualquer jeito, e é o valor dele que vai para o Asaas.
+ * Guarda slugs de cursos E de packs, na ordem em que entraram. O preço exibido
+ * sai da MESMA calcularPedido que o servidor usa; o servidor recalcula de
+ * qualquer jeito, e é o valor dele que vai para o Asaas.
  */
 export const CHAVE_CARRINHO = "iagentics:carrinho";
 
-export function useCarrinho(precoBaseCentavos: number) {
-  const validos = useMemo(() => t.cursos.map((c) => c.slug), []);
+const NIVEL_DO_CURSO = new Map<string, number>(t.cursos.map((c) => [c.slug, c.nivel]));
+const NIVEL_DO_PACK = new Map<string, number>(t.packs.map((p) => [p.slug, p.nivel]));
+
+export function useCarrinho(precos: { cursoCentavos: number; packCentavos: number }) {
   const [slugs, setSlugs] = useState<string[]>([]);
 
   // Lê depois de montar: no SSR não há localStorage, e ler no render quebraria a hidratação.
@@ -35,17 +37,29 @@ export function useCarrinho(precoBaseCentavos: number) {
     } catch {}
   }
 
-  const carrinho = calcularCarrinho(slugs, validos, precoBaseCentavos);
-  const noCarrinho = new Set(carrinho.itens.map((i) => i.slug));
+  const carrinho = calcularPedido(slugs, t.cursos, t.packs, precos);
+  const niveisCobertos = new Set(carrinho.packs.map((p) => p.nivel));
+  const noCarrinho = new Set([...carrinho.itens.map((i) => i.slug), ...carrinho.packs.map((p) => p.slug)]);
+  /** Curso cujo nível já está num pack do carrinho — não se compra de novo. */
+  const coberto = (slug: string) => niveisCobertos.has(NIVEL_DO_CURSO.get(slug) ?? -1);
 
   return {
     carrinho,
     noCarrinho,
-    adicionar: (slug: string) => salvar([...slugs, slug]),
+    coberto,
+    adicionar: (slug: string) => {
+      const nivelPack = NIVEL_DO_PACK.get(slug);
+      /* Pack entrando tira os avulsos do mesmo nível da lista guardada — além
+         de o cálculo já ignorá-los, isso evita que eles "voltem" se o pack
+         for removido depois sem a pessoa ter pedido. */
+      if (nivelPack !== undefined) salvar([...slugs.filter((s) => NIVEL_DO_CURSO.get(s) !== nivelPack), slug]);
+      else if (!coberto(slug)) salvar([...slugs, slug]);
+    },
     remover: (slug: string) => salvar(slugs.filter((s) => s !== slug)),
     /* A trilha SOMA ao carrinho, não substitui: quem já escolheu algo à mão não
-       perde a escolha. Os cursos da trilha entram depois, na ordem de estudo. */
-    aplicarTrilha: (trilha: string[]) => salvar([...slugs, ...trilha.filter((s) => !slugs.includes(s))]),
+       perde a escolha. Entram depois, na ordem de estudo, e o que um pack já
+       cobre fica de fora. */
+    aplicarTrilha: (trilha: string[]) => salvar([...slugs, ...trilha.filter((s) => !slugs.includes(s) && !coberto(s))]),
     limpar: () => {
       try {
         localStorage.removeItem(CHAVE_CARRINHO);

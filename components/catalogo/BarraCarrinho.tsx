@@ -17,7 +17,9 @@ type Props = { estado: Carrinho; aoVerCarrinho: () => void; aoMontarTrilha: () =
 
 export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) {
   const { carrinho } = estado;
+  // A escada é dos avulsos; o total de cursos soma também os que vêm nos packs.
   const n = carrinho.itens.length;
+  const totalCursos = n + carrinho.packs.reduce((s, p) => s + p.cursos, 0);
 
   return (
     <aside
@@ -37,12 +39,12 @@ export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) 
         </div>
 
         <div className="min-w-0 flex-1">
-          {n === 0 ? (
+          {totalCursos === 0 ? (
             <p className="truncate text-sm text-fg">{t.barra.vazio}</p>
           ) : (
             <>
               <p className="text-sm text-fg">
-                <span className="font-medium">{t.barra.cursos(n)}</span>
+                <span className="font-medium">{t.barra.cursos(totalCursos)}</span>
                 <span className="tnum ml-3 text-fg-muted">{formatarReais(carrinho.totalCentavos)}</span>
               </p>
               <p className="truncate text-xs text-accent-text" aria-live="polite">
@@ -56,7 +58,7 @@ export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) 
           )}
         </div>
 
-        {n === 0 ? (
+        {totalCursos === 0 ? (
           <button
             type="button"
             onClick={aoMontarTrilha}

@@ -8,16 +8,17 @@ import { Trilha } from "./Trilha";
 import { useCarrinho, type Carrinho } from "./useCarrinho";
 
 /**
- * O que os três layouts da prévia (Vitrine, Jornada, Mural) têm em comum
- * (2026-09-26): o estado do carrinho, a barra fixa com a escada do desconto,
- * a gaveta do carrinho/checkout e a do questionário. Cada layout só desenha a
- * vitrine — recebe o estado e o "abrir trilha" pela render prop.
+ * A moldura da Vitrine (2026-09-26): o estado do carrinho, a barra fixa com a
+ * escada do desconto, a gaveta do carrinho/checkout e a do questionário. Nasceu
+ * para servir a três opções de layout; ficou a Vitrine, e a separação continua
+ * útil — a vitrine só desenha, recebendo o estado e o "abrir trilha" pela
+ * render prop.
  */
 type Acoes = { estado: Carrinho; abrirTrilha: () => void };
-type Props = { precoBaseCentavos: number; urlCheckout: string; children: (a: Acoes) => ReactNode };
+type Props = { precoBaseCentavos: number; precoPackCentavos: number; urlCheckout: string; children: (a: Acoes) => ReactNode };
 
-export function CascaLayout({ precoBaseCentavos, urlCheckout, children }: Props) {
-  const estado = useCarrinho(precoBaseCentavos);
+export function CascaLayout({ precoBaseCentavos, precoPackCentavos, urlCheckout, children }: Props) {
+  const estado = useCarrinho({ cursoCentavos: precoBaseCentavos, packCentavos: precoPackCentavos });
   const [gaveta, setGaveta] = useState<"carrinho" | "trilha" | null>(null);
   // Remonta o questionário a cada abertura: sempre começa da pergunta 1.
   const [rodada, setRodada] = useState(0);
@@ -41,14 +42,12 @@ export function CascaLayout({ precoBaseCentavos, urlCheckout, children }: Props)
         {gaveta === "trilha" ? (
           <Trilha
             key={rodada}
-            modal
             precoBaseCentavos={precoBaseCentavos}
             aoAplicar={(slugs) => {
               estado.aplicarTrilha(slugs);
               // Depois de aplicar, mostra o carrinho: é o próximo passo natural.
               setGaveta("carrinho");
             }}
-            aoFechar={() => setGaveta(null)}
           />
         ) : null}
       </Gaveta>

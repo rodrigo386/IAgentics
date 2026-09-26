@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { catalogo, site } from "@/lib/content";
-import { calcularCarrinho, PRECO_TESTE_CENTAVOS } from "@/lib/catalogo/preco";
+import { calcularPedido, PRECO_TESTE_CENTAVOS, PRECO_TESTE_PACK_CENTAVOS } from "@/lib/catalogo/preco";
 import { validarPedido, vencimentoEm } from "@/lib/catalogo/pedido";
 import { anexarCobranca, criarVenda, marcarFalha } from "@/lib/catalogo/vendas";
 import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
@@ -31,16 +31,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const validos = catalogo.cursos.map((c) => c.slug);
+  // Cursos E packs são itens válidos; o preço de cada um sai de calcularPedido.
+  const validos = [...catalogo.cursos.map((c) => c.slug), ...catalogo.packs.map((p) => p.slug)];
   const validacao = validarPedido(payload, validos);
   if (!validacao.ok) return NextResponse.json({ error: validacao.motivo }, { status: 422 });
   const { nome, email, telefone, cpf, slugs } = validacao.dados;
 
-  const carrinho = calcularCarrinho(slugs, validos, PRECO_TESTE_CENTAVOS);
-  const itens = carrinho.itens.map((item) => ({
-    ...item,
-    nome: catalogo.cursos.find((c) => c.slug === item.slug)!.nome,
-  }));
+  const carrinho = calcularPedido(slugs, catalogo.cursos, catalogo.packs, {
+    cursoCentavos: PRECO_TESTE_CENTAVOS,
+    packCentavos: PRECO_TESTE_PACK_CENTAVOS,
+  });
+  /* Pack entra na venda como item próprio, com o nome dizendo quantos cursos
+     cobre — é o que o Pecege lê no CSV para liberar o nível inteiro. */
+  const itens = [
+    ...carrinho.packs.map((p) => ({
+      slug: p.slug,
+      nome: catalogo.pack.nomeVenda(catalogo.niveis[p.nivel], p.cursos),
+      descontoPct: 0,
+      precoCentavos: p.precoCentavos,
+    })),
+    ...carrinho.itens.map((item) => ({
+      ...item,
+      nome: catalogo.cursos.find((c) => c.slug === item.slug)!.nome,
+    })),
+  ];
 
   let id: string;
   try {

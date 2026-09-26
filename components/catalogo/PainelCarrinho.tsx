@@ -29,6 +29,7 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
   const [erro, setErro] = useState<string | null>(null);
   const nomes = new Map<string, string>(t.cursos.map((c) => [c.slug, c.nome]));
   const ultimo = carrinho.itens.at(-1);
+  const vazio = carrinho.itens.length === 0 && carrinho.packs.length === 0;
 
   async function pagar(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -45,7 +46,7 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
           cpf: String(form.get("cpf") ?? ""),
           telefone: String(form.get("telefone") ?? ""),
           consentimento: form.get("consentimento") === "on",
-          slugs: carrinho.itens.map((i) => i.slug),
+          slugs: [...carrinho.packs.map((p) => p.slug), ...carrinho.itens.map((i) => i.slug)],
         }),
       });
       const corpo = await resposta.json().catch(() => ({}));
@@ -77,11 +78,24 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
         {etapa === "carrinho" ? (
           <div className="flex flex-col gap-5">
             <h2 className="text-2xl font-medium tracking-[-0.02em] text-fg">{t.carrinho.titulo}</h2>
-            {carrinho.itens.length === 0 ? (
+            {vazio ? (
               <p className="text-fg-muted">{t.carrinho.vazio}</p>
             ) : (
               <>
                 <ul className="divide-y divide-line border-y border-line">
+                  {/* Packs primeiro: preço fechado, com o valor dos avulsos riscado ao lado. */}
+                  {carrinho.packs.map((p) => (
+                    <li key={p.slug} className="flex items-start justify-between gap-4 py-3">
+                      <span className="flex flex-col">
+                        <span className="text-fg">{t.pack.nome(t.niveis[p.nivel])}</span>
+                        <span className={ROTULO}>{t.pack.cursos(p.cursos)}</span>
+                      </span>
+                      <span className="flex shrink-0 flex-col items-end gap-1 text-right">
+                        <s className="tnum text-sm text-fg-subtle">{formatarReais(p.cheioCentavos)}</s>
+                        <span className="tnum text-fg">{formatarReais(p.precoCentavos)}</span>
+                      </span>
+                    </li>
+                  ))}
                   {carrinho.itens.map((item) => (
                     <li key={item.slug} className="flex items-start justify-between gap-4 py-3">
                       <span className="text-fg">{nomes.get(item.slug)}</span>
@@ -117,7 +131,7 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
             ) : null}
             <button
               type="button"
-              disabled={carrinho.itens.length === 0}
+              disabled={vazio}
               onClick={() => setEtapa("dados")}
               className={BOTAO_CHEIO}
             >
