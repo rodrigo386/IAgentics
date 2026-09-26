@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { catalogo as t } from "@/lib/content";
 import { calcularCarrinho, DESCONTO_MAXIMO_PCT, formatarReais } from "@/lib/catalogo/preco";
+import { Trilha } from "./Trilha";
 
 /**
  * Catálogo + carrinho + formulário do checkout (2026-09-22).
@@ -35,6 +35,8 @@ export function Catalogo({ precoBaseCentavos, urlCheckout }: Props) {
   const [etapa, setEtapa] = useState<"carrinho" | "dados">("carrinho");
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  // null = todos os níveis. Com 62 cursos, a grade inteira não se navega.
+  const [nivel, setNivel] = useState<number | null>(null);
 
   // Lê depois de montar: no SSR não há localStorage, e ler no render quebraria a hidratação.
   useEffect(() => {
@@ -49,6 +51,12 @@ export function Catalogo({ precoBaseCentavos, urlCheckout }: Props) {
     try {
       localStorage.setItem(CHAVE, JSON.stringify(novos));
     } catch {}
+  }
+
+  /* A trilha SOMA ao carrinho, não substitui: quem já escolheu algo à mão não
+     perde a escolha. Os cursos da trilha entram depois, na ordem de estudo. */
+  function aplicarTrilha(trilha: string[]) {
+    salvar([...slugs, ...trilha.filter((s) => !slugs.includes(s))]);
   }
 
   const carrinho = calcularCarrinho(slugs, validos, precoBaseCentavos);
@@ -102,55 +110,72 @@ export function Catalogo({ precoBaseCentavos, urlCheckout }: Props) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-12">
-      <div className="grid gap-6 sm:grid-cols-2 lg:col-span-8 lg:self-start">
-        {t.cursos.map((c) => {
-          const dentro = noCarrinho.has(c.slug);
-          return (
-            /* Borda violeta como indicador de estado — uso sancionado da trava
-               de cor; o fundo do card não muda, então o acento continua único. */
-            <article
-              key={c.slug}
-              className={`flex flex-col border bg-surface transition-colors duration-300 motion-reduce:transition-none ${
-                dentro ? "border-accent" : "border-line"
+      <div className="flex flex-col gap-8 lg:col-span-8 lg:self-start">
+        <Trilha precoBaseCentavos={precoBaseCentavos} aoAplicar={aplicarTrilha} />
+
+        <div role="group" aria-label={t.filtro.rotulo} className="flex flex-wrap gap-2">
+          {[null, 0, 1, 2, 3].map((n) => (
+            <button
+              key={String(n)}
+              type="button"
+              aria-pressed={nivel === n}
+              onClick={() => setNivel(n)}
+              className={`rounded-control border px-4 py-2 text-sm transition-colors motion-reduce:transition-none ${
+                nivel === n ? "border-accent bg-accent text-accent-on" : "border-line-strong text-fg hover:border-fg"
               }`}
             >
-              <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-line">
-                <Image src={c.capa} alt="" fill sizes="(min-width: 1024px) 440px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <p className={ROTULO}>{c.horas}</p>
-                <h3 className="mt-2 text-xl font-medium tracking-[-0.02em] text-fg">{c.nome}</h3>
-                <p className="mt-3 text-fg-muted">{c.frase}</p>
-                <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-6">
-                  {dentro ? (
-                    <button
-                      type="button"
-                      aria-label={`${t.card.remover} ${c.nome}`}
-                      onClick={() => salvar(slugs.filter((s) => s !== c.slug))}
-                      className={BOTAO_CONTORNO}
-                    >
-                      {t.card.remover}
-                    </button>
-                  ) : (
-                    <>
-                      <span className="tnum text-sm text-fg">
-                        {t.card.entraPor(formatarReais(carrinho.proximo!.precoCentavos))}
-                      </span>
+              {n === null ? t.filtro.todos : t.niveis[n]}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {t.cursos
+            .filter((c) => nivel === null || c.nivel === nivel)
+            .map((c) => {
+              const dentro = noCarrinho.has(c.slug);
+              return (
+                /* Borda violeta como indicador de estado — uso sancionado da trava
+                   de cor; o fundo do card não muda, então o acento continua único. */
+                <article
+                  key={c.slug}
+                  className={`flex flex-col border bg-surface p-5 transition-colors duration-300 motion-reduce:transition-none ${
+                    dentro ? "border-accent" : "border-line"
+                  }`}
+                >
+                  <p className={ROTULO}>{t.niveis[c.nivel]}</p>
+                  <h3 className="mt-2 text-lg font-medium tracking-[-0.01em] text-fg">{c.nome}</h3>
+                  <p className="mt-2 text-sm text-fg-muted">{c.temas.map((tema) => t.temas[tema]).join(" · ")}</p>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-5">
+                    {dentro ? (
                       <button
                         type="button"
-                        aria-label={`${t.card.adicionar} ${c.nome}`}
-                        onClick={() => salvar([...slugs, c.slug])}
-                        className={BOTAO_CHEIO}
+                        aria-label={`${t.card.remover} ${c.nome}`}
+                        onClick={() => salvar(slugs.filter((s) => s !== c.slug))}
+                        className={`${BOTAO_CONTORNO} px-4 py-2 text-sm`}
                       >
-                        {t.card.adicionar}
+                        {t.card.remover}
                       </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
+                    ) : (
+                      <>
+                        <span className="tnum text-sm text-fg">
+                          {t.card.entraPor(formatarReais(carrinho.proximo!.precoCentavos))}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`${t.card.adicionar} ${c.nome}`}
+                          onClick={() => salvar([...slugs, c.slug])}
+                          className={`${BOTAO_CHEIO} px-4 py-2 text-sm`}
+                        >
+                          {t.card.adicionar}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+        </div>
       </div>
 
       <aside

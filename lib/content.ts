@@ -1599,40 +1599,177 @@ export const cursos = {
  * Catálogo de cursos com checkout (2026-09-22) — hoje só na prévia
  * /preview/catalogo, escondida (sem senha desde 2026-09-22).
  *
- * A lista é PROVISÓRIA: os cursos OnDemand da Academy. A definitiva é a do
- * Pecege, com o que a Solution vai entregar de fato; quando chegar, troca aqui
- * e mais nada. O `slug` é o que viaja no carrinho e fica gravado na venda —
- * não renomeie um slug de curso que já foi vendido.
+ * A lista é a do Pecege desde 2026-09-26 (antes, dois cursos OnDemand da
+ * Academy como provisórios). O `slug` é o que viaja no carrinho e fica gravado
+ * na venda — não renomeie um slug de curso que já foi vendido.
  */
+export type Tema = "rotina" | "dados" | "custos" | "estrategia" | "pessoas" | "ia";
+
 export const catalogo = {
   precoBaseCentavos: 20000,
+  /* Lista do Pecege (2026-09-26): 62 cursos de Compras em quatro níveis, na
+     ordem da planilha — a ordem dentro de cada nível é também a ordem de estudo
+     que a trilha recomendada segue.
+
+     `temas` NÃO veio da planilha: fui eu que atribuí, de 1 a 2 por curso, para
+     o questionário "Monte sua trilha" ter com o que casar as respostas. É
+     conteúdo editorial, revisável aqui mesmo — mudar um tema muda a
+     recomendação e mais nada. */
   cursos: [
-    {
-      slug: "fundamentos-ia-negocios",
-      nome: "Fundamentos de IA aplicado aos Negócios",
-      horas: "8 horas",
-      frase: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
-      capa: "/academy/fundamentos-ia-negocios.jpg",
-    },
-    {
-      slug: "fundamentos-ia-copilot",
-      nome: "Fundamentos de IA com Copilot",
-      horas: "6 horas",
-      frase: "Domine o Microsoft Copilot para acelerar tarefas do dia a dia com IA generativa.",
-      capa: "/academy/copilot-course.jpg",
-    },
-  ],
+    { slug: "funcao-objetivo-de-compras", nome: "Função Objetivo de Compras", nivel: 0, temas: ["rotina", "estrategia"] },
+    { slug: "processos-e-areas-de-atuacao", nome: "Processos e áreas de atuação", nivel: 0, temas: ["rotina"] },
+    { slug: "papel-do-profissional", nome: "Papel do Profissional", nivel: 0, temas: ["rotina", "pessoas"] },
+    { slug: "indicadores-chaves-de-gestao", nome: "Indicadores Chaves de Gestão", nivel: 0, temas: ["dados", "estrategia"] },
+    { slug: "entendendo-o-ciclo-de-compras", nome: "Entendendo o Ciclo de Compras", nivel: 0, temas: ["rotina"] },
+    { slug: "como-atuar-atraves-de-quem-lidera", nome: "Como atuar através de quem lidera?", nivel: 0, temas: ["pessoas"] },
+    { slug: "compreendendo-o-tempo-e-a-rotina", nome: "Compreendendo o tempo e a rotina", nivel: 0, temas: ["rotina"] },
+    { slug: "raio-x-da-operacao", nome: "Raio-X da Operação", nivel: 0, temas: ["rotina", "dados"] },
+    { slug: "sindrome-da-urgencia", nome: "Síndrome da Urgência", nivel: 0, temas: ["rotina"] },
+    { slug: "escopo-perfeito", nome: "Escopo Perfeito", nivel: 0, temas: ["rotina", "custos"] },
+    { slug: "como-ter-requisicoes-vencedoras", nome: "Como ter requisições vencedoras?", nivel: 0, temas: ["rotina"] },
+    { slug: "gestao-do-tempo-e-rotina", nome: "Gestão do Tempo e Rotina", nivel: 0, temas: ["rotina", "pessoas"] },
+    { slug: "coleta-de-dados", nome: "Coleta de Dados", nivel: 1, temas: ["dados"] },
+    { slug: "saneamento-de-dados", nome: "Saneamento de Dados", nivel: 1, temas: ["dados"] },
+    { slug: "gestao-de-cadastro", nome: "Gestão de Cadastro", nivel: 1, temas: ["dados", "rotina"] },
+    { slug: "spend-analysis-e-pareto", nome: "Spend Analysis & Pareto", nivel: 1, temas: ["dados", "custos"] },
+    { slug: "taxonomia-de-categorias", nome: "Taxonomia de Categorias", nivel: 1, temas: ["dados"] },
+    { slug: "spend-cube", nome: "Spend Cube", nivel: 1, temas: ["dados"] },
+    { slug: "cost-breakdown", nome: "Cost Breakdown", nivel: 1, temas: ["custos"] },
+    { slug: "cherry-picking-equalizacao", nome: "Cherry Picking - Equalização", nivel: 1, temas: ["custos"] },
+    { slug: "tco", nome: "TCO", nivel: 1, temas: ["custos"] },
+    { slug: "should-cost", nome: "Should Cost", nivel: 1, temas: ["custos"] },
+    { slug: "iqf", nome: "IQF", nivel: 1, temas: ["custos"] },
+    { slug: "matriz-kraljic", nome: "Matriz Kraljic", nivel: 1, temas: ["custos", "estrategia"] },
+    { slug: "matriz-percepcao", nome: "Matriz Percepção", nivel: 1, temas: ["custos"] },
+    { slug: "planejamento-da-negociacao", nome: "Planejamento da Negociação", nivel: 1, temas: ["custos"] },
+    { slug: "ia-aplicada-a-compras", nome: "IA aplicada a Compras", nivel: 1, temas: ["ia"] },
+    { slug: "lean-thinking", nome: "Lean Thinking", nivel: 1, temas: ["rotina"] },
+    { slug: "inteligencia-emocional", nome: "Inteligência Emocional", nivel: 1, temas: ["pessoas"] },
+    { slug: "comunicacao-e-oratoria", nome: "Comunicação & Oratória", nivel: 1, temas: ["pessoas"] },
+    { slug: "saude-mental", nome: "Saúde Mental", nivel: 1, temas: ["pessoas"] },
+    { slug: "python", nome: "Python", nivel: 1, temas: ["ia", "dados"] },
+    { slug: "sql", nome: "SQL", nivel: 1, temas: ["dados", "ia"] },
+    { slug: "power-bi", nome: "Power BI", nivel: 1, temas: ["dados"] },
+    { slug: "inteligencia-em-compras", nome: "Inteligência em Compras", nivel: 2, temas: ["estrategia", "dados"] },
+    { slug: "gestao-por-categorias", nome: "Gestão por Categorias", nivel: 2, temas: ["estrategia", "custos"] },
+    { slug: "strategic-sourcing", nome: "Strategic Sourcing", nivel: 2, temas: ["custos", "estrategia"] },
+    { slug: "okr", nome: "OKR", nivel: 2, temas: ["estrategia"] },
+    { slug: "gestao-de-projetos-scrum", nome: "Gestão de Projetos - SCRUM", nivel: 2, temas: ["rotina", "estrategia"] },
+    { slug: "tributos-aplicados-a-compras", nome: "Tributos aplicados a Compras", nivel: 2, temas: ["custos"] },
+    { slug: "financas-aplicado-a-compras", nome: "Finanças aplicado a Compras", nivel: 2, temas: ["custos", "estrategia"] },
+    { slug: "geopolitica", nome: "Geopolítica", nivel: 2, temas: ["estrategia"] },
+    { slug: "analise-de-dados", nome: "Análise de Dados", nivel: 2, temas: ["dados"] },
+    { slug: "pitch", nome: "Pitch", nivel: 2, temas: ["pessoas"] },
+    { slug: "s-e-op-ibp", nome: "S&OP/IBP", nivel: 2, temas: ["estrategia", "dados"] },
+    { slug: "projecao-de-vendas", nome: "Projeção de Vendas", nivel: 2, temas: ["dados"] },
+    { slug: "design-thinking", nome: "Design Thinking", nivel: 2, temas: ["estrategia"] },
+    { slug: "gestao-de-conflitos", nome: "Gestão de Conflitos", nivel: 2, temas: ["pessoas"] },
+    { slug: "pnl", nome: "PNL", nivel: 2, temas: ["pessoas"] },
+    { slug: "gestao-de-ativos-e-gastos", nome: "Gestão de Ativos e Gastos", nivel: 2, temas: ["custos"] },
+    { slug: "imersao-de-assistentes-avancado", nome: "Imersão de Assistentes Avançado", nivel: 2, temas: ["ia"] },
+    { slug: "imersao-de-agentes-de-ia", nome: "Imersão de Agentes de IA", nivel: 2, temas: ["ia"] },
+    { slug: "estrategia-de-negocios", nome: "Estratégia de Negócios", nivel: 3, temas: ["estrategia"] },
+    { slug: "planejamento-estrategico", nome: "Planejamento Estratégico", nivel: 3, temas: ["estrategia"] },
+    { slug: "design-organizacional", nome: "Design Organizacional", nivel: 3, temas: ["estrategia", "pessoas"] },
+    { slug: "lideranca-situacional", nome: "Liderança Situacional", nivel: 3, temas: ["pessoas"] },
+    { slug: "governanca-e-compliance", nome: "Governança e Compliance", nivel: 3, temas: ["estrategia"] },
+    { slug: "transformacao-digital", nome: "Transformação Digital", nivel: 3, temas: ["ia", "estrategia"] },
+    { slug: "estatistica", nome: "Estatística", nivel: 3, temas: ["dados"] },
+    { slug: "ai-first", nome: "AI First", nivel: 3, temas: ["ia", "estrategia"] },
+    { slug: "esg", nome: "ESG", nivel: 3, temas: ["estrategia"] },
+    { slug: "inovacao-aberta", nome: "Inovação Aberta", nivel: 3, temas: ["estrategia", "ia"] },
+  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[] }[],
+  niveis: ["Iniciante", "Intermediário", "Especialista", "Avançado"],
+  temas: {
+    rotina: "Processo e rotina",
+    dados: "Dados e análise de gastos",
+    custos: "Negociação, custos e fornecedores",
+    estrategia: "Estratégia e gestão",
+    pessoas: "Comunicação e liderança",
+    ia: "IA e tecnologia",
+  } as Record<Tema, string>,
+  filtro: { todos: "Todos", rotulo: "Filtrar por nível" },
   meta: {
     titulo: "Catálogo de cursos (prévia)",
     descricao: "Prévia de teste do catálogo de formações online da IAgentics na Solution.",
   },
   eyebrow: "Formações online · IAgentics e Pecege",
-  titulo: "Monte sua trilha de IA",
+  titulo: "Monte sua trilha em Compras",
   lead: (preco: string) =>
     `Cada curso custa ${preco}. A partir do segundo, cada curso novo sai 5% mais barato que o anterior, até 25% de desconto.`,
   /* Na tela, não só no código: quem abre a prévia precisa saber que a
      cobrança é real, só que pequena. */
   avisoTeste: "Prévia de teste: preços reduzidos, cobrança real pelo Asaas.",
+  /* "Monte sua trilha" (2026-09-26): cinco perguntas de um clique que viram
+     uma trilha no carrinho. Roda só no navegador e não grava nada — nenhuma
+     resposta sai do computador de quem responde. A regra que transforma
+     respostas em cursos está em lib/catalogo/trilha.ts. */
+  trilha: {
+    chamadaTitulo: "Não sabe por onde começar?",
+    chamadaTexto: "Responda cinco perguntas rápidas e montamos uma trilha de cursos para o seu momento. Leva menos de dois minutos.",
+    comecar: "Montar minha trilha",
+    passo: (atual: number, total: number) => `Pergunta ${atual} de ${total}`,
+    voltar: "Voltar",
+    fechar: "Fechar",
+    perguntas: [
+      {
+        id: "momento",
+        titulo: "Em que momento você está em Compras?",
+        opcoes: [
+          { valor: "0", rotulo: "Estou começando, ou vim de outra área" },
+          { valor: "1", rotulo: "Já opero compras no dia a dia" },
+          { valor: "2", rotulo: "Conduzo categorias, projetos ou negociações grandes" },
+          { valor: "3", rotulo: "Lidero a área ou respondo pela estratégia" },
+        ],
+      },
+      {
+        id: "objetivo",
+        titulo: "O que você quer resolver primeiro?",
+        opcoes: [
+          { valor: "rotina", rotulo: "Organizar processo, rotina e urgências" },
+          { valor: "dados", rotulo: "Entender os gastos com dados" },
+          { valor: "custos", rotulo: "Negociar melhor e reduzir custos" },
+          { valor: "estrategia", rotulo: "Pensar e planejar de forma estratégica" },
+          { valor: "ia", rotulo: "Levar IA e automação para Compras" },
+        ],
+      },
+      {
+        id: "junto",
+        titulo: "Que habilidade você quer desenvolver junto?",
+        opcoes: [
+          { valor: "pessoas", rotulo: "Comunicação, liderança e relacionamento" },
+          { valor: "dados", rotulo: "Ferramentas de dados, como Power BI e SQL" },
+          { valor: "ia", rotulo: "Usar IA no meu dia a dia" },
+          { valor: "nenhum", rotulo: "Só o foco principal" },
+        ],
+      },
+      {
+        id: "alcance",
+        titulo: "Até onde você quer ir agora?",
+        opcoes: [
+          { valor: "0", rotulo: "Firmar a base do meu nível" },
+          { valor: "1", rotulo: "Meu nível e já o próximo" },
+        ],
+      },
+      {
+        id: "tamanho",
+        titulo: "Quantos cursos cabem na sua rotina agora?",
+        opcoes: [
+          { valor: "3", rotulo: "Trilha curta: 3 cursos" },
+          { valor: "6", rotulo: "Trilha média: 6 cursos, já com o desconto máximo de 25%" },
+          { valor: "9", rotulo: "Trilha completa: 9 cursos" },
+        ],
+      },
+    ],
+    resultadoTitulo: "Sua trilha",
+    resultadoTexto: (n: number) => `${n} cursos, na ordem em que recomendamos estudar.`,
+    motivo: (tema: string) => `Para: ${tema.toLowerCase()}`,
+    motivoBase: "Base do seu nível",
+    totalTrilha: "Com o desconto progressivo",
+    aplicar: "Colocar a trilha no carrinho",
+    refazer: "Refazer as perguntas",
+    aplicada: "Trilha no carrinho. Você ainda pode tirar ou incluir cursos à mão.",
+  },
   card: {
     adicionar: "Adicionar",
     remover: "Remover",
@@ -1640,7 +1777,7 @@ export const catalogo = {
   },
   carrinho: {
     titulo: "Seu carrinho",
-    vazio: "Escolha um curso para começar. O segundo já sai com 5% de desconto.",
+    vazio: "Escolha um curso ou monte sua trilha. O segundo curso já sai com 5% de desconto.",
     desconto: (pct: number) => `${pct}% off`,
     total: "Total",
     economia: (valor: string) => `Você economiza ${valor}`,

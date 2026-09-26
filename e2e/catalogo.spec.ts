@@ -21,7 +21,7 @@ const pedido = (extra: Record<string, unknown> = {}) => ({
   email: `e2e-catalogo-${Date.now()}@teste.invalido`,
   telefone: "(11) 98888-7777",
   cpf: CPF,
-  slugs: ["fundamentos-ia-negocios"],
+  slugs: ["funcao-objetivo-de-compras"],
   consentimento: true,
   ...extra,
 });
@@ -58,17 +58,17 @@ test.describe("fluxo de compra", () => {
     await page.reload();
 
     const total = page.getByTestId("total");
-    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA aplicado/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
     await expect(total).toHaveText(/R\$\s5,00/);
     await expect(page.getByText(/Adicione mais um e ele sai por R\$\s4,75/)).toBeVisible();
 
-    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA com Copilot/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
     await expect(total).toHaveText(/R\$\s9,75/);
 
     await page.reload();
     await expect(page.getByTestId("total")).toHaveText(/R\$\s9,75/);
 
-    await page.getByRole("button", { name: /^Remover Fundamentos de IA com Copilot/ }).click();
+    await page.getByRole("button", { name: /^Remover Processos e áreas de atuação/ }).click();
     await expect(page.getByTestId("total")).toHaveText(/R\$\s5,00/);
   });
 
@@ -93,8 +93,8 @@ test.describe("fluxo de compra", () => {
     await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
     await page.reload();
 
-    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA aplicado/ }).click();
-    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA com Copilot/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
     await page.getByRole("button", { name: "Finalizar compra" }).click();
 
     const nome = `Compra Completa ${Date.now()}`;
@@ -136,4 +136,40 @@ test.describe("fluxo de compra", () => {
     const r = await page.goto("/preview/catalogo/pedido/00000000-0000-4000-8000-000000000000");
     expect(r?.status()).toBe(404);
   });
+});
+
+/* "Monte sua trilha": cinco cliques e a trilha vai para o carrinho. Roda no
+   navegador, sem senha e sem gravar nada. As respostas abaixo pedem uma trilha
+   curta de Intermediário com foco em dados. */
+test("o questionário monta a trilha e ela entra no carrinho", async ({ page }) => {
+  await page.goto("/preview/catalogo");
+  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
+  await page.reload();
+
+  await page.getByRole("button", { name: "Montar minha trilha" }).click();
+  await expect(page.getByText("Pergunta 1 de 5")).toBeVisible();
+  await page.getByRole("button", { name: "Já opero compras no dia a dia" }).click();
+  await page.getByRole("button", { name: "Entender os gastos com dados" }).click();
+  await page.getByRole("button", { name: "Só o foco principal" }).click();
+  await page.getByRole("button", { name: "Firmar a base do meu nível" }).click();
+  await page.getByRole("button", { name: "Trilha curta: 3 cursos" }).click();
+
+  const trilha = page.getByTestId("trilha");
+  await expect(trilha.getByRole("listitem")).toHaveCount(3);
+  await expect(trilha).toContainText("Coleta de Dados");
+  // Três cursos: 5,00 + 4,75 + 4,50 no preço de teste.
+  await expect(page.getByText(/R\$\s14,25/)).toBeVisible();
+
+  await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Trilha no carrinho" })).toBeVisible();
+  await expect(page.getByTestId("total")).toHaveText(/R\$\s14,25/);
+  await expect(page.getByRole("button", { name: /^Remover Coleta de Dados/ })).toBeVisible();
+});
+
+test("o filtro por nível mostra só os cursos daquele nível", async ({ page }) => {
+  await page.goto("/preview/catalogo");
+  await page.getByRole("button", { name: "Avançado", exact: true }).click();
+  await expect(page.getByRole("article")).toHaveCount(10);
+  await page.getByRole("button", { name: "Todos", exact: true }).click();
+  await expect(page.getByRole("article")).toHaveCount(62);
 });
