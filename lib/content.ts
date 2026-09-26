@@ -1777,6 +1777,57 @@ export const catalogo = {
     refazer: "Refazer as perguntas",
     aplicada: "Trilha no carrinho. Você ainda pode tirar ou incluir cursos à mão.",
   },
+  /* Opções de layout da prévia (2026-09-26): a página atual e três propostas
+     ousadas, para o Rodrigo comparar. A escolhida vira a página; as outras
+     somem junto com este seletor. */
+  opcoes: {
+    rotulo: "Opções de layout",
+    lista: [
+      { href: "/preview/catalogo", nome: "Atual" },
+      { href: "/preview/catalogo/vitrine", nome: "Vitrine" },
+      { href: "/preview/catalogo/jornada", nome: "Jornada" },
+      { href: "/preview/catalogo/mural", nome: "Mural" },
+    ],
+  },
+  barra: {
+    rotulo: "Resumo do carrinho",
+    vazio: "Monte sua trilha e ganhe até 25% de desconto.",
+    cursos: (n: number) => (n === 1 ? "1 curso" : `${n} cursos`),
+    proximo: (pct: number) => `Mais 1 curso e ele sai com ${pct}% off`,
+    teto: "Desconto máximo de 25% liberado",
+    ver: "Ver carrinho",
+    montar: "Montar minha trilha",
+    degraus: "Escada do desconto",
+  },
+  gaveta: { fechar: "Fechar", carrinho: "Seu carrinho", trilha: "Monte sua trilha" },
+  vitrine: {
+    destaqueEyebrow: "Comece por aqui",
+    // Frase do curso na Academy (academy.courses.items), verbatim.
+    destaqueFrase: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
+    destaqueNota: "Curso introdutório · toda trilha começa por ele",
+    adicionar: "Adicionar ao carrinho",
+    noCarrinho: "No carrinho",
+    montar: "Montar minha trilha em 2 minutos",
+    contagem: (n: number) => `${n} cursos`,
+    temasTitulo: "Por tema",
+    anterior: "Ver anteriores",
+    seguinte: "Ver seguintes",
+  },
+  jornada: {
+    eyebrow: "Formação em Compras · 4 níveis",
+    titulo: "Suba de nível. O desconto sobe junto.",
+    texto: "Cada curso novo no carrinho sai 5% mais barato que o anterior, até 25%. A escada mostra quanto o próximo custa.",
+    escada: "Escada do desconto",
+    degrau: (i: number) => `${i}º curso`,
+    voce: "Próximo",
+    cheio: "Máximo",
+  },
+  mural: {
+    eyebrow: "63 cursos · 6 temas",
+    titulo: "Escolha pelo que você quer resolver.",
+    todos: "Todos os temas",
+    filtro: "Filtrar por tema",
+  },
   card: {
     adicionar: "Adicionar",
     remover: "Remover",

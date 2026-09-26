@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Catalogo } from "@/components/catalogo/Catalogo";
+import { SeletorLayout } from "@/components/catalogo/SeletorLayout";
 import { catalogo as t } from "@/lib/content";
 import { formatarReais, PRECO_TESTE_CENTAVOS } from "@/lib/catalogo/preco";
 
@@ -23,6 +24,7 @@ export default function PaginaCatalogoPrevia() {
     <>
       <Nav />
       <main id="conteudo" className="pt-16">
+        <SeletorLayout atual="/preview/catalogo" />
         <section className="mx-auto max-w-[1400px] px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
           <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted">{t.eyebrow}</p>
           <h1 className="mt-4 text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">

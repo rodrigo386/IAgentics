@@ -176,3 +176,37 @@ test("o filtro por nível mostra só os cursos daquele nível", async ({ page })
   // 62 da lista do Pecege + o introdutório.
   await expect(page.getByRole("article")).toHaveCount(63);
 });
+
+/* Opções de layout da prévia (2026-09-26): Vitrine, Jornada e Mural dividem o
+   carrinho (mesma chave de localStorage), a barra com a escada do desconto e
+   as gavetas. Cada uma precisa abrir, somar curso na barra e levar a trilha do
+   questionário até a gaveta do carrinho. */
+for (const layout of ["vitrine", "jornada", "mural"]) {
+  test(`layout ${layout}: carrinho pela barra e trilha que abre o carrinho`, async ({ page }) => {
+    await page.goto(`/preview/catalogo/${layout}`);
+    await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
+    await page.reload();
+
+    await expect(page.getByRole("navigation", { name: "Opções de layout" }).getByRole("link", { name: /vitrine|jornada|mural/i, exact: false }).first()).toBeVisible();
+    const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
+    await expect(barra).toContainText("Monte sua trilha e ganhe até 25% de desconto.");
+
+    await page.getByRole("button", { name: /^Adicionar Coleta de Dados/ }).first().click();
+    await expect(barra).toContainText("1 curso");
+    await expect(barra).toContainText("Mais 1 curso e ele sai com 5% off");
+
+    await page.getByRole("button", { name: /^Remover Coleta de Dados/ }).first().click();
+    await barra.getByRole("button", { name: "Montar minha trilha" }).click();
+    for (const o of ["Já opero compras no dia a dia", "Entender os gastos com dados", "Só o foco principal", "Firmar a base do meu nível", "Trilha curta: 3 cursos"]) {
+      await page.getByRole("button", { name: o }).click();
+    }
+    await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
+
+    // A gaveta do carrinho abre com a trilha: introdutório + dois de dados, R$ 14,25.
+    const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
+    await expect(gaveta).toBeVisible();
+    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s14,25/);
+    await expect(gaveta).toContainText("Fundamentos de IA aplicado aos Negócios");
+    await expect(barra).toContainText("3 cursos");
+  });
+}

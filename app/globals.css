@@ -1533,3 +1533,142 @@
   height: auto;
   border-radius: var(--radius-surface);
 }
+
+/* ---------------------------------------------------------------------------
+   CATÁLOGO - CAPAS, PRATELEIRAS, GAVETA E ESCADA DO DESCONTO (2026-09-26)
+
+   Mesma doutrina do resto do site: o estado de repouso é o visível, entrada
+   com `backwards`, só transform e opacity, e tudo que se move sozinho fica
+   atrás de prefers-reduced-motion.
+
+   Motivação (uma frase por animação):
+   - .capa-arte: foco - a capa sob o cursor se aproxima, como na TV.
+   - .vitrine-card: descoberta - o card sob o cursor cresce e ganha destaque.
+   - .destaque-arte: atmosfera - o destaque respira devagar, sem distrair.
+   - .cascata: hierarquia - itens entram na ordem de leitura.
+   - .degrau-aceso: feedback - cada curso acende o degrau do desconto ganho.
+   - .gaveta: continuidade - o carrinho desliza de onde a barra está.
+--------------------------------------------------------------------------- */
+.capa-arte {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .capa-arte,
+.group:focus-within .capa-arte {
+  transform: scale(1.06);
+}
+
+.cascata {
+  animation: painel-sobe 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+/* Prateleira: rolagem horizontal com encaixe, sem barra visível. */
+.prateleira {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.prateleira::-webkit-scrollbar {
+  display: none;
+}
+.prateleira > * {
+  scroll-snap-align: start;
+}
+
+/* Card da Vitrine: cresce no hover (desktop). O detalhe fica sempre visível:
+   expandir altura dentro da prateleira cortaria o card (overflow da rolagem)
+   e empurraria as prateleiras de baixo a cada passada do cursor. */
+@media (hover: hover) and (min-width: 768px) {
+  .vitrine-card {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+  }
+  .vitrine-card:hover,
+  .vitrine-card:focus-within {
+    transform: scale(1.04);
+    z-index: 2;
+    box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.6);
+  }
+}
+
+/* Mural: capa que se levanta e inclina de leve no hover. */
+@media (hover: hover) {
+  .mural-card {
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mural-card:hover,
+  .mural-card:focus-within {
+    transform: translateY(-6px) rotate(-0.6deg);
+  }
+}
+
+.degrau {
+  transition: background-color 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.degrau-aceso {
+  animation: degrau-acende 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@keyframes degrau-acende {
+  from {
+    transform: scaleY(0.4);
+    opacity: 0.4;
+  }
+}
+
+/* Gaveta lateral: <dialog> nativo (foco preso, Esc fecha, fundo inerte). */
+dialog.gaveta {
+  margin: 0 0 0 auto;
+  height: 100dvh;
+  max-height: none;
+  width: min(460px, 100vw);
+  max-width: none;
+}
+dialog.gaveta[open] {
+  animation: gaveta-entra 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+dialog.gaveta::backdrop {
+  background: rgb(19 23 35 / 0.6);
+  backdrop-filter: blur(4px);
+}
+/* Especificidade maior que dialog.gaveta de propósito: o painel central se
+   ajusta ao conteúdo, em vez de herdar a altura cheia da gaveta lateral. */
+dialog.gaveta.gaveta-centro {
+  margin: auto;
+  height: fit-content;
+  border: 1px solid var(--line);
+  max-height: calc(100dvh - 2rem);
+  width: min(760px, calc(100vw - 2rem));
+}
+dialog.gaveta.gaveta-centro[open] {
+  animation: painel-sobe 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@keyframes gaveta-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .destaque-arte {
+    animation: destaque-respira 24s ease-in-out infinite alternate;
+  }
+}
+@keyframes destaque-respira {
+  to {
+    transform: scale(1.08) translateX(-2%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capa-arte,
+  .vitrine-card,
+  .mural-card,
+  .degrau {
+    transition: none;
+  }
+  .cascata,
+  .degrau-aceso,
+  dialog.gaveta[open],
+  dialog.gaveta.gaveta-centro[open] {
+    animation: none;
+  }
+}
