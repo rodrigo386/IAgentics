@@ -155,7 +155,7 @@ test("o questionário monta a trilha e abre o carrinho com ela", async ({ page }
   }
   const trilha = page.getByTestId("trilha");
   await expect(trilha.getByRole("listitem")).toHaveCount(3);
-  await expect(trilha.getByRole("listitem").first()).toContainText("Fundamentos de IA aplicado aos Negócios");
+  await expect(trilha.getByRole("listitem").first()).toContainText("Fundamentos de IA para Negócios");
   await expect(trilha).toContainText("Coleta de Dados");
 
   await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();

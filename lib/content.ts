@@ -1619,8 +1619,9 @@ export const catalogo = {
     /* O curso introdutório (pedido do Rodrigo, 2026-09-26): abre o catálogo e
        toda trilha recomendada. Não está na planilha do Pecege — é o
        "Fundamentos de IA aplicado aos Negócios" da Academy, que já estava na
-       prévia, com o mesmo slug. */
-    { slug: "fundamentos-ia-negocios", nome: "Fundamentos de IA aplicado aos Negócios", nivel: 0, temas: ["ia"], introdutorio: true, foto: "/academy/fundamentos-ia-negocios.jpg" },
+       prévia, com o mesmo slug. Nome atual e capa com o professor (o quadro
+       do vídeo-convite do Vinícius) pedidos pelo Rodrigo em 2026-09-29. */
+    { slug: "fundamentos-ia-negocios", nome: "Fundamentos de IA para Negócios", nivel: 0, temas: ["ia"], introdutorio: true, foto: "/academy/academy-convite-poster.jpg", professor: "Vinícius" },
     { slug: "funcao-objetivo-de-compras", nome: "Função Objetivo de Compras", nivel: 0, temas: ["rotina", "estrategia"] },
     { slug: "processos-e-areas-de-atuacao", nome: "Processos e áreas de atuação", nivel: 0, temas: ["rotina"] },
     { slug: "papel-do-profissional", nome: "Papel do Profissional", nivel: 0, temas: ["rotina", "pessoas"] },
@@ -1683,8 +1684,10 @@ export const catalogo = {
     { slug: "ai-first", nome: "AI First", nivel: 3, temas: ["ia", "estrategia"], foto: "/academy/copilot-course.jpg" },
     { slug: "esg", nome: "ESG", nivel: 3, temas: ["estrategia"] },
     { slug: "inovacao-aberta", nome: "Inovação Aberta", nivel: 3, temas: ["estrategia", "ia"] },
-  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[]; introdutorio?: boolean; foto?: string }[],
+  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[]; introdutorio?: boolean; foto?: string; professor?: string }[],
   introdutorio: "Curso introdutório",
+  // Crédito na capa de curso com professor em destaque (ver Capa.tsx).
+  capaCom: (nome: string) => `Com ${nome}`,
   /* Capas (2026-09-26, pedido do Rodrigo): as fotos dos cursos da /academy.
      Curso com `foto` própria usa ela (o assunto casa: Lean, Design Thinking,
      Spend Analysis…); os demais recebem as fotos do tema principal em RODÍZIO,

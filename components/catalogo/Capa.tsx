@@ -16,6 +16,13 @@ import { catalogo as t } from "@/lib/content";
  * canto de cima sai do quadro.
  *
  * Substituiu, a pedido do Rodrigo, a primeira versão (desenhos em SVG por tema).
+ *
+ * CURSO COM PROFESSOR (`professor` em content.ts, 2026-09-29): a capa vira
+ * cartaz de filme — a foto é de gente, não de cena, então o enquadramento
+ * segura o rosto, uma vinheta escura apaga o fundo (o quadro do vídeo-convite
+ * tem um mural com letreiro que competiria com o título) e entra o crédito
+ * "Com <professor>" sobre o título. Essas fotos não têm o logo impresso das
+ * fotos da Academy, então dispensam a ampliação que o esconde.
  */
 
 /** Hash FNV-1a — pequeno, determinístico e sem dependência. */
@@ -28,7 +35,7 @@ function hash(texto: string) {
   return h >>> 0;
 }
 
-export type CursoCapa = { slug: string; nome: string; nivel: number; temas: readonly Tema[]; introdutorio?: boolean; foto?: string };
+export type CursoCapa = { slug: string; nome: string; nivel: number; temas: readonly Tema[]; introdutorio?: boolean; foto?: string; professor?: string };
 
 /* Rodízio por tema, na ordem do catálogo: o n-ésimo curso sem foto própria de
    um tema pega a n-ésima foto desse tema. Um sorteio por hash pôs a mesma foto
@@ -67,24 +74,45 @@ type Props = {
 
 export function Capa({ curso, formato = "retrato", semTitulo = false, preencher = false, sizes, className = "" }: Props) {
   const retrato = formato === "retrato";
+  const professor = curso.professor;
   // Pequena variação de enquadramento entre cursos que dividem a mesma foto.
   const x = 40 + (hash(curso.slug + "x") % 21);
+  const enquadre = professor ? (retrato ? "52% 0%" : "50% 30%") : retrato ? `${x}% 100%` : `${x}% 48%`;
 
   return (
     <div
       className={`capa relative overflow-hidden bg-brand-ink [container-type:inline-size] ${preencher ? "h-full w-full" : retrato ? "aspect-[2/3]" : "aspect-video"} ${className}`}
       aria-hidden={semTitulo ? true : undefined}
     >
-      <div className={`absolute inset-0 ${retrato ? "origin-[65%_92%] scale-[1.28]" : ""}`}>
+      {/* Professor no retrato: a foto desce 14% e o topo vira tinta. O quadro
+          do vídeo tem a cabeça encostada na borda de cima; sem esse respiro, o
+          cartaz cortava o alto da cabeça. */}
+      <div
+        className={`absolute inset-x-0 bottom-0 ${professor && retrato ? "top-[14%]" : "top-0"} ${retrato && !professor ? "origin-[65%_92%] scale-[1.28]" : ""}`}
+      >
         <Image
           src={fotoDoCurso(curso)}
           alt=""
           fill
           sizes={sizes ?? (retrato ? "(min-width: 1024px) 220px, 33vw" : "(min-width: 640px) 300px, 72vw")}
           className="capa-arte object-cover"
-          style={{ objectPosition: retrato ? `${x}% 100%` : `${x}% 48%` }}
+          style={{ objectPosition: enquadre }}
         />
       </div>
+
+      {/* Vinheta de cartaz: o professor fica na luz, o fundo apaga. Vale até sem
+          título (miniatura, estante), porque é o que tira o letreiro do mural. */}
+      {professor ? (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background: retrato
+              ? "linear-gradient(to bottom, rgb(19 23 35) 12%, transparent 24%), radial-gradient(ellipse 62% 48% at 52% 38%, transparent 30%, rgb(19 23 35 / 0.92) 100%)"
+              : "radial-gradient(ellipse 27% 72% at 51% 36%, transparent 40%, rgb(19 23 35 / 0.96) 100%)",
+          }}
+        />
+      ) : null}
 
       {/* Véus: o de baixo sustenta o título, o de cima o rótulo do nível. */}
       {semTitulo ? null : (
@@ -94,13 +122,20 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
           <span className="absolute left-0 top-0 p-[6%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/85">
             {curso.introdutorio ? t.introdutorio : t.niveis[curso.nivel]}
           </span>
-          <p
-            className={`absolute inset-x-0 bottom-0 p-[7%] font-medium leading-[1.05] tracking-[-0.02em] text-brand-paper [text-wrap:balance] ${
-              retrato ? "text-[clamp(1rem,7cqw,1.6rem)]" : "text-[clamp(0.95rem,5.5cqw,1.5rem)]"
-            }`}
-          >
-            {curso.nome}
-          </p>
+          {/* Crédito e título no mesmo bloco, para o crédito subir junto quando
+              o título quebra em mais linhas. */}
+          <div className="absolute inset-x-0 bottom-0 p-[7%]">
+            {professor ? (
+              <p className="mb-[3%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/80">{t.capaCom(professor)}</p>
+            ) : null}
+            <p
+              className={`font-medium leading-[1.05] tracking-[-0.02em] text-brand-paper [text-wrap:balance] ${
+                retrato ? "text-[clamp(1rem,7cqw,1.6rem)]" : "text-[clamp(0.95rem,5.5cqw,1.5rem)]"
+              }`}
+            >
+              {curso.nome}
+            </p>
+          </div>
         </>
       )}
     </div>
