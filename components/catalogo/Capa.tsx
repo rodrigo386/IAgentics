@@ -89,6 +89,9 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
           cartaz cortava o alto da cabeça. */}
       <div
         className={`absolute inset-x-0 bottom-0 ${professor && retrato ? "top-[14%]" : "top-0"} ${retrato && !professor ? "origin-[65%_92%] scale-[1.28]" : ""}`}
+        // A foto nasce do escuro: sem a máscara, a borda de cima dela fazia uma
+        // linha dura contra a tinta do respiro.
+        style={professor && retrato ? { maskImage: "linear-gradient(to bottom, transparent, black 18%)", WebkitMaskImage: "linear-gradient(to bottom, transparent, black 18%)" } : undefined}
       >
         <Image
           src={fotoDoCurso(curso)}
