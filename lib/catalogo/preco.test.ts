@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calcularCarrinho, calcularPedido, descontoDaPosicao, formatarReais, PRECO_TESTE_CENTAVOS } from "./preco";
+import { calcularCarrinho, calcularPedido, descontoDaPosicao, formatarReais, PRECO_TESTE_CENTAVOS, precosFixos } from "./preco";
 
 const VALIDOS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const BASE = 20000;
@@ -103,6 +103,51 @@ describe("packs", () => {
   it("pack repetido ou inexistente é descartado", () => {
     const p = calcularPedido(["pack-0", "pack-0", "pack-9"], CURSOS, PACKS, PRECOS);
     expect(p.packs.map((x) => x.slug)).toEqual(["pack-0"]);
+    expect(p.totalCentavos).toBe(9900);
+  });
+});
+
+/* Preço próprio de curso (2026-10-02, pedido do Rodrigo): Fundamentos de IA
+   para Negócios custa R$ 49,90 e sai por R$ 19,90 no lançamento. O preço é
+   fixo, mas o curso CONTINUA sendo um degrau da escada — quem compra o
+   introdutório leva o próximo com 5%. */
+describe("curso com preço próprio", () => {
+  const FIXOS = new Map([["intro", { precoCentavos: 1990, cheioCentavos: 4990 }]]);
+  const VALIDOS = ["intro", "a", "b"];
+
+  it("cobra o preço próprio e mostra o cheio dele, não a base", () => {
+    const c = calcularCarrinho(["intro"], VALIDOS, 20000, FIXOS);
+    expect(c.itens).toEqual([{ slug: "intro", descontoPct: 60, precoCentavos: 1990, cheioCentavos: 4990 }]);
+    expect(c.totalCentavos).toBe(1990);
+    expect(c.cheioCentavos).toBe(4990);
+  });
+
+  it("conta como degrau: o curso seguinte sai com 5%", () => {
+    const c = calcularCarrinho(["intro", "a"], VALIDOS, 20000, FIXOS);
+    expect(c.itens[1]).toEqual({ slug: "a", descontoPct: 5, precoCentavos: 19000, cheioCentavos: 20000 });
+    expect(c.totalCentavos).toBe(1990 + 19000);
+  });
+
+  it("vale em qualquer posição: o preço próprio não muda com o degrau", () => {
+    const c = calcularCarrinho(["a", "b", "intro"], VALIDOS, 20000, FIXOS);
+    expect(c.itens[2].precoCentavos).toBe(1990);
+  });
+
+  it("na prévia vira R$ 5, mantendo a proporção do riscado", () => {
+    const teste = precosFixos([{ slug: "intro", preco: { cheioCentavos: 4990, promoCentavos: 1990 } }, { slug: "a" }], "teste");
+    expect(teste.get("intro")).toEqual({ precoCentavos: 500, cheioCentavos: 1254 });
+    expect(teste.has("a")).toBe(false);
+    const real = precosFixos([{ slug: "intro", preco: { cheioCentavos: 4990, promoCentavos: 1990 } }], "real");
+    expect(real.get("intro")).toEqual({ precoCentavos: 1990, cheioCentavos: 4990 });
+  });
+
+  it("no pack, o valor em avulsos usa o cheio do curso de preço próprio", () => {
+    const cursos = [
+      { slug: "intro", nivel: 0 },
+      { slug: "i1", nivel: 0 },
+    ];
+    const p = calcularPedido(["pack-0"], cursos, [{ slug: "pack-0", nivel: 0 }], { cursoCentavos: 20000, packCentavos: 9900, fixos: FIXOS });
+    expect(p.packs[0].cheioCentavos).toBe(4990 + 20000);
     expect(p.totalCentavos).toBe(9900);
   });
 });

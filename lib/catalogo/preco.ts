@@ -27,7 +27,12 @@ function precoNaPosicao(i: number, base: number): number {
   return Math.round((base * (100 - descontoDaPosicao(i))) / 100);
 }
 
-export type ItemCarrinho = { slug: string; descontoPct: number; precoCentavos: number };
+/** `cheioCentavos` é o preço sem desconto DAQUELE item — a base, ou o cheio
+ *  de um curso com preço próprio. É o que aparece riscado ao lado dele. */
+export type ItemCarrinho = { slug: string; descontoPct: number; precoCentavos: number; cheioCentavos: number };
+
+/** Curso com preço próprio (ver precosFixos): preço cobrado e preço cheio. */
+export type PrecoFixo = { precoCentavos: number; cheioCentavos: number };
 
 export type Carrinho = {
   itens: ItemCarrinho[];
@@ -43,6 +48,9 @@ export function calcularCarrinho(
   slugs: readonly string[],
   validos: readonly string[],
   precoBaseCentavos: number,
+  /** Cursos com preço próprio. O preço deles é fixo, mas eles OCUPAM a
+   *  posição na escada — o curso seguinte ganha o degrau normalmente. */
+  fixos: ReadonlyMap<string, PrecoFixo> = new Map(),
 ): Carrinho {
   const conhecidos = new Set(validos);
   const vistos = new Set<string>();
@@ -54,17 +62,23 @@ export function calcularCarrinho(
     }
   }
 
-  const itens = limpos.map((slug, i) => ({
-    slug,
-    descontoPct: descontoDaPosicao(i),
-    precoCentavos: precoNaPosicao(i, precoBaseCentavos),
-  }));
+  const itens = limpos.map((slug, i) => {
+    const fixo = fixos.get(slug);
+    return fixo
+      ? {
+          slug,
+          descontoPct: Math.round((1 - fixo.precoCentavos / fixo.cheioCentavos) * 100),
+          precoCentavos: fixo.precoCentavos,
+          cheioCentavos: fixo.cheioCentavos,
+        }
+      : { slug, descontoPct: descontoDaPosicao(i), precoCentavos: precoNaPosicao(i, precoBaseCentavos), cheioCentavos: precoBaseCentavos };
+  });
 
   const n = itens.length;
   return {
     itens,
     totalCentavos: itens.reduce((soma, item) => soma + item.precoCentavos, 0),
-    cheioCentavos: n * precoBaseCentavos,
+    cheioCentavos: itens.reduce((soma, item) => soma + item.cheioCentavos, 0),
     proximo: n < conhecidos.size ? { descontoPct: descontoDaPosicao(n), precoCentavos: precoNaPosicao(n, precoBaseCentavos) } : null,
   };
 }
@@ -102,18 +116,22 @@ export function calcularPedido(
   slugs: readonly string[],
   cursos: readonly CursoDoPedido[],
   packs: readonly PackDoPedido[],
-  precos: { cursoCentavos: number; packCentavos: number },
+  precos: { cursoCentavos: number; packCentavos: number; fixos?: ReadonlyMap<string, PrecoFixo> },
 ): Pedido {
+  const fixos = precos.fixos ?? new Map<string, PrecoFixo>();
   const porSlug = new Map(packs.map((p) => [p.slug, p]));
   const escolhidos = [...new Set(slugs)].filter((s) => porSlug.has(s)).map((s) => porSlug.get(s)!);
   const cobertos = new Set(escolhidos.map((p) => p.nivel));
 
   const disponiveis = cursos.filter((c) => !cobertos.has(c.nivel)).map((c) => c.slug);
-  const avulsos = calcularCarrinho(slugs, disponiveis, precos.cursoCentavos);
+  const avulsos = calcularCarrinho(slugs, disponiveis, precos.cursoCentavos, fixos);
 
   const itensPack = escolhidos.map((p) => {
-    const n = cursos.filter((c) => c.nivel === p.nivel).length;
-    return { slug: p.slug, nivel: p.nivel, cursos: n, precoCentavos: precos.packCentavos, cheioCentavos: n * precos.cursoCentavos };
+    const doNivel = cursos.filter((c) => c.nivel === p.nivel);
+    // O "valor em avulsos" do pack soma o cheio de cada curso — inclusive o
+    // de preço próprio, que não vale a base.
+    const cheio = doNivel.reduce((s, c) => s + (fixos.get(c.slug)?.cheioCentavos ?? precos.cursoCentavos), 0);
+    return { slug: p.slug, nivel: p.nivel, cursos: doNivel.length, precoCentavos: precos.packCentavos, cheioCentavos: cheio };
   });
 
   return {
@@ -122,4 +140,30 @@ export function calcularPedido(
     totalCentavos: avulsos.totalCentavos + itensPack.reduce((s, p) => s + p.precoCentavos, 0),
     cheioCentavos: avulsos.cheioCentavos + itensPack.reduce((s, p) => s + p.cheioCentavos, 0),
   };
+}
+
+/* ---------------------------------------------------------------------------
+   PREÇO PRÓPRIO DE CURSO (2026-10-02, pedido do Rodrigo): Fundamentos de IA
+   para Negócios custa R$ 49,90 e sai por R$ 19,90 no lançamento (`preco` no
+   curso, em content.ts).
+
+   Na PRÉVIA, todo preço é de teste: o curso de preço próprio cobra o mínimo
+   do Asaas (PRECO_TESTE_CENTAVOS) e o riscado guarda a MESMA proporção do
+   real — a tela de teste conta a mesma história de desconto que a de verdade.
+--------------------------------------------------------------------------- */
+export type CursoComPreco = { slug: string; preco?: { cheioCentavos: number; promoCentavos: number } };
+
+export function precosFixos(cursos: readonly CursoComPreco[], modo: "teste" | "real"): Map<string, PrecoFixo> {
+  const mapa = new Map<string, PrecoFixo>();
+  for (const c of cursos) {
+    if (!c.preco) continue;
+    const { cheioCentavos, promoCentavos } = c.preco;
+    mapa.set(
+      c.slug,
+      modo === "real"
+        ? { precoCentavos: promoCentavos, cheioCentavos }
+        : { precoCentavos: PRECO_TESTE_CENTAVOS, cheioCentavos: Math.round((PRECO_TESTE_CENTAVOS * cheioCentavos) / promoCentavos) },
+    );
+  }
+  return mapa;
 }

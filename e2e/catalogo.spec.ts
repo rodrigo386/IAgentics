@@ -211,3 +211,22 @@ test("o checkout cobra o pack uma vez só, mesmo com curso do nível junto", asy
   expect(cobranca.value).toBe(5);
   expect(cobranca.description).toContain("Pack Intermediário · 22 cursos");
 });
+
+/* Preço próprio de lançamento (2026-10-02): o introdutório mostra o preço
+   dele, com o cheio riscado e o selo — na prévia, R$ 5,00 e R$ 12,54 (a
+   proporção de R$ 19,90 / R$ 49,90). E continua sendo degrau da escada. */
+test("o curso introdutório mostra o preço de lançamento e conta como degrau", async ({ page }) => {
+  await page.goto("/preview/catalogo");
+  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
+  await page.reload();
+
+  const card = page.locator(".vitrine-card", { hasText: "Fundamentos de IA para Negócios" }).first();
+  await expect(card).toContainText("Lançamento");
+  await expect(card.locator("s")).toHaveText(/R\$\s12,54/);
+  await card.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios · R\$\s5,00/ }).click();
+
+  const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
+  await expect(barra).toContainText("Mais 1 curso e ele sai com 5% off");
+  await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
+  await expect(barra).toContainText(/R\$\s9,75/);
+});

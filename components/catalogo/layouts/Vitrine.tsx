@@ -28,11 +28,11 @@ const PRATELEIRAS_TEMA: Tema[] = ["dados", "custos", "ia", "pessoas"];
 const DURACOES = ["70s", "86s", "78s"];
 const h = t.vitrine.hero;
 
-type Props = { precoBaseCentavos: number; precoPackCentavos: number; urlCheckout: string };
+type Props = { precoBaseCentavos: number; precoPackCentavos: number; modo: "teste" | "real"; urlCheckout: string };
 
-export function Vitrine({ precoBaseCentavos, precoPackCentavos, urlCheckout }: Props) {
+export function Vitrine({ precoBaseCentavos, precoPackCentavos, modo, urlCheckout }: Props) {
   return (
-    <CascaLayout precoBaseCentavos={precoBaseCentavos} precoPackCentavos={precoPackCentavos} urlCheckout={urlCheckout}>
+    <CascaLayout precoBaseCentavos={precoBaseCentavos} precoPackCentavos={precoPackCentavos} modo={modo} urlCheckout={urlCheckout}>
       {({ estado, abrirTrilha }) => (
         <>
           <Hero abrirTrilha={abrirTrilha} />
@@ -179,7 +179,8 @@ function Packs({ estado, precoBaseCentavos, precoPackCentavos }: { estado: Carri
         <ul className="mt-10 grid gap-5 md:grid-cols-3">
           {t.packs.map((p, i) => {
             const cursos = t.cursos.filter((c) => c.nivel === p.nivel);
-            const cheio = cursos.length * precoBaseCentavos;
+            // Valor em avulsos: o cheio de cada curso (o de preço próprio vale o dele).
+            const cheio = cursos.reduce((s, c) => s + (estado.fixos.get(c.slug)?.cheioCentavos ?? precoBaseCentavos), 0);
             const dentro = estado.noCarrinho.has(p.slug);
             const nome = t.pack.nome(t.niveis[p.nivel]);
             return (
@@ -266,7 +267,9 @@ function Prateleira({ titulo, cursos, estado }: { titulo: string; cursos: Curso[
         {cursos.map((c, i) => {
           const dentro = estado.noCarrinho.has(c.slug);
           const noPack = estado.coberto(c.slug);
-          const rotulo = noPack ? t.pack.coberto : dentro ? t.vitrine.noCarrinho : preco;
+          // Curso de preço próprio mostra o dele, não o do próximo degrau.
+          const fixo = estado.fixos.get(c.slug);
+          const rotulo = noPack ? t.pack.coberto : dentro ? t.vitrine.noCarrinho : fixo ? formatarReais(fixo.precoCentavos) : preco;
           return (
             <li
               key={c.slug}
@@ -277,7 +280,14 @@ function Prateleira({ titulo, cursos, estado }: { titulo: string; cursos: Curso[
                 <Capa curso={c} formato="paisagem" />
               </div>
               <div className="flex items-center justify-between gap-3 px-4 py-3">
-                <p className="min-w-0 truncate text-xs text-fg-muted">{c.temas.map((tema) => t.temas[tema]).join(" · ")}</p>
+                {fixo && !noPack ? (
+                  <p className="min-w-0 truncate text-xs text-fg-muted">
+                    <s className="tnum">{formatarReais(fixo.cheioCentavos)}</s>
+                    <span className="ml-2 text-accent-text">{t.lancamento}</span>
+                  </p>
+                ) : (
+                  <p className="min-w-0 truncate text-xs text-fg-muted">{c.temas.map((tema) => t.temas[tema]).join(" · ")}</p>
+                )}
                 <button
                   type="button"
                   /* O nome acessível contém o texto visível (preço, "No carrinho" ou "No pack"), como pede o WCAG 2.5.3. */

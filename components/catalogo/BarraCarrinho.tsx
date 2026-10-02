@@ -1,7 +1,7 @@
 "use client";
 import { ShoppingBagOpen } from "@phosphor-icons/react";
 import { catalogo as t } from "@/lib/content";
-import { DESCONTO_MAXIMO_PCT, formatarReais } from "@/lib/catalogo/preco";
+import { DESCONTO_MAXIMO_PCT, descontoDaPosicao, formatarReais } from "@/lib/catalogo/preco";
 import type { Carrinho } from "./useCarrinho";
 
 /**
@@ -48,9 +48,12 @@ export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) 
                 <span className="tnum ml-3 text-fg-muted">{formatarReais(carrinho.totalCentavos)}</span>
               </p>
               <p className="truncate text-xs text-accent-text" aria-live="polite">
-                {carrinho.proximo && carrinho.proximo.descontoPct > (carrinho.itens.at(-1)?.descontoPct ?? 0)
+                {/* Compara com o DEGRAU, não com o desconto do último item: o curso
+                    de preço próprio tem desconto de promoção (60%) e esconderia a
+                    dica da escada. */}
+                {n > 0 && carrinho.proximo && carrinho.proximo.descontoPct > descontoDaPosicao(n - 1)
                   ? t.barra.proximo(carrinho.proximo.descontoPct)
-                  : carrinho.itens.at(-1)?.descontoPct === DESCONTO_MAXIMO_PCT
+                  : n > 0 && descontoDaPosicao(n - 1) === DESCONTO_MAXIMO_PCT
                     ? t.barra.teto
                     : null}
               </p>

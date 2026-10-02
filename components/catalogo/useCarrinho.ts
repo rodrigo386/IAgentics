@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { catalogo as t } from "@/lib/content";
-import { calcularPedido } from "@/lib/catalogo/preco";
+import { calcularPedido, precosFixos } from "@/lib/catalogo/preco";
 
 /**
  * Estado do carrinho do catálogo (2026-09-26).
@@ -19,7 +19,9 @@ export const CHAVE_CARRINHO = "iagentics:carrinho";
 const NIVEL_DO_CURSO = new Map<string, number>(t.cursos.map((c) => [c.slug, c.nivel]));
 const NIVEL_DO_PACK = new Map<string, number>(t.packs.map((p) => [p.slug, p.nivel]));
 
-export function useCarrinho(precos: { cursoCentavos: number; packCentavos: number }) {
+export function useCarrinho(precos: { cursoCentavos: number; packCentavos: number; modo: "teste" | "real" }) {
+  // Cursos de preço próprio, no modo da página — o mesmo cálculo do servidor.
+  const fixos = precosFixos(t.cursos, precos.modo);
   const [slugs, setSlugs] = useState<string[]>([]);
 
   // Lê depois de montar: no SSR não há localStorage, e ler no render quebraria a hidratação.
@@ -37,7 +39,7 @@ export function useCarrinho(precos: { cursoCentavos: number; packCentavos: numbe
     } catch {}
   }
 
-  const carrinho = calcularPedido(slugs, t.cursos, t.packs, precos);
+  const carrinho = calcularPedido(slugs, t.cursos, t.packs, { ...precos, fixos });
   const niveisCobertos = new Set(carrinho.packs.map((p) => p.nivel));
   const noCarrinho = new Set([...carrinho.itens.map((i) => i.slug), ...carrinho.packs.map((p) => p.slug)]);
   /** Curso cujo nível já está num pack do carrinho — não se compra de novo. */
@@ -45,6 +47,7 @@ export function useCarrinho(precos: { cursoCentavos: number; packCentavos: numbe
 
   return {
     carrinho,
+    fixos,
     noCarrinho,
     coberto,
     adicionar: (slug: string) => {

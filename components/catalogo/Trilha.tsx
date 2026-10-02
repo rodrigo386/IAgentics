@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { catalogo as t, type Tema } from "@/lib/content";
-import { calcularCarrinho, formatarReais } from "@/lib/catalogo/preco";
+import { calcularCarrinho, formatarReais, type PrecoFixo } from "@/lib/catalogo/preco";
 import { recomendarTrilha, type ItemTrilha, type Respostas } from "@/lib/catalogo/trilha";
 
 /**
@@ -23,9 +23,9 @@ const BOTAO_CONTORNO =
 
 /* Vive dentro da gaveta da Vitrine (Gaveta centro): abre na primeira
    pergunta, e quem decide o que acontece depois de aplicar é a casca. */
-type Props = { precoBaseCentavos: number; aoAplicar: (slugs: string[]) => void };
+type Props = { precoBaseCentavos: number; fixos: ReadonlyMap<string, PrecoFixo>; aoAplicar: (slugs: string[]) => void };
 
-export function Trilha({ precoBaseCentavos, aoAplicar }: Props) {
+export function Trilha({ precoBaseCentavos, fixos, aoAplicar }: Props) {
   const perguntas = t.trilha.perguntas;
   // 0..n-1 = pergunta; n = resultado.
   const [passo, setPasso] = useState(0);
@@ -109,7 +109,7 @@ export function Trilha({ precoBaseCentavos, aoAplicar }: Props) {
   };
   const trilha: ItemTrilha[] = recomendarTrilha(r, t.cursos);
   const slugs = trilha.map((i) => i.slug);
-  const preco = calcularCarrinho(slugs, slugs, precoBaseCentavos);
+  const preco = calcularCarrinho(slugs, slugs, precoBaseCentavos, fixos);
   const porSlug = new Map(t.cursos.map((c) => [c.slug, c]));
 
   return (

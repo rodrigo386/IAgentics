@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { catalogo, site } from "@/lib/content";
-import { calcularPedido, PRECO_TESTE_CENTAVOS, PRECO_TESTE_PACK_CENTAVOS } from "@/lib/catalogo/preco";
+import { calcularPedido, PRECO_TESTE_CENTAVOS, PRECO_TESTE_PACK_CENTAVOS, precosFixos } from "@/lib/catalogo/preco";
 import { validarPedido, vencimentoEm } from "@/lib/catalogo/pedido";
 import { anexarCobranca, criarVenda, marcarFalha } from "@/lib/catalogo/vendas";
 import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
@@ -40,6 +40,7 @@ export async function POST(request: Request) {
   const carrinho = calcularPedido(slugs, catalogo.cursos, catalogo.packs, {
     cursoCentavos: PRECO_TESTE_CENTAVOS,
     packCentavos: PRECO_TESTE_PACK_CENTAVOS,
+    fixos: precosFixos(catalogo.cursos, "teste"),
   });
   /* Pack entra na venda como item próprio, com o nome dizendo quantos cursos
      cobre — é o que o Pecege lê no CSV para liberar o nível inteiro. */

@@ -35,7 +35,16 @@ function hash(texto: string) {
   return h >>> 0;
 }
 
-export type CursoCapa = { slug: string; nome: string; nivel: number; temas: readonly Tema[]; introdutorio?: boolean; foto?: string; professor?: string };
+export type CursoCapa = {
+  slug: string;
+  nome: string;
+  nivel: number;
+  temas: readonly Tema[];
+  introdutorio?: boolean;
+  foto?: string;
+  professor?: string;
+  preco?: { cheioCentavos: number; promoCentavos: number };
+};
 
 /* Rodízio por tema, na ordem do catálogo: o n-ésimo curso sem foto própria de
    um tema pega a n-ésima foto desse tema. Um sorteio por hash pôs a mesma foto
@@ -125,6 +134,13 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
           <span className="absolute left-0 top-0 p-[6%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/85">
             {curso.introdutorio ? t.introdutorio : t.niveis[curso.nivel]}
           </span>
+          {/* Selo de lançamento: o "Novo" da Netflix, para o curso com preço de
+              promoção. Fill violeta é uso sancionado do acento (DESIGN.md §1). */}
+          {curso.preco ? (
+            <span className="absolute right-[5%] top-[5%] rounded-control bg-accent px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-on">
+              {t.lancamento}
+            </span>
+          ) : null}
           {/* Crédito e título no mesmo bloco, para o crédito subir junto quando
               o título quebra em mais linhas. */}
           <div className="absolute inset-x-0 bottom-0 p-[7%]">

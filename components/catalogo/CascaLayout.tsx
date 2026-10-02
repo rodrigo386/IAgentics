@@ -15,10 +15,10 @@ import { useCarrinho, type Carrinho } from "./useCarrinho";
  * render prop.
  */
 type Acoes = { estado: Carrinho; abrirTrilha: () => void };
-type Props = { precoBaseCentavos: number; precoPackCentavos: number; urlCheckout: string; children: (a: Acoes) => ReactNode };
+type Props = { precoBaseCentavos: number; precoPackCentavos: number; modo: "teste" | "real"; urlCheckout: string; children: (a: Acoes) => ReactNode };
 
-export function CascaLayout({ precoBaseCentavos, precoPackCentavos, urlCheckout, children }: Props) {
-  const estado = useCarrinho({ cursoCentavos: precoBaseCentavos, packCentavos: precoPackCentavos });
+export function CascaLayout({ precoBaseCentavos, precoPackCentavos, modo, urlCheckout, children }: Props) {
+  const estado = useCarrinho({ cursoCentavos: precoBaseCentavos, packCentavos: precoPackCentavos, modo });
   const [gaveta, setGaveta] = useState<"carrinho" | "trilha" | null>(null);
   // Remonta o questionário a cada abertura: sempre começa da pergunta 1.
   const [rodada, setRodada] = useState(0);
@@ -43,6 +43,7 @@ export function CascaLayout({ precoBaseCentavos, precoPackCentavos, urlCheckout,
           <Trilha
             key={rodada}
             precoBaseCentavos={precoBaseCentavos}
+            fixos={estado.fixos}
             aoAplicar={(slugs) => {
               estado.aplicarTrilha(slugs);
               // Depois de aplicar, mostra o carrinho: é o próximo passo natural.

@@ -26,6 +26,7 @@ export default function PaginaCatalogoPrevia() {
         <Vitrine
           precoBaseCentavos={PRECO_TESTE_CENTAVOS}
           precoPackCentavos={PRECO_TESTE_PACK_CENTAVOS}
+          modo="teste"
           urlCheckout="/preview/catalogo/checkout"
         />
       </main>

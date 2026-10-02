@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { catalogo as t } from "@/lib/content";
-import { DESCONTO_MAXIMO_PCT, formatarReais } from "@/lib/catalogo/preco";
+import { DESCONTO_MAXIMO_PCT, descontoDaPosicao, formatarReais } from "@/lib/catalogo/preco";
 import type { Carrinho } from "./useCarrinho";
 
 /**
@@ -102,8 +102,10 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
                       <span className="flex shrink-0 flex-col items-end gap-1 text-right">
                         {item.descontoPct > 0 ? (
                           <span className="flex items-center gap-2">
-                            <span className={`${ROTULO} text-accent-text`}>{t.carrinho.desconto(item.descontoPct)}</span>
-                            <s className="tnum text-sm text-fg-subtle">{formatarReais(precoBaseCentavos)}</s>
+                            <span className={`${ROTULO} text-accent-text`}>
+                              {estado.fixos.has(item.slug) ? t.lancamento : t.carrinho.desconto(item.descontoPct)}
+                            </span>
+                            <s className="tnum text-sm text-fg-subtle">{formatarReais(item.cheioCentavos)}</s>
                           </span>
                         ) : null}
                         <span className="tnum text-fg">{formatarReais(item.precoCentavos)}</span>
@@ -126,7 +128,8 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
                 {t.carrinho.proximo(formatarReais(carrinho.proximo.precoCentavos), carrinho.proximo.descontoPct)}
               </p>
             ) : null}
-            {!carrinho.proximo && ultimo?.descontoPct === DESCONTO_MAXIMO_PCT ? (
+            {/* Pelo degrau, não pelo desconto do item: o de preço próprio tem o dele. */}
+            {!carrinho.proximo && ultimo && descontoDaPosicao(carrinho.itens.length - 1) === DESCONTO_MAXIMO_PCT ? (
               <p className="border-l-2 border-accent pl-3 text-sm text-fg">{t.carrinho.teto}</p>
             ) : null}
             <button
