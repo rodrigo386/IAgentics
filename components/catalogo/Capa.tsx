@@ -3,7 +3,7 @@ import type { Tema } from "@/lib/content";
 import { catalogo as t } from "@/lib/content";
 
 /**
- * Capa de curso "estilo Netflix" (2026-09-26): foto da /academy + nível + título.
+ * Capa de curso "estilo Netflix" (2026-09-26): foto + título (o nível saiu da capa em 2026-10-02).
  *
  * Qual foto: o curso com `foto` própria em content.ts usa a dele (o assunto
  * casa); os demais recebem as fotos do tema principal (`fotosPorTema`) em
@@ -137,9 +137,13 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
         <>
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-brand-ink via-brand-ink/70 to-transparent" />
           <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-brand-ink/70 to-transparent" />
-          <span className="absolute left-0 top-0 p-[6%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/85">
-            {curso.introdutorio ? t.introdutorio : t.niveis[curso.nivel]}
-          </span>
+          {/* Sem o nível na capa (pedido do Rodrigo, 2026-10-02): só o selo de
+              curso introdutório, que diz por onde começar. */}
+          {curso.introdutorio ? (
+            <span className="absolute left-0 top-0 p-[6%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/85">
+              {t.introdutorio}
+            </span>
+          ) : null}
           {/* Selo de lançamento: o "Novo" da Netflix, para o curso com preço de
               promoção. Fill violeta é uso sancionado do acento (DESIGN.md §1). */}
           {curso.preco && curso.preco.promoCentavos < curso.preco.cheioCentavos ? (

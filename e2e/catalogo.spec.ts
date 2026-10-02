@@ -167,6 +167,9 @@ test("o catálogo mostra os dois cursos com o preço de cada um", async ({ page 
   const marketing = cards.filter({ hasText: "Marketing com IA" });
   await expect(marketing.locator("s")).toHaveCount(0);
   await expect(marketing).not.toContainText("Lançamento");
+  // Crédito da professora, e nenhum nível na capa (saiu em 2026-10-02).
+  await expect(marketing).toContainText("Com Carol");
+  await expect(cards.filter({ hasText: "Iniciante" })).toHaveCount(0);
   await expect(marketing.getByRole("button", { name: /^Adicionar Marketing com IA · R\$\s59,90/ })).toBeVisible();
 });
 

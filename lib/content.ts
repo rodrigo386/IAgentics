@@ -1633,8 +1633,7 @@ export const catalogo = {
       preco: { cheioCentavos: 4990, promoCentavos: 1990 },
     },
     /* "Marketing com IA" (2026-10-02): R$ 59,90, sem promoção. A capa parte da
-       foto da professora enviada pelo Rodrigo; o crédito "Com <nome>" entra
-       quando o nome dela for informado (campo `professor`). */
+       foto da professora, a Carol, enviada pelo Rodrigo. */
     {
       slug: "marketing-com-ia",
       nome: "Marketing com IA",
@@ -1645,6 +1644,7 @@ export const catalogo = {
       // Foto quase quadrada, rosto no alto: na paisagem o recorte sobe para
       // não cortar a cabeça.
       enquadre: { paisagem: "50% 6%" },
+      professor: "Carol",
       preco: { cheioCentavos: 5990, promoCentavos: 5990 },
     },
   ] as {
