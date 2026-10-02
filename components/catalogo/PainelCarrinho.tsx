@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { catalogo as t } from "@/lib/content";
-import { DESCONTO_MAXIMO_PCT, descontoDaPosicao, formatarReais } from "@/lib/catalogo/preco";
+import { formatarReais } from "@/lib/catalogo/preco";
 import type { Carrinho } from "./useCarrinho";
 
 /**
@@ -28,7 +28,6 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const nomes = new Map<string, string>(t.cursos.map((c) => [c.slug, c.nome]));
-  const ultimo = carrinho.itens.at(-1);
   const vazio = carrinho.itens.length === 0 && carrinho.packs.length === 0;
 
   async function pagar(evento: React.FormEvent<HTMLFormElement>) {
@@ -102,9 +101,8 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
                       <span className="flex shrink-0 flex-col items-end gap-1 text-right">
                         {item.descontoPct > 0 ? (
                           <span className="flex items-center gap-2">
-                            <span className={`${ROTULO} text-accent-text`}>
-                              {estado.fixos.has(item.slug) ? t.lancamento : t.carrinho.desconto(item.descontoPct)}
-                            </span>
+                            {/* Só o curso de preço próprio tem desconto: o selo é o da promoção. */}
+                            <span className={`${ROTULO} text-accent-text`}>{t.lancamento}</span>
                             <s className="tnum text-sm text-fg-subtle">{formatarReais(item.cheioCentavos)}</s>
                           </span>
                         ) : null}
@@ -121,17 +119,6 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
                 ) : null}
               </>
             )}
-            {/* O gatilho só aparece com carrinho cheio de algo: vazio, a frase
-                do estado vazio já anuncia o desconto do segundo curso. */}
-            {carrinho.itens.length > 0 && carrinho.proximo ? (
-              <p className="border-l-2 border-accent pl-3 text-sm text-fg">
-                {t.carrinho.proximo(formatarReais(carrinho.proximo.precoCentavos), carrinho.proximo.descontoPct)}
-              </p>
-            ) : null}
-            {/* Pelo degrau, não pelo desconto do item: o de preço próprio tem o dele. */}
-            {!carrinho.proximo && ultimo && descontoDaPosicao(carrinho.itens.length - 1) === DESCONTO_MAXIMO_PCT ? (
-              <p className="border-l-2 border-accent pl-3 text-sm text-fg">{t.carrinho.teto}</p>
-            ) : null}
             <button
               type="button"
               disabled={vazio}

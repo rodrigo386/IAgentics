@@ -244,7 +244,7 @@ function Prateleira({ titulo, cursos, estado }: { titulo: string; cursos: Curso[
     const el = trilho.current;
     if (el) el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
   };
-  const preco = formatarReais(estado.carrinho.proximo?.precoCentavos ?? 0);
+  const preco = formatarReais(estado.precoCursoCentavos);
 
   return (
     <section aria-label={titulo} className="mx-auto w-full max-w-[1400px]">
@@ -267,7 +267,7 @@ function Prateleira({ titulo, cursos, estado }: { titulo: string; cursos: Curso[
         {cursos.map((c, i) => {
           const dentro = estado.noCarrinho.has(c.slug);
           const noPack = estado.coberto(c.slug);
-          // Curso de preço próprio mostra o dele, não o do próximo degrau.
+          // Curso de preço próprio mostra o dele, não o da base.
           const fixo = estado.fixos.get(c.slug);
           const rotulo = noPack ? t.pack.coberto : dentro ? t.vitrine.noCarrinho : fixo ? formatarReais(fixo.precoCentavos) : preco;
           return (

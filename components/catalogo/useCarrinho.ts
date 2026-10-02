@@ -48,6 +48,8 @@ export function useCarrinho(precos: { cursoCentavos: number; packCentavos: numbe
   return {
     carrinho,
     fixos,
+    /** Preço de um curso avulso (sem escada: todos iguais). */
+    precoCursoCentavos: precos.cursoCentavos,
     noCarrinho,
     coberto,
     adicionar: (slug: string) => {

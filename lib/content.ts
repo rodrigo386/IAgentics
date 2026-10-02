@@ -1621,8 +1621,8 @@ export const catalogo = {
        "Fundamentos de IA aplicado aos Negócios" da Academy, que já estava na
        prévia, com o mesmo slug. Nome atual e capa com o professor (o quadro
        do vídeo-convite do Vinícius) pedidos pelo Rodrigo em 2026-09-29.
-       Preço próprio (2026-10-02): R$ 49,90, por R$ 19,90 no lançamento — fixo,
-       mas contando como degrau da escada (ver precosFixos em preco.ts). */
+       Preço próprio (2026-10-02): R$ 49,90, por R$ 19,90 no lançamento (ver
+       precosFixos em preco.ts). */
     { slug: "fundamentos-ia-negocios", nome: "Fundamentos de IA para Negócios", nivel: 0, temas: ["ia"], introdutorio: true, foto: "/academy/academy-convite-poster.jpg", professor: "Vinícius", preco: { cheioCentavos: 4990, promoCentavos: 1990 } },
     { slug: "funcao-objetivo-de-compras", nome: "Função Objetivo de Compras", nivel: 0, temas: ["rotina", "estrategia"] },
     { slug: "processos-e-areas-de-atuacao", nome: "Processos e áreas de atuação", nivel: 0, temas: ["rotina"] },
@@ -1797,7 +1797,7 @@ export const catalogo = {
         titulo: "Quantos cursos cabem na sua rotina agora?",
         opcoes: [
           { valor: "3", rotulo: "Trilha curta: 3 cursos" },
-          { valor: "6", rotulo: "Trilha média: 6 cursos, já com o desconto máximo de 25%" },
+          { valor: "6", rotulo: "Trilha média: 6 cursos" },
           { valor: "9", rotulo: "Trilha completa: 9 cursos" },
         ],
       },
@@ -1807,19 +1807,16 @@ export const catalogo = {
     motivo: (tema: string) => `Para: ${tema.toLowerCase()}`,
     motivoBase: "Base do seu nível",
     motivoIntro: "Toda trilha começa aqui",
-    totalTrilha: "Com o desconto progressivo",
+    totalTrilha: "Total da trilha",
     aplicar: "Colocar a trilha no carrinho",
     refazer: "Refazer as perguntas",
   },
   barra: {
     rotulo: "Resumo do carrinho",
-    vazio: "Monte sua trilha e ganhe até 25% de desconto.",
+    vazio: "Monte sua trilha em 2 minutos ou escolha os cursos.",
     cursos: (n: number) => (n === 1 ? "1 curso" : `${n} cursos`),
-    proximo: (pct: number) => `Mais 1 curso e ele sai com ${pct}% off`,
-    teto: "Desconto máximo de 25% liberado",
     ver: "Ver carrinho",
     montar: "Montar minha trilha",
-    degraus: "Escada do desconto",
   },
   gaveta: { fechar: "Fechar", carrinho: "Seu carrinho", trilha: "Monte sua trilha" },
   /* Vitrine (2026-09-26): o layout escolhido pelo Rodrigo, claro, com a hero no
@@ -1837,7 +1834,7 @@ export const catalogo = {
       passos: [
         { titulo: "Responda 5 perguntas", texto: "Em menos de dois minutos, montamos uma trilha para o seu nível e o seu objetivo." },
         { titulo: "Escolha seus cursos", texto: "63 cursos de Compras, do Iniciante ao Avançado. Fique com a trilha ou monte a sua." },
-        { titulo: "Quanto mais cursos, menor o preço", texto: "Cada curso novo no carrinho sai 5% mais barato que o anterior, até 25% de desconto." },
+        { titulo: "Ou leve um pack inteiro", texto: "Todos os cursos de um nível, do Iniciante ao Especialista, por um preço fechado." },
         { titulo: "Estude na Solution", texto: "Acesso liberado pelo Pecege na plataforma online, no seu ritmo." },
       ],
       montar: "Montar minha trilha em 2 minutos",
@@ -1857,12 +1854,9 @@ export const catalogo = {
   },
   carrinho: {
     titulo: "Seu carrinho",
-    vazio: "Escolha um curso ou monte sua trilha. O segundo curso já sai com 5% de desconto.",
-    desconto: (pct: number) => `${pct}% off`,
+    vazio: "Escolha um curso ou monte sua trilha.",
     total: "Total",
     economia: (valor: string) => `Você economiza ${valor}`,
-    proximo: (preco: string, pct: number) => `Adicione mais um e ele sai por ${preco} (${pct}% off).`,
-    teto: "Você chegou ao desconto máximo de 25%.",
     finalizar: "Finalizar compra",
   },
   checkout: {

@@ -1,8 +1,11 @@
 /**
- * Regra de preço do catálogo (2026-09-22, decisão do Rodrigo).
+ * Regra de preço do catálogo.
  *
- * Cada curso novo no carrinho sai 5% mais barato que o anterior, até 25%:
- * com base R$ 200, a sequência é 200, 190, 180, 170, 160, 150, 150…
+ * Cada curso avulso custa o preço cheio (base R$ 200), quantos estiverem no
+ * carrinho. Até 2026-10-02 havia uma escada — cada curso novo saía 5% mais
+ * barato que o anterior, até 25% — e ela saiu a pedido do Rodrigo. Desconto
+ * hoje só vem de dois lugares: o pack (preço fechado por nível) e o curso de
+ * preço próprio em promoção (ver precosFixos).
  *
  * Função pura e sem "server-only" de propósito: o carrinho no navegador e o
  * checkout no servidor chamam a MESMA função. O que a pessoa vê é o que se
@@ -12,20 +15,8 @@
 
 /** Base da PRÉVIA (/preview/catalogo). Constante no código, não variável de
  *  ambiente: não pode existir configuração que faça a página pública cobrar
- *  R$ 5. R$ 5,00 é também o mínimo de uma cobrança no Asaas, e o teto de 25%
- *  leva o item a R$ 3,75 — o TOTAL nunca fica abaixo de R$ 5. */
+ *  R$ 5. R$ 5,00 é também o mínimo de uma cobrança no Asaas. */
 export const PRECO_TESTE_CENTAVOS = 500;
-
-export const DESCONTO_POR_CURSO_PCT = 5;
-export const DESCONTO_MAXIMO_PCT = 25;
-
-export function descontoDaPosicao(i: number): number {
-  return Math.min(i * DESCONTO_POR_CURSO_PCT, DESCONTO_MAXIMO_PCT);
-}
-
-function precoNaPosicao(i: number, base: number): number {
-  return Math.round((base * (100 - descontoDaPosicao(i))) / 100);
-}
 
 /** `cheioCentavos` é o preço sem desconto DAQUELE item — a base, ou o cheio
  *  de um curso com preço próprio. É o que aparece riscado ao lado dele. */
@@ -39,17 +30,13 @@ export type Carrinho = {
   totalCentavos: number;
   /** Quanto custaria sem desconto — a diferença é a economia mostrada. */
   cheioCentavos: number;
-  /** O gatilho "adicione mais um e ele sai por R$ X". Null quando não há mais
-   *  curso para adicionar. */
-  proximo: { descontoPct: number; precoCentavos: number } | null;
 };
 
 export function calcularCarrinho(
   slugs: readonly string[],
   validos: readonly string[],
   precoBaseCentavos: number,
-  /** Cursos com preço próprio. O preço deles é fixo, mas eles OCUPAM a
-   *  posição na escada — o curso seguinte ganha o degrau normalmente. */
+  /** Cursos com preço próprio (ver precosFixos). */
   fixos: ReadonlyMap<string, PrecoFixo> = new Map(),
 ): Carrinho {
   const conhecidos = new Set(validos);
@@ -62,7 +49,7 @@ export function calcularCarrinho(
     }
   }
 
-  const itens = limpos.map((slug, i) => {
+  const itens = limpos.map((slug) => {
     const fixo = fixos.get(slug);
     return fixo
       ? {
@@ -71,15 +58,13 @@ export function calcularCarrinho(
           precoCentavos: fixo.precoCentavos,
           cheioCentavos: fixo.cheioCentavos,
         }
-      : { slug, descontoPct: descontoDaPosicao(i), precoCentavos: precoNaPosicao(i, precoBaseCentavos), cheioCentavos: precoBaseCentavos };
+      : { slug, descontoPct: 0, precoCentavos: precoBaseCentavos, cheioCentavos: precoBaseCentavos };
   });
 
-  const n = itens.length;
   return {
     itens,
     totalCentavos: itens.reduce((soma, item) => soma + item.precoCentavos, 0),
     cheioCentavos: itens.reduce((soma, item) => soma + item.cheioCentavos, 0),
-    proximo: n < conhecidos.size ? { descontoPct: descontoDaPosicao(n), precoCentavos: precoNaPosicao(n, precoBaseCentavos) } : null,
   };
 }
 
@@ -94,11 +79,9 @@ export function formatarReais(centavos: number): string {
    Iniciante, Intermediário, Especialista — por um preço fixo (R$ 99).
 
    Regras, na ordem em que o cálculo as aplica:
-   - pack é item de preço FIXO e não entra na escada de desconto, que continua
-     sendo só dos cursos avulsos;
+   - pack é item de preço FIXO;
    - pack no carrinho COBRE o nível: curso avulso daquele nível é descartado
-     do cálculo (ninguém paga duas vezes pelo mesmo curso), e o "próximo curso"
-     do gatilho só considera o que ainda não está coberto;
+     do cálculo (ninguém paga duas vezes pelo mesmo curso);
    - `cheioCentavos` do pack é o preço cheio dos cursos que ele contém — é daí
      que sai a economia mostrada ao lado dele.
 --------------------------------------------------------------------------- */

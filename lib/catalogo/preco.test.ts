@@ -1,30 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { calcularCarrinho, calcularPedido, descontoDaPosicao, formatarReais, PRECO_TESTE_CENTAVOS, precosFixos } from "./preco";
+import { calcularCarrinho, calcularPedido, formatarReais, PRECO_TESTE_CENTAVOS, precosFixos } from "./preco";
 
 const VALIDOS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const BASE = 20000;
 
-describe("desconto progressivo", () => {
-  it("cresce 5% por posição e para em 25%", () => {
-    expect([0, 1, 2, 3, 4, 5, 6, 7].map(descontoDaPosicao)).toEqual([0, 5, 10, 15, 20, 25, 25, 25]);
-  });
-
-  it("com base R$ 200, a tabela é 200, 190, 180, 170, 160, 150, 150", () => {
+/* A escada de desconto (5% a mais por curso, até 25%) existiu de 2026-09-22 a
+   2026-10-02 e saiu a pedido do Rodrigo: cada curso avulso custa o preço
+   cheio, quantos estiverem no carrinho. Os testes abaixo travam isso. */
+describe("preço do curso avulso", () => {
+  it("cada curso custa o preço cheio, sem desconto por quantidade", () => {
     const c = calcularCarrinho(VALIDOS.slice(0, 7), VALIDOS, BASE);
-    expect(c.itens.map((i) => i.precoCentavos)).toEqual([20000, 19000, 18000, 17000, 16000, 15000, 15000]);
-    expect(c.totalCentavos).toBe(120000);
+    expect(c.itens.map((i) => i.precoCentavos)).toEqual(Array(7).fill(20000));
+    expect(c.itens.every((i) => i.descontoPct === 0)).toBe(true);
+    expect(c.totalCentavos).toBe(140000);
     expect(c.cheioCentavos).toBe(140000);
   });
 
-  it("cinco cursos saem por R$ 900", () => {
-    expect(calcularCarrinho(VALIDOS.slice(0, 5), VALIDOS, BASE).totalCentavos).toBe(90000);
-  });
-
-  it("preço de teste: R$ 5,00 no primeiro, R$ 3,75 no teto", () => {
+  it("preço de teste: R$ 5,00 em todo curso", () => {
     const c = calcularCarrinho(VALIDOS.slice(0, 6), VALIDOS, PRECO_TESTE_CENTAVOS);
-    expect(c.itens[0].precoCentavos).toBe(500);
-    expect(c.itens[1].precoCentavos).toBe(475);
-    expect(c.itens[5].precoCentavos).toBe(375);
+    expect(c.itens.map((i) => i.precoCentavos)).toEqual(Array(6).fill(500));
   });
 });
 
@@ -32,23 +26,11 @@ describe("o servidor não confia na lista que chega", () => {
   it("descarta slug duplicado e inexistente, mantendo a ordem de chegada", () => {
     const c = calcularCarrinho(["b", "b", "x", "a"], VALIDOS, BASE);
     expect(c.itens.map((i) => i.slug)).toEqual(["b", "a"]);
-    expect(c.totalCentavos).toBe(39000);
+    expect(c.totalCentavos).toBe(40000);
   });
 
-  it("carrinho vazio custa zero e oferece o primeiro curso a preço cheio", () => {
-    const c = calcularCarrinho([], VALIDOS, BASE);
-    expect(c.totalCentavos).toBe(0);
-    expect(c.proximo).toEqual({ descontoPct: 0, precoCentavos: 20000 });
-  });
-});
-
-describe("gatilho do próximo curso", () => {
-  it("diz quanto sai o próximo", () => {
-    expect(calcularCarrinho(["a"], ["a", "b", "c"], BASE).proximo).toEqual({ descontoPct: 5, precoCentavos: 19000 });
-  });
-
-  it("some quando o catálogo inteiro já está no carrinho", () => {
-    expect(calcularCarrinho(["a", "b"], ["a", "b"], BASE).proximo).toBeNull();
+  it("carrinho vazio custa zero", () => {
+    expect(calcularCarrinho([], VALIDOS, BASE).totalCentavos).toBe(0);
   });
 });
 
@@ -89,15 +71,10 @@ describe("packs", () => {
     expect(p.totalCentavos).toBe(9900);
   });
 
-  it("pack não entra na escada: o avulso de outro nível começa a preço cheio", () => {
+  it("pack soma ao avulso de outro nível, que custa o preço cheio", () => {
     const p = calcularPedido(["pack-1", "i1", "i2"], CURSOS, PACKS, PRECOS);
-    expect(p.itens.map((i) => i.precoCentavos)).toEqual([20000, 19000]);
-    expect(p.totalCentavos).toBe(9900 + 39000);
-  });
-
-  it("o próximo curso só considera o que o pack não cobre", () => {
-    expect(calcularPedido(["pack-1", "i1"], CURSOS, PACKS, PRECOS).proximo).toEqual({ descontoPct: 5, precoCentavos: 19000 });
-    expect(calcularPedido(["pack-0", "pack-1"], CURSOS, PACKS, PRECOS).proximo).toBeNull();
+    expect(p.itens.map((i) => i.precoCentavos)).toEqual([20000, 20000]);
+    expect(p.totalCentavos).toBe(9900 + 40000);
   });
 
   it("pack repetido ou inexistente é descartado", () => {
@@ -108,9 +85,7 @@ describe("packs", () => {
 });
 
 /* Preço próprio de curso (2026-10-02, pedido do Rodrigo): Fundamentos de IA
-   para Negócios custa R$ 49,90 e sai por R$ 19,90 no lançamento. O preço é
-   fixo, mas o curso CONTINUA sendo um degrau da escada — quem compra o
-   introdutório leva o próximo com 5%. */
+   para Negócios custa R$ 49,90 e sai por R$ 19,90 no lançamento. */
 describe("curso com preço próprio", () => {
   const FIXOS = new Map([["intro", { precoCentavos: 1990, cheioCentavos: 4990 }]]);
   const VALIDOS = ["intro", "a", "b"];
@@ -122,15 +97,9 @@ describe("curso com preço próprio", () => {
     expect(c.cheioCentavos).toBe(4990);
   });
 
-  it("conta como degrau: o curso seguinte sai com 5%", () => {
-    const c = calcularCarrinho(["intro", "a"], VALIDOS, 20000, FIXOS);
-    expect(c.itens[1]).toEqual({ slug: "a", descontoPct: 5, precoCentavos: 19000, cheioCentavos: 20000 });
-    expect(c.totalCentavos).toBe(1990 + 19000);
-  });
-
-  it("vale em qualquer posição: o preço próprio não muda com o degrau", () => {
-    const c = calcularCarrinho(["a", "b", "intro"], VALIDOS, 20000, FIXOS);
-    expect(c.itens[2].precoCentavos).toBe(1990);
+  it("não mexe no preço dos outros cursos", () => {
+    const c = calcularCarrinho(["a", "intro", "b"], VALIDOS, 20000, FIXOS);
+    expect(c.itens.map((i) => i.precoCentavos)).toEqual([20000, 1990, 20000]);
   });
 
   it("na prévia vira R$ 5, mantendo a proporção do riscado", () => {

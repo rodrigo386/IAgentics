@@ -8,8 +8,8 @@ import { Trilha } from "./Trilha";
 import { useCarrinho, type Carrinho } from "./useCarrinho";
 
 /**
- * A moldura da Vitrine (2026-09-26): o estado do carrinho, a barra fixa com a
- * escada do desconto, a gaveta do carrinho/checkout e a do questionário. Nasceu
+ * A moldura da Vitrine (2026-09-26): o estado do carrinho, a barra fixa do
+ * carrinho, a gaveta do carrinho/checkout e a do questionário. Nasceu
  * para servir a três opções de layout; ficou a Vitrine, e a separação continua
  * útil — a vitrine só desenha, recebendo o estado e o "abrir trilha" pela
  * render prop.

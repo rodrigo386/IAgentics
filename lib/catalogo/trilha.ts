@@ -19,8 +19,8 @@ import type { Tema } from "@/lib/content";
  * sai ordenada por nível e, dentro dele, pela planilha.
  *
  * O curso introdutório (Fundamentos de IA, pedido do Rodrigo em 2026-09-26)
- * abre toda trilha e ocupa uma das vagas do tamanho pedido — assim a trilha de
- * 6 continua sendo a que chega ao desconto máximo, como a opção anuncia.
+ * abre toda trilha e ocupa uma das vagas do tamanho pedido — a trilha de 6
+ * tem 6 cursos, contando com ele.
  */
 
 export type CursoTrilha = { slug: string; nivel: number; temas: readonly Tema[]; introdutorio?: boolean };

@@ -141,7 +141,8 @@ export function Trilha({ precoBaseCentavos, fixos, aoAplicar }: Props) {
       <p className="flex flex-wrap items-baseline justify-between gap-2 text-fg">
         <span>{t.trilha.totalTrilha}</span>
         <span className="flex items-baseline gap-3">
-          <s className="tnum text-sm text-fg-subtle">{formatarReais(preco.cheioCentavos)}</s>
+          {/* Riscado só quando há desconto de verdade (o lançamento do introdutório). */}
+          {preco.cheioCentavos > preco.totalCentavos ? <s className="tnum text-sm text-fg-subtle">{formatarReais(preco.cheioCentavos)}</s> : null}
           <span className="tnum text-2xl font-medium tracking-[-0.02em]">{formatarReais(preco.totalCentavos)}</span>
         </span>
       </p>
