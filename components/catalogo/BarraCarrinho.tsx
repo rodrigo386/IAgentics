@@ -6,16 +6,15 @@ import type { Carrinho } from "./useCarrinho";
 
 /**
  * Barra fixa do carrinho da Vitrine (2026-09-26): quantos cursos, quanto custa
- * e quanto a pessoa economiza (pack e promoção de lançamento). Até 2026-10-02
- * ela mostrava a escada de desconto por quantidade, que saiu com a regra.
+ * e quanto a pessoa economiza (promoção de lançamento). Até 2026-10-02 ela
+ * mostrava também a escada de desconto e os packs, que saíram.
  */
 
-type Props = { estado: Carrinho; aoVerCarrinho: () => void; aoMontarTrilha: () => void };
+type Props = { estado: Carrinho; aoVerCarrinho: () => void };
 
-export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) {
+export function BarraCarrinho({ estado, aoVerCarrinho }: Props) {
   const { carrinho } = estado;
-  // O total de cursos soma os avulsos e os que vêm nos packs.
-  const totalCursos = carrinho.itens.length + carrinho.packs.reduce((s, p) => s + p.cursos, 0);
+  const totalCursos = carrinho.itens.length;
 
   return (
     <aside
@@ -41,15 +40,8 @@ export function BarraCarrinho({ estado, aoVerCarrinho, aoMontarTrilha }: Props) 
           )}
         </div>
 
-        {totalCursos === 0 ? (
-          <button
-            type="button"
-            onClick={aoMontarTrilha}
-            className="shrink-0 rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
-          >
-            {t.barra.montar}
-          </button>
-        ) : (
+        {/* Sem curso no carrinho não há o que ver: a barra só convida a escolher. */}
+        {totalCursos === 0 ? null : (
           <button
             type="button"
             onClick={aoVerCarrinho}

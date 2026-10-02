@@ -24,7 +24,6 @@ export default function PaginaCatalogoPrevia() {
       <main id="conteudo" className="pt-16">
         <Vitrine
           precoBaseCentavos={t.precoBaseCentavos}
-          precoPackCentavos={t.packPrecoCentavos}
           modo="real"
           urlCheckout="/preview/catalogo/checkout"
         />

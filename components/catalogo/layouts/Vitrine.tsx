@@ -1,67 +1,45 @@
 "use client";
-import { useRef } from "react";
 import Image from "next/image";
-import { CaretLeft, CaretRight, Check, Plus } from "@phosphor-icons/react";
+import { Check, Plus } from "@phosphor-icons/react";
 import { Logo } from "@/components/ui/Logo";
 import { LogoSolution } from "@/components/ui/LogoSolution";
-import { catalogo as t, type Tema } from "@/lib/content";
+import { catalogo as t } from "@/lib/content";
 import { formatarReais } from "@/lib/catalogo/preco";
 import { Capa } from "../Capa";
 import { CascaLayout } from "../CascaLayout";
 import type { Carrinho } from "../useCarrinho";
 
 /**
- * Catálogo "Vitrine" (2026-09-26) — o layout escolhido pelo Rodrigo entre as
- * quatro opções da prévia, em versão CLARA (acompanha o tema do site).
+ * Catálogo "Vitrine" (escolhido pelo Rodrigo em 2026-09-26; enxugado em
+ * 2026-10-02, quando o catálogo virou dois cursos e saíram packs, prateleiras
+ * e o questionário "Monte sua trilha").
  *
- * Ordem da página, e por quê:
- *   1. Hero no conceito da /cursos: as três marcas (quem produz, com quem, onde
- *      estuda) e a estante viva — agora com as capas do próprio catálogo.
- *   2. "Como funciona": quatro passos que se acendem em sequência, explicando
- *      a plataforma e o desconto antes de a pessoa ver preço.
- *   3. Packs por jornada: a oferta mais forte vem primeiro.
- *   4. Prateleiras por nível e por tema, como num serviço de streaming.
+ * Ordem da página:
+ *   1. Hero no conceito da /cursos — as três marcas (quem produz, com quem,
+ *      onde se estuda) — com os pôsteres dos cursos no lugar da estante viva:
+ *      com dois cursos, a estante só repetiria as mesmas duas capas.
+ *   2. "Como funciona": quatro passos que se acendem em sequência.
+ *   3. A grade de cursos, com preço e botão.
  */
 
-type Curso = (typeof t.cursos)[number];
-const PRATELEIRAS_TEMA: Tema[] = ["dados", "custos", "ia", "pessoas"];
-const DURACOES = ["70s", "86s", "78s"];
+type Props = { precoBaseCentavos: number; modo: "teste" | "real"; urlCheckout: string };
 const h = t.vitrine.hero;
 
-type Props = { precoBaseCentavos: number; precoPackCentavos: number; modo: "teste" | "real"; urlCheckout: string };
-
-export function Vitrine({ precoBaseCentavos, precoPackCentavos, modo, urlCheckout }: Props) {
+export function Vitrine({ precoBaseCentavos, modo, urlCheckout }: Props) {
   return (
-    <CascaLayout precoBaseCentavos={precoBaseCentavos} precoPackCentavos={precoPackCentavos} modo={modo} urlCheckout={urlCheckout}>
-      {({ estado, abrirTrilha }) => (
+    <CascaLayout precoBaseCentavos={precoBaseCentavos} modo={modo} urlCheckout={urlCheckout}>
+      {(estado) => (
         <>
-          <Hero abrirTrilha={abrirTrilha} />
+          <Hero />
           <ComoFunciona />
-          <Packs estado={estado} precoBaseCentavos={precoBaseCentavos} precoPackCentavos={precoPackCentavos} />
-
-          <div id="cursos" className="flex scroll-mt-20 flex-col gap-12 py-16">
-            {t.niveis.map((nivel, n) => (
-              <Prateleira key={nivel} titulo={nivel} cursos={t.cursos.filter((c) => c.nivel === n)} estado={estado} />
-            ))}
-            <p className="mx-auto w-full max-w-[1400px] px-5 pt-4 font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted sm:px-8">
-              {t.vitrine.temasTitulo}
-            </p>
-            {PRATELEIRAS_TEMA.map((tema) => (
-              <Prateleira key={tema} titulo={t.temas[tema]} cursos={t.cursos.filter((c) => c.temas[0] === tema && !c.introdutorio)} estado={estado} />
-            ))}
-          </div>
+          <Cursos estado={estado} />
         </>
       )}
     </CascaLayout>
   );
 }
 
-function Hero({ abrirTrilha }: { abrirTrilha: () => void }) {
-  // Um curso a cada três, espalhado entre níveis e temas: a estante mostra a
-  // variedade do catálogo sem pôr 63 capas (126 com a cópia do laço) na página.
-  const colunas: Curso[][] = [[], [], []];
-  t.cursos.filter((_, i) => i % 3 === 0).forEach((c, i) => colunas[i % 3].push(c));
-
+function Hero() {
   return (
     <section className="overflow-hidden border-b border-line">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:py-20">
@@ -85,17 +63,10 @@ function Hero({ abrirTrilha }: { abrirTrilha: () => void }) {
           <p className="hero-fade mt-6 max-w-[52ch] text-lg leading-relaxed text-fg-muted" style={{ animationDelay: "200ms" }}>
             {h.lead}
           </p>
-          <div className="hero-fade mt-8 flex flex-wrap gap-3" style={{ animationDelay: "260ms" }}>
-            <button
-              type="button"
-              onClick={abrirTrilha}
-              className="rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
-            >
-              {h.montar}
-            </button>
+          <div className="hero-fade mt-8" style={{ animationDelay: "260ms" }}>
             <a
-              href="#packs"
-              className="rounded-control border border-line-strong px-7 py-3.5 font-medium text-fg transition-colors hover:border-fg active:translate-y-px"
+              href="#cursos"
+              className="inline-block rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
             >
               {h.verCursos}
             </a>
@@ -105,30 +76,16 @@ function Hero({ abrirTrilha }: { abrirTrilha: () => void }) {
           </p>
         </div>
 
-        {/* A estante viva da /cursos, com as capas do catálogo. Decorativa: o
-            leitor de tela ouve o rótulo, não 21 títulos em loop. */}
-        <div role="img" aria-label={h.estanteAlt} className="relative h-[360px] sm:h-[460px] lg:col-span-6 lg:h-[620px]">
-          <div className="grid h-full grid-cols-3 gap-4" aria-hidden="true">
-            {colunas.map((coluna, i) => (
-              <div key={i} className="overflow-hidden">
-                <div
-                  className={`flex flex-col gap-4 ${i === 1 ? "estante-rolagem estante-rolagem-inversa" : "estante-rolagem"}`}
-                  style={{ "--estante-dur": DURACOES[i] } as React.CSSProperties}
-                >
-                  {/* Conteúdo duplicado: o keyframe percorre -50% e o loop emenda. */}
-                  {[0, 1].map((copia) =>
-                    coluna.map((c) => (
-                      <div key={`${copia}-${c.slug}`} className="shrink-0 border border-line">
-                        <Capa curso={c} />
-                      </div>
-                    )),
-                  )}
-                </div>
+        {/* Os pôsteres, desencontrados como cartazes numa parede. Decorativos
+            para leitor de tela: os cursos aparecem com nome e preço logo abaixo. */}
+        <div role="img" aria-label={h.postersAlt} className="lg:col-span-6">
+          <div className="grid grid-cols-2 items-start gap-5 sm:gap-6" aria-hidden="true">
+            {t.cursos.slice(0, 2).map((c, i) => (
+              <div key={c.slug} className={`poster-flutua border border-line ${i === 1 ? "mt-12 sm:mt-16" : ""}`} style={{ "--i": i } as React.CSSProperties}>
+                <Capa curso={c} sizes="(min-width: 1024px) 320px, 45vw" />
               </div>
             ))}
           </div>
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-16" style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }} />
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-16" style={{ background: "linear-gradient(to top, var(--bg), transparent)" }} />
         </div>
       </div>
     </section>
@@ -165,142 +122,49 @@ function ComoFunciona() {
   );
 }
 
-function Packs({ estado, precoBaseCentavos, precoPackCentavos }: { estado: Carrinho; precoBaseCentavos: number; precoPackCentavos: number }) {
+function Cursos({ estado }: { estado: Carrinho }) {
   return (
-    <section id="packs" aria-labelledby="packs-titulo" className="scroll-mt-20 border-b border-line">
-      <div className="mx-auto max-w-[1400px] px-5 py-14 sm:px-8 lg:py-20">
-        <div className="max-w-[46rem]">
-          <h2 id="packs-titulo" className="text-3xl font-medium tracking-[-0.03em] text-fg sm:text-5xl">
-            {t.pack.titulo}
-          </h2>
-          <p className="mt-4 text-lg text-fg-muted">{t.pack.texto}</p>
-        </div>
-
-        <ul className="mt-10 grid gap-5 md:grid-cols-3">
-          {t.packs.map((p, i) => {
-            const cursos = t.cursos.filter((c) => c.nivel === p.nivel);
-            // Valor em avulsos: o cheio de cada curso (o de preço próprio vale o dele).
-            const cheio = cursos.reduce((s, c) => s + (estado.fixos.get(c.slug)?.cheioCentavos ?? precoBaseCentavos), 0);
-            const dentro = estado.noCarrinho.has(p.slug);
-            const nome = t.pack.nome(t.niveis[p.nivel]);
-            return (
-              <li
-                key={p.slug}
-                className={`pack-card cascata group flex flex-col border bg-surface ${dentro ? "border-accent" : "border-line"}`}
-                style={{ "--i": i } as React.CSSProperties}
-              >
-                {/* Leque de capas: três cursos do nível, abrindo no hover. */}
-                <div className="relative h-56 overflow-hidden border-b border-line bg-brand-ink" aria-hidden="true">
-                  {cursos.slice(0, 3).map((c, k) => (
-                    <div key={c.slug} className={`pack-leque pack-leque-${k} absolute top-6 w-[42%]`}>
-                      <Capa curso={c} semTitulo />
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{t.pack.cursos(cursos.length)}</p>
-                  <h3 className="mt-2 text-2xl font-medium tracking-[-0.02em] text-fg">{nome}</h3>
-                  <p className="mt-2 text-sm text-fg-muted">
-                    {cursos
-                      .slice(0, 4)
-                      .map((c) => c.nome)
-                      .join(" · ")}
-                    …
-                  </p>
-                  <div className="mt-auto pt-6">
-                    <p className="flex items-baseline gap-3">
-                      <span className="tnum text-4xl font-medium tracking-[-0.03em] text-fg">{formatarReais(precoPackCentavos)}</span>
-                      <s className="tnum text-sm text-fg-subtle">{t.pack.cheio(formatarReais(cheio))}</s>
-                    </p>
-                    <p className="mt-1 text-sm text-accent-text">{t.pack.economia(formatarReais(cheio - precoPackCentavos))}</p>
-                    <button
-                      type="button"
-                      aria-pressed={dentro}
-                      /* Texto curto para caber numa linha no celular; o nível vai no nome
-                         acessível, que começa pelo texto visível (WCAG 2.5.3). */
-                      aria-label={`${dentro ? t.pack.noCarrinho : t.pack.adicionar} ${t.niveis[p.nivel]}`}
-                      onClick={() => (dentro ? estado.remover(p.slug) : estado.adicionar(p.slug))}
-                      className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-control px-6 py-3 font-medium transition-colors active:translate-y-px ${
-                        dentro ? "border border-accent text-fg" : "bg-accent text-accent-on hover:bg-accent-hover"
-                      }`}
-                    >
-                      {dentro ? <Check size={18} aria-hidden="true" /> : <Plus size={18} aria-hidden="true" />}
-                      {dentro ? t.pack.noCarrinho : t.pack.adicionar}
-                    </button>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function Prateleira({ titulo, cursos, estado }: { titulo: string; cursos: Curso[]; estado: Carrinho }) {
-  const trilho = useRef<HTMLUListElement>(null);
-  const rolar = (dir: 1 | -1) => {
-    const el = trilho.current;
-    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
-  };
-  const preco = formatarReais(estado.precoCursoCentavos);
-
-  return (
-    <section aria-label={titulo} className="mx-auto w-full max-w-[1400px]">
-      <div className="flex items-end justify-between gap-4 px-5 sm:px-8">
-        <h2 className="text-xl font-medium tracking-[-0.02em] text-fg sm:text-2xl">
-          {titulo}
-          <span className="ml-3 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-subtle">{t.vitrine.contagem(cursos.length)}</span>
-        </h2>
-        <div className="hidden gap-2 md:flex">
-          <button type="button" onClick={() => rolar(-1)} aria-label={`${t.vitrine.anterior}: ${titulo}`} className="rounded-control border border-line-strong p-2 text-fg transition-colors hover:border-fg">
-            <CaretLeft size={18} aria-hidden="true" />
-          </button>
-          <button type="button" onClick={() => rolar(1)} aria-label={`${t.vitrine.seguinte}: ${titulo}`} className="rounded-control border border-line-strong p-2 text-fg transition-colors hover:border-fg">
-            <CaretRight size={18} aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-      {/* py e px folgados: o card cresce no hover e não pode ser cortado pela rolagem. */}
-      <ul ref={trilho} className="prateleira mt-2 flex gap-3 overflow-x-auto px-5 py-5 sm:px-8">
-        {cursos.map((c, i) => {
+    <section id="cursos" aria-labelledby="cursos-titulo" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 py-14 sm:px-8 lg:py-20">
+      <h2 id="cursos-titulo" className="text-3xl font-medium tracking-[-0.03em] text-fg sm:text-5xl">
+        {t.vitrine.cursosTitulo}
+      </h2>
+      <ul className="mt-10 grid gap-6 md:grid-cols-2">
+        {t.cursos.map((c, i) => {
           const dentro = estado.noCarrinho.has(c.slug);
-          const noPack = estado.coberto(c.slug);
-          // Curso de preço próprio mostra o dele, não o da base.
           const fixo = estado.fixos.get(c.slug);
-          const rotulo = noPack ? t.pack.coberto : dentro ? t.vitrine.noCarrinho : fixo ? formatarReais(fixo.precoCentavos) : preco;
+          const preco = fixo?.precoCentavos ?? estado.precoCursoCentavos;
+          const promocao = fixo && fixo.cheioCentavos > fixo.precoCentavos;
+          const rotulo = dentro ? t.vitrine.noCarrinho : formatarReais(preco);
           return (
             <li
               key={c.slug}
-              className={`vitrine-card cascata group relative w-[72vw] shrink-0 border bg-surface sm:w-[300px] ${dentro || noPack ? "border-accent" : "border-line"}`}
-              style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+              className={`vitrine-card cascata group relative border bg-surface ${dentro ? "border-accent" : "border-line"}`}
+              style={{ "--i": i } as React.CSSProperties}
             >
               <div className="overflow-hidden">
-                <Capa curso={c} formato="paisagem" />
+                <Capa curso={c} formato="paisagem" sizes="(min-width: 768px) 680px, 100vw" />
               </div>
-              <div className="flex items-center justify-between gap-3 px-4 py-3">
-                {fixo && !noPack ? (
-                  <p className="min-w-0 truncate text-xs text-fg-muted">
-                    <s className="tnum">{formatarReais(fixo.cheioCentavos)}</s>
-                    <span className="ml-2 text-accent-text">{t.lancamento}</span>
-                  </p>
-                ) : (
-                  <p className="min-w-0 truncate text-xs text-fg-muted">{c.temas.map((tema) => t.temas[tema]).join(" · ")}</p>
-                )}
+              <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
+                <p className="flex items-baseline gap-3">
+                  {promocao ? (
+                    <>
+                      <s className="tnum text-sm text-fg-subtle">{formatarReais(fixo.cheioCentavos)}</s>
+                      <span className="text-sm text-accent-text">{t.lancamento}</span>
+                    </>
+                  ) : null}
+                </p>
                 <button
                   type="button"
-                  /* O nome acessível contém o texto visível (preço, "No carrinho" ou "No pack"), como pede o WCAG 2.5.3. */
+                  /* O nome acessível contém o texto visível (preço ou "No carrinho"), como pede o WCAG 2.5.3. */
                   aria-label={`${dentro ? t.card.remover : t.card.adicionar} ${c.nome} · ${rotulo}`}
                   aria-pressed={dentro}
-                  disabled={noPack}
                   onClick={() => (dentro ? estado.remover(c.slug) : estado.adicionar(c.slug))}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-control px-3.5 py-1.5 text-sm font-medium transition-colors active:translate-y-px disabled:pointer-events-none ${
-                    dentro || noPack ? "border border-accent text-fg" : "bg-accent text-accent-on hover:bg-accent-hover"
+                  className={`inline-flex shrink-0 items-center gap-2 rounded-control px-5 py-2.5 font-medium transition-colors active:translate-y-px ${
+                    dentro ? "border border-accent text-fg" : "bg-accent text-accent-on hover:bg-accent-hover"
                   }`}
                 >
-                  {dentro || noPack ? <Check size={14} aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}
-                  {rotulo}
+                  {dentro ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+                  <span className="tnum">{rotulo}</span>
                 </button>
               </div>
             </li>

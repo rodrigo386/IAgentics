@@ -4,53 +4,29 @@ import { catalogo as t } from "@/lib/content";
 import { BarraCarrinho } from "./BarraCarrinho";
 import { Gaveta } from "./Gaveta";
 import { PainelCarrinho } from "./PainelCarrinho";
-import { Trilha } from "./Trilha";
 import { useCarrinho, type Carrinho } from "./useCarrinho";
 
 /**
  * A moldura da Vitrine (2026-09-26): o estado do carrinho, a barra fixa do
- * carrinho, a gaveta do carrinho/checkout e a do questionário. Nasceu
- * para servir a três opções de layout; ficou a Vitrine, e a separação continua
- * útil — a vitrine só desenha, recebendo o estado e o "abrir trilha" pela
- * render prop.
+ * carrinho e a gaveta do carrinho/checkout. A vitrine só desenha, recebendo o
+ * estado pela render prop. (Até 2026-10-02 havia também a gaveta do
+ * questionário "Monte sua trilha", que saiu com o catálogo de 63 cursos.)
  */
-type Acoes = { estado: Carrinho; abrirTrilha: () => void };
-type Props = { precoBaseCentavos: number; precoPackCentavos: number; modo: "teste" | "real"; urlCheckout: string; children: (a: Acoes) => ReactNode };
+type Props = { precoBaseCentavos: number; modo: "teste" | "real"; urlCheckout: string; children: (estado: Carrinho) => ReactNode };
 
-export function CascaLayout({ precoBaseCentavos, precoPackCentavos, modo, urlCheckout, children }: Props) {
-  const estado = useCarrinho({ cursoCentavos: precoBaseCentavos, packCentavos: precoPackCentavos, modo });
-  const [gaveta, setGaveta] = useState<"carrinho" | "trilha" | null>(null);
-  // Remonta o questionário a cada abertura: sempre começa da pergunta 1.
-  const [rodada, setRodada] = useState(0);
-  const abrirTrilha = () => {
-    setRodada((r) => r + 1);
-    setGaveta("trilha");
-  };
+export function CascaLayout({ precoBaseCentavos, modo, urlCheckout, children }: Props) {
+  const estado = useCarrinho({ cursoCentavos: precoBaseCentavos, modo });
+  const [aberta, setAberta] = useState(false);
 
   return (
     <>
       {/* Espaço para a barra fixa não cobrir o fim da página. */}
-      <div className="pb-24">{children({ estado, abrirTrilha })}</div>
+      <div className="pb-24">{children(estado)}</div>
 
-      <BarraCarrinho estado={estado} aoVerCarrinho={() => setGaveta("carrinho")} aoMontarTrilha={abrirTrilha} />
+      <BarraCarrinho estado={estado} aoVerCarrinho={() => setAberta(true)} />
 
-      <Gaveta aberta={gaveta === "carrinho"} aoFechar={() => setGaveta(null)} titulo={t.gaveta.carrinho}>
-        <PainelCarrinho estado={estado} precoBaseCentavos={precoBaseCentavos} urlCheckout={urlCheckout} />
-      </Gaveta>
-
-      <Gaveta aberta={gaveta === "trilha"} aoFechar={() => setGaveta(null)} titulo={t.gaveta.trilha} centro>
-        {gaveta === "trilha" ? (
-          <Trilha
-            key={rodada}
-            precoBaseCentavos={precoBaseCentavos}
-            fixos={estado.fixos}
-            aoAplicar={(slugs) => {
-              estado.aplicarTrilha(slugs);
-              // Depois de aplicar, mostra o carrinho: é o próximo passo natural.
-              setGaveta("carrinho");
-            }}
-          />
-        ) : null}
+      <Gaveta aberta={aberta} aoFechar={() => setAberta(false)} titulo={t.gaveta.carrinho}>
+        <PainelCarrinho estado={estado} urlCheckout={urlCheckout} />
       </Gaveta>
     </>
   );

@@ -17,7 +17,7 @@ import { catalogo as t } from "@/lib/content";
  *
  * Substituiu, a pedido do Rodrigo, a primeira versão (desenhos em SVG por tema).
  *
- * CURSO COM PROFESSOR (`professor` em content.ts, 2026-09-29): a capa vira
+ * CURSO COM FOTO DE GENTE (`fotoDePessoa`, ou `professor`, 2026-09-29): a capa vira
  * cartaz de filme — a foto é de gente, não de cena, então o enquadramento
  * segura o rosto, uma vinheta escura apaga o fundo (o quadro do vídeo-convite
  * tem um mural com letreiro que competiria com o título) e entra o crédito
@@ -42,6 +42,8 @@ export type CursoCapa = {
   temas: readonly Tema[];
   introdutorio?: boolean;
   foto?: string;
+  fotoDePessoa?: boolean;
+  enquadre?: { retrato?: string; paisagem?: string };
   professor?: string;
   preco?: { cheioCentavos: number; promoCentavos: number };
 };
@@ -83,10 +85,14 @@ type Props = {
 
 export function Capa({ curso, formato = "retrato", semTitulo = false, preencher = false, sizes, className = "" }: Props) {
   const retrato = formato === "retrato";
-  const professor = curso.professor;
+  // Cartaz: foto de gente (com ou sem o nome do professor no crédito).
+  const professor = curso.fotoDePessoa ?? Boolean(curso.professor);
   // Pequena variação de enquadramento entre cursos que dividem a mesma foto.
   const x = 40 + (hash(curso.slug + "x") % 21);
-  const enquadre = professor ? (retrato ? "52% 0%" : "50% 30%") : retrato ? `${x}% 100%` : `${x}% 48%`;
+  const padrao = professor ? (retrato ? "52% 0%" : "50% 30%") : retrato ? `${x}% 100%` : `${x}% 48%`;
+  // O curso pode ajustar o recorte da própria foto (cada foto de gente tem o
+  // rosto num lugar diferente).
+  const enquadre = (retrato ? curso.enquadre?.retrato : curso.enquadre?.paisagem) ?? padrao;
 
   return (
     <div
@@ -136,7 +142,7 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
           </span>
           {/* Selo de lançamento: o "Novo" da Netflix, para o curso com preço de
               promoção. Fill violeta é uso sancionado do acento (DESIGN.md §1). */}
-          {curso.preco ? (
+          {curso.preco && curso.preco.promoCentavos < curso.preco.cheioCentavos ? (
             <span className="absolute right-[5%] top-[5%] rounded-control bg-accent px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-on">
               {t.lancamento}
             </span>
@@ -144,8 +150,8 @@ export function Capa({ curso, formato = "retrato", semTitulo = false, preencher 
           {/* Crédito e título no mesmo bloco, para o crédito subir junto quando
               o título quebra em mais linhas. */}
           <div className="absolute inset-x-0 bottom-0 p-[7%]">
-            {professor ? (
-              <p className="mb-[3%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/80">{t.capaCom(professor)}</p>
+            {curso.professor ? (
+              <p className="mb-[3%] font-mono text-[10px] uppercase tracking-[0.18em] text-brand-paper/80">{t.capaCom(curso.professor)}</p>
             ) : null}
             <p
               className={`font-medium leading-[1.05] tracking-[-0.02em] text-brand-paper [text-wrap:balance] ${

@@ -1561,19 +1561,6 @@
   animation-delay: calc(var(--i, 0) * 45ms);
 }
 
-/* Prateleira: rolagem horizontal com encaixe, sem barra visível. */
-.prateleira {
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-}
-.prateleira::-webkit-scrollbar {
-  display: none;
-}
-.prateleira > * {
-  scroll-snap-align: start;
-}
-
 /* Card da Vitrine: cresce no hover (desktop). O detalhe fica sempre visível:
    expandir altura dentro da prateleira cortaria o card (overflow da rolagem)
    e empurraria as prateleiras de baixo a cada passada do cursor. */
@@ -1659,7 +1646,7 @@ dialog.gaveta.gaveta-centro[open] {
 }
 
 /* ---------------------------------------------------------------------------
-   VITRINE - "COMO FUNCIONA" E PACKS (2026-09-26)
+   VITRINE - "COMO FUNCIONA" E PÔSTERES (2026-09-26; packs saíram em 2026-10-02)
 
    - .conceito-passo / .conceito-barra: explicação - os quatro passos da
      plataforma se acendem um de cada vez, em laço de 16s, e a barra do passo
@@ -1667,8 +1654,8 @@ dialog.gaveta.gaveta-centro[open] {
      cada passo já está na sua fase, o 1º aceso e os outros esperando — com
      atraso positivo, os quatro nasceriam acesos até a vez de cada um.
      Sem animação, os quatro ficam acesos: o texto não depende do movimento.
-   - .pack-leque: convite - as três capas do pack se abrem sob o cursor, como
-     cartas na mão.
+   - .poster-flutua: atmosfera - os pôsteres da hero respiram devagar, cada um
+     no seu tempo, como cartazes soltos na parede.
 --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   .conceito-passo {
@@ -1714,38 +1701,18 @@ dialog.gaveta.gaveta-centro[open] {
   }
 }
 
-.pack-leque {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 18px 30px -12px rgb(0 0 0 / 0.55);
-}
-.pack-leque-0 {
-  left: 8%;
-  transform: rotate(-8deg) translateY(10px);
-}
-.pack-leque-1 {
-  left: 29%;
-  z-index: 1;
-}
-.pack-leque-2 {
-  left: 50%;
-  transform: rotate(8deg) translateY(10px);
-}
-@media (hover: hover) {
-  .pack-card:hover .pack-leque-0,
-  .pack-card:focus-within .pack-leque-0 {
-    transform: rotate(-14deg) translate(-14%, 4px);
-  }
-  .pack-card:hover .pack-leque-1,
-  .pack-card:focus-within .pack-leque-1 {
-    transform: translateY(-8px);
-  }
-  .pack-card:hover .pack-leque-2,
-  .pack-card:focus-within .pack-leque-2 {
-    transform: rotate(14deg) translate(14%, 4px);
+
+@media (prefers-reduced-motion: no-preference) {
+  .poster-flutua {
+    animation: poster-flutua 7s ease-in-out infinite alternate both;
+    animation-delay: calc(var(--i, 0) * -3.5s);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .pack-leque {
-    transition: none;
+@keyframes poster-flutua {
+  from {
+    transform: translateY(0) rotate(-0.6deg);
+  }
+  to {
+    transform: translateY(-10px) rotate(0.6deg);
   }
 }

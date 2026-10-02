@@ -1607,92 +1607,68 @@ export type Tema = "rotina" | "dados" | "custos" | "estrategia" | "pessoas" | "i
 
 export const catalogo = {
   precoBaseCentavos: 20000,
-  /* Lista do Pecege (2026-09-26): 62 cursos de Compras em quatro níveis, na
-     ordem da planilha — a ordem dentro de cada nível é também a ordem de estudo
-     que a trilha recomendada segue.
+  /* Catálogo enxuto (2026-10-02, pedido do Rodrigo): só dois cursos. A lista
+     de 62 cursos do Pecege (2026-09-26 a 2026-10-02), os packs por nível e o
+     questionário "Monte sua trilha" saíram — estão no histórico do git.
 
-     `temas` NÃO veio da planilha: fui eu que atribuí, de 1 a 2 por curso, para
-     o questionário "Monte sua trilha" ter com o que casar as respostas. É
-     conteúdo editorial, revisável aqui mesmo — mudar um tema muda a
-     recomendação e mais nada. */
+     O `slug` é o que viaja no carrinho e fica gravado na venda — não renomeie
+     um slug de curso que já foi vendido.
+
+     `preco` é o preço de cada curso (cheio e o cobrado). Quando os dois são
+     iguais não há promoção: sem riscado e sem selo de lançamento. */
   cursos: [
-    /* O curso introdutório (pedido do Rodrigo, 2026-09-26): abre o catálogo e
-       toda trilha recomendada. Não está na planilha do Pecege — é o
-       "Fundamentos de IA aplicado aos Negócios" da Academy, que já estava na
-       prévia, com o mesmo slug. Nome atual e capa com o professor (o quadro
-       do vídeo-convite do Vinícius) pedidos pelo Rodrigo em 2026-09-29.
-       Preço próprio (2026-10-02): R$ 49,90, por R$ 19,90 no lançamento (ver
-       precosFixos em preco.ts). */
-    { slug: "fundamentos-ia-negocios", nome: "Fundamentos de IA para Negócios", nivel: 0, temas: ["ia"], introdutorio: true, foto: "/academy/academy-convite-poster.jpg", professor: "Vinícius", preco: { cheioCentavos: 4990, promoCentavos: 1990 } },
-    { slug: "funcao-objetivo-de-compras", nome: "Função Objetivo de Compras", nivel: 0, temas: ["rotina", "estrategia"] },
-    { slug: "processos-e-areas-de-atuacao", nome: "Processos e áreas de atuação", nivel: 0, temas: ["rotina"] },
-    { slug: "papel-do-profissional", nome: "Papel do Profissional", nivel: 0, temas: ["rotina", "pessoas"] },
-    { slug: "indicadores-chaves-de-gestao", nome: "Indicadores Chaves de Gestão", nivel: 0, temas: ["dados", "estrategia"] },
-    { slug: "entendendo-o-ciclo-de-compras", nome: "Entendendo o Ciclo de Compras", nivel: 0, temas: ["rotina"] },
-    { slug: "como-atuar-atraves-de-quem-lidera", nome: "Como atuar através de quem lidera?", nivel: 0, temas: ["pessoas"] },
-    { slug: "compreendendo-o-tempo-e-a-rotina", nome: "Compreendendo o tempo e a rotina", nivel: 0, temas: ["rotina"] },
-    { slug: "raio-x-da-operacao", nome: "Raio-X da Operação", nivel: 0, temas: ["rotina", "dados"] },
-    { slug: "sindrome-da-urgencia", nome: "Síndrome da Urgência", nivel: 0, temas: ["rotina"] },
-    { slug: "escopo-perfeito", nome: "Escopo Perfeito", nivel: 0, temas: ["rotina", "custos"] },
-    { slug: "como-ter-requisicoes-vencedoras", nome: "Como ter requisições vencedoras?", nivel: 0, temas: ["rotina"] },
-    { slug: "gestao-do-tempo-e-rotina", nome: "Gestão do Tempo e Rotina", nivel: 0, temas: ["rotina", "pessoas"], foto: "/academy/neurociencia-produtividade-course.jpg" },
-    { slug: "coleta-de-dados", nome: "Coleta de Dados", nivel: 1, temas: ["dados"] },
-    { slug: "saneamento-de-dados", nome: "Saneamento de Dados", nivel: 1, temas: ["dados"] },
-    { slug: "gestao-de-cadastro", nome: "Gestão de Cadastro", nivel: 1, temas: ["dados", "rotina"] },
-    { slug: "spend-analysis-e-pareto", nome: "Spend Analysis & Pareto", nivel: 1, temas: ["dados", "custos"], foto: "/academy/spend-management-course.jpg" },
-    { slug: "taxonomia-de-categorias", nome: "Taxonomia de Categorias", nivel: 1, temas: ["dados"] },
-    { slug: "spend-cube", nome: "Spend Cube", nivel: 1, temas: ["dados"], foto: "/academy/spend-management-course.jpg" },
-    { slug: "cost-breakdown", nome: "Cost Breakdown", nivel: 1, temas: ["custos"] },
-    { slug: "cherry-picking-equalizacao", nome: "Cherry Picking - Equalização", nivel: 1, temas: ["custos"] },
-    { slug: "tco", nome: "TCO", nivel: 1, temas: ["custos"] },
-    { slug: "should-cost", nome: "Should Cost", nivel: 1, temas: ["custos"] },
-    { slug: "iqf", nome: "IQF", nivel: 1, temas: ["custos"] },
-    { slug: "matriz-kraljic", nome: "Matriz Kraljic", nivel: 1, temas: ["custos", "estrategia"] },
-    { slug: "matriz-percepcao", nome: "Matriz Percepção", nivel: 1, temas: ["custos"] },
-    { slug: "planejamento-da-negociacao", nome: "Planejamento da Negociação", nivel: 1, temas: ["custos"] },
-    { slug: "ia-aplicada-a-compras", nome: "IA aplicada a Compras", nivel: 1, temas: ["ia"], foto: "/academy/imersao-assistentes-ia.jpg" },
-    { slug: "lean-thinking", nome: "Lean Thinking", nivel: 1, temas: ["rotina"], foto: "/academy/lean-thinking-course.jpg" },
-    { slug: "inteligencia-emocional", nome: "Inteligência Emocional", nivel: 1, temas: ["pessoas"], foto: "/academy/neurociencia-produtividade-course.jpg" },
-    { slug: "comunicacao-e-oratoria", nome: "Comunicação & Oratória", nivel: 1, temas: ["pessoas"] },
-    { slug: "saude-mental", nome: "Saúde Mental", nivel: 1, temas: ["pessoas"], foto: "/academy/neurociencia-produtividade-course.jpg" },
-    { slug: "python", nome: "Python", nivel: 1, temas: ["ia", "dados"] },
-    { slug: "sql", nome: "SQL", nivel: 1, temas: ["dados", "ia"] },
-    { slug: "power-bi", nome: "Power BI", nivel: 1, temas: ["dados"] },
-    { slug: "inteligencia-em-compras", nome: "Inteligência em Compras", nivel: 2, temas: ["estrategia", "dados"] },
-    { slug: "gestao-por-categorias", nome: "Gestão por Categorias", nivel: 2, temas: ["estrategia", "custos"] },
-    { slug: "strategic-sourcing", nome: "Strategic Sourcing", nivel: 2, temas: ["custos", "estrategia"] },
-    { slug: "okr", nome: "OKR", nivel: 2, temas: ["estrategia"] },
-    { slug: "gestao-de-projetos-scrum", nome: "Gestão de Projetos - SCRUM", nivel: 2, temas: ["rotina", "estrategia"] },
-    { slug: "tributos-aplicados-a-compras", nome: "Tributos aplicados a Compras", nivel: 2, temas: ["custos"] },
-    { slug: "financas-aplicado-a-compras", nome: "Finanças aplicado a Compras", nivel: 2, temas: ["custos", "estrategia"] },
-    { slug: "geopolitica", nome: "Geopolítica", nivel: 2, temas: ["estrategia"] },
-    { slug: "analise-de-dados", nome: "Análise de Dados", nivel: 2, temas: ["dados"], foto: "/academy/imersao-analise-dados-ia.jpg" },
-    { slug: "pitch", nome: "Pitch", nivel: 2, temas: ["pessoas"] },
-    { slug: "s-e-op-ibp", nome: "S&OP/IBP", nivel: 2, temas: ["estrategia", "dados"] },
-    { slug: "projecao-de-vendas", nome: "Projeção de Vendas", nivel: 2, temas: ["dados"] },
-    { slug: "design-thinking", nome: "Design Thinking", nivel: 2, temas: ["estrategia"], foto: "/academy/design-thinking-ia-course.jpg" },
-    { slug: "gestao-de-conflitos", nome: "Gestão de Conflitos", nivel: 2, temas: ["pessoas"] },
-    { slug: "pnl", nome: "PNL", nivel: 2, temas: ["pessoas"] },
-    { slug: "gestao-de-ativos-e-gastos", nome: "Gestão de Ativos e Gastos", nivel: 2, temas: ["custos"], foto: "/academy/spend-management-course.jpg" },
-    { slug: "imersao-de-assistentes-avancado", nome: "Imersão de Assistentes Avançado", nivel: 2, temas: ["ia"], foto: "/academy/imersao-assistentes-ia.jpg" },
-    { slug: "imersao-de-agentes-de-ia", nome: "Imersão de Agentes de IA", nivel: 2, temas: ["ia"], foto: "/academy/fundamentos-ia-negocios.jpg" },
-    { slug: "estrategia-de-negocios", nome: "Estratégia de Negócios", nivel: 3, temas: ["estrategia"] },
-    { slug: "planejamento-estrategico", nome: "Planejamento Estratégico", nivel: 3, temas: ["estrategia"] },
-    { slug: "design-organizacional", nome: "Design Organizacional", nivel: 3, temas: ["estrategia", "pessoas"] },
-    { slug: "lideranca-situacional", nome: "Liderança Situacional", nivel: 3, temas: ["pessoas"] },
-    { slug: "governanca-e-compliance", nome: "Governança e Compliance", nivel: 3, temas: ["estrategia"] },
-    { slug: "transformacao-digital", nome: "Transformação Digital", nivel: 3, temas: ["ia", "estrategia"], foto: "/academy/transformacao-digital-course.jpg" },
-    { slug: "estatistica", nome: "Estatística", nivel: 3, temas: ["dados"] },
-    { slug: "ai-first", nome: "AI First", nivel: 3, temas: ["ia", "estrategia"], foto: "/academy/copilot-course.jpg" },
-    { slug: "esg", nome: "ESG", nivel: 3, temas: ["estrategia"] },
-    { slug: "inovacao-aberta", nome: "Inovação Aberta", nivel: 3, temas: ["estrategia", "ia"] },
-  ] as { slug: string; nome: string; nivel: 0 | 1 | 2 | 3; temas: Tema[]; introdutorio?: boolean; foto?: string; professor?: string; preco?: { cheioCentavos: number; promoCentavos: number } }[],
+    /* "Fundamentos de IA para Negócios": nasceu "Fundamentos de IA aplicado aos
+       Negócios" na Academy, com o mesmo slug. Capa com o professor (o quadro
+       do vídeo-convite do Vinícius) desde 2026-09-29; R$ 49,90, por R$ 19,90
+       no lançamento, desde 2026-10-02. */
+    {
+      slug: "fundamentos-ia-negocios",
+      nome: "Fundamentos de IA para Negócios",
+      nivel: 0,
+      temas: ["ia"],
+      introdutorio: true,
+      foto: "/academy/academy-convite-poster.jpg",
+      fotoDePessoa: true,
+      professor: "Vinícius",
+      preco: { cheioCentavos: 4990, promoCentavos: 1990 },
+    },
+    /* "Marketing com IA" (2026-10-02): R$ 59,90, sem promoção. A capa parte da
+       foto da professora enviada pelo Rodrigo; o crédito "Com <nome>" entra
+       quando o nome dela for informado (campo `professor`). */
+    {
+      slug: "marketing-com-ia",
+      nome: "Marketing com IA",
+      nivel: 0,
+      temas: ["ia"],
+      foto: "/academy/marketing-com-ia-capa.jpg",
+      fotoDePessoa: true,
+      // Foto quase quadrada, rosto no alto: na paisagem o recorte sobe para
+      // não cortar a cabeça.
+      enquadre: { paisagem: "50% 6%" },
+      preco: { cheioCentavos: 5990, promoCentavos: 5990 },
+    },
+  ] as {
+    slug: string;
+    nome: string;
+    nivel: 0 | 1 | 2 | 3;
+    temas: Tema[];
+    introdutorio?: boolean;
+    foto?: string;
+    /** Foto de gente (professor): a capa vira cartaz, com vinheta e respiro. */
+    fotoDePessoa?: boolean;
+    /** Ajuste fino do recorte (object-position) quando o padrão não serve à foto. */
+    enquadre?: { retrato?: string; paisagem?: string };
+    professor?: string;
+    preco?: { cheioCentavos: number; promoCentavos: number };
+  }[],
   introdutorio: "Curso introdutório",
   // Crédito na capa de curso com professor em destaque (ver Capa.tsx).
   capaCom: (nome: string) => `Com ${nome}`,
   // Selo do curso de preço próprio em promoção (capa e card).
   lancamento: "Lançamento",
   /* Capas (2026-09-26, pedido do Rodrigo): as fotos dos cursos da /academy.
+     Hoje os dois cursos têm foto própria; o rodízio por tema abaixo só vale
+     para curso novo sem `foto`.
      Curso com `foto` própria usa ela (o assunto casa: Lean, Design Thinking,
      Spend Analysis…); os demais recebem as fotos do tema principal em RODÍZIO,
      na ordem do catálogo — cursos vizinhos na prateleira não repetem foto.
@@ -1707,29 +1683,6 @@ export const catalogo = {
     ia: ["/academy/fundamentos-ia-negocios.jpg", "/academy/imersao-assistentes-ia.jpg", "/academy/copilot-course.jpg"],
   } as Record<Tema, string[]>,
   niveis: ["Iniciante", "Intermediário", "Especialista", "Avançado"],
-  /* Packs por jornada (2026-09-26, pedido do Rodrigo): todos os cursos de um
-     nível por R$ 99. O Avançado não tem pack. Regras de preço em
-     lib/catalogo/preco.ts (calcularPedido). O `slug` do pack viaja no carrinho
-     e fica gravado na venda, como o de um curso — não renomeie depois de vender. */
-  packPrecoCentavos: 9900,
-  packs: [
-    { slug: "pack-iniciante", nivel: 0 },
-    { slug: "pack-intermediario", nivel: 1 },
-    { slug: "pack-especialista", nivel: 2 },
-  ],
-  pack: {
-    titulo: "Packs por jornada",
-    texto: "Todos os cursos de um nível num pack só, por um preço fechado.",
-    nome: (nivel: string) => `Pack ${nivel}`,
-    nomeVenda: (nivel: string, n: number) => `Pack ${nivel} · ${n} cursos`,
-    cursos: (n: number) => `${n} cursos inclusos`,
-    economia: (valor: string) => `Economize ${valor}`,
-    cheio: (valor: string) => `${valor} em cursos avulsos`,
-    adicionar: "Adicionar pack",
-    noCarrinho: "Pack no carrinho",
-    remover: "Remover pack",
-    coberto: "No pack",
-  },
   temas: {
     rotina: "Processo e rotina",
     dados: "Dados e análise de gastos",
@@ -1745,107 +1698,36 @@ export const catalogo = {
   /* Na tela, não só no código: quem abre a prévia precisa saber que a
      cobrança é real, só que pequena. */
   avisoTeste: "Prévia: preços reais, cobrança real pelo Asaas.",
-  /* "Monte sua trilha" (2026-09-26): cinco perguntas de um clique que viram
-     uma trilha no carrinho. Roda só no navegador e não grava nada — nenhuma
-     resposta sai do computador de quem responde. A regra que transforma
-     respostas em cursos está em lib/catalogo/trilha.ts. */
-  trilha: {
-    passo: (atual: number, total: number) => `Pergunta ${atual} de ${total}`,
-    voltar: "Voltar",
-    perguntas: [
-      {
-        id: "momento",
-        titulo: "Em que momento você está em Compras?",
-        opcoes: [
-          { valor: "0", rotulo: "Estou começando, ou vim de outra área" },
-          { valor: "1", rotulo: "Já opero compras no dia a dia" },
-          { valor: "2", rotulo: "Conduzo categorias, projetos ou negociações grandes" },
-          { valor: "3", rotulo: "Lidero a área ou respondo pela estratégia" },
-        ],
-      },
-      {
-        id: "objetivo",
-        titulo: "O que você quer resolver primeiro?",
-        opcoes: [
-          { valor: "rotina", rotulo: "Organizar processo, rotina e urgências" },
-          { valor: "dados", rotulo: "Entender os gastos com dados" },
-          { valor: "custos", rotulo: "Negociar melhor e reduzir custos" },
-          { valor: "estrategia", rotulo: "Pensar e planejar de forma estratégica" },
-          { valor: "ia", rotulo: "Levar IA e automação para Compras" },
-        ],
-      },
-      {
-        id: "junto",
-        titulo: "Que habilidade você quer desenvolver junto?",
-        opcoes: [
-          { valor: "pessoas", rotulo: "Comunicação, liderança e relacionamento" },
-          { valor: "dados", rotulo: "Ferramentas de dados, como Power BI e SQL" },
-          { valor: "ia", rotulo: "Usar IA no meu dia a dia" },
-          { valor: "nenhum", rotulo: "Só o foco principal" },
-        ],
-      },
-      {
-        id: "alcance",
-        titulo: "Até onde você quer ir agora?",
-        opcoes: [
-          { valor: "0", rotulo: "Firmar a base do meu nível" },
-          { valor: "1", rotulo: "Meu nível e já o próximo" },
-        ],
-      },
-      {
-        id: "tamanho",
-        titulo: "Quantos cursos cabem na sua rotina agora?",
-        opcoes: [
-          { valor: "3", rotulo: "Trilha curta: 3 cursos" },
-          { valor: "6", rotulo: "Trilha média: 6 cursos" },
-          { valor: "9", rotulo: "Trilha completa: 9 cursos" },
-        ],
-      },
-    ],
-    resultadoTitulo: "Sua trilha",
-    resultadoTexto: (n: number) => `${n} cursos, na ordem em que recomendamos estudar.`,
-    motivo: (tema: string) => `Para: ${tema.toLowerCase()}`,
-    motivoBase: "Base do seu nível",
-    motivoIntro: "Toda trilha começa aqui",
-    totalTrilha: "Total da trilha",
-    aplicar: "Colocar a trilha no carrinho",
-    refazer: "Refazer as perguntas",
-  },
   barra: {
     rotulo: "Resumo do carrinho",
-    vazio: "Monte sua trilha em 2 minutos ou escolha os cursos.",
+    vazio: "Escolha um curso para começar.",
     cursos: (n: number) => (n === 1 ? "1 curso" : `${n} cursos`),
     ver: "Ver carrinho",
-    montar: "Montar minha trilha",
   },
-  gaveta: { fechar: "Fechar", carrinho: "Seu carrinho", trilha: "Monte sua trilha" },
-  /* Vitrine (2026-09-26): o layout escolhido pelo Rodrigo, claro, com a hero no
-     conceito da /cursos — as três marcas e a estante viva de capas — e uma
-     animação que explica a plataforma em quatro passos. */
+  gaveta: { fechar: "Fechar", carrinho: "Seu carrinho" },
+  /* Vitrine (2026-09-26; enxugada em 2026-10-02 para dois cursos): hero com
+     as três marcas e os pôsteres, "Como funciona" em quatro passos e a grade
+     de cursos. */
   vitrine: {
     hero: {
       logoIagenticsAlt: "IAgentics",
       logoPecegeAlt: "Pecege",
       logoSolutionAlt: "Solution",
-      eyebrow: "IAgentics e Pecege · formação online em Compras",
-      titulo: "Sua trilha em Compras, montada para o seu momento.",
-      lead: "Cursos de Compras e Gestão de Gastos criados pela IAgentics, na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+      eyebrow: "IAgentics e Pecege · cursos online",
+      titulo: "IA aplicada aos negócios, para começar agora.",
+      lead: "Cursos online criados pela IAgentics, na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
       conceitoRotulo: "Como funciona",
       passos: [
-        { titulo: "Responda 5 perguntas", texto: "Em menos de dois minutos, montamos uma trilha para o seu nível e o seu objetivo." },
-        { titulo: "Escolha seus cursos", texto: "63 cursos de Compras, do Iniciante ao Avançado. Fique com a trilha ou monte a sua." },
-        { titulo: "Ou leve um pack inteiro", texto: "Todos os cursos de um nível, do Iniciante ao Especialista, por um preço fechado." },
-        { titulo: "Estude na Solution", texto: "Acesso liberado pelo Pecege na plataforma online, no seu ritmo." },
+        { titulo: "Escolha o curso", texto: "Cursos online de IA aplicada aos negócios, criados pela IAgentics." },
+        { titulo: "Pague como preferir", texto: "Pix, boleto ou cartão, numa fatura segura do Asaas." },
+        { titulo: "Receba o acesso", texto: "O Pecege libera seu acesso na plataforma Solution e avisa você por e-mail." },
+        { titulo: "Estude no seu ritmo", texto: "Na Solution, a plataforma online do Pecege, quando e onde quiser." },
       ],
-      montar: "Montar minha trilha em 2 minutos",
       verCursos: "Ver os cursos",
-      estanteAlt: "Capas dos cursos de Compras do catálogo",
+      postersAlt: "Capas dos cursos do catálogo",
     },
+    cursosTitulo: "Cursos",
     noCarrinho: "No carrinho",
-    contagem: (n: number) => `${n} cursos`,
-    temasTitulo: "Por tema",
-    anterior: "Ver anteriores",
-    seguinte: "Ver seguintes",
   },
 
   card: {
@@ -1854,7 +1736,7 @@ export const catalogo = {
   },
   carrinho: {
     titulo: "Seu carrinho",
-    vazio: "Escolha um curso ou monte sua trilha.",
+    vazio: "Escolha um curso para começar.",
     total: "Total",
     economia: (valor: string) => `Você economiza ${valor}`,
     finalizar: "Finalizar compra",

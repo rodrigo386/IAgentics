@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calcularCarrinho, calcularPedido, formatarReais, PRECO_TESTE_CENTAVOS, precosFixos } from "./preco";
+import { calcularCarrinho, formatarReais, PRECO_TESTE_CENTAVOS, precosFixos } from "./preco";
 
 const VALIDOS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const BASE = 20000;
@@ -42,48 +42,6 @@ describe("formatarReais", () => {
   });
 });
 
-describe("packs", () => {
-  const CURSOS = [
-    { slug: "i1", nivel: 0 },
-    { slug: "i2", nivel: 0 },
-    { slug: "m1", nivel: 1 },
-    { slug: "m2", nivel: 1 },
-    { slug: "m3", nivel: 1 },
-  ];
-  const PACKS = [
-    { slug: "pack-0", nivel: 0 },
-    { slug: "pack-1", nivel: 1 },
-  ];
-  const PRECOS = { cursoCentavos: 20000, packCentavos: 9900 };
-
-  it("pack sozinho custa o preço fixo, e o cheio é a soma dos cursos que ele cobre", () => {
-    const p = calcularPedido(["pack-1"], CURSOS, PACKS, PRECOS);
-    expect(p.totalCentavos).toBe(9900);
-    expect(p.packs).toEqual([{ slug: "pack-1", nivel: 1, cursos: 3, precoCentavos: 9900, cheioCentavos: 60000 }]);
-    expect(p.itens).toEqual([]);
-  });
-
-  /* A regra que protege o cliente: curso avulso do nível do pack sai da
-     conta, em vez de ser cobrado de novo. */
-  it("pack cobre o nível: o curso avulso do mesmo nível sai da conta", () => {
-    const p = calcularPedido(["m1", "pack-1", "m2"], CURSOS, PACKS, PRECOS);
-    expect(p.itens).toEqual([]);
-    expect(p.totalCentavos).toBe(9900);
-  });
-
-  it("pack soma ao avulso de outro nível, que custa o preço cheio", () => {
-    const p = calcularPedido(["pack-1", "i1", "i2"], CURSOS, PACKS, PRECOS);
-    expect(p.itens.map((i) => i.precoCentavos)).toEqual([20000, 20000]);
-    expect(p.totalCentavos).toBe(9900 + 40000);
-  });
-
-  it("pack repetido ou inexistente é descartado", () => {
-    const p = calcularPedido(["pack-0", "pack-0", "pack-9"], CURSOS, PACKS, PRECOS);
-    expect(p.packs.map((x) => x.slug)).toEqual(["pack-0"]);
-    expect(p.totalCentavos).toBe(9900);
-  });
-});
-
 /* Preço próprio de curso (2026-10-02, pedido do Rodrigo): Fundamentos de IA
    para Negócios custa R$ 49,90 e sai por R$ 19,90 no lançamento. */
 describe("curso com preço próprio", () => {
@@ -110,13 +68,4 @@ describe("curso com preço próprio", () => {
     expect(real.get("intro")).toEqual({ precoCentavos: 1990, cheioCentavos: 4990 });
   });
 
-  it("no pack, o valor em avulsos usa o cheio do curso de preço próprio", () => {
-    const cursos = [
-      { slug: "intro", nivel: 0 },
-      { slug: "i1", nivel: 0 },
-    ];
-    const p = calcularPedido(["pack-0"], cursos, [{ slug: "pack-0", nivel: 0 }], { cursoCentavos: 20000, packCentavos: 9900, fixos: FIXOS });
-    expect(p.packs[0].cheioCentavos).toBe(4990 + 20000);
-    expect(p.totalCentavos).toBe(9900);
-  });
 });

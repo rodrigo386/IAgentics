@@ -21,7 +21,7 @@ const pedido = (extra: Record<string, unknown> = {}) => ({
   email: `e2e-catalogo-${Date.now()}@teste.invalido`,
   telefone: "(11) 98888-7777",
   cpf: CPF,
-  slugs: ["funcao-objetivo-de-compras"],
+  slugs: ["marketing-com-ia"],
   consentimento: true,
   ...extra,
 });
@@ -52,26 +52,27 @@ test.describe("fluxo de compra", () => {
   test.skip(!usuario || !senha || !tokenWebhook, "sem ADMIN_USUARIO/ADMIN_SENHA/ASAAS_WEBHOOK_TOKEN no .env.local");
   test.use({ httpCredentials: { username: usuario ?? "", password: senha ?? "" } });
 
-  test("o carrinho aplica o desconto progressivo e sobrevive ao recarregar", async ({ page }) => {
+  /* Catálogo de dois cursos desde 2026-10-02: Marketing com IA a R$ 59,90 e o
+     Fundamentos a R$ 19,90 no lançamento. Sem desconto por quantidade. */
+  test("o carrinho soma os preços dos cursos e sobrevive ao recarregar", async ({ page }) => {
     await page.goto("/preview/catalogo");
     await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
     await page.reload();
 
     const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
-    await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Marketing com IA/ }).click();
     await expect(barra).toContainText("1 curso");
-    await expect(barra).toContainText(/R\$\s200,00/);
+    await expect(barra).toContainText(/R\$\s59,90/);
 
-    // Sem escada de desconto (saiu em 2026-10-02): o segundo custa o mesmo.
-    await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
-    await expect(barra).toContainText(/R\$\s400,00/);
+    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios/ }).click();
+    await expect(barra).toContainText(/R\$\s79,80/);
 
     await page.reload();
-    await expect(barra).toContainText(/R\$\s400,00/);
+    await expect(barra).toContainText(/R\$\s79,80/);
 
     await barra.getByRole("button", { name: "Ver carrinho" }).click();
     const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
-    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s400,00/);
+    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s79,80/);
   });
 
   test("o servidor recusa pedido sem consentimento", async ({ request }) => {
@@ -87,7 +88,7 @@ test.describe("fluxo de compra", () => {
       data: pedido({ totalCentavos: 1, precoCentavos: 1, value: 0.01 }),
     });
     expect(r.status()).toBe(200);
-    expect((await ultimaCobranca(request)).value).toBe(200);
+    expect((await ultimaCobranca(request)).value).toBe(59.9);
   });
 
   test("compra completa: formulário, fatura, webhook, pedido pago e painel", async ({ page, request }) => {
@@ -95,8 +96,8 @@ test.describe("fluxo de compra", () => {
     await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
     await page.reload();
 
-    await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
-    await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Marketing com IA/ }).click();
+    await page.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios/ }).click();
     await page.getByRole("button", { name: "Ver carrinho" }).click();
     await page.getByRole("button", { name: "Finalizar compra" }).click();
 
@@ -110,7 +111,7 @@ test.describe("fluxo de compra", () => {
 
     await expect(page).toHaveURL(/127\.0\.0\.1:4010\/fatura\//);
     const cobranca = await ultimaCobranca(request);
-    expect(cobranca.value).toBe(400);
+    expect(cobranca.value).toBe(79.8);
     expect(cobranca.billingType).toBe("UNDEFINED");
     const idVenda: string = cobranca.externalReference;
 
@@ -142,31 +143,6 @@ test.describe("fluxo de compra", () => {
   });
 });
 
-/* "Monte sua trilha": cinco cliques na gaveta e a trilha vai para o carrinho,
-   que abre sozinho em seguida. Roda no navegador, sem senha e sem gravar nada. */
-test("o questionário monta a trilha e abre o carrinho com ela", async ({ page }) => {
-  await page.goto("/preview/catalogo");
-  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
-  await page.reload();
-
-  await page.getByRole("button", { name: "Montar minha trilha em 2 minutos" }).click();
-  await expect(page.getByText("Pergunta 1 de 5")).toBeVisible();
-  for (const o of ["Já opero compras no dia a dia", "Entender os gastos com dados", "Só o foco principal", "Firmar a base do meu nível", "Trilha curta: 3 cursos"]) {
-    await page.getByRole("button", { name: o }).click();
-  }
-  const trilha = page.getByTestId("trilha");
-  await expect(trilha.getByRole("listitem")).toHaveCount(3);
-  await expect(trilha.getByRole("listitem").first()).toContainText("Fundamentos de IA para Negócios");
-  await expect(trilha).toContainText("Coleta de Dados");
-
-  await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
-  const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
-  await expect(gaveta).toBeVisible();
-  // Introdutório no lançamento (R$ 19,90) + dois cursos a R$ 200.
-  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s419,90/);
-  await expect(page.getByRole("complementary", { name: "Resumo do carrinho" })).toContainText("3 cursos");
-});
-
 /* A hero explica a plataforma e mostra as três marcas da parceria. */
 test("a hero traz as três marcas e os quatro passos de como funciona", async ({ page }) => {
   await page.goto("/preview/catalogo");
@@ -174,60 +150,33 @@ test("a hero traz as três marcas e os quatro passos de como funciona", async ({
   for (const alt of ["IAgentics", "Pecege", "Solution"]) await expect(page.getByRole("img", { name: alt }).first()).toBeVisible();
   const passos = page.getByRole("region", { name: "Como funciona" }).getByRole("listitem");
   await expect(passos).toHaveCount(4);
-  await expect(passos.nth(2)).toContainText("Ou leve um pack inteiro");
+  await expect(passos.nth(2)).toContainText("Receba o acesso");
 });
 
-/* Packs por jornada: o pack cobre o nível inteiro — o curso avulso daquele
-   nível vira "No pack" e não é cobrado de novo. */
-test("pack no carrinho cobre o nível e bloqueia o avulso do mesmo nível", async ({ page }) => {
+/* O catálogo tem exatamente os dois cursos; o Marketing não tem promoção. */
+test("o catálogo mostra os dois cursos com o preço de cada um", async ({ page }) => {
   await page.goto("/preview/catalogo");
-  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
-  await page.reload();
+  const cards = page.locator("#cursos .vitrine-card");
+  await expect(cards).toHaveCount(2);
 
+  const fundamentos = cards.filter({ hasText: "Fundamentos de IA para Negócios" });
+  await expect(fundamentos).toContainText("Lançamento");
+  await expect(fundamentos.locator("s")).toHaveText(/R\$\s49,90/);
+  await expect(fundamentos.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios · R\$\s19,90/ })).toBeVisible();
+
+  const marketing = cards.filter({ hasText: "Marketing com IA" });
+  await expect(marketing.locator("s")).toHaveCount(0);
+  await expect(marketing).not.toContainText("Lançamento");
+  await expect(marketing.getByRole("button", { name: /^Adicionar Marketing com IA · R\$\s59,90/ })).toBeVisible();
+});
+
+/* Carrinho guardado de quando havia 63 cursos e packs: os slugs que saíram
+   são ignorados, sem quebrar a página nem cobrar o que não existe. */
+test("carrinho antigo com cursos e packs que saíram é ignorado", async ({ page }) => {
+  await page.goto("/preview/catalogo");
+  await page.evaluate(() => localStorage.setItem("iagentics:carrinho", JSON.stringify(["coleta-de-dados", "pack-intermediario", "marketing-com-ia"])));
+  await page.reload();
   const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
-  await page.getByRole("button", { name: /^Adicionar Coleta de Dados/ }).first().click();
   await expect(barra).toContainText("1 curso");
-
-  await page.getByRole("button", { name: "Adicionar pack Intermediário" }).click();
-  // O avulso intermediário saiu; o pack traz os 22 cursos do nível, a R$ 99.
-  await expect(barra).toContainText("22 cursos");
-  await expect(barra).toContainText(/R\$\s99,00/);
-  const avulso = page.getByRole("button", { name: /^Adicionar Coleta de Dados · No pack/ }).first();
-  await expect(avulso).toBeDisabled();
-
-  await barra.getByRole("button", { name: "Ver carrinho" }).click();
-  const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
-  await expect(gaveta).toContainText("Pack Intermediário");
-  await expect(gaveta).toContainText("22 cursos inclusos");
-  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s99,00/);
-});
-
-/* No servidor: pack mais curso do mesmo nível custa só o pack, e a venda
-   registra o pack com o nome que o Pecege lê no CSV. */
-test("o checkout cobra o pack uma vez só, mesmo com curso do nível junto", async ({ request }) => {
-  const r = await request.post("/preview/catalogo/checkout", {
-    data: pedido({ slugs: ["coleta-de-dados", "pack-intermediario", "saneamento-de-dados"] }),
-  });
-  expect(r.status()).toBe(200);
-  const cobranca = await ultimaCobranca(request);
-  expect(cobranca.value).toBe(99);
-  expect(cobranca.description).toContain("Pack Intermediário · 22 cursos");
-});
-
-/* Preço próprio de lançamento (2026-10-02): o introdutório mostra R$ 19,90,
-   com R$ 49,90 riscado e o selo. Os outros cursos não mudam de preço. */
-test("o curso introdutório mostra o preço de lançamento", async ({ page }) => {
-  await page.goto("/preview/catalogo");
-  await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
-  await page.reload();
-
-  const card = page.locator(".vitrine-card", { hasText: "Fundamentos de IA para Negócios" }).first();
-  await expect(card).toContainText("Lançamento");
-  await expect(card.locator("s")).toHaveText(/R\$\s49,90/);
-  await card.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios · R\$\s19,90/ }).click();
-
-  const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
-  await expect(barra).toContainText("Você economiza R$");
-  await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
-  await expect(barra).toContainText(/R\$\s219,90/);
+  await expect(barra).toContainText(/R\$\s59,90/);
 });

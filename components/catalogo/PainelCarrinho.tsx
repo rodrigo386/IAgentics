@@ -6,9 +6,7 @@ import { formatarReais } from "@/lib/catalogo/preco";
 import type { Carrinho } from "./useCarrinho";
 
 /**
- * Carrinho + formulário do checkout (extraído do Catalogo em 2026-09-26 para
- * servir aos layouts da prévia: na página atual ele é a coluna lateral; na
- * Vitrine, na Jornada e no Mural, o conteúdo da gaveta).
+ * Carrinho + formulário do checkout: o conteúdo da gaveta da Vitrine.
  */
 const ROTULO = "font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted";
 /* Campo é superfície, não controle: raio 0 pela trava de forma (DESIGN.md).
@@ -20,15 +18,15 @@ const BOTAO_CHEIO =
 const BOTAO_CONTORNO =
   "rounded-control border border-line-strong px-6 py-3 font-medium text-fg transition-colors hover:border-fg active:translate-y-px motion-reduce:transition-none";
 
-type Props = { estado: Carrinho; precoBaseCentavos: number; urlCheckout: string };
+type Props = { estado: Carrinho; urlCheckout: string };
 
-export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props) {
+export function PainelCarrinho({ estado, urlCheckout }: Props) {
   const { carrinho } = estado;
   const [etapa, setEtapa] = useState<"carrinho" | "dados">("carrinho");
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const nomes = new Map<string, string>(t.cursos.map((c) => [c.slug, c.nome]));
-  const vazio = carrinho.itens.length === 0 && carrinho.packs.length === 0;
+  const vazio = carrinho.itens.length === 0;
 
   async function pagar(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -45,7 +43,7 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
           cpf: String(form.get("cpf") ?? ""),
           telefone: String(form.get("telefone") ?? ""),
           consentimento: form.get("consentimento") === "on",
-          slugs: [...carrinho.packs.map((p) => p.slug), ...carrinho.itens.map((i) => i.slug)],
+          slugs: carrinho.itens.map((i) => i.slug),
         }),
       });
       const corpo = await resposta.json().catch(() => ({}));
@@ -82,19 +80,6 @@ export function PainelCarrinho({ estado, precoBaseCentavos, urlCheckout }: Props
             ) : (
               <>
                 <ul className="divide-y divide-line border-y border-line">
-                  {/* Packs primeiro: preço fechado, com o valor dos avulsos riscado ao lado. */}
-                  {carrinho.packs.map((p) => (
-                    <li key={p.slug} className="flex items-start justify-between gap-4 py-3">
-                      <span className="flex flex-col">
-                        <span className="text-fg">{t.pack.nome(t.niveis[p.nivel])}</span>
-                        <span className={ROTULO}>{t.pack.cursos(p.cursos)}</span>
-                      </span>
-                      <span className="flex shrink-0 flex-col items-end gap-1 text-right">
-                        <s className="tnum text-sm text-fg-subtle">{formatarReais(p.cheioCentavos)}</s>
-                        <span className="tnum text-fg">{formatarReais(p.precoCentavos)}</span>
-                      </span>
-                    </li>
-                  ))}
                   {carrinho.itens.map((item) => (
                     <li key={item.slug} className="flex items-start justify-between gap-4 py-3">
                       <span className="text-fg">{nomes.get(item.slug)}</span>
