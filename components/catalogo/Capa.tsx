@@ -43,7 +43,7 @@ export type CursoCapa = {
   introdutorio?: boolean;
   foto?: string;
   fotoDePessoa?: boolean;
-  enquadre?: { retrato?: string; paisagem?: string };
+  enquadre?: { retrato?: string; paisagem?: string; banner?: string };
   professor?: string;
   preco?: { cheioCentavos: number; promoCentavos: number };
 };

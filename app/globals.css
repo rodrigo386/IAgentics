@@ -1716,3 +1716,20 @@ dialog.gaveta.gaveta-centro[open] {
     transform: translateY(-10px) rotate(0.6deg);
   }
 }
+
+/* Banner de curso (2026-10-02): no desktop a foto ocupa a direita e se funde
+   no escuro à esquerda, onde está o texto. A máscara faz a emenda — a foto
+   em si não leva véu nenhum, então o rosto fica limpo. */
+@media (min-width: 768px) {
+  .banner-foto {
+    mask-image: linear-gradient(to right, transparent, black 38%);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 38%);
+  }
+}
+/* O banner ocupa a largura toda: crescer no hover o tiraria da coluna. Só a
+   foto aproxima (.capa-arte), como o card antigo fazia por dentro. */
+.vitrine-card.banner-curso:hover,
+.vitrine-card.banner-curso:focus-within {
+  transform: none;
+  box-shadow: none;
+}

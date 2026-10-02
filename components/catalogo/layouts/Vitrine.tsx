@@ -5,7 +5,7 @@ import { Logo } from "@/components/ui/Logo";
 import { LogoSolution } from "@/components/ui/LogoSolution";
 import { catalogo as t } from "@/lib/content";
 import { formatarReais } from "@/lib/catalogo/preco";
-import { Capa } from "../Capa";
+import { Capa, fotoDoCurso } from "../Capa";
 import { CascaLayout } from "../CascaLayout";
 import type { Carrinho } from "../useCarrinho";
 
@@ -19,7 +19,7 @@ import type { Carrinho } from "../useCarrinho";
  *      onde se estuda) — com os pôsteres dos cursos no lugar da estante viva:
  *      com dois cursos, a estante só repetiria as mesmas duas capas.
  *   2. "Como funciona": quatro passos que se acendem em sequência.
- *   3. A grade de cursos, com preço e botão.
+ *   3. Os cursos em banners largos, no formato de capa de série.
  */
 
 type Props = { precoBaseCentavos: number; modo: "teste" | "real"; urlCheckout: string };
@@ -128,49 +128,77 @@ function Cursos({ estado }: { estado: Carrinho }) {
       <h2 id="cursos-titulo" className="text-3xl font-medium tracking-[-0.03em] text-fg sm:text-5xl">
         {t.vitrine.cursosTitulo}
       </h2>
-      <ul className="mt-10 grid gap-6 md:grid-cols-2">
-        {t.cursos.map((c, i) => {
-          const dentro = estado.noCarrinho.has(c.slug);
-          const fixo = estado.fixos.get(c.slug);
-          const preco = fixo?.precoCentavos ?? estado.precoCursoCentavos;
-          const promocao = fixo && fixo.cheioCentavos > fixo.precoCentavos;
-          const rotulo = dentro ? t.vitrine.noCarrinho : formatarReais(preco);
-          return (
-            <li
-              key={c.slug}
-              className={`vitrine-card cascata group relative border bg-surface ${dentro ? "border-accent" : "border-line"}`}
-              style={{ "--i": i } as React.CSSProperties}
-            >
-              <div className="overflow-hidden">
-                <Capa curso={c} formato="paisagem" sizes="(min-width: 768px) 680px, 100vw" />
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
-                <p className="flex items-baseline gap-3">
-                  {promocao ? (
-                    <>
-                      <s className="tnum text-sm text-fg-subtle">{formatarReais(fixo.cheioCentavos)}</s>
-                      <span className="text-sm text-accent-text">{t.lancamento}</span>
-                    </>
-                  ) : null}
-                </p>
-                <button
-                  type="button"
-                  /* O nome acessível contém o texto visível (preço ou "No carrinho"), como pede o WCAG 2.5.3. */
-                  aria-label={`${dentro ? t.card.remover : t.card.adicionar} ${c.nome} · ${rotulo}`}
-                  aria-pressed={dentro}
-                  onClick={() => (dentro ? estado.remover(c.slug) : estado.adicionar(c.slug))}
-                  className={`inline-flex shrink-0 items-center gap-2 rounded-control px-5 py-2.5 font-medium transition-colors active:translate-y-px ${
-                    dentro ? "border border-accent text-fg" : "bg-accent text-accent-on hover:bg-accent-hover"
-                  }`}
-                >
-                  {dentro ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
-                  <span className="tnum">{rotulo}</span>
-                </button>
-              </div>
-            </li>
-          );
-        })}
+      <ul className="mt-10 flex flex-col gap-8">
+        {t.cursos.map((c, i) => (
+          <BannerCurso key={c.slug} curso={c} i={i} estado={estado} />
+        ))}
       </ul>
     </section>
+  );
+}
+
+/**
+ * Banner de curso no formato de capa de série da Netflix (2026-10-02, pedido
+ * do Rodrigo): largura toda, foto à direita fundindo no escuro, texto e botão
+ * à esquerda. A sombra fica SÓ do lado do texto — o rosto do professor não leva
+ * vinheta nem véu por cima, ao contrário da capa pôster (Capa.tsx).
+ *
+ * Escuro fixo (tinta da marca), como um cartaz: não acompanha o tema do site.
+ * No celular a foto vem em cima e o texto embaixo, sem sobreposição.
+ */
+function BannerCurso({ curso: c, i, estado }: { curso: (typeof t.cursos)[number]; i: number; estado: Carrinho }) {
+  const dentro = estado.noCarrinho.has(c.slug);
+  const fixo = estado.fixos.get(c.slug);
+  const preco = fixo?.precoCentavos ?? estado.precoCursoCentavos;
+  const promocao = fixo && fixo.cheioCentavos > fixo.precoCentavos;
+  const rotulo = dentro ? t.vitrine.noCarrinho : formatarReais(preco);
+
+  return (
+    <li
+      className={`vitrine-card banner-curso cascata group relative grid overflow-hidden border bg-brand-ink text-brand-paper md:block md:aspect-[21/9] ${dentro ? "border-accent" : "border-line"}`}
+      style={{ "--i": i } as React.CSSProperties}
+    >
+      {/* Foto: no celular, faixa 4:3 no topo; no desktop, os 65% da direita,
+          com máscara que a funde no escuro do lado do texto. */}
+      <div className="banner-foto relative aspect-[4/3] md:absolute md:inset-y-0 md:right-0 md:aspect-auto md:w-[65%]">
+        <Image
+          src={fotoDoCurso(c)}
+          alt=""
+          fill
+          sizes="(min-width: 768px) 900px, 100vw"
+          className="capa-arte object-cover"
+          style={{ objectPosition: c.enquadre?.banner ?? "50% 25%" }}
+        />
+      </div>
+
+      <div className="relative flex flex-col justify-end gap-4 p-6 sm:p-8 md:h-full md:max-w-[48%] md:p-12">
+        <div className="flex flex-wrap items-center gap-3">
+          {c.introdutorio ? <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-paper/80">{t.introdutorio}</span> : null}
+          {promocao ? (
+            <span className="rounded-control bg-accent px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-accent-on">{t.lancamento}</span>
+          ) : null}
+        </div>
+        {c.professor ? (
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-paper/70">{t.capaCom(c.professor)}</p>
+        ) : null}
+        <h3 className="text-4xl font-medium leading-[1.02] tracking-[-0.03em] [text-wrap:balance] lg:text-6xl">{c.nome}</h3>
+        <div className="mt-2 flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            /* O nome acessível contém o texto visível (preço ou "No carrinho"), como pede o WCAG 2.5.3. */
+            aria-label={`${dentro ? t.card.remover : t.card.adicionar} ${c.nome} · ${rotulo}`}
+            aria-pressed={dentro}
+            onClick={() => (dentro ? estado.remover(c.slug) : estado.adicionar(c.slug))}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-control px-7 py-3.5 text-lg font-medium transition-colors active:translate-y-px ${
+              dentro ? "border border-brand-paper/60 text-brand-paper" : "bg-accent text-accent-on hover:bg-accent-hover"
+            }`}
+          >
+            {dentro ? <Check size={18} aria-hidden="true" /> : <Plus size={18} aria-hidden="true" />}
+            <span className="tnum">{rotulo}</span>
+          </button>
+          {promocao ? <s className="tnum text-brand-paper/60">{formatarReais(fixo.cheioCentavos)}</s> : null}
+        </div>
+      </div>
+    </li>
   );
 }

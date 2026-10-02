@@ -1629,6 +1629,7 @@ export const catalogo = {
       introdutorio: true,
       foto: "/academy/academy-convite-poster.jpg",
       fotoDePessoa: true,
+      enquadre: { banner: "50% 24%" },
       professor: "Vinícius",
       preco: { cheioCentavos: 4990, promoCentavos: 1990 },
     },
@@ -1643,7 +1644,7 @@ export const catalogo = {
       fotoDePessoa: true,
       // Foto quase quadrada, rosto no alto: na paisagem o recorte sobe para
       // não cortar a cabeça.
-      enquadre: { paisagem: "50% 6%" },
+      enquadre: { paisagem: "50% 6%", banner: "50% 8%" },
       professor: "Carol",
       preco: { cheioCentavos: 5990, promoCentavos: 5990 },
     },
@@ -1657,7 +1658,7 @@ export const catalogo = {
     /** Foto de gente (professor): a capa vira cartaz, com vinheta e respiro. */
     fotoDePessoa?: boolean;
     /** Ajuste fino do recorte (object-position) quando o padrão não serve à foto. */
-    enquadre?: { retrato?: string; paisagem?: string };
+    enquadre?: { retrato?: string; paisagem?: string; banner?: string };
     professor?: string;
     preco?: { cheioCentavos: number; promoCentavos: number };
   }[],
