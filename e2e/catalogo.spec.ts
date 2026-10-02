@@ -73,6 +73,7 @@ test.describe("fluxo de compra", () => {
     await barra.getByRole("button", { name: "Ver carrinho" }).click();
     const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
     await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s79,80/);
+    await expect(gaveta).toContainText("30 dias de acesso");
   });
 
   test("o servidor recusa pedido sem consentimento", async ({ request }) => {
@@ -171,6 +172,9 @@ test("o catálogo mostra os dois cursos com o preço de cada um", async ({ page 
   await expect(marketing).toContainText("Com Carol");
   await expect(cards.filter({ hasText: "Iniciante" })).toHaveCount(0);
   await expect(marketing.getByRole("button", { name: /^Adicionar Marketing com IA · R\$\s59,90/ })).toBeVisible();
+  // Prazo de acesso visível antes da compra, em cada curso (2026-10-02).
+  await expect(fundamentos).toContainText("30 dias de acesso");
+  await expect(marketing).toContainText("30 dias de acesso");
 });
 
 /* Carrinho guardado de quando havia 63 cursos e packs: os slugs que saíram

@@ -198,6 +198,7 @@ function BannerCurso({ curso: c, i, estado }: { curso: (typeof t.cursos)[number]
           </button>
           {promocao ? <s className="tnum text-brand-paper/60">{formatarReais(fixo.cheioCentavos)}</s> : null}
         </div>
+        <p className="text-sm text-brand-paper/75">{t.vitrine.acesso}</p>
       </div>
     </li>
   );

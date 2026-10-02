@@ -1721,13 +1721,17 @@ export const catalogo = {
       passos: [
         { titulo: "Escolha o curso", texto: "Cursos online de IA aplicada aos negócios, criados pela IAgentics." },
         { titulo: "Pague como preferir", texto: "Pix, boleto ou cartão, numa fatura segura do Asaas." },
-        { titulo: "Receba o acesso", texto: "O Pecege libera seu acesso na plataforma Solution e avisa você por e-mail." },
-        { titulo: "Estude no seu ritmo", texto: "Na Solution, a plataforma online do Pecege, quando e onde quiser." },
+        { titulo: "Receba o acesso", texto: "O Pecege libera seu acesso de 30 dias na plataforma Solution e avisa você por e-mail." },
+        { titulo: "Estude no seu ritmo", texto: "São 30 dias de acesso na Solution, a plataforma online do Pecege, para estudar quando e onde quiser." },
       ],
       verCursos: "Ver os cursos",
       postersAlt: "Capas dos cursos do catálogo",
     },
     cursosTitulo: "Cursos",
+    /* Prazo de acesso (2026-10-02, pedido do Rodrigo): a compra dá 30 dias na
+       plataforma. Aparece onde a pessoa decide — banner e carrinho — e de novo
+       no pedido, depois de pagar. */
+    acesso: "30 dias de acesso na plataforma Solution",
     noCarrinho: "No carrinho",
   },
 
@@ -1740,6 +1744,7 @@ export const catalogo = {
     vazio: "Escolha um curso para começar.",
     total: "Total",
     economia: (valor: string) => `Você economiza ${valor}`,
+    acesso: "Cada curso dá 30 dias de acesso na plataforma Solution, contados a partir da liberação.",
     finalizar: "Finalizar compra",
   },
   checkout: {
@@ -1774,7 +1779,7 @@ export const catalogo = {
       estornado: "Pagamento estornado",
       falhou: "Não foi possível gerar a cobrança",
     } as Record<string, string>,
-    proximos: "O Pecege libera seu acesso na plataforma Solution e avisa você no e-mail informado.",
+    proximos: "O Pecege libera seu acesso de 30 dias na plataforma Solution e avisa você no e-mail informado.",
     abrirFatura: "Abrir a fatura",
     cursos: "Cursos",
     total: "Total",

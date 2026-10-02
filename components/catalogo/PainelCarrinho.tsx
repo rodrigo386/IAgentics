@@ -97,6 +97,7 @@ export function PainelCarrinho({ estado, urlCheckout }: Props) {
                   ))}
                 </ul>
                 {linhaTotal}
+                <p className="text-sm text-fg-muted">{t.carrinho.acesso}</p>
                 {carrinho.cheioCentavos > carrinho.totalCentavos ? (
                   <p className="text-sm text-accent-text">
                     {t.carrinho.economia(formatarReais(carrinho.cheioCentavos - carrinho.totalCentavos))}
