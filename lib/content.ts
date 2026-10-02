@@ -1744,7 +1744,7 @@ export const catalogo = {
   },
   /* Na tela, não só no código: quem abre a prévia precisa saber que a
      cobrança é real, só que pequena. */
-  avisoTeste: "Prévia de teste: preços reduzidos, cobrança real pelo Asaas.",
+  avisoTeste: "Prévia: preços reais, cobrança real pelo Asaas.",
   /* "Monte sua trilha" (2026-09-26): cinco perguntas de um clique que viram
      uma trilha no carrinho. Roda só no navegador e não grava nada — nenhuma
      resposta sai do computador de quem responde. A regra que transforma

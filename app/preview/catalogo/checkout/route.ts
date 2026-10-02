@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { catalogo, site } from "@/lib/content";
-import { calcularPedido, PRECO_TESTE_CENTAVOS, PRECO_TESTE_PACK_CENTAVOS, precosFixos } from "@/lib/catalogo/preco";
+import { calcularPedido, precosFixos } from "@/lib/catalogo/preco";
 import { validarPedido, vencimentoEm } from "@/lib/catalogo/pedido";
 import { anexarCobranca, criarVenda, marcarFalha } from "@/lib/catalogo/vendas";
 import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
@@ -8,11 +8,11 @@ import { criarCliente, criarCobranca, redigirCpfs } from "@/lib/asaas/cliente";
 /**
  * Checkout da PRÉVIA do catálogo.
  *
- * Mora dentro de /preview/catalogo de propósito: é o CAMINHO que fixa o modo
- * "teste" e o preço de R$ 5 — nada do que o navegador manda escolhe isso. Na
- * publicação, /cursos ganha a sua rota com o preço real (e limite de
- * tentativas: sem senha, qualquer um que ache esta rota cria cliente e
- * cobrança no Asaas).
+ * Mora dentro de /preview/catalogo de propósito: é o CAMINHO que fixa preço e
+ * modo — nada do que o navegador manda escolhe isso. Até 2026-10-02 cobrava o
+ * preço de TESTE (R$ 5) com modo "teste"; desde então, a pedido do Rodrigo, o
+ * preço REAL com modo "real" — venda daqui é dinheiro e curso de verdade, e
+ * entra na lista de vendas reais do /admin.
  *
  * Ordem: grava a venda ANTES de falar com o Asaas. Se o Asaas falhar ANTES de
  * criar a cobrança, a venda vira "falhou" e o painel mostra a tentativa. Mas
@@ -38,9 +38,9 @@ export async function POST(request: Request) {
   const { nome, email, telefone, cpf, slugs } = validacao.dados;
 
   const carrinho = calcularPedido(slugs, catalogo.cursos, catalogo.packs, {
-    cursoCentavos: PRECO_TESTE_CENTAVOS,
-    packCentavos: PRECO_TESTE_PACK_CENTAVOS,
-    fixos: precosFixos(catalogo.cursos, "teste"),
+    cursoCentavos: catalogo.precoBaseCentavos,
+    packCentavos: catalogo.packPrecoCentavos,
+    fixos: precosFixos(catalogo.cursos, "real"),
   });
   /* Pack entra na venda como item próprio, com o nome dizendo quantos cursos
      cobre — é o que o Pecege lê no CSV para liberar o nível inteiro. */
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
 
   let id: string;
   try {
-    id = await criarVenda({ nome, email, telefone, itens, totalCentavos: carrinho.totalCentavos, modo: "teste" });
+    id = await criarVenda({ nome, email, telefone, itens, totalCentavos: carrinho.totalCentavos, modo: "real" });
   } catch (erro) {
     // Mensagem fixa: erro do Drizzle inclui a query com nome/email/telefone
     // ("Failed query ... params: ..."), e isso não pode ir para o log.

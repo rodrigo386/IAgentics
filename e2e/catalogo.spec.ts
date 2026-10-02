@@ -60,18 +60,18 @@ test.describe("fluxo de compra", () => {
     const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
     await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
     await expect(barra).toContainText("1 curso");
-    await expect(barra).toContainText(/R\$\s5,00/);
+    await expect(barra).toContainText(/R\$\s200,00/);
 
     // Sem escada de desconto (saiu em 2026-10-02): o segundo custa o mesmo.
     await page.getByRole("button", { name: /^Adicionar Processos e áreas de atuação/ }).click();
-    await expect(barra).toContainText(/R\$\s10,00/);
+    await expect(barra).toContainText(/R\$\s400,00/);
 
     await page.reload();
-    await expect(barra).toContainText(/R\$\s10,00/);
+    await expect(barra).toContainText(/R\$\s400,00/);
 
     await barra.getByRole("button", { name: "Ver carrinho" }).click();
     const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
-    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s10,00/);
+    await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s400,00/);
   });
 
   test("o servidor recusa pedido sem consentimento", async ({ request }) => {
@@ -87,7 +87,7 @@ test.describe("fluxo de compra", () => {
       data: pedido({ totalCentavos: 1, precoCentavos: 1, value: 0.01 }),
     });
     expect(r.status()).toBe(200);
-    expect((await ultimaCobranca(request)).value).toBe(5);
+    expect((await ultimaCobranca(request)).value).toBe(200);
   });
 
   test("compra completa: formulário, fatura, webhook, pedido pago e painel", async ({ page, request }) => {
@@ -110,7 +110,7 @@ test.describe("fluxo de compra", () => {
 
     await expect(page).toHaveURL(/127\.0\.0\.1:4010\/fatura\//);
     const cobranca = await ultimaCobranca(request);
-    expect(cobranca.value).toBe(10);
+    expect(cobranca.value).toBe(400);
     expect(cobranca.billingType).toBe("UNDEFINED");
     const idVenda: string = cobranca.externalReference;
 
@@ -123,13 +123,14 @@ test.describe("fluxo de compra", () => {
     await page.goto(`/preview/catalogo/pedido/${idVenda}`);
     await expect(page.getByRole("status")).toHaveText("Pagamento confirmado");
 
-    await page.goto("/admin?vendas=teste");
+    // Preço real desde 2026-10-02: a venda da prévia entra como REAL no painel.
+    await page.goto("/admin");
     const linha = page.getByRole("row", { name: new RegExp(nome) });
     await expect(linha).toBeVisible();
     await linha.getByRole("button", { name: "Marcar acesso liberado" }).click();
     await expect(page.getByRole("row", { name: new RegExp(nome) }).getByText(/Liberado em/)).toBeVisible();
 
-    const csv = await (await page.request.get("/admin/vendas.csv?modo=teste")).text();
+    const csv = await (await page.request.get("/admin/vendas.csv?modo=real")).text();
     expect(csv).toContain(nome);
     // O CPF foi para o Asaas (falso), e só para ele.
     expect(csv).not.toMatch(/529\.?982\.?247-?25/);
@@ -161,7 +162,8 @@ test("o questionário monta a trilha e abre o carrinho com ela", async ({ page }
   await page.getByRole("button", { name: "Colocar a trilha no carrinho" }).click();
   const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
   await expect(gaveta).toBeVisible();
-  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s15,00/);
+  // Introdutório no lançamento (R$ 19,90) + dois cursos a R$ 200.
+  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s419,90/);
   await expect(page.getByRole("complementary", { name: "Resumo do carrinho" })).toContainText("3 cursos");
 });
 
@@ -187,9 +189,9 @@ test("pack no carrinho cobre o nível e bloqueia o avulso do mesmo nível", asyn
   await expect(barra).toContainText("1 curso");
 
   await page.getByRole("button", { name: "Adicionar pack Intermediário" }).click();
-  // O avulso intermediário saiu; o pack traz os 22 cursos do nível, a R$ 5 na prévia.
+  // O avulso intermediário saiu; o pack traz os 22 cursos do nível, a R$ 99.
   await expect(barra).toContainText("22 cursos");
-  await expect(barra).toContainText(/R\$\s5,00/);
+  await expect(barra).toContainText(/R\$\s99,00/);
   const avulso = page.getByRole("button", { name: /^Adicionar Coleta de Dados · No pack/ }).first();
   await expect(avulso).toBeDisabled();
 
@@ -197,7 +199,7 @@ test("pack no carrinho cobre o nível e bloqueia o avulso do mesmo nível", asyn
   const gaveta = page.getByRole("dialog", { name: "Seu carrinho" });
   await expect(gaveta).toContainText("Pack Intermediário");
   await expect(gaveta).toContainText("22 cursos inclusos");
-  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s5,00/);
+  await expect(gaveta.getByTestId("total")).toHaveText(/R\$\s99,00/);
 });
 
 /* No servidor: pack mais curso do mesmo nível custa só o pack, e a venda
@@ -208,13 +210,12 @@ test("o checkout cobra o pack uma vez só, mesmo com curso do nível junto", asy
   });
   expect(r.status()).toBe(200);
   const cobranca = await ultimaCobranca(request);
-  expect(cobranca.value).toBe(5);
+  expect(cobranca.value).toBe(99);
   expect(cobranca.description).toContain("Pack Intermediário · 22 cursos");
 });
 
-/* Preço próprio de lançamento (2026-10-02): o introdutório mostra o preço
-   dele, com o cheio riscado e o selo — na prévia, R$ 5,00 e R$ 12,54 (a
-   proporção de R$ 19,90 / R$ 49,90). Os outros cursos não mudam de preço. */
+/* Preço próprio de lançamento (2026-10-02): o introdutório mostra R$ 19,90,
+   com R$ 49,90 riscado e o selo. Os outros cursos não mudam de preço. */
 test("o curso introdutório mostra o preço de lançamento", async ({ page }) => {
   await page.goto("/preview/catalogo");
   await page.evaluate(() => localStorage.removeItem("iagentics:carrinho"));
@@ -222,11 +223,11 @@ test("o curso introdutório mostra o preço de lançamento", async ({ page }) =>
 
   const card = page.locator(".vitrine-card", { hasText: "Fundamentos de IA para Negócios" }).first();
   await expect(card).toContainText("Lançamento");
-  await expect(card.locator("s")).toHaveText(/R\$\s12,54/);
-  await card.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios · R\$\s5,00/ }).click();
+  await expect(card.locator("s")).toHaveText(/R\$\s49,90/);
+  await card.getByRole("button", { name: /^Adicionar Fundamentos de IA para Negócios · R\$\s19,90/ }).click();
 
   const barra = page.getByRole("complementary", { name: "Resumo do carrinho" });
   await expect(barra).toContainText("Você economiza R$");
   await page.getByRole("button", { name: /^Adicionar Função Objetivo de Compras/ }).click();
-  await expect(barra).toContainText(/R\$\s10,00/);
+  await expect(barra).toContainText(/R\$\s219,90/);
 });
