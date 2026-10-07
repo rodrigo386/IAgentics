@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { NexoCoverOrquestrador } from "@/components/sections/nexo/CoverOrquestrador";
+import { NexoVideoComercial } from "@/components/sections/nexo/VideoComercial";
 import { NexoCamadas } from "@/components/sections/nexo/Camadas";
 import { NexoAssurance } from "@/components/sections/nexo/Assurance";
 import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
  *
  * Ordem do argumento:
  *   Cover ............ o orquestrador: manchete + grafo dos nove módulos
+ *   VideoComercial ... o Nexo Compras em um minuto (vídeo mudo em loop)
  *   Camadas .......... o que o Nexo É (agentes → orquestração → ambiente)
  *   Assurance ........ onde os dados ficam — pré-requisito, antes de operar
  *   FluxoCompras ..... o módulo de Compras, passo a passo, com as telas
@@ -47,6 +49,7 @@ export default function Page() {
       <Nav />
       <main id="conteudo" className="pt-16">
         <NexoCoverOrquestrador />
+        <NexoVideoComercial />
         <NexoCamadas />
         <NexoAssurance />
         <div id="fluxo-compras">

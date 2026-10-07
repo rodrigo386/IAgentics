@@ -406,6 +406,22 @@ export const nexo = {
         src: "/nexo-fluxo-oc-v1.jpg", w: 1568, h: 688,
       },
     ],
+    /** O passo a passo em vídeo (Nexo_Compras_v11_passo_a_passo, 2026-10-06):
+     *  os mesmos sete passos, com 100 notebooks para o time de TI. */
+    video: {
+      eyebrow: "Passo a passo · 1min29",
+      titulo: "Os sete passos, numa compra só",
+      lead: "100 notebooks para o time de TI, da conversa com a MIA à ordem de compra, passando por cada perfil e por cada agente do Nexo.",
+      src: "/nexo/nexo-passo-a-passo.mp4",
+      label: "Vídeo do passo a passo do Nexo Compras: abertura, triagem, gestor, cotação, mapa, aprovação e ordem de compra.",
+    },
+  },
+  /** Botões dos vídeos da /nexo (VideoVitrine). */
+  controlesVideo: {
+    pausar: "Pausar vídeo",
+    continuar: "Continuar vídeo",
+    ligarSom: "Assistir do começo com som",
+    desligarSom: "Desligar o som",
   },
 } as const;
 
@@ -1186,6 +1202,15 @@ export const photoCredits = [
 --------------------------------------------------------------------------- */
 
 export const nexoPage = {
+  /** Vídeo comercial logo depois da capa (Nexo_Compras_v11_Comercial_60s,
+   *  2026-10-06). Título com as palavras do próprio vídeo. */
+  videoComercial: {
+    eyebrow: "Nexo Compras em 1 minuto",
+    titulo: "Peça. Cote. Autorize.",
+    lead: "A compra inteira em um minuto: o pedido feito em conversa com a MIA, a cotação respondida como no Excel e a aprovação pela faixa de valor. Ninguém aprova a própria demanda.",
+    src: "/nexo/nexo-comercial.mp4",
+    label: "Vídeo comercial do Nexo Compras, com um minuto de duração.",
+  },
   differentiators: {
     title: "Por que o Nexo é diferente",
     items: [

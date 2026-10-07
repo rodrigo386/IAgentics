@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
+import { VideoVitrine } from "@/components/ui/VideoVitrine";
+import posterPassoAPasso from "@/public/nexo/nexo-passo-a-passo-poster.jpg";
 import { nexo } from "@/lib/content";
 
 /**
@@ -125,6 +127,29 @@ export function NexoFluxoCompras() {
             </div>
           </div>
         </div>
+
+        {/* O passo a passo em vídeo (2026-10-06) fecha a esteira: depois de
+            ler os sete passos um a um, a mesma compra corre inteira. Fica
+            DEPOIS da grade, e não dentro do palco sticky, para não disputar a
+            troca de prints que acompanha o scroll. */}
+        <Reveal className="mt-24 border-t border-line-strong pt-10 sm:mt-32">
+          <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-12 lg:gap-x-12">
+            <div className="lg:col-span-4">
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent-text">{nexo.fluxo.video.eyebrow}</p>
+              <h3 className="mt-4 max-w-[18ch] text-3xl font-medium tracking-[-0.03em] text-fg sm:text-4xl">{nexo.fluxo.video.titulo}</h3>
+              <p className="mt-4 max-w-[42ch] leading-relaxed text-fg-muted">{nexo.fluxo.video.lead}</p>
+            </div>
+            <div className="lg:col-span-8">
+              <VideoVitrine
+                className="aspect-video w-full"
+                src={nexo.fluxo.video.src}
+                poster={posterPassoAPasso}
+                label={nexo.fluxo.video.label}
+                textos={nexo.controlesVideo}
+              />
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

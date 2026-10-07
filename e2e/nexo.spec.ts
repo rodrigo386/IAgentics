@@ -85,3 +85,28 @@ test("a faixa de parcerias da capa cabe inteira na primeira tela", async ({ brow
     await contexto.close();
   }
 });
+
+/* Vídeos do Nexo (2026-10-06): mudos em loop, tocando sozinhos quando entram na
+   tela. São narrados, então o botão de som volta ao começo e liga a voz. */
+test("os dois vídeos do Nexo tocam mudos e o botão de som liga a narração do começo", async ({ page }) => {
+  await page.goto("/nexo");
+  const videos = page.locator("video");
+  await expect(videos).toHaveCount(2);
+  await expect(page.locator('video[src="/nexo/nexo-comercial.mp4"]')).toBeAttached();
+  await expect(page.locator('video[src="/nexo/nexo-passo-a-passo.mp4"]')).toBeAttached();
+
+  const secao = page.getByRole("region", { name: "Peça. Cote. Autorize." });
+  const video = secao.locator("video");
+  await video.scrollIntoViewIfNeeded();
+  expect(await video.evaluate((v: HTMLVideoElement) => v.muted && v.loop)).toBe(true);
+  // Toca sozinho ao entrar na tela.
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused)).toBe(true);
+
+  await secao.getByRole("button", { name: "Assistir do começo com som" }).click();
+  expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
+  await expect(secao.getByRole("button", { name: "Desligar o som" })).toHaveAttribute("aria-pressed", "true");
+
+  await secao.getByRole("button", { name: "Pausar vídeo" }).click();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+  await expect(secao.getByRole("button", { name: "Continuar vídeo" })).toBeVisible();
+});
