@@ -31,7 +31,7 @@ A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAge
 
 ## Artigos
 
-- [Artigos](https://iagentics.com.br/artigos): textos sobre IA aplicada a Compras — ROI para o CFO, os sete passos do processo de compras com IA, a diferença entre agente de IA em Compras e agentic commerce, guia de tail spend em português, biblioteca de prompts para Compras e como começar.
+- [Artigos](https://iagentics.com.br/artigos): textos sobre IA aplicada a Compras — ROI para o CFO, os sete passos do processo de compras com IA, a diferença entre agente de IA em Compras e agentic commerce, guia de tail spend em português, biblioteca de prompts para Compras, como começar e o que é mapa de cotação (com uma explicação animada de 30 segundos).
 
 ## Institucional
 

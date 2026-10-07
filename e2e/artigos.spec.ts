@@ -17,9 +17,11 @@ test("a listagem abre, está no menu e leva ao artigo", async ({ page }) => {
   // O link do menu entrou junto com a primeira publicação.
   await expect(page.getByRole("navigation").getByRole("link", { name: "Artigos" }).first()).toBeVisible();
 
-  // O do ROI lidera: é o único com caso real, e todos têm a mesma data.
+  // O mais recente lidera (o do mapa de cotação, 2026-10-07). Entre os cinco
+  // de 2026-08-20, o do ROI vem primeiro: é o único com caso real.
   const titulos = page.getByRole("heading", { level: 2 });
-  await expect(titulos.first()).toContainText("ROI de IA em Compras");
+  await expect(titulos.first()).toContainText("O que é mapa de cotação");
+  await expect(titulos.nth(1)).toContainText("ROI de IA em Compras");
 
   const primeiro = page.getByRole("link", { name: /ROI de IA em Compras/ });
   await primeiro.click();
@@ -83,4 +85,18 @@ test("o artigo declara canonical próprio e og:type de artigo", async ({ page })
   expect(dados.mainEntityOfPage["@id"]).toBe(
     "https://iagentics.com.br/artigos/tail-spend-guia-em-portugues",
   );
+});
+
+/* A primeira explicação animada (2026-10-07): o marcador vira o componente, e
+   os cinco passos são texto de verdade na página. */
+test("o artigo do mapa de cotação traz a explicação animada com os passos em texto", async ({ page }) => {
+  await page.goto("/artigos/o-que-e-mapa-de-cotacao");
+  const explicador = page.locator("figure.explicador");
+  await expect(explicador).toHaveCount(1);
+  await expect(explicador).toContainText("Mapa de cotação em 30 segundos");
+  await expect(explicador.locator("ol li")).toHaveCount(5);
+  // O corpo vem partido no marcador (antes e depois da animação), e o
+  // marcador em si não vira texto em nenhuma das partes.
+  await expect(page.locator(".artigo-corpo")).toHaveCount(2);
+  for (const parte of await page.locator(".artigo-corpo").all()) await expect(parte).not.toContainText("explicador:");
 });

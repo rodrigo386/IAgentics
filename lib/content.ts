@@ -1237,36 +1237,6 @@ export const photoCredits = [
 --------------------------------------------------------------------------- */
 
 export const nexoPage = {
-  /** "Uma tela, a compra inteira" (2026-10-07, pedido do Rodrigo, padrão
-   *  "morphing UI states" do prompt-motion.com): a MESMA tela passa de RC para
-   *  cotação e depois para aprovação, em CSS puro, antes do vídeo do fluxo.
-   *  Os dados são os da demonstração do passo a passo (RC-2026-0417). */
-  telaViva: {
-    eyebrow: "Uma tela, a compra inteira",
-    titulo: "A mesma requisição, do pedido à aprovação",
-    lead: "No Nexo a RC não vira e-mail nem planilha paralela. É o mesmo registro que recebe a cotação, o mapa e a aprovação, com a trilha inteira guardada.",
-    resumo: "Animação da requisição RC-2026-0417 mudando de estado: primeiro a requisição com quatro itens e a aprovadora indicada, depois a cotação com os preços de três fornecedores, por fim a aprovação da seleção de R$ 493.360,00 pelo diretor financeiro.",
-    pausar: "Pausar animação",
-    continuar: "Continuar animação",
-    rc: "RC-2026-0417",
-    estados: ["Requisição", "Cotação", "Aprovação"],
-    colunas: { item: "Item", qtd: "Qtd", fornecedores: ["TechCorp", "Compugraf", "Acess. Prime"] },
-    itens: [
-      { nome: "Notebook 14\"", qtd: "100", precos: ["4.380,00", "4.410,00", "4.520,00"], melhor: 0 },
-      { nome: "Mouse sem fio", qtd: "100", precos: ["62,90", "58,00", "—"], melhor: 1 },
-      { nome: "Dock USB-C", qtd: "40", precos: ["—", "310,00", "335,00"], melhor: 1 },
-      { nome: "Monitor 24\"", qtd: "40", precos: ["899,00", "—", "872,00"], melhor: 2 },
-    ],
-    aprovadoraRc: "Aprovadora indicada: Ana Ribeiro · Gerente de TI",
-    rotuloCotacao: "3 propostas · melhor preço por item em destaque",
-    aprovacao: {
-      rotulo: "Seleção · faixa acima de R$ 250 mil",
-      total: "R$ 493.360,00",
-      divisao: "TechCorp R$ 298.760 · Compugraf R$ 194.600",
-      aprovador: "Carlos Prado · Diretor Financeiro",
-      botao: "Aprovar seleção",
-    },
-  },
   /** Vídeo comercial logo depois da capa (Nexo_Compras_v11_Comercial_60s,
    *  2026-10-06). Título com as palavras do próprio vídeo. */
   videoComercial: {

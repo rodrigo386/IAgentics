@@ -1735,14 +1735,15 @@ dialog.gaveta.gaveta-centro[open] {
 }
 
 /* ---------------------------------------------------------------------------
-   TELA VIVA (/nexo) E EXPLICADORES DOS ARTIGOS (2026-10-07)
+   EXPLICADORES DOS ARTIGOS (2026-10-07)
 
-   Os dois são laços em CSS puro, no padrão "morphing UI states" / "explainer"
-   do prompt-motion.com: a MESMA tela ganha e perde camadas, nada é trocado.
+   Laço em CSS puro, no padrão "explainer" do prompt-motion.com: a MESMA tabela
+   ganha camadas, nada é trocado. (A "tela viva" da /nexo, no mesmo padrão,
+   saiu no mesmo dia: o Rodrigo achou que poluía a página.)
 
    Regra da casa, a mesma do "Como funciona" da vitrine: o estado SEM animação
    é o completo. Fora do bloco no-preference, tudo aparece de uma vez (preços,
-   resumo, destaques, totais, a lista de passos); a animação só esconde e acende
+   destaques, totais, a lista de passos); a animação só esconde e acende
    na ordem. Atrasos negativos (i*passo - ciclo) fazem cada peça nascer na sua
    fase já no primeiro quadro.
 
@@ -1753,16 +1754,7 @@ dialog.gaveta.gaveta-centro[open] {
   animation-play-state: paused !important;
 }
 
-/* Estado parado (e de quem pediu menos movimento): a compra inteira. */
-.tv-tabela,
-.tv-resumo {
-  grid-template-rows: 1fr;
-}
-.tv-estado:not(:last-child),
-.tv-nota-rc {
-  opacity: 0;
-}
-.tv-melhor,
+/* Estado parado (e de quem pediu menos movimento): o mapa completo. */
 .exp-melhor {
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--fg);
@@ -1773,47 +1765,6 @@ dialog.gaveta.gaveta-centro[open] {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* --- Tela viva: 12 s, quatro por estado --- */
-  .tv-estado,
-  .tv-estado:not(:last-child) {
-    animation: tv-janela 12s ease-in-out infinite both;
-    animation-delay: calc(var(--i, 0) * 4s - 12s);
-  }
-  .tv-legenda {
-    animation: tv-legenda 12s ease-in-out infinite both;
-    animation-delay: calc(var(--i, 0) * 4s - 12s);
-  }
-  .tv-degrau-0 { animation: tv-degrau-0 12s linear infinite both; }
-  .tv-degrau-1 { animation: tv-degrau-1 12s linear infinite both; }
-  .tv-degrau-2 { animation: tv-degrau-2 12s linear infinite both; }
-  .tv-preco {
-    animation: tv-preco 12s ease-out infinite both;
-    animation-delay: calc(var(--j, 0) * 0.12s);
-  }
-  /* A célula de melhor preço tem as DUAS animações: entrar com os preços e
-     acender depois. Uma regra `animation` sozinha substituiria a outra — foi
-     o que fez os melhores preços aparecerem já na requisição. */
-  .tv-preco.tv-melhor {
-    animation:
-      tv-preco 12s ease-out infinite both,
-      tv-melhor 12s ease-out infinite both;
-    animation-delay: calc(var(--j, 0) * 0.12s), 0s;
-  }
-  .tv-nota-rc {
-    animation: tv-nota-rc 12s ease-in-out infinite both;
-  }
-  .tv-nota-cot {
-    animation: tv-nota-cot 12s ease-in-out infinite both;
-  }
-  .tv-tabela {
-    animation: tv-tabela 12s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
-  }
-  .tv-resumo {
-    animation: tv-resumo 12s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
-  }
-  .tv-botao {
-    animation: tv-botao 12s ease-out infinite both;
-  }
 
   /* --- Explicador: 30 s, seis por passo --- */
   .exp-legenda {
@@ -1854,70 +1805,10 @@ dialog.gaveta.gaveta-centro[open] {
   }
 }
 
-@keyframes tv-janela {
-  0%, 30% { opacity: 1; filter: blur(0); }
-  33.3%, 97% { opacity: 0; filter: blur(4px); }
-  100% { opacity: 1; filter: blur(0); }
-}
-@keyframes tv-legenda {
-  0%, 30% { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-  33.3%, 97% { border-color: var(--line-strong); background: transparent; }
-  100% { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-}
 /* Cada degrau tem o próprio keyframe (sem atraso): enche na sua vez, fica
    cheio até o fim do laço e esvazia junto com os outros no recomeço. Com um
    keyframe só e atraso negativo, o degrau 2 ainda estaria cheio enquanto o 1
    recomeça. */
-@keyframes tv-degrau-0 {
-  0% { transform: scaleX(0); }
-  25%, 97% { transform: scaleX(1); }
-  100% { transform: scaleX(0); }
-}
-@keyframes tv-degrau-1 {
-  0%, 33.3% { transform: scaleX(0); }
-  58%, 97% { transform: scaleX(1); }
-  100% { transform: scaleX(0); }
-}
-@keyframes tv-degrau-2 {
-  0%, 66.6% { transform: scaleX(0); }
-  91%, 97% { transform: scaleX(1); }
-  100% { transform: scaleX(0); }
-}
-@keyframes tv-preco {
-  0%, 33% { opacity: 0; translate: 12px 0; }
-  38%, 97% { opacity: 1; translate: 0 0; }
-  100% { opacity: 0; translate: 12px 0; }
-}
-@keyframes tv-melhor {
-  0%, 44% { background: transparent; }
-  48%, 97% { background: color-mix(in srgb, var(--accent) 14%, transparent); }
-  100% { background: transparent; }
-}
-@keyframes tv-nota-rc {
-  0%, 30% { opacity: 1; }
-  33%, 97% { opacity: 0; }
-  100% { opacity: 1; }
-}
-@keyframes tv-nota-cot {
-  0%, 34% { opacity: 0; }
-  38%, 97% { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes tv-tabela {
-  0%, 64% { grid-template-rows: 1fr; opacity: 1; }
-  70%, 97% { grid-template-rows: 0fr; opacity: 0; }
-  100% { grid-template-rows: 1fr; opacity: 1; }
-}
-@keyframes tv-resumo {
-  0%, 64% { grid-template-rows: 0fr; opacity: 0; }
-  70%, 97% { grid-template-rows: 1fr; opacity: 1; }
-  100% { grid-template-rows: 0fr; opacity: 0; }
-}
-@keyframes tv-botao {
-  0%, 84% { scale: 1; }
-  86% { scale: 0.94; }
-  89%, 100% { scale: 1; }
-}
 
 @keyframes exp-janela {
   0%, 18% { opacity: 1; filter: blur(0); translate: 0 0; }

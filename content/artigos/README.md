@@ -170,11 +170,12 @@ McKinsey, que aparece em vários blogs brasileiros. Não consegui rastrear até 
 publicação original. Número não rastreado não entra em texto assinado pela
 IAgentics.
 
-### `o-que-e-mapa-de-cotacao` (rascunho, 2026-10-07)
+### `o-que-e-mapa-de-cotacao` (publicado em 2026-10-07)
 
 Escrito por mim, a pedido do Rodrigo, junto com a primeira explicação animada
 ("Mapa de cotação em 30 segundos", marcador `<!-- explicador:mapa-de-cotacao -->`).
-Está em **rascunho** e não aparece no site. Antes de publicar, vale ele conferir:
+**Publicado no mesmo dia, por chamada do Rodrigo.** Ficam registrados os pontos
+que eram para conferir antes:
 
 - **O exemplo é fictício** (fornecedores A, B e C), mas as contas fecham: só o C
   cotou tudo (R$ 500.280), o melhor de cada linha soma R$ 485.280.

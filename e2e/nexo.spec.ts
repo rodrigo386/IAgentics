@@ -141,19 +141,3 @@ test("os módulos de Na prática mostram o filme no lugar das telas", async ({ p
   // Nenhum dos prints antigos aparece (as imagens que restam são as capas dos vídeos).
   await expect(page.locator(["logistico-rota", "logistico-ocupacao", "varejo-painel", "varejo-faixa", "nf-visao-geral", "nf-recomendacoes"].map((n) => `#na-pratica img[src*='${n}']`).join(", "))).toHaveCount(0);
 });
-
-/* "Uma tela, a compra inteira" (2026-10-07): a mesma RC passa de requisição a
-   cotação e aprovação em CSS puro, com botão de pausa (WCAG 2.2.2) e um resumo
-   em texto para quem não vê a animação. */
-test("a tela viva mostra a RC nos três estados e pode ser pausada", async ({ page }) => {
-  await page.goto("/nexo");
-  const bloco = page.getByRole("region", { name: "A mesma requisição, do pedido à aprovação" });
-  await expect(bloco).toContainText("RC-2026-0417");
-  await expect(bloco).toContainText(/Animação da requisição RC-2026-0417/);
-  for (const estado of ["Requisição", "Cotação", "Aprovação"]) await expect(bloco.getByText(estado).first()).toBeAttached();
-  const moldura = bloco.locator(".animacao-laco");
-  await bloco.getByRole("button", { name: "Pausar animação" }).click();
-  await expect(moldura).toHaveAttribute("data-pausado", "true");
-  await bloco.getByRole("button", { name: "Continuar animação" }).click();
-  await expect(moldura).not.toHaveAttribute("data-pausado", "true");
-});

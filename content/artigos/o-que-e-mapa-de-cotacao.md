@@ -6,7 +6,7 @@ data: 2026-10-07
 autor: "IAgentics"
 categoria: "Processo de Compras"
 produto: "nexo"
-status: "rascunho"
+status: "publicado"
 ---
 
 **Mapa de cotação** — também chamado de mapa comparativo ou quadro comparativo
