@@ -4,6 +4,7 @@ import { NexoCoverOrquestrador } from "@/components/sections/nexo/CoverOrquestra
 import { NexoVideoComercial } from "@/components/sections/nexo/VideoComercial";
 import { NexoCamadas } from "@/components/sections/nexo/Camadas";
 import { NexoAssurance } from "@/components/sections/nexo/Assurance";
+import { NexoTelaViva } from "@/components/sections/nexo/TelaViva";
 import { NexoFluxoCompras } from "@/components/sections/nexo/FluxoCompras";
 import { NexoNaPratica } from "@/components/sections/nexo/NaPratica";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
  *   VideoComercial ... o Nexo Compras em um minuto (vídeo mudo em loop)
  *   Camadas .......... o que o Nexo É (agentes → orquestração → ambiente)
  *   Assurance ........ onde os dados ficam — pré-requisito, antes de operar
+ *   TelaViva ......... a mesma RC virando cotação e aprovação (CSS puro)
  *   FluxoCompras ..... o módulo de Compras, passo a passo, com as telas
  *   NaPratica ........ os outros quatro módulos com prova, no formato do pitch
  *   Differentiators .. por que é diferente
@@ -52,6 +54,7 @@ export default function Page() {
         <NexoVideoComercial />
         <NexoCamadas />
         <NexoAssurance />
+        <NexoTelaViva />
         <div id="fluxo-compras">
           <NexoFluxoCompras />
         </div>

@@ -1733,3 +1733,239 @@ dialog.gaveta.gaveta-centro[open] {
   transform: none;
   box-shadow: none;
 }
+
+/* ---------------------------------------------------------------------------
+   TELA VIVA (/nexo) E EXPLICADORES DOS ARTIGOS (2026-10-07)
+
+   Os dois são laços em CSS puro, no padrão "morphing UI states" / "explainer"
+   do prompt-motion.com: a MESMA tela ganha e perde camadas, nada é trocado.
+
+   Regra da casa, a mesma do "Como funciona" da vitrine: o estado SEM animação
+   é o completo. Fora do bloco no-preference, tudo aparece de uma vez (preços,
+   resumo, destaques, totais, a lista de passos); a animação só esconde e acende
+   na ordem. Atrasos negativos (i*passo - ciclo) fazem cada peça nascer na sua
+   fase já no primeiro quadro.
+
+   [data-pausado] vem do PausaAnimacao (botão de pausa, WCAG 2.2.2).
+--------------------------------------------------------------------------- */
+.animacao-laco[data-pausado] *,
+.animacao-laco[data-pausado] *::before {
+  animation-play-state: paused !important;
+}
+
+/* Estado parado (e de quem pediu menos movimento): a compra inteira. */
+.tv-tabela,
+.tv-resumo {
+  grid-template-rows: 1fr;
+}
+.tv-estado:not(:last-child),
+.tv-nota-rc {
+  opacity: 0;
+}
+.tv-melhor,
+.exp-melhor {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--fg);
+  font-weight: 500;
+}
+.exp-legenda {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* --- Tela viva: 12 s, quatro por estado --- */
+  .tv-estado,
+  .tv-estado:not(:last-child) {
+    animation: tv-janela 12s ease-in-out infinite both;
+    animation-delay: calc(var(--i, 0) * 4s - 12s);
+  }
+  .tv-legenda {
+    animation: tv-legenda 12s ease-in-out infinite both;
+    animation-delay: calc(var(--i, 0) * 4s - 12s);
+  }
+  .tv-degrau-0 { animation: tv-degrau-0 12s linear infinite both; }
+  .tv-degrau-1 { animation: tv-degrau-1 12s linear infinite both; }
+  .tv-degrau-2 { animation: tv-degrau-2 12s linear infinite both; }
+  .tv-preco {
+    animation: tv-preco 12s ease-out infinite both;
+    animation-delay: calc(var(--j, 0) * 0.12s);
+  }
+  /* A célula de melhor preço tem as DUAS animações: entrar com os preços e
+     acender depois. Uma regra `animation` sozinha substituiria a outra — foi
+     o que fez os melhores preços aparecerem já na requisição. */
+  .tv-preco.tv-melhor {
+    animation:
+      tv-preco 12s ease-out infinite both,
+      tv-melhor 12s ease-out infinite both;
+    animation-delay: calc(var(--j, 0) * 0.12s), 0s;
+  }
+  .tv-nota-rc {
+    animation: tv-nota-rc 12s ease-in-out infinite both;
+  }
+  .tv-nota-cot {
+    animation: tv-nota-cot 12s ease-in-out infinite both;
+  }
+  .tv-tabela {
+    animation: tv-tabela 12s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
+  }
+  .tv-resumo {
+    animation: tv-resumo 12s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
+  }
+  .tv-botao {
+    animation: tv-botao 12s ease-out infinite both;
+  }
+
+  /* --- Explicador: 30 s, seis por passo --- */
+  .exp-legenda {
+    display: grid;
+  }
+  .exp-lista {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .exp-janela {
+    animation: exp-janela 30s ease-in-out infinite both;
+    animation-delay: calc(var(--i, 0) * 6s - 30s);
+  }
+  .exp-degrau-0 { animation: exp-degrau-0 30s linear infinite both; }
+  .exp-degrau-1 { animation: exp-degrau-1 30s linear infinite both; }
+  .exp-degrau-2 { animation: exp-degrau-2 30s linear infinite both; }
+  .exp-degrau-3 { animation: exp-degrau-3 30s linear infinite both; }
+  .exp-degrau-4 { animation: exp-degrau-4 30s linear infinite both; }
+  .exp-a2 {
+    animation: exp-a2 30s ease-out infinite both;
+    animation-delay: calc(var(--j, 0) * 0.15s);
+  }
+  .exp-a2.exp-melhor {
+    animation:
+      exp-a2 30s ease-out infinite both,
+      exp-a3 30s ease-out infinite both;
+    animation-delay: calc(var(--j, 0) * 0.15s), 0s;
+  }
+  .exp-a4 {
+    animation: exp-a4 30s ease-out infinite both;
+  }
+  .exp-a5 {
+    animation: exp-a5 30s ease-out infinite both;
+  }
+}
+
+@keyframes tv-janela {
+  0%, 30% { opacity: 1; filter: blur(0); }
+  33.3%, 97% { opacity: 0; filter: blur(4px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+@keyframes tv-legenda {
+  0%, 30% { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  33.3%, 97% { border-color: var(--line-strong); background: transparent; }
+  100% { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+}
+/* Cada degrau tem o próprio keyframe (sem atraso): enche na sua vez, fica
+   cheio até o fim do laço e esvazia junto com os outros no recomeço. Com um
+   keyframe só e atraso negativo, o degrau 2 ainda estaria cheio enquanto o 1
+   recomeça. */
+@keyframes tv-degrau-0 {
+  0% { transform: scaleX(0); }
+  25%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes tv-degrau-1 {
+  0%, 33.3% { transform: scaleX(0); }
+  58%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes tv-degrau-2 {
+  0%, 66.6% { transform: scaleX(0); }
+  91%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes tv-preco {
+  0%, 33% { opacity: 0; translate: 12px 0; }
+  38%, 97% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 12px 0; }
+}
+@keyframes tv-melhor {
+  0%, 44% { background: transparent; }
+  48%, 97% { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  100% { background: transparent; }
+}
+@keyframes tv-nota-rc {
+  0%, 30% { opacity: 1; }
+  33%, 97% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes tv-nota-cot {
+  0%, 34% { opacity: 0; }
+  38%, 97% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes tv-tabela {
+  0%, 64% { grid-template-rows: 1fr; opacity: 1; }
+  70%, 97% { grid-template-rows: 0fr; opacity: 0; }
+  100% { grid-template-rows: 1fr; opacity: 1; }
+}
+@keyframes tv-resumo {
+  0%, 64% { grid-template-rows: 0fr; opacity: 0; }
+  70%, 97% { grid-template-rows: 1fr; opacity: 1; }
+  100% { grid-template-rows: 0fr; opacity: 0; }
+}
+@keyframes tv-botao {
+  0%, 84% { scale: 1; }
+  86% { scale: 0.94; }
+  89%, 100% { scale: 1; }
+}
+
+@keyframes exp-janela {
+  0%, 18% { opacity: 1; filter: blur(0); translate: 0 0; }
+  20%, 97% { opacity: 0; filter: blur(6px); translate: 0 -6px; }
+  100% { opacity: 1; filter: blur(0); translate: 0 0; }
+}
+@keyframes exp-degrau-0 {
+  0% { transform: scaleX(0); }
+  19%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes exp-degrau-1 {
+  0%, 20% { transform: scaleX(0); }
+  39%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes exp-degrau-2 {
+  0%, 40% { transform: scaleX(0); }
+  59%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes exp-degrau-3 {
+  0%, 60% { transform: scaleX(0); }
+  79%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes exp-degrau-4 {
+  0%, 80% { transform: scaleX(0); }
+  99%, 97% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes exp-a2 {
+  0%, 20% { opacity: 0; translate: 0 8px; }
+  23%, 97% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 0 8px; }
+}
+@keyframes exp-a3 {
+  0%, 40% { background: transparent; font-weight: 400; }
+  43%, 97% { background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 500; }
+  100% { background: transparent; font-weight: 400; }
+}
+@keyframes exp-a4 {
+  0%, 60% { opacity: 0; translate: 0 8px; }
+  63%, 97% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 0 8px; }
+}
+@keyframes exp-a5 {
+  0%, 80% { opacity: 0; translate: 0 8px; }
+  83%, 97% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 0 8px; }
+}

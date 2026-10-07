@@ -7,6 +7,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { artigos as t } from "@/lib/content";
 import { ogDoArtigo, artigoJsonLd } from "@/lib/seo";
 import { todosOsArtigos, artigoPorSlug, dataPorExtenso } from "@/lib/artigos";
+import { EXPLICADORES } from "@/components/artigos/explicadores";
+import { MARCADOR_EXPLICADOR, IDS_EXPLICADORES, type IdExplicador } from "@/lib/explicadores";
 
 /**
  * Um artigo.
@@ -109,10 +111,21 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 repositório — não de campo digitado por usuário. A estilização
                 mora em `.artigo-corpo` (globals.css) porque markdown
                 renderizado não passa por className: as tags nascem do parser. */}
-            <div
-              className="artigo-corpo lg:col-span-8 lg:col-start-5"
-              dangerouslySetInnerHTML={{ __html: artigo.html }}
-            />
+            <div className="lg:col-span-8 lg:col-start-5">
+              {/* O corpo é partido nos marcadores `<!-- explicador:id -->`:
+                  as partes ímpares do split são os ids, as pares são HTML. */}
+              {artigo.html.split(new RegExp(MARCADOR_EXPLICADOR.source, "g")).map((parte, i) => {
+                if (i % 2 === 0) {
+                  return parte.trim() ? <div key={i} className="artigo-corpo mt-6 first:mt-0" dangerouslySetInnerHTML={{ __html: parte }} /> : null;
+                }
+                const Explicador = (IDS_EXPLICADORES as readonly string[]).includes(parte) ? EXPLICADORES[parte as IdExplicador] : null;
+                return Explicador ? (
+                  <div key={i} className="my-12">
+                    <Explicador />
+                  </div>
+                ) : null;
+              })}
+            </div>
           </div>
         </article>
       </main>

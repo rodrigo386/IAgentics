@@ -3,6 +3,7 @@ import { join } from "node:path";
 import matter from "gray-matter";
 import { describe, it, expect } from "vitest";
 import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown } from "@/lib/artigos";
+import { IDS_EXPLICADORES, MARCADOR_EXPLICADOR } from "@/lib/explicadores";
 
 const DIRETORIO = join(process.cwd(), "content", "artigos");
 
@@ -57,6 +58,23 @@ describe("frontmatter de todos os artigos (inclusive rascunhos)", () => {
     const descricao = String(frontmatter(arquivo).descricao);
     expect(descricao.length).toBeGreaterThanOrEqual(70);
     expect(descricao.length).toBeLessThanOrEqual(200);
+  });
+});
+
+/* Explicação animada chamada por `<!-- explicador:id -->` (2026-10-07): um id
+   sem componente não quebra a página — ela simplesmente pula o marcador —, e
+   é por isso que o teste existe: o buraco no meio do texto seria silencioso. */
+describe("explicadores nos artigos", () => {
+  it.each(arquivos)("%s só chama explicadores que existem", (arquivo) => {
+    const corpo = matter(readFileSync(join(DIRETORIO, arquivo), "utf8")).content;
+    const ids = [...corpo.matchAll(new RegExp(MARCADOR_EXPLICADOR.source, "g"))].map((m) => m[1]);
+    for (const id of ids) expect(IDS_EXPLICADORES).toContain(id);
+  });
+
+  it("o marcador atravessa o markdown como comentário, sem virar texto", () => {
+    const html = renderizarMarkdown("Antes.\n\n<!-- explicador:mapa-de-cotacao -->\n\nDepois.");
+    expect(html).toMatch(MARCADOR_EXPLICADOR);
+    expect(html).not.toContain("<p><!--");
   });
 });
 

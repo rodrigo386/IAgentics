@@ -1147,6 +1147,38 @@ export const footer = {
    O que está aqui é a moldura: título da listagem, rótulos e estado vazio.
 --------------------------------------------------------------------------- */
 
+/** Explicações animadas dentro dos artigos (2026-10-07, pedido do Rodrigo,
+ *  estilo "explainer" do prompt-motion.com). Entram no corpo pelo marcador
+ *  `<!-- explicador:<id> -->` no markdown. O texto de cada passo é texto de
+ *  verdade na página: buscador e leitor de tela leem tudo, a animação só
+ *  acende um passo de cada vez. */
+export const explicadores = {
+  pausar: "Pausar explicação",
+  continuar: "Continuar explicação",
+  mapaDeCotacao: {
+    titulo: "Mapa de cotação em 30 segundos",
+    rotuloPasso: (n: number, total: number) => `${n} de ${total}`,
+    passos: [
+      "Tudo começa numa requisição: três itens, com quantidade.",
+      "Cada fornecedor responde a mesma lista. Quem não tem o item deixa em branco.",
+      "O mapa põe as propostas lado a lado e destaca o melhor preço de cada linha.",
+      "Só o fornecedor C cotou tudo: R$ 500.280. O melhor de cada linha soma R$ 485.280, R$ 15.000 a menos.",
+      "Preço não decide sozinho: o prazo entra no mapa, e o motivo da escolha fica registrado.",
+    ],
+    colunas: { item: "Item", qtd: "Qtd", fornecedores: ["Fornecedor A", "Fornecedor B", "Fornecedor C"] },
+    itens: [
+      { nome: "Notebook 14\"", qtd: "100", precos: ["4.380", "4.410", "4.520"], melhor: 0 },
+      { nome: "Monitor 24\"", qtd: "40", precos: ["899", "—", "872"], melhor: 2 },
+      { nome: "Dock USB-C", qtd: "40", precos: ["—", "310", "335"], melhor: 1 },
+    ],
+    totais: { rotulo: "Total cotado", valores: ["R$ 473.960", "R$ 453.400", "R$ 500.280"], completo: 2, nota: "cotou todos os itens" },
+    combinacao: { rotulo: "Melhor de cada linha", valor: "R$ 485.280", economia: "R$ 15.000 a menos que o único fornecedor completo" },
+    prazo: { rotulo: "Prazo", valores: ["15 dias", "7 dias", "25 dias"] },
+    motivo: "Motivo registrado: o monitor do fornecedor C chega em 25 dias e cabe no prazo da RC, de 30.",
+    notaUnidade: "Preços unitários em R$.",
+  },
+} as const;
+
 export const artigos = {
   /* `meta` é o que vai para <title> e <meta description>; `hero.titulo` é o
      H1 na tela, e os dois NÃO são a mesma coisa. Na página, "Artigos" basta:
@@ -1205,6 +1237,36 @@ export const photoCredits = [
 --------------------------------------------------------------------------- */
 
 export const nexoPage = {
+  /** "Uma tela, a compra inteira" (2026-10-07, pedido do Rodrigo, padrão
+   *  "morphing UI states" do prompt-motion.com): a MESMA tela passa de RC para
+   *  cotação e depois para aprovação, em CSS puro, antes do vídeo do fluxo.
+   *  Os dados são os da demonstração do passo a passo (RC-2026-0417). */
+  telaViva: {
+    eyebrow: "Uma tela, a compra inteira",
+    titulo: "A mesma requisição, do pedido à aprovação",
+    lead: "No Nexo a RC não vira e-mail nem planilha paralela. É o mesmo registro que recebe a cotação, o mapa e a aprovação, com a trilha inteira guardada.",
+    resumo: "Animação da requisição RC-2026-0417 mudando de estado: primeiro a requisição com quatro itens e a aprovadora indicada, depois a cotação com os preços de três fornecedores, por fim a aprovação da seleção de R$ 493.360,00 pelo diretor financeiro.",
+    pausar: "Pausar animação",
+    continuar: "Continuar animação",
+    rc: "RC-2026-0417",
+    estados: ["Requisição", "Cotação", "Aprovação"],
+    colunas: { item: "Item", qtd: "Qtd", fornecedores: ["TechCorp", "Compugraf", "Acess. Prime"] },
+    itens: [
+      { nome: "Notebook 14\"", qtd: "100", precos: ["4.380,00", "4.410,00", "4.520,00"], melhor: 0 },
+      { nome: "Mouse sem fio", qtd: "100", precos: ["62,90", "58,00", "—"], melhor: 1 },
+      { nome: "Dock USB-C", qtd: "40", precos: ["—", "310,00", "335,00"], melhor: 1 },
+      { nome: "Monitor 24\"", qtd: "40", precos: ["899,00", "—", "872,00"], melhor: 2 },
+    ],
+    aprovadoraRc: "Aprovadora indicada: Ana Ribeiro · Gerente de TI",
+    rotuloCotacao: "3 propostas · melhor preço por item em destaque",
+    aprovacao: {
+      rotulo: "Seleção · faixa acima de R$ 250 mil",
+      total: "R$ 493.360,00",
+      divisao: "TechCorp R$ 298.760 · Compugraf R$ 194.600",
+      aprovador: "Carlos Prado · Diretor Financeiro",
+      botao: "Aprovar seleção",
+    },
+  },
   /** Vídeo comercial logo depois da capa (Nexo_Compras_v11_Comercial_60s,
    *  2026-10-06). Título com as palavras do próprio vídeo. */
   videoComercial: {

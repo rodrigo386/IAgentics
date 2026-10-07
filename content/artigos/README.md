@@ -169,3 +169,17 @@ Só entrou número rastreado até a fonte primária ou institucional:
 McKinsey, que aparece em vários blogs brasileiros. Não consegui rastrear até a
 publicação original. Número não rastreado não entra em texto assinado pela
 IAgentics.
+
+### `o-que-e-mapa-de-cotacao` (rascunho, 2026-10-07)
+
+Escrito por mim, a pedido do Rodrigo, junto com a primeira explicação animada
+("Mapa de cotação em 30 segundos", marcador `<!-- explicador:mapa-de-cotacao -->`).
+Está em **rascunho** e não aparece no site. Antes de publicar, vale ele conferir:
+
+- **O exemplo é fictício** (fornecedores A, B e C), mas as contas fecham: só o C
+  cotou tudo (R$ 500.280), o melhor de cada linha soma R$ 485.280.
+- **"Muitas empresas adotam três cotações como regra interna"** é afirmação de
+  prática de mercado, não de lei — de propósito, para não entrar em compras
+  públicas.
+- **O que a IA faz no mapa** descreve o que o vídeo do passo a passo do Nexo
+  mostra (comparação item a item e sugestão de combinação), sem prometer mais.
