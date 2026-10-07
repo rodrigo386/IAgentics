@@ -64,7 +64,7 @@ test("as soluções trocam o filme do palco", async ({ page }) => {
   await expect(filmes).toHaveCount(3);
   await sec.scrollIntoViewIfNeeded();
   await sec.locator('a[href="/academy"]').hover();
-  await expect(sec.locator('video[src="/solucoes/solucao-academy.mp4"]')).toHaveClass(/opacity-100/);
+  await expect(sec.locator('video[src="/solucoes/solucao-academy-v2.mp4"]')).toHaveClass(/opacity-100/);
   await expect(sec.locator('video[src="/solucoes/solucao-nexo.mp4"]')).toHaveClass(/opacity-0/);
-  await expect.poll(() => sec.locator('video[src="/solucoes/solucao-academy.mp4"]').evaluate((v: HTMLVideoElement) => !v.paused)).toBe(true);
+  await expect.poll(() => sec.locator('video[src="/solucoes/solucao-academy-v2.mp4"]').evaluate((v: HTMLVideoElement) => !v.paused)).toBe(true);
 });

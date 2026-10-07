@@ -305,8 +305,8 @@ export const solutions = {
     {
       id: "academy",
       /** Loop do palco da home (remotion/home-solucoes, 2026-10-07). */
-      filme: "/solucoes/solucao-academy.mp4",
-      capa: "/solucoes/solucao-academy-poster.jpg",
+      filme: "/solucoes/solucao-academy-v2.mp4",
+      capa: "/solucoes/solucao-academy-v2-poster.jpg",
       name: "Academy",
       promise: "Capacitação para você e sua equipe",
       platform: "Escola de negócios de IA",

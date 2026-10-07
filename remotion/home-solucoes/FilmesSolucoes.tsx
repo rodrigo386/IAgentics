@@ -106,21 +106,24 @@ export function FilmeSolucaoNexo() {
 
 /* --------------------------------------------------------- Academy --- */
 
-/** A equipe se capacitando: anéis de progresso enchem em onda; os formatos
- *  acendem um por vez. A onda enche até 6 s e esvazia até 8 s. */
+/** A empresa se capacitando: cada área da empresa (um cartão com ícone de
+ *  pessoa e o nome da área) enche a barra de progresso em onda e ganha o
+ *  "concluído"; os formatos acendem um por vez. A onda enche até 6 s e
+ *  esvazia até 8 s. Eram iniciais de pessoas (AR, CP…) — o Rodrigo apontou
+ *  que sigla solta não diz nada a quem vê, e área diz. */
+const AREAS = ["Compras", "Financeiro", "RH", "Jurídico", "Comercial", "Marketing", "Operações", "TI", "Diretoria"];
+
 export function FilmeSolucaoAcademy() {
   const t = useT();
   const formatos = sol("academy").scope;
-  const colunas = 5;
-  const linhas = 3;
-  const iniciais = ["AR", "CP", "FL", "LP", "MS", "RB", "TC", "JV", "GA", "PN", "DS", "KM", "VO", "BE", "HN"];
-  const raio = 62;
-  const circ = 2 * Math.PI * raio;
+  const colunas = 3;
   const fmt = Math.floor((t / DURACAO_SOLUCAO) * formatos.length) % formatos.length;
+  const largura = 380;
+  const gap = 28;
 
   return (
     <AbsoluteFill style={{ background: C.papel, fontFamily: FONTE }}>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 150, display: "flex", justifyContent: "center", gap: 22 }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 230, display: "flex", justifyContent: "center", gap: 22 }}>
         {formatos.map((f, i) => (
           <div
             key={f}
@@ -137,37 +140,41 @@ export function FilmeSolucaoAcademy() {
           </div>
         ))}
       </div>
-      <div style={{ position: "absolute", left: (W - colunas * 210) / 2, top: 360, display: "grid", gridTemplateColumns: `repeat(${colunas}, 210px)`, rowGap: 40 }}>
-        {Array.from({ length: colunas * linhas }).map((_, i) => {
+      <div style={{ position: "absolute", left: (W - colunas * largura - (colunas - 1) * gap) / 2, top: 400, display: "grid", gridTemplateColumns: `repeat(${colunas}, ${largura}px)`, gap }}>
+        {AREAS.map((area, i) => {
           const col = i % colunas;
           const lin = Math.floor(i / colunas);
-          const atraso = (col + lin) * 0.28;
-          const enche = entrada(prog(t, 0.3 + atraso, 1.6));
+          const atraso = (col + lin) * 0.6;
+          const enche = entrada(prog(t, 0.3 + atraso, 2.0));
           const esvazia = prog(t, 6.6, 1.2);
           const u = enche * (1 - esvazia);
           const completo = u > 0.98;
           return (
-            <div key={i} style={{ position: "relative", width: 160, height: 160, margin: "0 auto" }}>
-              <svg width={160} height={160} style={{ position: "absolute", inset: 0, rotate: "-90deg" }}>
-                <circle cx={80} cy={80} r={raio} fill="none" stroke={C.linha} strokeWidth={10} />
-                <circle cx={80} cy={80} r={raio} fill="none" stroke={C.violeta} strokeWidth={10} strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - u)} />
+            <div
+              key={area}
+              style={{
+                background: C.superficie,
+                border: `2px solid ${completo ? C.violeta : C.linha}`,
+                padding: "34px 30px",
+                display: "flex",
+                alignItems: "center",
+                gap: 22,
+              }}
+            >
+              {/* Ícone de pessoa: cabeça e ombros. */}
+              <svg width={64} height={64} viewBox="0 0 64 64" style={{ flex: "none" }}>
+                <circle cx={32} cy={32} r={31} fill={completo ? C.violeta : C.papel} stroke={completo ? C.violeta : C.linhaForte} strokeWidth={2} />
+                <circle cx={32} cy={25} r={9} fill={completo ? C.papel : C.apagado} />
+                <path d="M15 51c2.5-9 9-13 17-13s14.5 4 17 13" fill={completo ? C.papel : C.apagado} />
               </svg>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 30,
-                  borderRadius: 9999,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 34,
-                  fontWeight: 500,
-                  background: C.superficie,
-                  color: completo ? C.violeta : C.tinta,
-                  border: `2px solid ${C.linha}`,
-                }}
-              >
-                {iniciais[i]}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                  <span style={{ fontSize: 34, fontWeight: 500, color: C.tinta }}>{area}</span>
+                  <span style={{ fontSize: 30, color: C.violeta, opacity: completo ? 1 : 0 }}>✓</span>
+                </div>
+                <div style={{ marginTop: 14, height: 10, background: C.linha }}>
+                  <div style={{ height: "100%", width: `${u * 100}%`, background: C.violeta }} />
+                </div>
               </div>
             </div>
           );
