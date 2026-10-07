@@ -19,8 +19,11 @@ export function Problema() {
      a própria sobra: com `pt-32` os dois respiros somavam ~276px e o vão lia
      como buraco. Cortado, a manchete desta seção espia acima da dobra numa
      janela de 900px, que é o que convida a rolar. */
+  /* Fundo curto (2026-10-07): a lista termina num fio, e o ritmo da casa é
+     fio → 64px → eyebrow (o mesmo do topo desta seção). Com pb-32 aqui e o
+     topo das soluções, o vão entre as duas passava de 200px. */
   return (
-    <section id="problema" className="border-t border-line pb-24 pt-12 sm:pb-32 sm:pt-16">
+    <section id="problema" className="border-t border-line pb-12 pt-12 sm:pb-16 sm:pt-16">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <Reveal>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{problema.eyebrow}</p>
