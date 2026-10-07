@@ -49,8 +49,10 @@ test("cada módulo 'na prática' traz três passos e o número de prova do pitch
     await expect(bloco.getByRole("listitem")).toHaveCount(3);
     await expect(bloco.getByText(numero, { exact: true })).toBeVisible();
   }
-  // Orçamento não tem tela ainda — e não pode fingir que tem.
-  await expect(page.locator("#na-pratica-orcamento img")).toHaveCount(0);
+  // Orçamento não tem tela — e não finge ter: desde 2026-10-07 tem um filme,
+  // com números declarados ilustrativos na legenda.
+  await expect(page.locator("#na-pratica-orcamento video")).toHaveAttribute("src", "/nexo/nexo-orcamento.mp4");
+  await expect(page.locator("#na-pratica-orcamento")).toContainText("números ilustrativos");
   // Desde 2026-10-07 os módulos com tela mostram filme: a tela vira a capa do vídeo.
   await expect(page.locator("#na-pratica-logistico video")).toHaveCount(1);
 });
@@ -92,7 +94,7 @@ test("a faixa de parcerias da capa cabe inteira na primeira tela", async ({ brow
 test("os vídeos do Nexo tocam mudos e o botão de som liga a narração do começo", async ({ page }) => {
   await page.goto("/nexo");
   const videos = page.locator("video");
-  await expect(videos).toHaveCount(5);
+  await expect(videos).toHaveCount(6);
   await expect(page.locator('video[src="/nexo/nexo-spend-nf.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-comercial.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-passo-a-passo.mp4"]')).toBeAttached();
@@ -133,7 +135,7 @@ test("os módulos de Na prática mostram o filme no lugar das telas", async ({ p
   const nf = page.locator("#na-pratica-nf");
   await expect(nf.locator("video")).toHaveAttribute("src", "/nexo/nexo-spend-nf.mp4");
   await expect(nf.locator("img[src*='nf-visao-geral'], img[src*='nf-recomendacoes']")).toHaveCount(0);
-  // Logístico e Varejo também têm filme (2026-10-07); Orçamento não tem tela.
+  // Logístico e Varejo também têm filme (2026-10-07).
   await expect(page.locator("#na-pratica-logistico video")).toHaveAttribute("src", "/nexo/nexo-logistico.mp4");
   await expect(page.locator("#na-pratica-varejo video")).toHaveAttribute("src", "/nexo/nexo-varejo.mp4");
   // Nenhum dos prints antigos aparece (as imagens que restam são as capas dos vídeos).

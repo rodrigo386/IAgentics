@@ -14,6 +14,7 @@
     "video:render:nexo-nf": "remotion render nexo-spend-nf public/nexo/nexo-spend-nf.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
     "video:render:nexo-logistico": "remotion render nexo-logistico public/nexo/nexo-logistico.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
     "video:render:nexo-varejo": "remotion render nexo-varejo public/nexo/nexo-varejo.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
+    "video:render:nexo-orcamento": "remotion render nexo-orcamento public/nexo/nexo-orcamento.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
     "video:still:og": "remotion still og-certificado public/plataforma/og-certificado-v1.jpg",
     "test:unit": "vitest run",
     "test:integracao": "vitest run lib/plataforma/autorizacao.test.ts",

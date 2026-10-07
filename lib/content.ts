@@ -1471,6 +1471,14 @@ export const nexoPage = {
           unidade: "do orçamento consolidado sem planilhas paralelas",
           texto: "A IA lê o orçamento consolidado e entrega insights e analytics para a liderança: desvios, tendências e recomendações em tempo real.",
         },
+        /** Filme do módulo (remotion/nexo-orcamento, 2026-10-07, pedido do
+         *  Rodrigo): o orçamento saindo do Excel para o sistema. O módulo não
+         *  tem telas, então os números do filme são ilustrativos. */
+        video: {
+          src: "/nexo/nexo-orcamento.mp4",
+          label: "Vídeo do Orçamento: as planilhas de cada área dão lugar a um formulário no sistema, o orçamento passa pela aprovação, chega consolidado e Finanças vê o painel por área com o alerta da IA.",
+          legenda: "Orçamento em 22 segundos · números ilustrativos",
+        },
         telas: [],
       },
     ],
