@@ -2,6 +2,8 @@ import { Composition } from "remotion";
 import { site } from "@/lib/content";
 import { AberturaMarca, type PropsAbertura } from "./AberturaMarca";
 import { BannerBoasVindas } from "./BannerBoasVindas";
+import { FilmeSpendNf } from "./nexo-nf/FilmeSpendNf";
+import { DURACAO as DURACAO_NF } from "./nexo-nf/cues";
 import "./style.css";
 
 /**
@@ -58,6 +60,17 @@ export function RemotionRoot() {
         fps={30}
         width={1920}
         height={640}
+      />
+
+      {/* Filme do módulo Spend via NF da /nexo (2026-10-06): loop mudo de 22 s
+          a 60 fps, feito com a skill product-film. Ver remotion/nexo-nf/. */}
+      <Composition
+        id="nexo-spend-nf"
+        component={FilmeSpendNf}
+        durationInFrames={Math.round(DURACAO_NF * 60)}
+        fps={60}
+        width={1920}
+        height={1080}
       />
     </>
   );

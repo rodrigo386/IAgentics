@@ -88,10 +88,11 @@ test("a faixa de parcerias da capa cabe inteira na primeira tela", async ({ brow
 
 /* Vídeos do Nexo (2026-10-06): mudos em loop, tocando sozinhos quando entram na
    tela. São narrados, então o botão de som volta ao começo e liga a voz. */
-test("os dois vídeos do Nexo tocam mudos e o botão de som liga a narração do começo", async ({ page }) => {
+test("os vídeos do Nexo tocam mudos e o botão de som liga a narração do começo", async ({ page }) => {
   await page.goto("/nexo");
   const videos = page.locator("video");
-  await expect(videos).toHaveCount(2);
+  await expect(videos).toHaveCount(3);
+  await expect(page.locator('video[src="/nexo/nexo-spend-nf.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-comercial.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-passo-a-passo.mp4"]')).toBeAttached();
 
@@ -109,4 +110,28 @@ test("os dois vídeos do Nexo tocam mudos e o botão de som liga a narração do
   await secao.getByRole("button", { name: "Pausar vídeo" }).click();
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
   await expect(secao.getByRole("button", { name: "Continuar vídeo" })).toBeVisible();
+});
+
+/* Desde 2026-10-07 o palco do fluxo de Compras é o vídeo do passo a passo, no
+   lugar dos prints: clicar num passo leva o vídeo ao capítulo dele, e o passo
+   do capítulo que está passando acende. */
+test("no fluxo de Compras, clicar num passo leva o vídeo ao capítulo dele", async ({ page }) => {
+  await page.goto("/nexo");
+  const fluxo = page.locator("#fluxo-compras");
+  await expect(fluxo.locator("img[src*='nexo-print'], img[src*='nexo-fluxo-']")).toHaveCount(0);
+  const video = fluxo.locator("video");
+  await expect(video).toHaveCount(1);
+
+  await fluxo.getByRole("button", { name: /Ver no vídeo: Negociação com suporte de IA/ }).click();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeGreaterThanOrEqual(55.6);
+  await expect(fluxo.getByText("05 · Negociação com suporte de IA")).toBeVisible();
+});
+
+test("o Spend via NF mostra o filme no lugar das telas", async ({ page }) => {
+  await page.goto("/nexo");
+  const nf = page.locator("#na-pratica-nf");
+  await expect(nf.locator("video")).toHaveAttribute("src", "/nexo/nexo-spend-nf.mp4");
+  await expect(nf.locator("img[src*='nf-visao-geral'], img[src*='nf-recomendacoes']")).toHaveCount(0);
+  // Os outros módulos seguem com as telas.
+  await expect(page.locator("#na-pratica-logistico img")).toHaveCount(2);
 });

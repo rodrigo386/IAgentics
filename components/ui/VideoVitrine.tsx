@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { Pause, Play, SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
 
@@ -32,6 +32,8 @@ export function VideoVitrine({
   label,
   textos,
   className = "",
+  controle,
+  aoTempo,
 }: {
   src: string;
   poster: StaticImageData;
@@ -39,6 +41,10 @@ export function VideoVitrine({
   label: string;
   textos: { pausar: string; continuar: string; ligarSom: string; desligarSom: string };
   className?: string;
+  /** Acesso ao <video> para quem precisa pular de capítulo (o fluxo de Compras). */
+  controle?: RefObject<HTMLVideoElement | null>;
+  /** Avisado a cada `timeupdate` (umas 4 vezes por segundo), com o tempo em segundos. */
+  aoTempo?: (segundos: number) => void;
 }) {
   const ref = useRef<HTMLVideoElement | null>(null);
   const pausaDoVisitante = useRef(false);
@@ -102,7 +108,10 @@ export function VideoVitrine({
       <Image src={poster} alt="" fill placeholder="blur" sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover" />
 
       <video
-        ref={ref}
+        ref={(el) => {
+          ref.current = el;
+          if (controle) controle.current = el;
+        }}
         className={`absolute inset-0 size-full object-cover transition-opacity duration-300 ease-out motion-reduce:transition-none ${visivel ? "opacity-100" : "opacity-0"}`}
         src={src}
         muted
@@ -122,6 +131,7 @@ export function VideoVitrine({
           setTocando(false);
         }}
         onVolumeChange={(e) => setMudo(e.currentTarget.muted)}
+        onTimeUpdate={aoTempo ? (e) => aoTempo(e.currentTarget.currentTime) : undefined}
       />
 
       <div className="absolute right-3 top-3 flex gap-2 sm:right-4 sm:top-4">

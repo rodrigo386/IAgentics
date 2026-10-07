@@ -367,51 +367,54 @@ export const nexo = {
         n: "01",
         nome: "Abertura da Requisição de Compras",
         texto: "O chatbot MIA abre a RC a partir de uma descrição em linguagem natural — e a IA confere os dados antes de enviar para Compras.",
-        src: "/nexo-print-rc-v2.png", w: 1917, h: 1078,
+        src: "/nexo-print-rc-v2.png", w: 1917, h: 1078, inicio: 5.6,
       },
       {
         n: "02",
         nome: "Triagem e aprovação",
         texto: "A IA classifica por categoria, define a cadeia de aprovação por alçada e audita a requisição sozinha.",
-        src: "/nexo-fluxo-triagem-v1.png", w: 1917, h: 1078,
+        src: "/nexo-fluxo-triagem-v1.png", w: 1917, h: 1078, inicio: 21.6,
       },
       {
         n: "03",
         nome: "RFQ — seleção de fornecedores",
         texto: "A IA busca fornecedores na base cadastrada e novos na internet, e dispara a solicitação de cotação.",
-        src: "/nexo-print-rfp-v2.png", w: 1917, h: 1078,
+        src: "/nexo-print-rfp-v2.png", w: 1917, h: 1078, inicio: 37.6,
       },
       {
         n: "04",
         nome: "Propostas via formulário web",
         texto: "Convite por link, sem senha e sem conta: o Portal do Fornecedor recebe proposta e anexo.",
-        src: "/nexo-fluxo-portal-v1.jpg", w: 1568, h: 688,
+        src: "/nexo-fluxo-portal-v1.jpg", w: 1568, h: 688, inicio: 46.6,
       },
       {
         n: "05",
         nome: "Negociação com suporte de IA",
         texto: "A IA lê os anexos, monta o mapa comparativo com scores e sugere a próxima mensagem de negociação.",
-        src: "/nexo-fluxo-mapa-v1.jpg", w: 1568, h: 688,
+        src: "/nexo-fluxo-mapa-v1.jpg", w: 1568, h: 688, inicio: 55.6,
       },
       {
         n: "06",
         nome: "Seleção e aprovação final",
         texto: "A proposta vencedora é aprovada com nome e motivo registrados — a trilha fica no histórico.",
-        src: "/nexo-fluxo-aprovacao-v1.jpg", w: 1568, h: 688,
+        src: "/nexo-fluxo-aprovacao-v1.jpg", w: 1568, h: 688, inicio: 65.6,
       },
       {
         n: "07",
         nome: "Pedido de compras no ERP",
         texto: "A OC nasce sozinha: RC, RFQ e proposta vencedora consolidadas, prontas para o ERP do cliente.",
-        src: "/nexo-fluxo-oc-v1.jpg", w: 1568, h: 688,
+        src: "/nexo-fluxo-oc-v1.jpg", w: 1568, h: 688, inicio: 72.6,
       },
     ],
-    /** O passo a passo em vídeo (Nexo_Compras_v11_passo_a_passo, 2026-10-06):
-     *  os mesmos sete passos, com 100 notebooks para o time de TI. */
+    /** O passo a passo em vídeo (Nexo_Compras_v11_passo_a_passo, 2026-10-06)
+     *  SUBSTITUIU os prints no palco do fluxo (pedido do Rodrigo, 2026-10-07).
+     *  O `inicio` de cada passo acima é o segundo do vídeo em que o capítulo
+     *  correspondente começa (medido quadro a quadro): o passo acende conforme
+     *  o vídeo anda, e clicar num passo leva o vídeo até ele. Os `src` dos
+     *  prints ficam como registro, mas não aparecem mais na página. */
     video: {
-      eyebrow: "Passo a passo · 1min29",
-      titulo: "Os sete passos, numa compra só",
-      lead: "100 notebooks para o time de TI, da conversa com a MIA à ordem de compra, passando por cada perfil e por cada agente do Nexo.",
+      legenda: "Passo a passo · 1min29 · 100 notebooks para o time de TI, da conversa com a MIA à ordem de compra",
+      irPara: "Ver no vídeo:",
       src: "/nexo/nexo-passo-a-passo.mp4",
       label: "Vídeo do passo a passo do Nexo Compras: abertura, triagem, gestor, cotação, mapa, aprovação e ordem de compra.",
     },
@@ -1427,6 +1430,13 @@ export const nexoPage = {
           numero: "$216k",
           unidade: "de gasto endereçável em 6 oportunidades de consolidação",
           texto: "O agente transforma NFs em inteligência de compras: consolida fornecedores, formaliza contratos e reduz o custo de processo.",
+        },
+        /** Filme do módulo (remotion/nexo-nf, 2026-10-07): SUBSTITUI as duas
+         *  telas abaixo na página, que ficam como registro e fonte dos dados. */
+        video: {
+          src: "/nexo/nexo-spend-nf.mp4",
+          label: "Vídeo do Spend via NF: a nota fiscal é lida, cada gasto é classificado, surgem as recomendações de sourcing e o total de $216k em oportunidades.",
+          legenda: "Spend via NF em 22 segundos",
         },
         telas: [
           { src: "/nexo/nf-visao-geral.jpg", alt: "Visão geral do spend por país, categoria e fornecedor", w: 1800, h: 793, legenda: "Visão geral · spend por país, categoria e fornecedor" },

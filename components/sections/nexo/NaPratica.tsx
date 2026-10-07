@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { nexoPage } from "@/lib/content";
+import { VideoVitrine } from "@/components/ui/VideoVitrine";
+import { nexo, nexoPage } from "@/lib/content";
+import posterSpendNf from "@/public/nexo/nexo-spend-nf-poster.jpg";
 
 /**
  * "Na prática" (pitch Hacktown, slides 8–11): um módulo por seção, no formato
@@ -10,7 +12,14 @@ import { nexoPage } from "@/lib/content";
  * do fluxo de Compras: a página é um dossiê e o print é a evidência. Quando
  * um módulo não tem tela ainda (Orçamento), a prancha simplesmente não
  * existe e o número ocupa a linha — nada de caixa vazia fingindo imagem.
+ *
+ * MÓDULO COM FILME (`video` em content.ts, 2026-10-07): o filme SUBSTITUI as
+ * telas, pedido do Rodrigo. Hoje só o Spend via NF (remotion/nexo-nf). As telas
+ * continuam em content.ts como registro e fonte dos dados do filme. A capa de
+ * cada filme é import estático (o placeholder desfocado sai dele), por isso o
+ * mapa abaixo, por id.
  */
+const capas = { nf: posterSpendNf } as const;
 type Item = (typeof nexoPage.naPratica.itens)[number];
 
 function Prancha({ tela }: { tela: Item["telas"][number] }) {
@@ -37,8 +46,25 @@ function Prancha({ tela }: { tela: Item["telas"][number] }) {
   );
 }
 
+function Filme({ item }: { item: Item }) {
+  if (!("video" in item) || !(item.id in capas)) return null;
+  return (
+    <figure className="min-w-0 lg:col-span-8">
+      <VideoVitrine
+        className="aspect-video w-full"
+        src={item.video.src}
+        poster={capas[item.id as keyof typeof capas]}
+        label={item.video.label}
+        textos={nexo.controlesVideo}
+      />
+      <figcaption className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{item.video.legenda}</figcaption>
+    </figure>
+  );
+}
+
 function Modulo({ item }: { item: Item }) {
-  const temTelas = item.telas.length > 0;
+  const temFilme = "video" in item && item.id in capas;
+  const temTelas = temFilme || item.telas.length > 0;
   return (
     <article id={`na-pratica-${item.id}`} className="border-t border-line py-20 sm:py-24">
       <Reveal>
@@ -60,7 +86,9 @@ function Modulo({ item }: { item: Item }) {
       </ol>
 
       <div className={`mt-12 grid grid-cols-1 gap-8 ${temTelas ? "lg:grid-cols-12" : ""}`}>
-        {temTelas ? (
+        {temFilme ? (
+          <Filme item={item} />
+        ) : temTelas ? (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:col-span-8">
             {item.telas.map((tela) => (
               <Prancha key={tela.src} tela={tela} />
