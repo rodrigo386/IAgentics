@@ -54,3 +54,17 @@ test("as rotas de prévia não existem mais", async ({ page }) => {
     expect(r?.status(), `${rota} deveria ser 404`).toBe(404);
   }
 });
+
+/* "Palco fixo" das 3 soluções (2026-10-07): um filme por solução, um só em
+   cena por vez, e o palco troca quando o mouse chega no nome. */
+test("as soluções trocam o filme do palco", async ({ page }) => {
+  await page.goto("/");
+  const sec = page.locator("#solucoes");
+  const filmes = sec.locator("video");
+  await expect(filmes).toHaveCount(3);
+  await sec.scrollIntoViewIfNeeded();
+  await sec.locator('a[href="/academy"]').hover();
+  await expect(sec.locator('video[src="/solucoes/solucao-academy.mp4"]')).toHaveClass(/opacity-100/);
+  await expect(sec.locator('video[src="/solucoes/solucao-nexo.mp4"]')).toHaveClass(/opacity-0/);
+  await expect.poll(() => sec.locator('video[src="/solucoes/solucao-academy.mp4"]').evaluate((v: HTMLVideoElement) => !v.paused)).toBe(true);
+});

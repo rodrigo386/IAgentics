@@ -1,97 +1,157 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { Reveal } from "@/components/ui/Reveal";
 import { solutions } from "@/lib/content";
 
 /**
- * Editorial index. Three full-width rows separated by hairlines, no cards.
+ * As 3 soluções em "palco fixo" (2026-10-07, pedido do Rodrigo, pensando em
+ * motion). Os nomes correm à esquerda; à direita um palco preso na tela troca
+ * o filme de cada solução (remotion/home-solucoes, loops mudos de 8 s) quando
+ * a rolagem passa por ela — ou quando o mouse ou o foco do teclado chegam no
+ * nome. Substituiu o "índice editorial" de linhas com foto no hover, que no
+ * celular não tinha movimento nenhum.
  *
- * Chosen to harmonise with the hero, which is typographic and line-drawn with no
- * photography at all. Three photo cards immediately below it would jump tone; rows of
- * large type with a hairline between them continue the hero's reading pattern, and the
- * photograph arrives only on hover, as a reward rather than a competitor.
- *
- * Deliberately distinct from the Academy section, which is also hairline-and-type: these
- * rows carry display type, an arrow affordance and an image reveal, while Academy is
- * short lists in narrow columns.
- *
- * Motion motivation: the image fade is feedback - it marks which row the pointer owns.
- * On hover the row becomes a dark photographic band, so every piece of text in it flips
- * to the fixed paper token; the scrim keeps that legible over any part of the image.
+ * Decisões:
+ *  - Só o filme ativo toca, e só com o palco na tela: os outros ficam pausados
+ *    no quadro em que pararam, sem gastar bateria.
+ *  - No celular o palco vem ANTES da lista e fica preso no alto (sticky), e
+ *    os nomes passam por baixo dele. É o mesmo elemento nos dois tamanhos —
+ *    nada de um palco escondido baixando vídeo à toa.
+ *  - Reduced motion: nada toca sozinho; o palco mostra a capa de cada solução,
+ *    trocando sem transição.
+ *  - O palco é decorativo (aria-hidden): tudo o que ele mostra está escrito na
+ *    lista, que continua sendo de links.
  */
 export function Solutions() {
+  const [ativo, setAtivo] = useState(0);
+  const itens = useRef<(HTMLLIElement | null)[]>([]);
+  const filmes = useRef<(HTMLVideoElement | null)[]>([]);
+  const palco = useRef<HTMLDivElement | null>(null);
+  const [palcoVisivel, setPalcoVisivel] = useState(false);
+  const [semMovimento, setSemMovimento] = useState(false);
+
+  useEffect(() => {
+    setSemMovimento(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    // O item que cruza a faixa de leitura é o ativo. No desktop, o meio da
+    // tela; no celular, mais abaixo: o palco preso ocupa o alto, e no meio o
+    // título da solução ativa ficava escondido atrás dele.
+    const desktop = window.matchMedia("(min-width: 1024px)").matches;
+    const io = new IntersectionObserver(
+      (entradas) => {
+        for (const e of entradas) if (e.isIntersecting) setAtivo(Number((e.target as HTMLElement).dataset.indice));
+      },
+      { rootMargin: desktop ? "-45% 0px -45% 0px" : "-68% 0px -22% 0px" },
+    );
+    for (const el of itens.current) if (el) io.observe(el);
+    const vis = new IntersectionObserver(([e]) => setPalcoVisivel(e.isIntersecting), { threshold: 0.2 });
+    if (palco.current) vis.observe(palco.current);
+    return () => {
+      io.disconnect();
+      vis.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    filmes.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === ativo && palcoVisivel && !semMovimento) void v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [ativo, palcoVisivel, semMovimento]);
+
   return (
     <section id="solucoes" className="py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <Reveal>
           {/* The page's only eyebrow. */}
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">
-            {solutions.eyebrow}
-          </p>
-          <h2 className="mt-5 max-w-[18ch] text-3xl font-medium tracking-[-0.02em] text-fg sm:text-4xl lg:text-5xl">
-            {solutions.headline}
-          </h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{solutions.eyebrow}</p>
+          <h2 className="mt-5 max-w-[18ch] text-3xl font-medium tracking-[-0.02em] text-fg sm:text-4xl lg:text-5xl">{solutions.headline}</h2>
         </Reveal>
 
-        <div className="mt-16">
-          {solutions.items.map((item) => (
-            <Reveal key={item.id}>
-              <Link
-                href={item.href}
-                className="group relative isolate block border-t border-line-strong last:border-b"
-              >
-                {/* Image reveal, behind everything in the row. */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
+        <div className="mt-12 grid grid-cols-1 gap-x-12 lg:mt-16 lg:grid-cols-12">
+          {/* O palco. No celular: primeiro e preso no alto; no desktop: à direita e preso. */}
+          <div ref={palco} className="sticky top-16 z-10 -mx-5 bg-bg px-5 pb-4 pt-2 sm:-mx-8 sm:px-8 lg:order-last lg:col-span-7 lg:mx-0 lg:self-start lg:px-0 lg:pb-0 lg:pt-0 lg:top-28">
+            <div aria-hidden="true" className="relative aspect-[4/3] overflow-hidden border border-line bg-brand-paper">
+              {solutions.items.map((item, i) => (
+                <video
+                  key={item.id}
+                  ref={(el) => {
+                    filmes.current[i] = el;
+                  }}
+                  src={item.filme}
+                  poster={item.capa}
+                  muted
+                  loop
+                  playsInline
+                  preload={i === 0 ? "metadata" : "none"}
+                  tabIndex={-1}
+                  className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+                    i === ativo ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ))}
+            </div>
+            {/* Os três degraus do palco: qual solução está em cena. */}
+            <div aria-hidden="true" className="mt-3 grid grid-cols-3 gap-1">
+              {solutions.items.map((item, i) => (
+                <span key={item.id} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">
+                  <span className={`h-0.5 flex-1 transition-colors duration-300 ${i === ativo ? "bg-accent" : "bg-line"}`} />
+                  <span className={i === ativo ? "text-accent-text" : ""}>{String(i + 1).padStart(2, "0")}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <ol className="lg:col-span-5">
+            {solutions.items.map((item, i) => {
+              const aceso = i === ativo;
+              return (
+                <li
+                  key={item.id}
+                  data-indice={i}
+                  ref={(el) => {
+                    itens.current[i] = el;
+                  }}
+                  className="border-t border-line-strong last:border-b lg:flex lg:min-h-[62vh] lg:items-center"
                 >
-                  <Image
-                    src={item.image}
-                    alt=""
-                    fill
-                    sizes="100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(13_16_23/0.94),rgb(13_16_23/0.62))]" />
-                </div>
-
-                <div className="grid grid-cols-1 items-baseline gap-y-5 px-0 py-10 transition-[padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:lg:px-8 lg:grid-cols-12 lg:gap-8 lg:py-14">
-                  <h3 className="text-4xl font-medium tracking-[-0.03em] text-fg transition-colors duration-300 group-hover:text-brand-paper sm:text-5xl lg:col-span-4 lg:text-6xl">
-                    {item.name}
-                  </h3>
-
-                  <div className="lg:col-span-5">
-                    <p className="text-lg text-fg transition-colors duration-300 group-hover:text-brand-paper sm:text-xl">
-                      {item.promise}
-                    </p>
-                    <p className="mt-2 text-sm text-fg-muted transition-colors duration-300 group-hover:text-[rgb(248_248_248/0.72)]">
-                      {item.platform}
-                    </p>
-                  </div>
-
-                  <ul className="flex flex-wrap gap-2 lg:col-span-2">
-                    {item.scope.map((s) => (
-                      <li
-                        key={s}
-                        className="border border-line-strong px-2.5 py-1 font-mono text-[11px] text-fg-muted transition-colors duration-300 group-hover:border-[rgb(248_248_248/0.34)] group-hover:text-brand-paper"
+                  <Link
+                    href={item.href}
+                    onMouseEnter={() => setAtivo(i)}
+                    onFocus={() => setAtivo(i)}
+                    className="group block w-full py-10 lg:py-14"
+                  >
+                    <span className="flex items-start justify-between gap-6">
+                      <span
+                        className={`text-4xl font-medium tracking-[-0.03em] transition-colors duration-300 sm:text-5xl lg:text-6xl ${aceso ? "text-fg" : "text-fg-subtle"}`}
                       >
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="lg:col-span-1 lg:flex lg:justify-end">
-                    <ArrowUpRight
-                      size={28}
-                      weight="regular"
-                      className="text-fg transition-[transform,color] duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-brand-paper"
-                    />
-                  </div>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+                        {item.name}
+                      </span>
+                      <ArrowUpRight
+                        size={28}
+                        aria-hidden="true"
+                        className={`mt-2 shrink-0 transition-[transform,color] duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 ${aceso ? "text-accent-text" : "text-fg-subtle"}`}
+                      />
+                    </span>
+                    <span className={`mt-4 block text-lg transition-colors duration-300 sm:text-xl ${aceso ? "text-fg" : "text-fg-muted"}`}>{item.promise}</span>
+                    <span className="mt-1 block text-sm text-fg-muted">{item.platform}</span>
+                    <ul className="mt-5 flex flex-wrap gap-2">
+                      {item.scope.map((s) => (
+                        <li
+                          key={s}
+                          className={`border px-2.5 py-1 font-mono text-[11px] transition-colors duration-300 ${aceso ? "border-line-strong text-fg-muted" : "border-line text-fg-subtle"}`}
+                        >
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </div>
     </section>

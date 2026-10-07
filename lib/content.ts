@@ -289,6 +289,9 @@ export const solutions = {
   items: [
     {
       id: "nexo",
+      /** Loop do palco da home (remotion/home-solucoes, 2026-10-07). */
+      filme: "/solucoes/solucao-nexo.mp4",
+      capa: "/solucoes/solucao-nexo-poster.jpg",
       name: "Nexo",
       /* 2026-09-04: era "Agentes de IA para Compras" com os cinco agentes em
          chips. O Nexo é o orquestrador; os nove módulos entram em nome curto. */
@@ -301,6 +304,9 @@ export const solutions = {
     },
     {
       id: "academy",
+      /** Loop do palco da home (remotion/home-solucoes, 2026-10-07). */
+      filme: "/solucoes/solucao-academy.mp4",
+      capa: "/solucoes/solucao-academy-poster.jpg",
       name: "Academy",
       promise: "Capacitação para você e sua equipe",
       platform: "Escola de negócios de IA",
@@ -311,6 +317,9 @@ export const solutions = {
     },
     {
       id: "spend-lab",
+      /** Loop do palco da home (remotion/home-solucoes, 2026-10-07). */
+      filme: "/solucoes/solucao-spend-lab.mp4",
+      capa: "/solucoes/solucao-spend-lab-poster.jpg",
       name: "IA Spend Lab",
       promise: "Consultoria de Implementação de IA em Compras",
       platform: "Da maturidade ao resultado",
