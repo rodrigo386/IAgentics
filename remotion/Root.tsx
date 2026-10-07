@@ -3,7 +3,9 @@ import { site } from "@/lib/content";
 import { AberturaMarca, type PropsAbertura } from "./AberturaMarca";
 import { BannerBoasVindas } from "./BannerBoasVindas";
 import { FilmeSpendNf } from "./nexo-nf/FilmeSpendNf";
-import { DURACAO as DURACAO_NF } from "./nexo-nf/cues";
+import { FilmeLogistico } from "./nexo-logistico/FilmeLogistico";
+import { FilmeVarejo } from "./nexo-varejo/FilmeVarejo";
+import { DURACAO as DURACAO_NF } from "./nexo-kit/cues";
 import "./style.css";
 
 /**
@@ -72,6 +74,11 @@ export function RemotionRoot() {
         width={1920}
         height={1080}
       />
+
+      {/* Os irmãos do Spend via NF (2026-10-07): mesmo ritmo e mesmo kit
+          (remotion/nexo-kit). */}
+      <Composition id="nexo-logistico" component={FilmeLogistico} durationInFrames={Math.round(DURACAO_NF * 60)} fps={60} width={1920} height={1080} />
+      <Composition id="nexo-varejo" component={FilmeVarejo} durationInFrames={Math.round(DURACAO_NF * 60)} fps={60} width={1920} height={1080} />
     </>
   );
 }

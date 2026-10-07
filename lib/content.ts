@@ -1393,6 +1393,13 @@ export const nexoPage = {
           unidade: "cenários comparados por corte",
           texto: "O motor escolhe o cenário de menor custo total e maior margem, respeitando SLA e restrições adicionadas pelo cliente.",
         },
+        /** Filme do módulo (remotion/nexo-logistico, 2026-10-07): SUBSTITUI as
+         *  telas abaixo na página, que ficam como registro e fonte dos dados. */
+        video: {
+          src: "/nexo/nexo-logistico.mp4",
+          label: "Vídeo do Spend Logístico: os pedidos do corte chegam, o motor compara mais de 900 cenários e desenha a rota da Carga 22, e as cargas FTL aparecem com a ocupação de cada uma.",
+          legenda: "Spend Logístico em 22 segundos",
+        },
         telas: [
           { src: "/nexo/logistico-rota.jpg", alt: "Malha desenhada pelo motor: rota otimizada com 6 paradas e 3.107 km", w: 1800, h: 1154, legenda: "Rota otimizada · 6 paradas · 3.107 km" },
           { src: "/nexo/logistico-ocupacao.jpg", alt: "Gráfico de ocupação das cargas FTL, com média de 86,6%", w: 1800, h: 1718, legenda: "Ocupação das cargas FTL" },
@@ -1411,6 +1418,13 @@ export const nexoPage = {
           numero: "28%",
           unidade: "de dispersão de preço no mesmo produto",
           texto: "O motor mostra a referência real de mercado e quanto o cliente pode economizar por SKU. Ideal para varejistas, distribuidores e e-commerces.",
+        },
+        /** Filme do módulo (remotion/nexo-varejo, 2026-10-07): SUBSTITUI as
+         *  telas abaixo na página, que ficam como registro e fonte dos dados. */
+        video: {
+          src: "/nexo/nexo-varejo.mp4",
+          label: "Vídeo do Benchmarking de Preços Varejo: o preço de compra chega, o motor varre as ofertas e mostra menor preço, mediana e maior preço, e aponta a economia possível e a dispersão de 28%.",
+          legenda: "Benchmarking de Preços Varejo em 22 segundos",
         },
         telas: [
           { src: "/nexo/varejo-painel.jpg", alt: "Painel de benchmarking com menor preço, mediana e maior preço por produto", w: 1800, h: 925, legenda: "Painel de benchmarking · menor, mediana e maior preço" },

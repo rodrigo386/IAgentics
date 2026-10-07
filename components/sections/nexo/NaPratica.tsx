@@ -3,6 +3,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { VideoVitrine } from "@/components/ui/VideoVitrine";
 import { nexo, nexoPage } from "@/lib/content";
 import posterSpendNf from "@/public/nexo/nexo-spend-nf-poster.jpg";
+import posterLogistico from "@/public/nexo/nexo-logistico-poster.jpg";
+import posterVarejo from "@/public/nexo/nexo-varejo-poster.jpg";
 
 /**
  * "Na prática" (pitch Hacktown, slides 8–11): um módulo por seção, no formato
@@ -14,12 +16,13 @@ import posterSpendNf from "@/public/nexo/nexo-spend-nf-poster.jpg";
  * existe e o número ocupa a linha — nada de caixa vazia fingindo imagem.
  *
  * MÓDULO COM FILME (`video` em content.ts, 2026-10-07): o filme SUBSTITUI as
- * telas, pedido do Rodrigo. Hoje só o Spend via NF (remotion/nexo-nf). As telas
+ * telas, pedido do Rodrigo. Hoje Spend via NF, Spend Logístico e Varejo
+ * (remotion/nexo-nf, nexo-logistico, nexo-varejo). As telas
  * continuam em content.ts como registro e fonte dos dados do filme. A capa de
  * cada filme é import estático (o placeholder desfocado sai dele), por isso o
  * mapa abaixo, por id.
  */
-const capas = { nf: posterSpendNf } as const;
+const capas = { nf: posterSpendNf, logistico: posterLogistico, varejo: posterVarejo } as const;
 type Item = (typeof nexoPage.naPratica.itens)[number];
 
 function Prancha({ tela }: { tela: Item["telas"][number] }) {

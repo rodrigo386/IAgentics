@@ -1,5 +1,5 @@
 /**
- * A folha de tempo do filme Spend via NF. Filme mudo, então o tempo vem de uma
+ * A folha de tempo dos filmes dos módulos do Nexo (o exemplo abaixo é o Spend via NF). Filme mudo, então o tempo vem de uma
  * grade escolhida, não de uma música: 120 BPM, compasso de 4 tempos = 2 s.
  * Nenhuma cena guarda número de quadro: tudo é `b(compasso, tempo)`.
  *

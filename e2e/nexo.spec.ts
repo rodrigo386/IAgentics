@@ -51,7 +51,8 @@ test("cada módulo 'na prática' traz três passos e o número de prova do pitch
   }
   // Orçamento não tem tela ainda — e não pode fingir que tem.
   await expect(page.locator("#na-pratica-orcamento img")).toHaveCount(0);
-  await expect(page.locator("#na-pratica-logistico img")).toHaveCount(2);
+  // Desde 2026-10-07 os módulos com tela mostram filme: a tela vira a capa do vídeo.
+  await expect(page.locator("#na-pratica-logistico video")).toHaveCount(1);
 });
 
 test("o comparativo compara com 'SaaS de Compras' e não nomeia concorrentes", async ({ page }) => {
@@ -91,7 +92,7 @@ test("a faixa de parcerias da capa cabe inteira na primeira tela", async ({ brow
 test("os vídeos do Nexo tocam mudos e o botão de som liga a narração do começo", async ({ page }) => {
   await page.goto("/nexo");
   const videos = page.locator("video");
-  await expect(videos).toHaveCount(3);
+  await expect(videos).toHaveCount(5);
   await expect(page.locator('video[src="/nexo/nexo-spend-nf.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-comercial.mp4"]')).toBeAttached();
   await expect(page.locator('video[src="/nexo/nexo-passo-a-passo.mp4"]')).toBeAttached();
@@ -127,11 +128,14 @@ test("no fluxo de Compras, clicar num passo leva o vídeo ao capítulo dele", as
   await expect(fluxo.getByText("05 · Negociação com suporte de IA")).toBeVisible();
 });
 
-test("o Spend via NF mostra o filme no lugar das telas", async ({ page }) => {
+test("os módulos de Na prática mostram o filme no lugar das telas", async ({ page }) => {
   await page.goto("/nexo");
   const nf = page.locator("#na-pratica-nf");
   await expect(nf.locator("video")).toHaveAttribute("src", "/nexo/nexo-spend-nf.mp4");
   await expect(nf.locator("img[src*='nf-visao-geral'], img[src*='nf-recomendacoes']")).toHaveCount(0);
-  // Os outros módulos seguem com as telas.
-  await expect(page.locator("#na-pratica-logistico img")).toHaveCount(2);
+  // Logístico e Varejo também têm filme (2026-10-07); Orçamento não tem tela.
+  await expect(page.locator("#na-pratica-logistico video")).toHaveAttribute("src", "/nexo/nexo-logistico.mp4");
+  await expect(page.locator("#na-pratica-varejo video")).toHaveAttribute("src", "/nexo/nexo-varejo.mp4");
+  // Nenhum dos prints antigos aparece (as imagens que restam são as capas dos vídeos).
+  await expect(page.locator(["logistico-rota", "logistico-ocupacao", "varejo-painel", "varejo-faixa", "nf-visao-geral", "nf-recomendacoes"].map((n) => `#na-pratica img[src*='${n}']`).join(", "))).toHaveCount(0);
 });
