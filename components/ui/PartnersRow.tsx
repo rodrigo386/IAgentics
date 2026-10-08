@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { siAnthropic } from "simple-icons";
-import { partners } from "@/lib/content";
+import { credenciais, partners } from "@/lib/content";
 
 /**
  * Partner row.
@@ -38,28 +38,32 @@ import { partners } from "@/lib/content";
  */
 const VARIANTES = {
   faixa: {
-    grade: "mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-5",
-    placa: "flex h-20 items-center justify-center border border-line bg-brand-paper px-4 sm:px-6",
+    grade:
+      "mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-5",
+    placa:
+      "flex h-20 items-center justify-center border border-line bg-brand-paper px-4 sm:px-6",
     largo: "max-h-10 sm:max-h-11 lg:max-h-12",
     quadrado: "max-h-12 sm:max-h-13 lg:max-h-14",
   },
   coluna: {
     grade: "grid w-full grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3",
-    placa: "flex h-[4.5rem] items-center justify-center border border-line bg-brand-paper px-4",
+    placa:
+      "flex h-[4.5rem] items-center justify-center border border-line bg-brand-paper px-4",
     largo: "max-h-9 sm:max-h-10",
     quadrado: "max-h-11 sm:max-h-12",
   },
 } as const;
 
-export function PartnersRow({ variante = "faixa" }: { variante?: keyof typeof VARIANTES }) {
+export function PartnersRow({
+  variante = "faixa",
+}: {
+  variante?: keyof typeof VARIANTES;
+}) {
   const v = VARIANTES[variante];
   const plateClass = v.placa;
 
   return (
-    <ul
-      aria-label={partners.label}
-      className={v.grade}
-    >
+    <ul aria-label={partners.label} className={v.grade}>
       {partners.logos.map((logo) => (
         <li key={logo.name} className={plateClass}>
           {/* Height steps up with the available column width, because these lockups are
@@ -84,19 +88,37 @@ export function PartnersRow({ variante = "faixa" }: { variante?: keyof typeof VA
         </li>
       ))}
 
-      <li className={`${plateClass} gap-2`}>
-        <svg
-          role="img"
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          className="size-6 shrink-0 sm:size-7"
-          fill="#131723"
+      {/* A placa da Anthropic carrega o selo Claude Partner (2026-10-08) e leva à
+          verificação no Credly. O selo é de uma pessoa do time — o texto
+          alternativo diz de quem, e a legenda do rodapé diz "time certificado". */}
+      <li className={`${plateClass} p-0`}>
+        <a
+          href={credenciais.claudePartner.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          title={credenciais.claudePartner.verificar}
+          className="flex size-full items-center justify-center gap-2 px-4 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent sm:px-6"
         >
-          <path d={siAnthropic.path} />
-        </svg>
-        <span className="text-base font-medium tracking-tight text-brand-ink sm:text-lg">
-          {partners.anthropic.name}
-        </span>
+          <Image
+            src={credenciais.claudePartner.src}
+            alt={credenciais.claudePartner.alt}
+            width={credenciais.claudePartner.w}
+            height={credenciais.claudePartner.h}
+            className={`w-auto shrink-0 ${v.quadrado}`}
+          />
+          <svg
+            role="img"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="size-5 shrink-0 sm:size-6"
+            fill="#131723"
+          >
+            <path d={siAnthropic.path} />
+          </svg>
+          <span className="text-base font-medium tracking-tight text-brand-ink sm:text-lg">
+            {partners.anthropic.name}
+          </span>
+        </a>
       </li>
     </ul>
   );

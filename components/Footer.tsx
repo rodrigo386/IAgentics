@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { nav, contact, site, footer, privacidade } from "@/lib/content";
+import { nav, contact, site, footer, privacidade, credenciais } from "@/lib/content";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -8,7 +9,7 @@ export function Footer() {
   return (
     <footer className="border-t border-line py-16">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 px-5 sm:px-8 md:grid-cols-12">
-        <div className="md:col-span-5">
+        <div className="md:col-span-4">
           <span className="block text-fg">
             <Logo className="w-[150px]" />
           </span>
@@ -24,7 +25,7 @@ export function Footer() {
             `prefetch={false}` pela razão do painel admin (armadilha 8): o
             rodapé aparece em TODA página e /cursos é force-dynamic, então
             prefetch aqui viraria consulta ao banco em cada rolagem até o fim. */}
-        <nav aria-label="Rodapé" className="md:col-span-4">
+        <nav aria-label="Rodapé" className="md:col-span-3">
           <ul className="grid grid-cols-2 gap-y-3">
             {nav.links.map((link) => (
               <li key={link.href}>
@@ -40,7 +41,7 @@ export function Footer() {
           </ul>
         </nav>
 
-        <div className="md:col-span-3">
+        <div className="md:col-span-2">
           <ul className="grid gap-3">
             {contact.social.map((s) => (
               <li key={s.label}>
@@ -63,6 +64,31 @@ export function Footer() {
               </a>
             </li>
           </ul>
+        </div>
+
+        {/* Credenciais (2026-10-08): o selo Claude Partner em todas as páginas,
+            como imagem com link para a verificação no Credly — sem o script e o
+            iframe do embed oficial. Ver `credenciais` em content.ts. */}
+        <div className="md:col-span-3">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{credenciais.titulo}</p>
+          <a
+            href={credenciais.claudePartner.href}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group mt-4 flex items-center gap-4"
+          >
+            <Image
+              src={credenciais.claudePartner.src}
+              alt={credenciais.claudePartner.alt}
+              width={credenciais.claudePartner.w}
+              height={credenciais.claudePartner.h}
+              className="size-20 shrink-0"
+            />
+            <span className="text-sm leading-snug text-fg-muted">
+              {credenciais.claudePartner.legenda}
+              <span className="mt-1 block text-fg transition-colors group-hover:text-accent-text">{credenciais.claudePartner.verificar} ↗</span>
+            </span>
+          </a>
         </div>
       </div>
 

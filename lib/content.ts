@@ -283,6 +283,30 @@ export const partners = {
   anthropic: { name: "Anthropic" },
 } as const;
 
+/**
+ * Selo Claude Partner (Claude Code), emitido pela Anthropic em 2026-10-08 ao
+ * Jesse Guimarães (COO), verificável no Credly. Pedido do Rodrigo: em todas as
+ * páginas (rodapé) e na faixa de parcerias.
+ *
+ * O SELO É DE UMA PESSOA, NÃO DA EMPRESA — por isso a legenda diz "time
+ * certificado", e não "IAgentics é parceira Anthropic". Entra como IMAGEM com
+ * link para a verificação, e não pelo embed do Credly (script + iframe de
+ * terceiros em toda página, com cookies que a política de privacidade não
+ * cobre). Validade: até 2027-04-08 — depois disso, renovar ou tirar.
+ */
+export const credenciais = {
+  titulo: "Credenciais",
+  claudePartner: {
+    src: "/selo-claude-partner-v1.png",
+    w: 600,
+    h: 600,
+    alt: "Selo Claude Partner (Claude Code), emitido pela Anthropic a Jesse Guimarães, COO da IAgentics",
+    legenda: "Time certificado pela Anthropic · Claude Partner (Claude Code)",
+    verificar: "Verificar no Credly",
+    href: "https://www.credly.com/badges/a34b4c93-a461-4c7e-8484-ce1b2403a2f1/public_url",
+  },
+} as const;
+
 export const solutions = {
   eyebrow: "Modelos de negócio",
   headline: "As 3 soluções da IAgentics",

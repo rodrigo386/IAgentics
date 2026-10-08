@@ -68,3 +68,17 @@ test("as soluções trocam o filme do palco", async ({ page }) => {
   await expect(sec.locator('video[src="/solucoes/solucao-nexo.mp4"]')).toHaveClass(/opacity-0/);
   await expect.poll(() => sec.locator('video[src="/solucoes/solucao-academy-v2.mp4"]').evaluate((v: HTMLVideoElement) => !v.paused)).toBe(true);
 });
+
+/* Selo Claude Partner (2026-10-08): no rodapé de toda página e na faixa de
+   parcerias, como imagem com link para a verificação — sem o embed do Credly. */
+test("o selo Claude Partner está no rodapé e na faixa de parcerias, sem script do Credly", async ({ page }) => {
+  for (const rota of ["/", "/academy", "/artigos"]) {
+    await page.goto(rota);
+    const rodape = page.locator("footer");
+    await expect(rodape.getByRole("img", { name: /Selo Claude Partner/ })).toBeVisible();
+    await expect(rodape.getByRole("link", { name: /Verificar no Credly/ })).toHaveAttribute("href", /credly\.com\/badges\/a34b4c93/);
+  }
+  await page.goto("/");
+  await expect(page.getByRole("list", { name: "Parcerias" }).getByRole("img", { name: /Selo Claude Partner/ })).toBeVisible();
+  await expect(page.locator('script[src*="credly"]')).toHaveCount(0);
+});
