@@ -125,3 +125,15 @@ test("o artigo traz Article com autor e dateModified, e a trilha de navegação"
   const trilha = blocos.find((b) => b["@type"] === "BreadcrumbList");
   expect(trilha.itemListElement.map((i: { name: string }) => i.name)).toEqual(["Início", "Artigos", "Tail spend: o guia em português"]);
 });
+
+/* CTR do tail spend (Prompt 4 de SEO, 2026-10-09): título de busca próprio, FAQ
+   visível e FAQPage do mesmo objeto, e nenhum [VALIDAR] no ar. */
+test("o artigo de tail spend tem título de busca, FAQ e nenhum placeholder", async ({ page }) => {
+  await page.goto("/artigos/tail-spend-guia-em-portugues");
+  await expect(page).toHaveTitle("Tail spend: benchmarks, percentuais e guia | IAgentics");
+  await expect(page.getByRole("heading", { name: "Perguntas frequentes" })).toBeVisible();
+  const faq = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "FAQPage");
+  expect(faq.mainEntity).toHaveLength(4);
+  for (const q of faq.mainEntity) await expect(page.getByRole("heading", { name: q.name })).toBeVisible();
+  await expect(page.locator("main")).not.toContainText("[VALIDAR]");
+});

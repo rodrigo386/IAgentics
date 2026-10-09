@@ -5,10 +5,10 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { artigos as t } from "@/lib/content";
-import { ogDoArtigo, artigoJsonLd, trilhaArtigoJsonLd } from "@/lib/seo";
+import { ogDoArtigo, artigoJsonLd, trilhaArtigoJsonLd, faqJsonLd } from "@/lib/seo";
 import { todosOsArtigos, artigoPorSlug, dataPorExtenso } from "@/lib/artigos";
 import { EXPLICADORES } from "@/components/artigos/explicadores";
-import { MARCADOR_EXPLICADOR, IDS_EXPLICADORES, type IdExplicador } from "@/lib/explicadores";
+import { MARCADOR_BLOCO, IDS_EXPLICADORES, type IdExplicador } from "@/lib/explicadores";
 
 /**
  * Um artigo.
@@ -36,12 +36,14 @@ export async function generateMetadata({
   if (!artigo) return {};
 
   return {
-    title: artigo.titulo,
+    /* Título de busca próprio quando existe (já traz a marca, por isso
+       `absolute`); senão o H1 com o sufixo do template. */
+    title: artigo.tituloSeo ? { absolute: artigo.tituloSeo } : artigo.titulo,
     description: artigo.descricao,
     alternates: { canonical: `/artigos/${artigo.slug}` },
     openGraph: ogDoArtigo(
       `/artigos/${artigo.slug}`,
-      `${artigo.titulo} · IAgentics`,
+      artigo.tituloSeo ?? `${artigo.titulo} · IAgentics`,
       artigo.descricao,
       artigo.data,
       artigo.atualizado,
@@ -58,6 +60,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     <>
       <JsonLd dados={artigoJsonLd(artigo)} />
       <JsonLd dados={trilhaArtigoJsonLd(artigo)} />
+      {artigo.faq.length > 0 ? <JsonLd dados={faqJsonLd(artigo.faq)} /> : null}
       <Nav />
       <main id="conteudo" className="pt-16">
         <article className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-32">
@@ -114,13 +117,28 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 mora em `.artigo-corpo` (globals.css) porque markdown
                 renderizado não passa por className: as tags nascem do parser. */}
             <div className="lg:col-span-8 lg:col-start-5">
-              {/* O corpo é partido nos marcadores `<!-- explicador:id -->`:
-                  as partes ímpares do split são os ids, as pares são HTML. */}
-              {artigo.html.split(new RegExp(MARCADOR_EXPLICADOR.source, "g")).map((parte, i) => {
+              {/* O corpo é partido nos marcadores `<!-- explicador:id -->` e
+                  `<!-- faq -->`: as partes ímpares do split são os marcadores,
+                  as pares são HTML. */}
+              {artigo.html.split(new RegExp(MARCADOR_BLOCO.source, "g")).map((parte, i) => {
                 if (i % 2 === 0) {
                   return parte.trim() ? <div key={i} className="artigo-corpo mt-6 first:mt-0" dangerouslySetInnerHTML={{ __html: parte }} /> : null;
                 }
-                const Explicador = (IDS_EXPLICADORES as readonly string[]).includes(parte) ? EXPLICADORES[parte as IdExplicador] : null;
+                if (parte === "faq") {
+                  return artigo.faq.length > 0 ? (
+                    <div key={i} className="artigo-corpo mt-6">
+                      <h2>{t.rotulos.perguntas}</h2>
+                      {artigo.faq.map((f) => (
+                        <section key={f.pergunta}>
+                          <h3>{f.pergunta}</h3>
+                          <p>{f.resposta}</p>
+                        </section>
+                      ))}
+                    </div>
+                  ) : null;
+                }
+                const id = parte.replace("explicador:", "");
+                const Explicador = (IDS_EXPLICADORES as readonly string[]).includes(id) ? EXPLICADORES[id as IdExplicador] : null;
                 return Explicador ? (
                   <div key={i} className="my-12">
                     <Explicador />

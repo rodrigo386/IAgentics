@@ -59,6 +59,24 @@ describe("frontmatter de todos os artigos (inclusive rascunhos)", () => {
     expect(textosArtigos.categorias).toContain(String(frontmatter(arquivo).categoria));
   });
 
+  /* Título de busca (2026-10-09): até 60 caracteres, terminando na marca. */
+  it.each(arquivos)("%s tem tituloSeo válido, se tiver", (arquivo) => {
+    const t = frontmatter(arquivo).tituloSeo;
+    if (t === undefined) return;
+    expect(String(t).length).toBeLessThanOrEqual(60);
+    expect(String(t)).toMatch(/\| IAgentics$/);
+  });
+
+  /* FAQ e marcador andam juntos: FAQ sem `<!-- faq -->` não aparece na página
+     (e o FAQPage prometeria o que a tela não mostra); marcador sem FAQ vira
+     buraco. */
+  it.each(arquivos)("%s tem FAQ e marcador juntos, ou nenhum dos dois", (arquivo) => {
+    const { data, content } = matter(readFileSync(join(DIRETORIO, arquivo), "utf8"));
+    const temFaq = Array.isArray(data.faq) && data.faq.length > 0;
+    expect(/<!--\s*faq\s*-->/.test(content)).toBe(temFaq);
+    if (temFaq) for (const f of data.faq) expect(f.pergunta && f.resposta).toBeTruthy();
+  });
+
   it.each(arquivos)("%s tem descrição em tamanho útil para busca", (arquivo) => {
     /* A description é o que o Google mostra abaixo do título. Curta demais
        desperdiça o espaço; longa demais é cortada no meio da frase. */

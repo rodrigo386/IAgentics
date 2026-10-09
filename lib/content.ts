@@ -1243,6 +1243,7 @@ export const artigos = {
     por: "por",
     voltar: "Todos os artigos",
     publicadoEm: "Publicado em",
+    perguntas: "Perguntas frequentes",
   },
   /* A listagem só é linkada quando existe artigo publicado, então este texto
      é rede de segurança: se alguém chegar por URL direta antes da primeira
@@ -1661,6 +1662,42 @@ export const cursos = {
     titulo: "Em breve na Solution — IAgentics e Pecege",
     descricao:
       "As formações de IA aplicada a Compras e Gestão de Gastos da IAgentics passam a ser oferecidas na Solution, a plataforma de educação online do Pecege.",
+  },
+  /**
+   * As formações, com ementa, carga horária, público-alvo e formato (Prompt 4
+   * de SEO, 2026-10-09: a /cursos aparecia na posição 16 sem cliques, e não
+   * dizia o que cada formação ensina). A página mostra SÓ o que estiver
+   * preenchido, e o JSON-LD de Course só entra para formação com descrição.
+   *
+   * O que está preenchido já existia no site: o Fundamentos é o mesmo curso
+   * "Fundamentos de IA aplicado aos Negócios" da Academy (8 horas, OnDemand,
+   * com a mesma descrição). FALTA o Rodrigo preencher: a ementa e o público-
+   * alvo dos dois, e a descrição, a carga horária e o formato do Marketing
+   * com IA.
+   */
+  formacoes: {
+    titulo: "As formações",
+    rotulos: { cargaHoraria: "Carga horária", formato: "Formato", publico: "Para quem", ementa: "Ementa", com: "Com" },
+    itens: [
+      {
+        nome: "Fundamentos de IA para Negócios",
+        professor: "Vinícius",
+        descricao: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
+        cargaHoraria: "8 horas",
+        formato: "Online, no seu ritmo",
+        publico: undefined as string | undefined,
+        ementa: [] as string[],
+      },
+      {
+        nome: "Marketing com IA",
+        professor: "Carol",
+        descricao: undefined as string | undefined,
+        cargaHoraria: undefined as string | undefined,
+        formato: undefined as string | undefined,
+        publico: undefined as string | undefined,
+        ementa: [] as string[],
+      },
+    ],
   },
   hero: {
     logoIagenticsAlt: "IAgentics",

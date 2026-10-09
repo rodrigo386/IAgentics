@@ -46,6 +46,12 @@ export type Artigo = {
   /** Última modificação real (commit do .md), nunca antes da publicação. Vai
    *  para o `lastmod` do sitemap e o `dateModified` do JSON-LD. */
   atualizado: string;
+  /** Título para a busca (<title>), quando difere do H1. Já com a marca, até
+   *  60 caracteres (Prompt 4 de SEO, 2026-10-09). */
+  tituloSeo?: string;
+  /** Perguntas frequentes do frontmatter: a página mostra onde o markdown tem
+   *  `<!-- faq -->`, e o FAQPage sai do mesmo objeto (sem divergir). */
+  faq: { pergunta: string; resposta: string }[];
 };
 
 /** Artigo sem `ordem` no frontmatter cai depois dos que têm. */
@@ -105,6 +111,8 @@ function ler(arquivo: string): Artigo | null {
     leitura: minutosDeLeitura(content),
     ordem: Number(data.ordem ?? ORDEM_PADRAO),
     atualizado: commit > publicado ? commit : publicado,
+    ...(data.tituloSeo ? { tituloSeo: String(data.tituloSeo) } : {}),
+    faq: Array.isArray(data.faq) ? data.faq.map((f: { pergunta: unknown; resposta: unknown }) => ({ pergunta: String(f.pergunta), resposta: String(f.resposta) })) : [],
   };
 }
 

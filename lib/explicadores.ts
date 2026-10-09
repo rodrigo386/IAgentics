@@ -9,3 +9,8 @@ export type IdExplicador = (typeof IDS_EXPLICADORES)[number];
 
 /** O marcador, com o id capturado. */
 export const MARCADOR_EXPLICADOR = /<!--\s*explicador:([a-z0-9-]+)\s*-->/;
+
+/** Todos os marcadores que a página do artigo troca por componente:
+ *  `<!-- explicador:<id> -->` e `<!-- faq -->` (2026-10-09). No split, o grupo
+ *  capturado é "explicador:<id>" ou "faq". */
+export const MARCADOR_BLOCO = /<!--\s*(explicador:[a-z0-9-]+|faq)\s*-->/;

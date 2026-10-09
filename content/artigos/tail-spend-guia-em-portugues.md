@@ -1,6 +1,16 @@
 ---
 titulo: "Tail spend: o guia em português"
-descricao: "O que é tail spend, por que ele não é a mesma coisa que maverick buying, e por que a parte do gasto que ninguém olha costuma consumir a maior parte do esforço de Compras."
+descricao: "Tail spend em português: percentuais de referência da curva ABC, a diferença para maverick buying e como reduzir a cauda de gastos em Compras."
+tituloSeo: "Tail spend: benchmarks, percentuais e guia | IAgentics"
+faq:
+  - pergunta: "O que é tail spend?"
+    resposta: "Tail spend é a cauda longa das compras: aquisições de baixo valor, pouco frequentes e espalhadas por muitos fornecedores. Cada uma parece irrelevante sozinha, e somadas elas formam a maior parte das transações da empresa."
+  - pergunta: "Qual o percentual de tail spend numa empresa?"
+    resposta: "Na curva ABC usada como referência, a classe C, que corresponde ao tail spend, reúne cerca de 5% do valor gasto e cerca de metade dos fornecedores. O número exato varia por empresa e só aparece depois de consolidar e classificar o gasto."
+  - pergunta: "Tail spend e maverick buying são a mesma coisa?"
+    resposta: "Tail spend é definido pelo tamanho da compra, e maverick buying pela falta de conformidade com o processo. Uma compra pequena feita pelo canal aprovado é tail spend e não é maverick. Uma compra grande feita por fora do processo é maverick e não é tail spend."
+  - pergunta: "Como reduzir o tail spend?"
+    resposta: "Em quatro passos: enxergar o gasto com spend analysis, consolidar fornecedores da mesma categoria, tirar a decisão da cauda do comprador com catálogo, contrato guarda-chuva ou cartão corporativo, e automatizar o que continuar passando pelo fluxo completo."
 slug: "tail-spend-guia-em-portugues"
 data: 2026-08-20
 autor: "Rodrigo Costa"
@@ -155,6 +165,9 @@ caminho certo** até que ele seja o caminho mais fácil.
 
 Isso é menos glamouroso que um projeto de savings. É também o que ainda está de
 pé três anos depois.
+
+
+<!-- faq -->
 
 ---
 
