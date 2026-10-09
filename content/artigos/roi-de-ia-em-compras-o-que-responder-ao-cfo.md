@@ -4,7 +4,7 @@ descricao: "O saving direto justifica o piloto e não justifica o próximo inves
 slug: "roi-de-ia-em-compras-o-que-responder-ao-cfo"
 data: 2026-08-20
 autor: "Rodrigo Costa — IAgentics"
-categoria: "IA aplicada"
+categoria: "ROI e business case"
 produto: "spend-lab"
 status: "publicado"
 ordem: 1

@@ -4,7 +4,7 @@ descricao: "Da requisição ao pedido no ERP: onde cada etapa do processo de com
 slug: "processo-de-compras-sete-passos-ia"
 data: 2026-08-20
 autor: "IAgentics"
-categoria: "Processo de Compras"
+categoria: "Sourcing e cotação"
 produto: "nexo"
 status: "publicado"
 ordem: 2

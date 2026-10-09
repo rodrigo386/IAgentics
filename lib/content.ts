@@ -1218,15 +1218,25 @@ export const artigos = {
      a pessoa já sabe onde está. No resultado de busca ela não sabe, e foi por
      isso que o Bing marcou os dois como curtos em 2026-09-14. */
   meta: {
-    titulo: "Artigos sobre IA aplicada a Compras",
+    /* Título completo, com a marca, a pedido (Prompt 2 de SEO, 2026-10-09):
+       vai como `absolute` na página, sem o sufixo do template. */
+    titulo: "Artigos sobre IA em Compras e Gestão de Gastos | IAgentics",
     descricao:
-      "Textos sobre IA aplicada a Compras: processo, análise de gastos, tail spend, ROI e governança. O que aprendemos implantando, sem promessa que não se sustenta.",
+      "Artigos e guias da IAgentics sobre sourcing, spend analysis, tail spend e agentes de IA em Compras, com exemplos práticos para times de Procurement.",
   },
   hero: {
     eyebrow: "IAgentics",
-    titulo: "Artigos",
-    lead: "O que aprendemos implantando IA em Compras — processo, análise de gastos e governança, sem promessa que não se sustenta.",
+    titulo: "IA aplicada a Compras: artigos e guias",
+    /* Dois parágrafos de verdade (2026-10-09): o Google rastreou a /artigos e
+       não indexou, porque ela era só uma lista de links. */
+    intro: [
+      "Os artigos da IAgentics são escritos para quem trabalha em Compras e Procurement: compradores, gestores de categoria, líderes de suprimentos e quem responde pelo orçamento da área. Cada texto parte de um problema do dia a dia, como uma cotação que demora, um gasto que ninguém acompanha ou um projeto de IA que precisa de justificativa.",
+      "Os temas estão organizados em quatro frentes: sourcing e cotação, spend e tail spend, IA e agentes em Compras, e ROI e business case. Em todos mostramos o que dá para delegar a uma IA, o que continua com o comprador e como medir o resultado antes de ampliar o uso.",
+    ],
   },
+  /** As categorias, na ordem em que aparecem na listagem. Todo artigo tem de
+   *  usar uma delas (lib/artigos.test.ts confere). */
+  categorias: ["Sourcing e cotação", "Spend e tail spend", "IA e agentes em Compras", "ROI e business case"],
   rotulos: {
     /* "3 min de leitura" — o número vem calculado do próprio texto. */
     leitura: "min de leitura",

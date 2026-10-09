@@ -4,7 +4,7 @@ descricao: "Dois conceitos diferentes dividem o mesmo nome em português. Confun
 slug: "agente-de-ia-em-compras-nao-e-agentic-commerce"
 data: 2026-08-20
 autor: "IAgentics"
-categoria: "Agentes de IA"
+categoria: "IA e agentes em Compras"
 produto: "nexo"
 status: "publicado"
 ordem: 3

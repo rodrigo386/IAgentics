@@ -4,7 +4,7 @@ descricao: "Seis prompts estruturados para análise de proposta, mapa comparativ
 slug: "prompts-para-compras"
 data: 2026-08-20
 autor: "IAgentics"
-categoria: "IA aplicada"
+categoria: "IA e agentes em Compras"
 produto: "academy"
 status: "publicado"
 ordem: 5

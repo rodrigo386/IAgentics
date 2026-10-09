@@ -4,7 +4,7 @@ descricao: "O que é tail spend, por que ele não é a mesma coisa que maverick 
 slug: "tail-spend-guia-em-portugues"
 data: 2026-08-20
 autor: "IAgentics"
-categoria: "Análise de Gastos"
+categoria: "Spend e tail spend"
 produto: "spend-lab"
 status: "publicado"
 ordem: 4

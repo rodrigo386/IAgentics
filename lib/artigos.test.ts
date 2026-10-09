@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { describe, it, expect } from "vitest";
 import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown } from "@/lib/artigos";
 import { IDS_EXPLICADORES, MARCADOR_EXPLICADOR } from "@/lib/explicadores";
+import { artigos as textosArtigos } from "@/lib/content";
 
 const DIRETORIO = join(process.cwd(), "content", "artigos");
 
@@ -50,6 +51,12 @@ describe("frontmatter de todos os artigos (inclusive rascunhos)", () => {
   it("não repete slug entre artigos", () => {
     const slugs = arquivos.map((a) => String(frontmatter(a).slug));
     expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  /* A listagem agrupa pelas quatro categorias (2026-10-09). Categoria fora da
+     lista some da /artigos em silêncio — o teste avisa antes. */
+  it.each(arquivos)("%s usa uma das categorias da listagem", (arquivo) => {
+    expect(textosArtigos.categorias).toContain(String(frontmatter(arquivo).categoria));
   });
 
   it.each(arquivos)("%s tem descrição em tamanho útil para busca", (arquivo) => {

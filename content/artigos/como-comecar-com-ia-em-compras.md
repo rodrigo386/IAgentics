@@ -4,7 +4,7 @@ descricao: "Uma análise de RFP que levava 8 horas por semana passou a levar 22 
 slug: "como-comecar-com-ia-em-compras"
 data: 2026-05-29
 autor: "Rodrigo Costa — IAgentics"
-categoria: "Implantação"
+categoria: "IA e agentes em Compras"
 produto: "nexo"
 status: "publicado"
 titulo_linkedin: "8 horas viram 22 minutos. O que muda em Compras quando o agente entra na cadeia certa"

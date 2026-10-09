@@ -1,10 +1,10 @@
 ---
-titulo: "O que é mapa de cotação — e por que o menor preço nem sempre ganha"
+titulo: "O que é mapa de cotação e por que o menor preço nem sempre ganha"
 descricao: "Mapa de cotação é a tabela que põe lado a lado as propostas dos fornecedores para os mesmos itens. O que vai nele, como comparar quem não cotou tudo e onde ele costuma errar."
 slug: "o-que-e-mapa-de-cotacao"
 data: 2026-10-07
 autor: "IAgentics"
-categoria: "Processo de Compras"
+categoria: "Sourcing e cotação"
 produto: "nexo"
 status: "publicado"
 ---

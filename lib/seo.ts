@@ -126,6 +126,34 @@ export function artigoJsonLd(artigo: {
   };
 }
 
+/**
+ * A listagem de artigos como coleção (Prompt 2 de SEO, 2026-10-09): o Google
+ * rastreou a /artigos e não indexou, por ser só uma lista de links. Diz o que
+ * a página é (CollectionPage) e quais artigos ela reúne, na ordem da tela.
+ */
+export function colecaoArtigosJsonLd(meta: { titulo: string; descricao: string }, lista: ReadonlyArray<{ slug: string; titulo: string }>) {
+  const url = absoluta("/artigos");
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: meta.titulo,
+    description: meta.descricao,
+    url,
+    inLanguage: "pt-BR",
+    isPartOf: { "@type": "WebSite", name: site.name, url: site.url },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: lista.length,
+      itemListElement: lista.map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: absoluta(`/artigos/${a.slug}`),
+        name: a.titulo,
+      })),
+    },
+  };
+}
+
 /** A empresa, para o Knowledge Graph. `sameAs` são os perfis oficiais já
  *  publicados no rodapé - é o que amarra o site às contas sociais. */
 export function organizacaoJsonLd() {

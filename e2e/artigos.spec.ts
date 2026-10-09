@@ -12,16 +12,16 @@ import { test, expect } from "@playwright/test";
 test("a listagem abre, está no menu e leva ao artigo", async ({ page }) => {
   await page.goto("/artigos");
 
-  await expect(page.getByRole("heading", { name: "Artigos", level: 1 })).toBeVisible();
-
   // O link do menu entrou junto com a primeira publicação.
   await expect(page.getByRole("navigation").getByRole("link", { name: "Artigos" }).first()).toBeVisible();
 
-  // O mais recente lidera (o do mapa de cotação, 2026-10-07). Entre os cinco
-  // de 2026-08-20, o do ROI vem primeiro: é o único com caso real.
-  const titulos = page.getByRole("heading", { level: 2 });
+  // Desde 2026-10-09 a listagem agrupa por categoria: um h2 por categoria, na
+  // ordem de `artigos.categorias`, e o título de cada artigo é h3.
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("IA aplicada a Compras: artigos e guias");
+  const categorias = page.locator("main").getByRole("heading", { level: 2 });
+  await expect(categorias).toHaveText(["Sourcing e cotação", "Spend e tail spend", "IA e agentes em Compras", "ROI e business case"]);
+  const titulos = page.getByRole("heading", { level: 3 });
   await expect(titulos.first()).toContainText("O que é mapa de cotação");
-  await expect(titulos.nth(1)).toContainText("ROI de IA em Compras");
 
   const primeiro = page.getByRole("link", { name: /ROI de IA em Compras/ });
   await primeiro.click();
@@ -99,4 +99,17 @@ test("o artigo do mapa de cotação traz a explicação animada com os passos em
   // marcador em si não vira texto em nenhuma das partes.
   await expect(page.locator(".artigo-corpo")).toHaveCount(2);
   for (const parte of await page.locator(".artigo-corpo").all()) await expect(parte).not.toContainText("explicador:");
+});
+
+/* A listagem é página de conteúdo (Prompt 2 de SEO, 2026-10-09). */
+test("a listagem tem título completo, introdução e JSON-LD de coleção", async ({ page }) => {
+  await page.goto("/artigos");
+  await expect(page).toHaveTitle("Artigos sobre IA em Compras e Gestão de Gastos | IAgentics");
+  const descricao = await page.locator('meta[name="description"]').getAttribute("content");
+  expect(descricao!.length).toBeLessThanOrEqual(155);
+  await expect(page.locator("main header p").nth(1)).toContainText("Compras e Procurement");
+  const jsonld = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const colecao = jsonld.map((j) => JSON.parse(j)).find((j) => j["@type"] === "CollectionPage");
+  expect(colecao.mainEntity["@type"]).toBe("ItemList");
+  expect(colecao.mainEntity.itemListElement.length).toBeGreaterThanOrEqual(7);
 });
