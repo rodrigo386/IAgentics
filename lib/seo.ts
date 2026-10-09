@@ -1,4 +1,4 @@
-import { site, contact } from "@/lib/content";
+import { site, contact, privacidade } from "@/lib/content";
 
 /**
  * Dados estruturados (JSON-LD) e o inventário de rotas do sitemap.
@@ -76,7 +76,12 @@ export function ogDaPagina(caminho: string, title: string, description: string) 
  * `type: "article"` (o LinkedIn usa isso para montar o cartão de publicação,
  * não o de site) e `publishedTime`, que é o que faz a data aparecer na prévia.
  */
-export function ogDoArtigo(caminho: string, title: string, description: string, dataISO: string) {
+/** A imagem de compartilhamento padrão do site (app/opengraph-image.tsx). Os
+ *  artigos não tinham og:image (2026-10-09): o openGraph declarado na página
+ *  não herdava a do layout. */
+export const IMAGEM_OG = `${site.url}/opengraph-image`;
+
+export function ogDoArtigo(caminho: string, title: string, description: string, dataISO: string, modificadoISO?: string) {
   return {
     title,
     description,
@@ -85,6 +90,8 @@ export function ogDoArtigo(caminho: string, title: string, description: string, 
     locale: "pt_BR",
     type: "article" as const,
     publishedTime: dataISO,
+    modifiedTime: modificadoISO ?? dataISO,
+    images: [{ url: IMAGEM_OG, width: 1200, height: 630 }],
   };
 }
 
@@ -101,6 +108,7 @@ export function artigoJsonLd(artigo: {
   titulo: string;
   descricao: string;
   data: string;
+  atualizado: string;
   autor: string;
 }) {
   const url = absoluta(`/artigos/${artigo.slug}`);
@@ -110,10 +118,17 @@ export function artigoJsonLd(artigo: {
     headline: artigo.titulo,
     description: artigo.descricao,
     datePublished: artigo.data,
+    /* Último commit no .md (lib/datas-git.ts), nunca antes da publicação. */
+    dateModified: artigo.atualizado,
+    image: IMAGEM_OG,
+    /* Pessoa, não organização (Prompt 3 de SEO, 2026-10-09, decisão do
+       Rodrigo: "Rodrigo Costa" em todos). Sem `url`: o LinkedIn pessoal dele
+       não está no código — quando estiver, entra aqui. */
     author: { "@type": "Person", name: artigo.autor },
     publisher: {
       "@type": "Organization",
       name: site.name,
+      url: site.url,
       logo: { "@type": "ImageObject", url: `${site.url}/iagentics-lockup.png` },
     },
     /* `mainEntityOfPage` é o que declara ao Google qual URL é a casa deste
@@ -123,6 +138,61 @@ export function artigoJsonLd(artigo: {
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     url,
     inLanguage: "pt-BR",
+  };
+}
+
+/** A trilha Início > Artigos > título, em todo artigo (2026-10-09). */
+export function trilhaArtigoJsonLd(artigo: { slug: string; titulo: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Artigos", item: absoluta("/artigos") },
+      { "@type": "ListItem", position: 3, name: artigo.titulo, item: absoluta(`/artigos/${artigo.slug}`) },
+    ],
+  };
+}
+
+/**
+ * Cursos como lista de Course (Prompt 3 de SEO, 2026-10-09), SEMPRE a partir
+ * do mesmo objeto que a página mostra — curso no JSON-LD que a página não
+ * mostra é o caso que fez remover o antigo `cursosJsonLd` em 2026-08-28.
+ * `horas` ("8 horas") vira duração ISO 8601 quando houver.
+ */
+export function cursosJsonLd(
+  caminho: string,
+  itens: ReadonlyArray<{ nome: string; descricao: string; horas?: string; formato?: string }>,
+) {
+  const provedor = { "@type": "Organization", name: site.name, sameAs: site.url };
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    url: absoluta(caminho),
+    itemListElement: itens.map((c, i) => {
+      const horas = c.horas?.match(/(\d+)\s*hora/)?.[1];
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Course",
+          name: c.nome,
+          description: c.descricao,
+          provider: provedor,
+          inLanguage: "pt-BR",
+          url: absoluta(caminho),
+          ...(c.formato || horas
+            ? {
+                hasCourseInstance: {
+                  "@type": "CourseInstance",
+                  ...(c.formato ? { courseMode: c.formato } : {}),
+                  ...(horas ? { courseWorkload: `PT${horas}H` } : {}),
+                },
+              }
+            : {}),
+        },
+      };
+    }),
   };
 }
 
@@ -165,7 +235,17 @@ export function organizacaoJsonLd() {
     logo: `${site.url}/iagentics-lockup.png`,
     description: site.description,
     slogan: site.tagline,
-    sameAs: contact.social.map((s) => s.href),
+    /* Só perfis (LinkedIn, Instagram): o link do WhatsApp é canal de
+       conversa, não identidade da empresa — vai no contactPoint. */
+    sameAs: contact.social.filter((s) => !s.href.includes("wa.me")).map((s) => s.href),
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: privacidade.contato.email,
+      telephone: `+55 ${contact.whatsapp.numero}`,
+      areaServed: "BR",
+      availableLanguage: "pt-BR",
+    },
   };
 }
 

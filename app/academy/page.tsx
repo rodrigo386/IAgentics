@@ -11,7 +11,7 @@ import { Footer } from "@/components/Footer";
 import { academy } from "@/lib/content";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { academyJsonLd, ogDaPagina, faqJsonLd } from "@/lib/seo";
+import { academyJsonLd, ogDaPagina, faqJsonLd, cursosJsonLd } from "@/lib/seo";
 
 /* Reescrita em 2026-09-14: a anterior tinha 61 caracteres e o Bing marcou
    como curta. O tamanho importa porque é o texto que o buscador exibe abaixo
@@ -44,6 +44,8 @@ export default function Page() {
   return (
     <>
       <JsonLd dados={academyJsonLd()} />
+      {/* Os cursos que a página mostra em "Cursos em destaque" (2026-10-09). */}
+      <JsonLd dados={cursosJsonLd("/academy", academy.courses.items.map((c) => ({ nome: c.name, descricao: c.body, horas: c.hours, formato: c.mode })))} />
       <JsonLd dados={faqJsonLd(academy.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">

@@ -36,7 +36,7 @@ test("o artigo traz título, autoria, corpo e volta para a listagem", async ({ p
   ).toBeVisible();
 
   // Trilho de metadados: autoria e data por extenso, sem voltar um dia no fuso.
-  await expect(page.getByText("Rodrigo Costa — IAgentics")).toBeVisible();
+  await expect(page.locator("main dd").getByText("Rodrigo Costa", { exact: true })).toBeVisible();
   await expect(page.getByText("20 de agosto de 2026")).toBeVisible();
 
   // Corpo renderizado a partir do markdown: citação e tabela existem de fato.
@@ -112,4 +112,16 @@ test("a listagem tem título completo, introdução e JSON-LD de coleção", asy
   const colecao = jsonld.map((j) => JSON.parse(j)).find((j) => j["@type"] === "CollectionPage");
   expect(colecao.mainEntity["@type"]).toBe("ItemList");
   expect(colecao.mainEntity.itemListElement.length).toBeGreaterThanOrEqual(7);
+});
+
+/* Dados estruturados do artigo (Prompt 3 de SEO, 2026-10-09). */
+test("o artigo traz Article com autor e dateModified, e a trilha de navegação", async ({ page }) => {
+  await page.goto("/artigos/tail-spend-guia-em-portugues");
+  const blocos = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j));
+  const artigo = blocos.find((b) => b["@type"] === "Article");
+  expect(artigo.author).toEqual({ "@type": "Person", name: "Rodrigo Costa" });
+  expect(artigo.dateModified >= artigo.datePublished).toBe(true);
+  expect(artigo.image).toMatch(/opengraph-image/);
+  const trilha = blocos.find((b) => b["@type"] === "BreadcrumbList");
+  expect(trilha.itemListElement.map((i: { name: string }) => i.name)).toEqual(["Início", "Artigos", "Tail spend: o guia em português"]);
 });

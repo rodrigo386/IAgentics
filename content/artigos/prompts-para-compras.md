@@ -3,7 +3,7 @@ titulo: "Prompts para quem trabalha com Compras (e o aviso que ninguém dá ante
 descricao: "Seis prompts estruturados para análise de proposta, mapa comparativo, negociação e leitura de cláusula — com o que esperar de cada um, onde eles falham, e a regra de dado sigiloso que precede todos."
 slug: "prompts-para-compras"
 data: 2026-08-20
-autor: "IAgentics"
+autor: "Rodrigo Costa"
 categoria: "IA e agentes em Compras"
 produto: "academy"
 status: "publicado"

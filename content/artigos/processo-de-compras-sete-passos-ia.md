@@ -3,7 +3,7 @@ titulo: "Os 7 passos do processo de compras — e o que a IA faz em cada um"
 descricao: "Da requisição ao pedido no ERP: onde cada etapa do processo de compras trava na prática, e o que dá para delegar a uma IA em cada uma delas."
 slug: "processo-de-compras-sete-passos-ia"
 data: 2026-08-20
-autor: "IAgentics"
+autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
 status: "publicado"

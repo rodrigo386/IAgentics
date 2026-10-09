@@ -3,7 +3,7 @@ titulo: "ROI de IA em Compras: o que responder quando o CFO pergunta"
 descricao: "O saving direto justifica o piloto e não justifica o próximo investimento. Como medir capacidade liberada — a métrica que sustenta a fase 2 — e organizar a conversa com o CFO."
 slug: "roi-de-ia-em-compras-o-que-responder-ao-cfo"
 data: 2026-08-20
-autor: "Rodrigo Costa — IAgentics"
+autor: "Rodrigo Costa"
 categoria: "ROI e business case"
 produto: "spend-lab"
 status: "publicado"

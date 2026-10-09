@@ -5,7 +5,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { artigos as t } from "@/lib/content";
-import { ogDoArtigo, artigoJsonLd } from "@/lib/seo";
+import { ogDoArtigo, artigoJsonLd, trilhaArtigoJsonLd } from "@/lib/seo";
 import { todosOsArtigos, artigoPorSlug, dataPorExtenso } from "@/lib/artigos";
 import { EXPLICADORES } from "@/components/artigos/explicadores";
 import { MARCADOR_EXPLICADOR, IDS_EXPLICADORES, type IdExplicador } from "@/lib/explicadores";
@@ -44,6 +44,7 @@ export async function generateMetadata({
       `${artigo.titulo} · IAgentics`,
       artigo.descricao,
       artigo.data,
+      artigo.atualizado,
     ),
   };
 }
@@ -56,6 +57,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     <>
       <JsonLd dados={artigoJsonLd(artigo)} />
+      <JsonLd dados={trilhaArtigoJsonLd(artigo)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <article className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-32">

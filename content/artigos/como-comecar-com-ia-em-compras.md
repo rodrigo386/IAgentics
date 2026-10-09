@@ -3,7 +3,7 @@ titulo: "Como começar com IA em Compras: onde colocar o primeiro agente"
 descricao: "Uma análise de RFP que levava 8 horas por semana passou a levar 22 minutos. O que mudou não foi a tecnologia — foi escolher a etapa onde havia conciliação demais e decisão de menos."
 slug: "como-comecar-com-ia-em-compras"
 data: 2026-05-29
-autor: "Rodrigo Costa — IAgentics"
+autor: "Rodrigo Costa"
 categoria: "IA e agentes em Compras"
 produto: "nexo"
 status: "publicado"

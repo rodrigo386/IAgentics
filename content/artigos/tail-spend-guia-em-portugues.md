@@ -3,7 +3,7 @@ titulo: "Tail spend: o guia em português"
 descricao: "O que é tail spend, por que ele não é a mesma coisa que maverick buying, e por que a parte do gasto que ninguém olha costuma consumir a maior parte do esforço de Compras."
 slug: "tail-spend-guia-em-portugues"
 data: 2026-08-20
-autor: "IAgentics"
+autor: "Rodrigo Costa"
 categoria: "Spend e tail spend"
 produto: "spend-lab"
 status: "publicado"
