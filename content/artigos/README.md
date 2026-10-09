@@ -184,3 +184,22 @@ que eram para conferir antes:
   públicas.
 - **O que a IA faz no mapa** descreve o que o vídeo do passo a passo do Nexo
   mostra (comparação item a item e sugestão de combinação), sem prometer mais.
+
+### Pauta de 2026-10-09 (Prompt 5 de SEO): sete artigos em RASCUNHO
+
+Escritos por agentes a partir do mesmo briefing (regras de texto do Rodrigo:
+sem travessão, sem as palavras proibidas, sem número inventado). Todos com
+`tituloSeo`, FAQ de 4 perguntas (FAQPage) e CTA para `/#contato`. Os números
+que aparecem estão em exemplos rotulados como ilustrativos, e as contas fecham.
+Para publicar, revisar e trocar `rascunho` por `publicado`; se publicar vários
+no mesmo dia, dar `ordem` a cada um.
+
+| Artigo | Categoria | O que conferir antes de publicar |
+| --- | --- | --- |
+| `maverick-buying-o-que-e-como-reduzir` | Spend e tail spend | Usa os benchmarks da APQC já citados no tail spend |
+| `spend-analysis-em-30-dias` | Spend e tail spend | Descreve o Spend Lab só pelo que a página dele diz |
+| `saving-em-compras-para-o-cfo` | ROI e business case | 1 `[VALIDAR]`: quanto do saving negociado se perde em compra fora do contrato |
+| `tco-em-compras-como-calcular` | Sourcing e cotação | 1 `[VALIDAR]`: parcela do preço de compra no TCO de equipamento industrial |
+| `homologacao-de-fornecedores-checklist` | Sourcing e cotação | 1 `[VALIDAR]`: quais licenças ambientais se aplicam por categoria |
+| `como-montar-uma-rfp-de-compras` | Sourcing e cotação | Não diz que o Nexo monta RFP (no Nexo a etapa é RFQ) |
+| `lead-time-de-fornecedores` | Sourcing e cotação | Sem `[VALIDAR]` |
