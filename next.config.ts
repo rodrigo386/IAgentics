@@ -17,7 +17,22 @@ const nextConfig: NextConfig = {
   /* /planos virou a landing /cursos (2026-08-14). Redirect permanente para
      não quebrar link antigo em e-mail, WhatsApp ou índice de busca. */
   async redirects() {
-    return [{ source: "/planos", destination: "/cursos", permanent: true }];
+    return [
+      { source: "/planos", destination: "/cursos", permanent: true },
+      /* www → apex (2026-10-09, Prompt 1 de SEO). O Cloudflare entrega o www
+         na mesma origem, então o redirect pode morar aqui, sem regra no
+         painel. 301 explícito, a pedido; o `permanent` do Next daria 308,
+         que o Google trata igual. */
+      {
+        source: "/:caminho*",
+        has: [{ type: "host", value: "www.iagentics.com.br" }],
+        destination: "https://iagentics.com.br/:caminho*",
+        statusCode: 301,
+      },
+      /* Endereço truncado que o Google guardou para o artigo de "como
+         começar" (2026-10-09). */
+      { source: "/artigos/como-comecar-como-primeiro-", destination: "/artigos/como-comecar-com-ia-em-compras", statusCode: 301 },
+    ];
   },
   async headers() {
     /* Link headers para descoberta por agentes (RFC 8288), pedido de

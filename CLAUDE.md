@@ -11,7 +11,7 @@ Site institucional em **pt-BR**.
 > [docs/ROADMAP-ACADEMY.md](docs/ROADMAP-ACADEMY.md), que ficou como registro de
 > decisões, não de planos.
 
-- **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex, proxy do Cloudflare ligado e certificado válido: desde 2026-08-26 ele **serve o site em 200**. Mas **ainda falta a Redirect Rule 301**, então o site responde em dois endereços. Não é urgente porque o `canonical` de toda página aponta para o apex e o Google consolida por ele — é higiene, não emergência.
+- **Produção**: https://iagentics.com.br (Cloudflare → Railway). A URL antiga `iagentics-production.up.railway.app` está MORTA. `www.iagentics.com.br` resolve com CNAME para o apex e **redireciona 301 para o apex desde 2026-10-09**, pelo `redirects()` do `next.config.ts` (regra com `has: host`), sem regra no painel do Cloudflare.
 - **GitHub**: rodrigo386/IAgentics · **Railway**: serviço IAgentics.
 - **Design e brand**: ver [docs/DESIGN.md](docs/DESIGN.md) — é a fonte de verdade visual; não repetir aqui.
 - **Posicionamento e copy**: ver [docs/PITCH-HACKTOWN-2026.md](docs/PITCH-HACKTOWN-2026.md) — resumo do pitch de set/2026, que **substitui o deck V2** como fonte. Traz também o mapa do que o site ainda não diz (6 dos 9 módulos do Nexo, time, "90 dias"). O plano aprovado para fechar essa distância, em 4 fases, está em [docs/PLANO-ALINHAMENTO-PITCH.md](docs/PLANO-ALINHAMENTO-PITCH.md) — **Fases 1 e 2 no ar desde 2026-09-04** (home e `/nexo` com o orquestrador de nove módulos); faltam os sócios (fotos) e os metadados.
@@ -71,7 +71,8 @@ Prévia da venda direta dos cursos em `/preview/catalogo`, esperando aprovação
 
 ## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
 
-- **Endereço canônico é o apex** `https://iagentics.com.br` (`site.url`). O www **ainda não redireciona** (serve 200 igual, falta a Redirect Rule) — quem sustenta a consolidação hoje é o `canonical` de cada página, não o DNS.
+- **Endereço canônico é o apex** `https://iagentics.com.br` (`site.url`). O www redireciona 301 (next.config.ts, 2026-10-09).
+- **Limpeza de SEO de 2026-10-09 (Prompt 1)**: `/app/` saiu do Disallow do robots (as URLs da plataforma removida respondem 404, e bloqueadas o Google não via o 404); `/artigos/como-comecar-como-primeiro-` redireciona 301 para o artigo certo; todo `lastmod` do sitemap vem do **último commit** nos arquivos da página ou do artigo (`lib/datas-git.ts`, nunca a hora do build). Página nova no sitemap? Ponha os arquivos dela em `ARQUIVOS_DA_ROTA` (app/sitemap.ts).
 - **`canonical` e `openGraph` são declarados por página, nunca no layout** — metadata do Next é herdada: um valor no layout faz toda rota se declarar como sendo a home. Use `ogDaPagina()` de `lib/seo.ts`.
 - **Dado estruturado sai de `lib/seo.ts`**, sempre derivado de `lib/content.ts` — JSON-LD que não bate com a página é penalizado. O `cursosJsonLd` foi removido em 2026-08-28 junto com o catálogo: anunciar curso que não está à venda é exatamente o caso que a regra proíbe.
 - **Página nova pública?** Entra em `ROTAS_SITEMAP`.
@@ -133,6 +134,5 @@ Prévia da venda direta dos cursos em `/preview/catalogo`, esperando aprovação
 
 ## Pendências em aberto (com o Rodrigo)
 
-- **Redirect Rule 301 do www** no Cloudflare — higiene, o canonical já protege.
 - **Logo do Pecege**: `public/partner-pecege.png` precisa do arquivo real.
 - **Variáveis órfãs no Railway** (`AUTH_*`; as `ASAAS_*` voltaram a ser usadas) — remover quando houver um `railway up` de qualquer forma.

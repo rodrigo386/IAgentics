@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import MarkdownIt from "markdown-it";
+import { dataDoGit } from "@/lib/datas-git";
 
 /**
  * Os artigos, lidos de `content/artigos/*.md` no build.
@@ -42,6 +43,9 @@ export type Artigo = {
   leitura: number;
   /** Desempate editorial entre artigos da MESMA data. Menor vem primeiro. */
   ordem: number;
+  /** Última modificação real (commit do .md), nunca antes da publicação. Vai
+   *  para o `lastmod` do sitemap e o `dateModified` do JSON-LD. */
+  atualizado: string;
 };
 
 /** Artigo sem `ordem` no frontmatter cai depois dos que têm. */
@@ -87,6 +91,8 @@ function ler(arquivo: string): Artigo | null {
     }
   }
 
+  const publicado = data.data instanceof Date ? data.data.toISOString().slice(0, 10) : String(data.data);
+  const commit = dataDoGit(`content/artigos/${arquivo}`);
   return {
     slug: String(data.slug),
     titulo: String(data.titulo),
@@ -98,6 +104,7 @@ function ler(arquivo: string): Artigo | null {
     html: md.render(content),
     leitura: minutosDeLeitura(content),
     ordem: Number(data.ordem ?? ORDEM_PADRAO),
+    atualizado: commit > publicado ? commit : publicado,
   };
 }
 
