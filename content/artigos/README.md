@@ -198,8 +198,10 @@ no mesmo dia, dar `ordem` a cada um.
 | --- | --- | --- |
 | `maverick-buying-o-que-e-como-reduzir` | Spend e tail spend | Usa os benchmarks da APQC já citados no tail spend |
 | `spend-analysis-em-30-dias` | Spend e tail spend | Descreve o Spend Lab só pelo que a página dele diz |
-| `saving-em-compras-para-o-cfo` | ROI e business case | 1 `[VALIDAR]`: quanto do saving negociado se perde em compra fora do contrato |
-| `tco-em-compras-como-calcular` | Sourcing e cotação | 1 `[VALIDAR]`: parcela do preço de compra no TCO de equipamento industrial |
-| `homologacao-de-fornecedores-checklist` | Sourcing e cotação | 1 `[VALIDAR]`: quais licenças ambientais se aplicam por categoria |
+| `saving-em-compras-para-o-cfo` | ROI e business case | Leakage com fonte (Efficio) |
+| `tco-em-compras-como-calcular` | Sourcing e cotação | Peso do preço no TCO com fonte (Atlas Copco, compressor) |
+| `homologacao-de-fornecedores-checklist` | Sourcing e cotação | Licenças com fonte (CONAMA 237/1997, Anexo I) |
 | `como-montar-uma-rfp-de-compras` | Sourcing e cotação | Não diz que o Nexo monta RFP (no Nexo a etapa é RFQ) |
 | `lead-time-de-fornecedores` | Sourcing e cotação | Sem `[VALIDAR]` |
+
+Os três `[VALIDAR]` foram preenchidos com fonte em 2026-10-09, a pedido do Rodrigo ("o que tiver validar, busque na internet"). A tabela "Benchmarks de tail spend" também: entrou no artigo de tail spend com BCG, McKinsey e APQC na seção Fontes.

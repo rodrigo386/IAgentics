@@ -111,8 +111,9 @@ Entre um e outro, três coisas comem o número:
 1. **Volume menor que o previsto.** A demanda caiu, a linha de produção parou, o
    projeto atrasou.
 2. **Compra fora do contrato.** Parte da demanda continua indo para o fornecedor
-   antigo, ao preço antigo. É o leakage, primo do maverick buying. Em muitas
-   empresas, ele responde por [VALIDAR] do saving negociado.
+   antigo, ao preço antigo. É o leakage, primo do maverick buying. A consultoria
+   Efficio afirma que [não é incomum perder mais da metade do saving](https://www.efficioconsulting.com/en-us/resources/insight/what-happened-those-procurement-savings-you-promis/)
+   por falta de compliance com o contrato.
 3. **Prazo de vigência.** Um contrato fechado em setembro tem só três meses de
    efeito no ano fiscal, e o saving anualizado aparece inteiro no slide de
    dezembro.

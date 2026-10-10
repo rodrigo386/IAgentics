@@ -133,8 +133,9 @@ balanço é trabalho perdido.
 
 ### 6. ESG e requisitos da categoria
 
-- [ ] Licenças ambientais exigidas para a atividade [VALIDAR quais se aplicam a
-  cada categoria com o jurídico ou a área de meio ambiente]
+- [ ] Licença ambiental de operação, quando a atividade do fornecedor está entre
+  as sujeitas a licenciamento (Anexo I da [Resolução CONAMA 237/1997](https://www.ibama.gov.br/sophia/cnia/legislacao/MMA/RE0237-191297.PDF),
+  mais as listas do estado e do município onde ele opera)
 - [ ] Política de saúde e segurança do trabalho, para serviços dentro das suas
   instalações
 - [ ] Documentação de segurança de equipes terceirizadas (treinamentos,

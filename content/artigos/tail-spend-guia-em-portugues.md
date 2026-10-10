@@ -72,6 +72,25 @@ Algumas empresas ajustam a proporção para 70/30 ou 90/10 conforme o próprio
 perfil — o corte exato importa menos que o formato, que se repete em
 praticamente toda operação de compras.
 
+## Benchmarks de tail spend
+
+Os números abaixo são referências de mercado para comparar com a sua própria
+base de gastos. Eles variam por setor e pelo critério usado para definir a
+cauda, então use como ponto de partida e não como meta.
+
+| Indicador | Referência | Fonte |
+| --- | --- | --- |
+| Participação do tail spend no valor total de compras | ~5% (classe C da curva ABC); 10% a 20% em definições mais amplas | Manutan; McKinsey |
+| Participação da cauda nos fornecedores | ~50% (classe C da curva ABC) | Manutan |
+| Participação da cauda nas transações | ~80% das transações; 80% a 90% dos itens comprados | BCG; McKinsey |
+| Custo de processar um pedido de compra, de qualquer valor | US$ 13,85 (melhores), US$ 29,59 (mediana), US$ 54,50 (piores) | APQC |
+| Economia ao gerir a cauda | 5% a 15% onde ela nunca foi gerida; 5% a 10% com ferramentas digitais | McKinsey; BCG |
+| Maverick buying sobre o valor anual de compras | ~1,8% (2,5% ou mais nas de pior desempenho) | APQC |
+
+A linha do custo por pedido explica por que a cauda pesa: um pedido de R$ 300
+passa pelo mesmo fluxo de requisição, aprovação, nota e pagamento que um de
+R$ 300 mil, e custa o mesmo para processar.
+
 ## Tail spend não é maverick buying
 
 Esta é a confusão mais cara do assunto, e ela aparece até em material em inglês.
@@ -180,3 +199,6 @@ de gastos que torna a cauda visível.*
 - APQC, [Maverick Purchasing Means Slower, More Costly Purchases](https://www.apqc.org/blog/maverick-purchasing-means-slower-more-costly-purchases)
 - Manutan, [Class C purchases: definition](https://www.manutan.com/blog/en/glossary/class-c-purchases-definition) e [The Pareto Principle in procurement](https://www.manutan.com/blog/en/glossary/the-pareto-principle-and-its-role-in-procurement-strategy)
 - Precoro, [Tail Spend](https://precoro.com/blog/tail-spend/) e [Maverick Spend](https://precoro.com/blog/maverick-spend/)
+- BCG, [Taming Tail Spend](https://www.bcg.com/publications/2019/taming-tail-spend)
+- McKinsey, [Long tail, big savings: digital unlocks hidden value in procurement](https://www.mckinsey.com/capabilities/operations/our-insights/long-tail-big-savings-digital-unlocks-hidden-value-in-procurement)
+- APQC, [The $4 Million Procurement Gap](https://www.apqc.org/resource-library/resource-listing/4-million-procurement-gap/view)

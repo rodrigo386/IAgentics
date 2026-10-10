@@ -72,7 +72,9 @@ funcionando durante o horizonte de uso:
 
 Na maioria dos equipamentos, o preço de compra é uma parte menor do custo total
 do que parece na hora da cotação. A proporção exata varia muito por categoria
-(estudos de mercado citam faixas como [VALIDAR] para equipamentos industriais),
+(num compressor de ar, a [Atlas Copco estima](https://www.atlascopco.com/en-uk/compressors/greenproduction/compressor-operating-cost-tco)
+o preço de compra em cerca de 20% do custo do ciclo de vida, e a energia em
+cerca de 80%),
 e por isso o cálculo precisa ser feito item a item, com os números da sua
 operação.
 
