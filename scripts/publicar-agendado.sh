@@ -37,11 +37,13 @@ pkill -f "next start" >/dev/null 2>&1; pkill -f next-server >/dev/null 2>&1
 git add "$ARQ" && git commit -q -m "feat: publica o artigo $SLUG (agendado)" && git push -q || desfaz "commit/push"
 ./scripts/deploy-railway.sh >/dev/null 2>&1 || { avisa "$SLUG commitado, mas o deploy falhou. Veja o log."; echo "deploy falhou"; exit 1; }
 
-BUILD=$(cat .next/BUILD_ID)
-for i in $(seq 1 45); do
-  if curl -s "https://iagentics.com.br/artigos/$SLUG" | grep -q "$BUILD"; then
+# Conferência: o artigo respondia 404 antes da publicação (rascunho/agendado),
+# então 200 no endereço dele prova que a versão nova está no ar. (Procurar o
+# BUILD_ID na página falhou em 2026-10-10 com o Railway levando mais de 15 min.)
+for i in $(seq 1 90); do
+  if [ "$(curl -s -o /dev/null -w '%{http_code}' "https://iagentics.com.br/artigos/$SLUG")" = "200" ]; then
     echo "No ar: https://iagentics.com.br/artigos/$SLUG"; avisa "No ar: $SLUG"; exit 0
   fi
   sleep 20
 done
-echo "Deploy enviado, mas a URL não confirmou em 15 min."; avisa "$SLUG enviado, mas não confirmei no ar. Veja o log."; exit 1
+echo "Deploy enviado, mas a URL não confirmou em 30 min."; avisa "$SLUG enviado, mas não confirmei no ar. Veja o log."; exit 1
