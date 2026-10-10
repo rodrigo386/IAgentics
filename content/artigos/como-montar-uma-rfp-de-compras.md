@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-14
 faq:
   - pergunta: "Qual a diferença entre RFI, RFP e RFQ?"
     resposta: "A RFI pede informação para conhecer o mercado e os fornecedores. A RFP pede uma proposta completa, com solução técnica, preço e condições, quando o escopo admite mais de um jeito de ser atendido. A RFQ pede preço e prazo para um item já especificado. Muitos processos usam as três em sequência."

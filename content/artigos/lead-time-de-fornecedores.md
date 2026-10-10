@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-15
 faq:
   - pergunta: "O que é lead time em compras?"
     resposta: "É o tempo entre o momento em que a necessidade de um item aparece e o momento em que ele está disponível para uso. Inclui a parte interna (requisição, aprovação, cotação e emissão do pedido) e a parte externa (confirmação, produção ou separação, transporte e recebimento)."

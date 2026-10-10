@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "ROI e business case"
 produto: "spend-lab"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-11
 faq:
   - pergunta: "O que é saving em compras?"
     resposta: "Saving em compras é a redução de custo obtida por uma ação de Compras, medida contra um preço de referência (o baseline) e multiplicada pelo volume efetivamente comprado. Saving que o CFO reconhece é o que aparece como custo menor no resultado do período."

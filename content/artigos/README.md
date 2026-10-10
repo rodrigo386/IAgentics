@@ -205,3 +205,11 @@ no mesmo dia, dar `ordem` a cada um.
 | `lead-time-de-fornecedores` | Sourcing e cotação | Sem `[VALIDAR]` |
 
 Os três `[VALIDAR]` foram preenchidos com fonte em 2026-10-09, a pedido do Rodrigo ("o que tiver validar, busque na internet"). A tabela "Benchmarks de tail spend" também: entrou no artigo de tail spend com BCG, McKinsey e APQC na seção Fontes.
+
+### Fila de publicação (agendada em 2026-10-09)
+
+Um por dia, pelo `scripts/publicar-agendado.sh` (ver CLAUDE.md):
+09/10 maverick buying · 10/10 spend analysis · 11/10 saving para o CFO ·
+12/10 TCO · 13/10 homologação · 14/10 RFP · 15/10 lead time.
+Para mudar a ordem, troque os `publicarEm`; para tirar um da fila, volte o
+status para `rascunho`.

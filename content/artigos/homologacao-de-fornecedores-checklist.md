@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-13
 faq:
   - pergunta: "O que é homologação de fornecedores?"
     resposta: "É o processo em que Compras verifica se um fornecedor tem condições documentais, fiscais, financeiras, técnicas e de conformidade para atender a empresa antes de receber o primeiro pedido. O resultado é uma decisão registrada: aprovado, aprovado com ressalva ou reprovado, com validade definida."

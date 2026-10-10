@@ -59,6 +59,16 @@ describe("frontmatter de todos os artigos (inclusive rascunhos)", () => {
     expect(textosArtigos.categorias).toContain(String(frontmatter(arquivo).categoria));
   });
 
+  /* Agendamento (2026-10-09): "agendado" só com data, e só sem [VALIDAR]. */
+  it.each(arquivos)("%s, se agendado, tem publicarEm e nenhum [VALIDAR]", (arquivo) => {
+    const { data, content } = matter(readFileSync(join(DIRETORIO, arquivo), "utf8"));
+    expect(["publicado", "rascunho", "agendado"]).toContain(data.status);
+    if (data.status !== "agendado") return;
+    const quando = data.publicarEm instanceof Date ? data.publicarEm.toISOString().slice(0, 10) : String(data.publicarEm);
+    expect(quando).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(content).not.toContain("[VALIDAR]");
+  });
+
   /* Título de busca (2026-10-09): até 60 caracteres, terminando na marca. */
   it.each(arquivos)("%s tem tituloSeo válido, se tiver", (arquivo) => {
     const t = frontmatter(arquivo).tituloSeo;

@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "Spend e tail spend"
 produto: "spend-lab"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-10
 faq:
   - pergunta: "O que é spend analysis?"
     resposta: "Spend analysis é o processo de reunir todo o gasto da empresa com fornecedores, limpar e padronizar esses dados, classificar cada compra por categoria e analisar o resultado para encontrar oportunidades de consolidação, negociação e conformidade."

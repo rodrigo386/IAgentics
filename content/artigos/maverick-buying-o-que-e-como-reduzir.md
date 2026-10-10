@@ -7,7 +7,8 @@ data: 2026-10-09
 autor: "Rodrigo Costa"
 categoria: "Spend e tail spend"
 produto: "nexo"
-status: "rascunho"
+status: "agendado"
+publicarEm: 2026-10-09
 faq:
   - pergunta: "O que é maverick buying?"
     resposta: "Maverick buying é toda compra feita por fora do processo aprovado pela empresa: sem requisição, sem pedido prévio, fora do contrato vigente ou com fornecedor não homologado. O critério é a conformidade com o processo, e o valor da compra não entra na definição."
