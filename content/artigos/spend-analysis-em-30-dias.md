@@ -3,12 +3,11 @@ titulo: "Spend analysis em 30 dias: um roteiro semana a semana"
 tituloSeo: "Spend analysis em 30 dias: roteiro semanal | IAgentics"
 descricao: "Roteiro de spend analysis em quatro semanas: extrair, limpar, classificar e analisar o gasto até a primeira leitura confiável de Compras."
 slug: "spend-analysis-em-30-dias"
-data: 2026-10-09
+data: 2026-10-10
 autor: "Rodrigo Costa"
 categoria: "Spend e tail spend"
 produto: "spend-lab"
-status: "agendado"
-publicarEm: 2026-10-10
+status: "publicado"
 faq:
   - pergunta: "O que é spend analysis?"
     resposta: "Spend analysis é o processo de reunir todo o gasto da empresa com fornecedores, limpar e padronizar esses dados, classificar cada compra por categoria e analisar o resultado para encontrar oportunidades de consolidação, negociação e conformidade."
