@@ -159,7 +159,7 @@ test("a /cursos mostra os cursos da Solution com capa e nome", async ({ page }) 
    cursos do Pecege. */
 test("as formações da IAgentics vêm antes dos cursos da Solution", async ({ page }) => {
   await page.goto("/cursos");
-  const formacoes = await page.getByRole("heading", { name: "As formações", level: 2 }).boundingBox();
+  const formacoes = await page.getByRole("heading", { name: "As formações IAgentics", level: 2 }).boundingBox();
   const solution = await page.getByRole("heading", { name: "Cursos na Solution", level: 2 }).boundingBox();
   expect(formacoes!.y).toBeLessThan(solution!.y);
 });

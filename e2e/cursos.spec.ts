@@ -53,7 +53,7 @@ test("as rotas da plataforma desligada não respondem mais", async ({ page }) =>
    preenchido aparece, e Course no JSON-LD só para formação com descrição. */
 test("a /cursos lista as formações e anuncia só o curso que descreve", async ({ page }) => {
   await page.goto("/cursos");
-  const sec = page.getByRole("region", { name: "As formações" });
+  const sec = page.getByRole("region", { name: "As formações IAgentics" });
   await expect(sec.getByRole("heading", { level: 3 })).toHaveText(["Fundamentos de IA para Negócios", "Marketing com IA"]);
   await expect(sec).toContainText("8 horas");
   const lista = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "ItemList");

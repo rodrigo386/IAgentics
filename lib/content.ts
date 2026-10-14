@@ -1780,12 +1780,18 @@ export const cursos = {
    * com IA.
    */
   formacoes: {
+    /* Na tela, "IAgentics" é o logo (pedido do Rodrigo, 2026-10-14); este é o
+       nome do título para leitor de tela e buscador. */
     titulo: "As formações",
+    marca: "IAgentics",
     rotulos: { cargaHoraria: "Carga horária", formato: "Formato", publico: "Para quem", ementa: "Ementa", com: "Com" },
     itens: [
       {
         nome: "Fundamentos de IA para Negócios",
         professor: "Vinícius",
+        /** Banner com o professor (2026-10-14): o quadro do vídeo-convite. */
+        foto: "/academy/academy-convite-poster.jpg",
+        enquadre: "50% 18%",
         descricao: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
         cargaHoraria: "8 horas",
         formato: "Online, no seu ritmo",
@@ -1795,6 +1801,8 @@ export const cursos = {
       {
         nome: "Marketing com IA",
         professor: "Carol",
+        foto: "/academy/marketing-com-ia-capa.jpg",
+        enquadre: "50% 22%",
         descricao: undefined as string | undefined,
         cargaHoraria: undefined as string | undefined,
         formato: undefined as string | undefined,
