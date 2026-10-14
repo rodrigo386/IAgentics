@@ -1676,27 +1676,21 @@ export const cursos = {
    *  o professor já estão desenhados na capa; `nome` e `professor` aqui são o
    *  que leitor de tela e buscador alcançam. Os nomes das linhas foram
    *  sugeridos pelo Rodrigo. */
-  /** Os conceitos de filme para a hero da /cursos (2026-10-14, pedido
-   *  do Rodrigo: "um vídeo em motion de propaganda, estilo Apple", referência
-   *  skillry.dev/ai-videos/opus-5-5). Composições em remotion/hero-cursos/,
-   *  loops mudos de 18 s em 4:5; ele escolhe um na prévia /preview/cursos.
-   *  Arquivo refeito ganha versão nova (-v2…) aqui em `video`/`poster`: o
-   *  Cloudflare guarda pelo endereço.
+  /** O filme da hero da /cursos (2026-10-14, pedido do Rodrigo: "um vídeo
+   *  em motion de propaganda, estilo Apple", referência
+   *  skillry.dev/ai-videos/opus-5-5). Foram quatro conceitos numa prévia; ele
+   *  aprovou o 4 (ConceitoMisto, 21 s). Os textos dos outros três ficam aqui
+   *  porque o 4 é montado com as cenas deles. Arquivo refeito ganha versão
+   *  nova (-v5…) em `video`/`poster`: o Cloudflare guarda pelo endereço.
    *  Preço, cursos e trilhas vêm de `assinatura` e `vitrine`; aqui só as
    *  frases que existem apenas no filme. */
+  filmeHero: {
+    video: "/cursos-hero/misto-v4.mp4",
+    poster: "/cursos-hero/misto-v4.jpg",
+    pausar: "Pausar o filme",
+    continuar: "Continuar o filme",
+  },
   filmesHero: {
-    previa: {
-      titulo: "Filmes da hero da /cursos",
-      lead: "Quatro conceitos para o lugar da estante de capas. Loops mudos de 18 segundos (o 4, de 21).",
-      conceitos: [
-        { id: "tudo", video: "/cursos-hero/tudo-v3.mp4", poster: "/cursos-hero/tudo-v3.jpg", nome: "1. Tudo numa assinatura", ideia: "Tipografia em cascata: os nomes dos cursos aceleram até virar +70 cursos, as capas formam uma grade e a grade vira o preço." },
-        { id: "capa-aula", video: "/cursos-hero/capa-aula-v1.mp4", poster: "/cursos-hero/capa-aula-v1.jpg", nome: "2. Da capa à aula", ideia: "Plano contínuo: a capa abre e vira aula, a barra de progresso vira a capa seguinte, a câmera recua para as trilhas e fecha no preço." },
-        { id: "rotina", video: "/cursos-hero/rotina-v2.mp4", poster: "/cursos-hero/rotina-v2.jpg", nome: "3. Cabe no seu dia", ideia: "Três horas do dia, três aparelhos, três cursos tocando. Fecha no seu ritmo e no preço." },
-        { id: "misto", video: "/cursos-hero/misto-v4.mp4", poster: "/cursos-hero/misto-v4.jpg", nome: "4. Misto (1, 2 e 3)", ideia: "O início do 1 até +300 horas de aula, as trilhas do 2 com todos os cursos passando e o fecho do 3 com os aparelhos e o preço. 21 segundos." },
-      ],
-      pausar: "Pausar",
-      continuar: "Continuar",
-    },
     tudo: {
       /* Sem ponto final nos nomes de curso (pedido do Rodrigo, 2026-10-14). */
       destaques: ["Fundamentos de IA", "Marketing com IA", "Power BI"],
@@ -1951,7 +1945,6 @@ export const cursos = {
       ", a plataforma online do Pecege, da USP/Esalq.",
     urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Cartão, Pix ou boleto. Cancele quando quiser.",
-    estanteAlt: "Capas de cursos da plataforma Solution",
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
      com o Pecege — decisão do Rodrigo na mesma data.
@@ -1978,25 +1971,6 @@ export const cursos = {
     erroGeral: "Não foi possível concluir agora. Tente de novo em instantes.",
     privacidade: "Ver política de privacidade",
   },
-  /* Estática desde o desligamento da plataforma: a estante é decorativa
-     (aria-hidden) e não vale manter uma consulta ao banco viva só por ela. */
-  /* Desde 2026-10-14 a estante do topo mostra as capas da Solution (a
-     assinatura dá acesso à plataforma inteira), não mais as da Academy: as
-     mesmas da vitrine (public/vitrine/), misturando as trilhas. */
-  capasEstante: [
-    "/vitrine/fundamentos-de-ia-para-negocios.jpg",
-    "/vitrine/power-bi-na-pratica.jpg",
-    "/vitrine/design-thinking.jpg",
-    "/vitrine/comunicacao-e-oratoria.jpg",
-    "/vitrine/estrategias-de-negociacao.jpg",
-    "/vitrine/lideranca-e-lider-coach.jpg",
-    "/vitrine/big-data-e-ia-aplicada.jpg",
-    "/vitrine/okr.jpg",
-    "/vitrine/inteligencia-emocional.jpg",
-    "/vitrine/pensamento-estrategico.jpg",
-    "/vitrine/ia-no-atendimento.jpg",
-    "/vitrine/storytelling.jpg",
-  ],
 } as const;
 
 /**

@@ -25,8 +25,9 @@ test("/cursos abre com as três marcas e a assinatura, sem resto da plataforma a
      seus arquivos têm o texto em branco e sumiriam no tema claro. O do Pecege
      é colorido, continua <Image>, e por isso é buscado por alt. */
   const hero = page.locator("main");
-  /* `exact` é obrigatório: sem ele o match é por substring e a própria
-     estante casaria — o aria-label dela termina em "...da IAgentics". */
+  /* `exact` é obrigatório: sem ele o match é por substring, e qualquer
+     imagem cujo nome contenha "IAgentics" casaria (a estante de capas que
+     ficava aqui até 2026-10-14 casava). */
   await expect(hero.getByRole("img", { name: "IAgentics", exact: true })).toHaveCount(1);
   await expect(hero.getByAltText("Pecege")).toBeVisible();
   await expect(hero.getByRole("img", { name: "Solution", exact: true })).toBeVisible();
@@ -63,21 +64,15 @@ test("a /cursos lista as formações e só anuncia curso que descreve", async ({
   expect(blocos.some((b) => b["@type"] === "ItemList")).toBe(false);
 });
 
-/* Prévia dos filmes da hero (2026-10-14): escondida dos buscadores, e cada
-   conceito troca o vídeo no lugar da estante. */
-test("a prévia dos filmes da hero alterna os quatro conceitos e não é indexada", async ({ page }) => {
-  await page.goto("/preview/cursos");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+/* O filme da hero (2026-10-14, conceito 4 aprovado pelo Rodrigo) no lugar da
+   estante de capas; a prévia dos quatro conceitos saiu com a aprovação. */
+test("a hero da /cursos traz o filme aprovado, com pausa, e a prévia saiu", async ({ page }) => {
+  await page.goto("/cursos");
   const video = page.locator("video");
-  for (const [nome, arquivo] of [
-    ["1. Tudo numa assinatura", "tudo-v3"],
-    ["2. Da capa à aula", "capa-aula-v1"],
-    ["3. Cabe no seu dia", "rotina-v2"],
-    ["4. Misto (1, 2 e 3)", "misto-v4"],
-  ]) {
-    await page.getByRole("button", { name: nome }).click();
-    await expect(page.getByRole("button", { name: nome })).toHaveAttribute("aria-pressed", "true");
-    await expect(video).toHaveAttribute("src", `/cursos-hero/${arquivo}.mp4`);
-  }
+  await expect(video).toHaveAttribute("src", "/cursos-hero/misto-v4.mp4");
+  await expect(video).toHaveAttribute("poster", "/cursos-hero/misto-v4.jpg");
+  await expect(video).toHaveAttribute("aria-hidden", "true");
+  await expect(page.getByRole("button", { name: /o filme$/ })).toBeVisible();
   expect((await page.request.get("/cursos-hero/misto-v4.mp4")).status()).toBe(200);
+  expect((await page.request.get("/preview/cursos")).status()).toBe(404);
 });
