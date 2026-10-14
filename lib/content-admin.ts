@@ -6,7 +6,7 @@
 export const admin = {
   meta: { titulo: "Painel" },
   titulo: "Painel",
-  lead: "Visitas do site, vendas do catálogo e lista de espera do lançamento na Solution.",
+  lead: "Visitas do site, assinaturas da Solution, vendas avulsas antigas e lista de espera.",
 
   visitas: {
     titulo: "Visitas",
@@ -64,6 +64,41 @@ export const admin = {
     ligar: "Voltar a contar este navegador",
     carregando: "Verificando…",
     nota: "A marca vale só para este navegador e este dispositivo — janela anônima e outra máquina recomeçam contando. Não alcança o Google Analytics, cuja exclusão é filtro de tráfego interno no painel do GA4.",
+  },
+
+  /* Assinaturas da Solution (2026-10-14). A liberação e a revogação na
+     Solution são manuais (o Pecege faz); a coluna "Fazer" diz a quem. */
+  assinaturas: {
+    titulo: "Assinaturas da Solution",
+    ativas: "Ativas",
+    liberar: "A liberar",
+    revogar: "A revogar",
+    receita: "Receita mensal (ativas)",
+    exportar: "Exportar CSV",
+    nenhuma: "Nenhuma assinatura ainda.",
+    colunaData: "Data",
+    colunaAssinante: "Assinante",
+    colunaStatus: "Status",
+    colunaPagoAte: "Pago até",
+    colunaFazer: "Fazer",
+    colunaAcesso: "Acesso",
+    botaoLiberar: "Marcar acesso liberado",
+    botaoRevogar: "Marcar acesso revogado",
+    cancelar: "Cancelar assinatura",
+    confirmarCancelar: "Confirmar: parar de cobrar",
+    liberadoEm: (data: string) => `Liberado em ${data}`,
+    revogadoEm: (data: string) => `Revogado em ${data}`,
+    canceladaEm: (data: string) => `Cancelada em ${data}`,
+    status: {
+      pendente: "Aguardando 1º pagamento",
+      ativa: "Ativa",
+      atrasada: "Atrasada",
+      cancelada: "Cancelada",
+      contestada: "Contestada",
+      estornada: "Estornada",
+      falhou: "Falhou",
+    } as Record<string, string>,
+    lgpd: "Dados pessoais coletados com consentimento para compartilhamento com o Pecege. O CPF não fica aqui: está no painel do Asaas. Cancelar aqui para a cobrança no Asaas; o acesso continua até o fim do mês pago.",
   },
 
   /* Vendas do catálogo (2026-09-22). Sem aviso automático ao Pecege — decisão

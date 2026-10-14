@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { aplicarEventoAsaas, type EventoAsaas } from "@/lib/catalogo/vendas";
+import { aplicarEventoAssinatura, type EventoAssinatura } from "@/lib/assinatura/assinaturas";
 
 /**
  * Webhook de cobranças do Asaas (2026-09-22).
@@ -15,6 +16,10 @@ import { aplicarEventoAsaas, type EventoAsaas } from "@/lib/catalogo/vendas";
  * desconhecida, reentrega, corpo que não é um evento de verdade. O Asaas
  * pausa a fila da conta depois de erros seguidos, e fila pausada é pagamento
  * confirmado que nunca chega aqui.
+ *
+ * Desde 2026-10-14 o mesmo webhook atende a ASSINATURA da Solution: cobrança
+ * com `payment.subscription` vai para a tabela `assinaturas`; o resto segue
+ * para `vendas` (as compras avulsas da prévia, que ficaram como histórico).
  *
  * Runtime Node (padrão do Route Handler): `timingSafeEqual` não existe no
  * Edge.
@@ -33,17 +38,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "nao_autorizado" }, { status: 401 });
   }
 
-  let evento: EventoAsaas;
+  let evento: EventoAsaas & EventoAssinatura;
   try {
     const corpo: unknown = await request.json();
     if (typeof corpo !== "object" || corpo === null) return NextResponse.json({ ok: true });
-    evento = corpo as EventoAsaas;
+    evento = corpo as EventoAsaas & EventoAssinatura;
   } catch {
     return NextResponse.json({ ok: true });
   }
 
   try {
-    const resultado = await aplicarEventoAsaas(evento);
+    const resultado = evento.payment?.subscription ? await aplicarEventoAssinatura(evento) : await aplicarEventoAsaas(evento);
     if (resultado === "sem-efeito" && evento.payment?.externalReference) {
       console.info("[asaas-webhook] sem efeito", evento.event, evento.payment.id ?? "");
     }

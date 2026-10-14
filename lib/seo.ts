@@ -163,6 +163,8 @@ export function trilhaArtigoJsonLd(artigo: { slug: string; titulo: string }) {
 export function cursosJsonLd(
   caminho: string,
   itens: ReadonlyArray<{ nome: string; descricao: string; horas?: string; formato?: string }>,
+  /** Preço quando a página VENDE (a /cursos, por assinatura, desde 2026-10-14). */
+  oferta?: { preco: string; categoria: string },
 ) {
   const provedor = { "@type": "Organization", name: site.name, sameAs: site.url };
   return {
@@ -181,6 +183,9 @@ export function cursosJsonLd(
           provider: provedor,
           inLanguage: "pt-BR",
           url: absoluta(caminho),
+          ...(oferta
+            ? { offers: { "@type": "Offer", price: oferta.preco, priceCurrency: "BRL", category: oferta.categoria, url: absoluta(caminho) } }
+            : {}),
           ...(c.formato || horas
             ? {
                 hasCourseInstance: {

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
 import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
-import { liberarAcesso } from "./acoes";
+import { cancelarAssinaturaAdmin, liberarAcesso, liberarAcessoAssinatura, revogarAcessoAssinatura } from "./acoes";
+import { listarAssinaturas } from "@/lib/assinatura/assinaturas";
+import { acaoDoAdmin, hojeSP, VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import { formatarReais } from "@/lib/catalogo/preco";
 import {
   conversaoCursos,
@@ -50,7 +52,7 @@ function variacao(atual: number, anterior: number): string {
 export default async function PaginaAdmin({ searchParams }: { searchParams: Promise<{ vendas?: string }> }) {
   const modo = (await searchParams).vendas === "teste" ? "teste" : "real";
 
-  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas] =
+  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas, listaAssinaturas] =
     await Promise.all([
       resumoVisitas(),
       visitasPorDia(30),
@@ -63,6 +65,7 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
       paginasDeEntrada(30),
       listarVendas(modo),
       resumoVendas(modo),
+      listarAssinaturas(),
     ]);
 
   const pico = Math.max(1, ...porDia.map((d) => d.visitas));
@@ -243,6 +246,106 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
 
         <p className="max-w-[70ch] text-xs text-fg-muted">{t.origem.nota}</p>
       </section>
+
+      {/* Assinaturas da Solution (2026-10-14): a venda da /cursos. A coluna
+          "Fazer" sai de acaoDoAdmin — quem liberar e quem revogar na Solution. */}
+      {(() => {
+        const a = t.assinaturas;
+        const hoje = hojeSP();
+        const comAcao = listaAssinaturas.map((x) => ({ x, acao: acaoDoAdmin(x, hoje) }));
+        const ativas = listaAssinaturas.filter((x) => x.status === "ativa").length;
+        return (
+          <section className="flex flex-col gap-5 border-t border-line pt-10">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{a.titulo}</h2>
+              {listaAssinaturas.length > 0 ? (
+                <a
+                  href="/admin/assinaturas.csv"
+                  className="rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
+                >
+                  {a.exportar}
+                </a>
+              ) : null}
+            </div>
+            <div className="grid gap-4 sm:grid-cols-4">
+              <Cartao rotulo={a.ativas} valor={numero.format(ativas)} />
+              <Cartao rotulo={a.liberar} valor={numero.format(comAcao.filter((c) => c.acao === "liberar").length)} />
+              <Cartao rotulo={a.revogar} valor={numero.format(comAcao.filter((c) => c.acao === "revogar").length)} />
+              <Cartao rotulo={a.receita} valor={formatarReais(ativas * VALOR_ASSINATURA_CENTAVOS)} />
+            </div>
+            {listaAssinaturas.length === 0 ? (
+              <p className="text-fg-muted">{a.nenhuma}</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[56rem] text-left text-sm">
+                  <thead className="border-b border-line text-fg-muted">
+                    <tr>
+                      <th className="py-2 font-normal">{a.colunaData}</th>
+                      <th className="py-2 font-normal">{a.colunaAssinante}</th>
+                      <th className="py-2 font-normal">{a.colunaStatus}</th>
+                      <th className="py-2 font-normal">{a.colunaPagoAte}</th>
+                      <th className="py-2 font-normal">{a.colunaFazer}</th>
+                      <th className="py-2 font-normal">{a.colunaAcesso}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comAcao.map(({ x, acao }) => (
+                      <tr key={x.id} className="border-b border-line align-top">
+                        <td className="py-2 pr-4 tabular-nums text-fg-muted">{dataHora.format(x.criadaEm)}</td>
+                        <td className="py-2 pr-4">
+                          <span className="block text-fg">{x.nome}</span>
+                          <span className="block text-fg-muted">{x.email}</span>
+                          <span className="block text-fg-muted">{x.telefone}</span>
+                        </td>
+                        <td className="py-2 pr-4 text-fg">{a.status[x.status]}</td>
+                        <td className="py-2 pr-4 tabular-nums text-fg-muted">
+                          {x.pagoAte ? x.pagoAte.split("-").reverse().join("/") : "—"}
+                        </td>
+                        <td className="py-2 pr-4">
+                          {acao === "liberar" ? (
+                            <form action={liberarAcessoAssinatura}>
+                              <input type="hidden" name="id" value={x.id} />
+                              <button type="submit" className="rounded-control bg-accent px-3 py-1.5 text-xs font-medium text-accent-on">
+                                {a.botaoLiberar}
+                              </button>
+                            </form>
+                          ) : acao === "revogar" ? (
+                            <form action={revogarAcessoAssinatura}>
+                              <input type="hidden" name="id" value={x.id} />
+                              <button type="submit" className="rounded-control border border-line-strong px-3 py-1.5 text-xs font-medium text-fg">
+                                {a.botaoRevogar}
+                              </button>
+                            </form>
+                          ) : null}
+                        </td>
+                        <td className="py-2 pr-4 text-fg-muted">
+                          {x.acessoLiberadoEm ? <span className="block">{a.liberadoEm(dataHora.format(x.acessoLiberadoEm))}</span> : null}
+                          {x.acessoRevogadoEm ? <span className="block">{a.revogadoEm(dataHora.format(x.acessoRevogadoEm))}</span> : null}
+                          {x.canceladaEm ? (
+                            <span className="block">{a.canceladaEm(dataHora.format(x.canceladaEm))}</span>
+                          ) : ["pendente", "ativa", "atrasada", "falhou"].includes(x.status) ? (
+                            /* Dois cliques de propósito: cancelar para a cobrança no Asaas. */
+                            <details className="mt-1">
+                              <summary className="cursor-pointer text-xs underline">{a.cancelar}</summary>
+                              <form action={cancelarAssinaturaAdmin} className="mt-2">
+                                <input type="hidden" name="id" value={x.id} />
+                                <button type="submit" className="rounded-control border border-line-strong px-3 py-1.5 text-xs text-fg">
+                                  {a.confirmarCancelar}
+                                </button>
+                              </form>
+                            </details>
+                          ) : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <p className="max-w-[70ch] text-xs text-fg-muted">{a.lgpd}</p>
+          </section>
+        );
+      })()}
 
       <section className="flex flex-col gap-5 border-t border-line pt-10">
         <div className="flex flex-wrap items-center justify-between gap-4">

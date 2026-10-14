@@ -21,7 +21,7 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
      que exige consentimento no formulário, e a LGPD manda declarar com QUEM se
      compartilha ANTES de compartilhar. Se este texto sumir da política, o
      consentimento coletado em /cursos perde o amparo que o sustenta. */
-  await expect(page.getByText(/Lista de espera do lançamento/)).toBeVisible();
+  await expect(page.getByText(/Assinatura da plataforma Solution/)).toBeVisible();
   await expect(page.getByText(/compartilhados com o Pecege/)).toBeVisible();
   /* A medição de origem entrou em 2026-09-09. A política deste site descreve o
      que o código faz de verdade — e o que ela promete aqui é o recorte: o
@@ -29,9 +29,10 @@ test("a política abre, é alcançável pelo rodapé e traz o que o site coleta"
   await expect(page.getByText(/De onde você chegou/)).toBeVisible();
   await expect(page.getByText(/nunca o endereço completo nem o termo que você pesquisou/)).toBeVisible();
 
-  /* A compra de cursos entrou em 2026-09-22: a política declara o que é
-     gravado e — o ponto que mais importa — que o CPF NÃO fica no site. */
-  await expect(page.getByText(/Compra de cursos/)).toBeVisible();
+  /* A assinatura (2026-10-14, antes a compra avulsa de 2026-09-22): a política
+     declara o que é gravado e, o ponto que mais importa, que o CPF NÃO fica
+     no site. A lista de espera e as compras avulsas viraram histórico. */
+  await expect(page.getByText(/Lista de espera e compras avulsas anteriores/)).toBeVisible();
   await expect(page.getByText(/não é gravado no nosso site/)).toBeVisible();
 
   /* E o que NÃO pode mais estar lá: a plataforma de ensino saiu em 2026-08-28

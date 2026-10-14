@@ -10,12 +10,12 @@ test("/planos continua redirecionando permanente para /cursos", async ({ page })
   await expect(page).toHaveURL("/cursos");
 });
 
-test("/cursos anuncia a parceria: as três marcas, sem preço e sem nenhum CTA", async ({ page }) => {
+test("/cursos abre com as três marcas e a assinatura, sem resto da plataforma antiga", async ({ page }) => {
   await page.goto("/cursos");
 
-  /* Sem `exact`: o que precisa ser verdade é que o h1 anuncia "em breve" — a
-     redação exata é copy e muda sem que a página quebre. */
-  await expect(page.getByRole("heading", { level: 1, name: /em breve/i })).toBeVisible();
+  /* Desde 2026-10-14 a página vende a assinatura da Solution (o "em breve"
+     saiu); o preço e o formulário são cobertos por e2e/assinatura.spec.ts. */
+  await expect(page.getByRole("heading", { level: 1, name: /Solution/ })).toBeVisible();
   /* Ancorado no <main>: o lockup da IAgentics aparece também no Nav e no
      rodapé, então contar ocorrências na página inteira seria frágil — quebraria
      a cada mudança de layout sem que a hero tivesse problema nenhum. O que
@@ -31,9 +31,8 @@ test("/cursos anuncia a parceria: as três marcas, sem preço e sem nenhum CTA",
   await expect(hero.getByAltText("Pecege")).toBeVisible();
   await expect(hero.getByRole("img", { name: "Solution", exact: true })).toBeVisible();
 
-  /* As asserções que dão sentido ao spec: o funil antigo morreu inteiro. Se
-     alguma dessas voltar a aparecer, é resto de plataforma vazando numa
-     página que promete que ainda não há o que acessar. */
+  /* O funil da plataforma própria (desligada em 2026-08-28) não volta: preço
+     antigo, login de aluno e links para /app. */
   await expect(page.getByText("R$ 39,90")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Assinar agora" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Já sou aluno" })).toHaveCount(0);

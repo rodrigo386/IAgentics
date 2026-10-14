@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS "assinaturas" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"criada_em" timestamp with time zone DEFAULT now() NOT NULL,
+	"nome" text NOT NULL,
+	"email" text NOT NULL,
+	"telefone" text NOT NULL,
+	"valor_centavos" integer NOT NULL,
+	"status" text DEFAULT 'pendente' NOT NULL,
+	"asaas_cliente_id" text,
+	"asaas_assinatura_id" text,
+	"url_fatura" text,
+	"consentimento_em" timestamp with time zone DEFAULT now() NOT NULL,
+	"pago_ate" date,
+	"ultimo_pagamento_em" timestamp with time zone,
+	"acesso_liberado_em" timestamp with time zone,
+	"acesso_revogado_em" timestamp with time zone,
+	"cancelada_em" timestamp with time zone,
+	CONSTRAINT "assinaturas_asaas_assinatura_id_unique" UNIQUE("asaas_assinatura_id"),
+	CONSTRAINT "assinaturas_status_valido" CHECK ("assinaturas"."status" in ('pendente', 'ativa', 'atrasada', 'cancelada', 'contestada', 'estornada', 'falhou'))
+);

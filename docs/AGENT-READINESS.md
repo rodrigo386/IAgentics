@@ -72,7 +72,7 @@ próprio site, e três têm efeito colateral que sai dele:
 | Endpoint | O que acontece se um agente chamar |
 |---|---|
 | `/api/contato` | Dispara e-mail para a caixa do Rodrigo |
-| `/api/lista-espera` | Grava um inscrito e dispara dois e-mails |
+| `/cursos/assinar` | Cria cliente e assinatura no Asaas (a `/api/lista-espera` saiu em 2026-10-14) |
 | `/api/estatisticas` | Incrementa o contador de visitas do painel |
 | `/api/markdown` | Alvo interno do rewrite; nada útil isolado |
 

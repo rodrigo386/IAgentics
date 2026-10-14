@@ -127,3 +127,49 @@ export const vendas = pgTable(
     check("vendas_status_valido", sql`${t.status} in ('pendente', 'pago', 'cancelado', 'estornado', 'falhou')`),
   ],
 );
+
+/**
+ * ASSINATURAS da plataforma Solution, vendidas na /cursos (2026-10-14, pedido
+ * do Rodrigo: "mudaremos a forma de compra para assinatura, R$ 49,90 por
+ * mês"). Substituiu a venda avulsa da prévia do catálogo (`vendas` fica como
+ * histórico).
+ *
+ * Cada linha é uma assinatura no Asaas (`/subscriptions`, ciclo mensal,
+ * cobrança UNDEFINED: cartão, Pix ou boleto a cada fatura). O webhook acha a
+ * linha pelo id da assinatura que vem em `payment.subscription`.
+ *
+ * `pagoAte` é até quando o acesso está pago: cada pagamento confirmado empurra
+ * para o vencimento daquela fatura + 1 mês. O /admin usa isso para dizer ao
+ * Pecege quem liberar e quem revogar — a liberação na Solution é manual.
+ *
+ * CPF não entra aqui: vai direto ao Asaas, como em `vendas`.
+ */
+export type StatusAssinatura = "pendente" | "ativa" | "atrasada" | "cancelada" | "contestada" | "estornada" | "falhou";
+
+export const assinaturas = pgTable(
+  "assinaturas",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    criadaEm: timestamp("criada_em", { withTimezone: true }).notNull().defaultNow(),
+    nome: text("nome").notNull(),
+    email: text("email").notNull(),
+    telefone: text("telefone").notNull(),
+    valorCentavos: integer("valor_centavos").notNull(),
+    status: text("status").$type<StatusAssinatura>().notNull().default("pendente"),
+    asaasClienteId: text("asaas_cliente_id"),
+    asaasAssinaturaId: text("asaas_assinatura_id").unique(),
+    urlFatura: text("url_fatura"),
+    consentimentoEm: timestamp("consentimento_em", { withTimezone: true }).notNull().defaultNow(),
+    pagoAte: date("pago_ate"),
+    ultimoPagamentoEm: timestamp("ultimo_pagamento_em", { withTimezone: true }),
+    acessoLiberadoEm: timestamp("acesso_liberado_em", { withTimezone: true }),
+    acessoRevogadoEm: timestamp("acesso_revogado_em", { withTimezone: true }),
+    canceladaEm: timestamp("cancelada_em", { withTimezone: true }),
+  },
+  (t) => [
+    check(
+      "assinaturas_status_valido",
+      sql`${t.status} in ('pendente', 'ativa', 'atrasada', 'cancelada', 'contestada', 'estornada', 'falhou')`,
+    ),
+  ],
+);

@@ -63,12 +63,12 @@ export const privacidade = {
   meta: {
     titulo: "Política de Privacidade",
     descricao:
-      "Como a IAgentics trata dados pessoais no site e na lista de espera do lançamento com o Pecege, conforme a LGPD.",
+      "Como a IAgentics trata dados pessoais no site e na assinatura da plataforma Solution, com o Pecege, conforme a LGPD.",
   },
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 22 de setembro de 2026",
+    atualizado: "Atualizada em 14 de outubro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -92,14 +92,14 @@ export const privacidade = {
             "Nome, e-mail corporativo e a mensagem que você escreve. Servem para responder você, e chegam até nós por e-mail. Sem contato iniciado por você, não há coleta.",
         },
         {
-          termo: "Lista de espera do lançamento",
+          termo: "Assinatura da plataforma Solution",
           texto:
-            "Nome e e-mail, informados por você no formulário de /cursos, e a data em que você autorizou o compartilhamento. Servem para avisar você do lançamento das formações na Solution e garantir o desconto prometido. Sem a autorização marcada, nada é gravado.",
+            "Nome, e-mail, celular, a situação de cada pagamento mensal, até quando o acesso está pago e a data em que você autorizou a cobrança e o compartilhamento com o Pecege. Servem para cobrar a mensalidade e para o Pecege liberar e encerrar seu acesso na Solution. O CPF é pedido porque o Asaas, que emite as cobranças, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
         },
         {
-          termo: "Compra de cursos",
+          termo: "Lista de espera e compras avulsas anteriores",
           texto:
-            "Nome, e-mail, celular, os cursos escolhidos, o valor e a situação do pagamento, além da data em que você autorizou o compartilhamento com o Pecege. Servem para liberar seu acesso na plataforma Solution. O CPF é pedido porque o Asaas, que emite a cobrança, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
+            "Quem entrou na lista de espera do lançamento (até outubro de 2026) ou comprou um curso avulso tem os dados informados naquela ocasião guardados para histórico, com o mesmo cuidado. Não há mais inscrição na lista nem venda avulsa.",
         },
         {
           termo: "Medição de visitas do site",
@@ -127,13 +127,13 @@ export const privacidade = {
         {
           termo: "Pecege e plataforma Solution",
           texto:
-            "Se você comprou um curso, seu nome, e-mail, celular e os cursos comprados são compartilhados com o Pecege para liberar seu acesso na Solution. Se você entrou na lista de espera, seu nome e e-mail são compartilhados com o Pecege, responsável pela plataforma Solution, onde as formações serão oferecidas. É por causa desse compartilhamento que o formulário pede uma autorização explícita: sem ela marcada, não gravamos nem compartilhamos nada. A autorização pode ser revogada a qualquer momento pelos canais no fim desta página.",
+            "Se você assinou a Solution, seu nome, e-mail, celular e a situação da assinatura são compartilhados com o Pecege, responsável pela plataforma, para liberar e encerrar seu acesso. Os dados de quem entrou na lista de espera ou comprou um curso avulso foram compartilhados com o Pecege nas mesmas condições. É por causa desse compartilhamento que o formulário pede uma autorização explícita: sem ela marcada, não gravamos nem compartilhamos nada. A autorização pode ser revogada a qualquer momento pelos canais no fim desta página; revogá-la encerra a assinatura.",
         },
         {
           termo: "Asaas",
-          texto: "Emissão e processamento das cobranças dos cursos: recebe nome, e-mail, celular e CPF para gerar a cobrança, e os dados de pagamento que você informa na fatura.",
+          texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: mensagem de contato e confirmação de inscrição na lista de espera." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
       ],
@@ -141,14 +141,14 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da sua conta e do seu progresso ficam enquanto a conta existir. Certificados emitidos são preservados enquanto a verificação pública fizer sentido — é ela que permite a alguém conferir a autenticidade do documento. Mensagens do formulário de contato ficam na nossa caixa de e-mail pelo tempo do atendimento e do relacionamento comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato ficam na nossa caixa de e-mail pelo tempo do atendimento e do relacionamento comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
     {
       titulo: "Como protegemos",
       paragrafos: [
-        "Todo o tráfego do site é cifrado por HTTPS. Os dados da lista de espera ficam em banco de acesso restrito, e o site não guarda senha alguma — não existe área de login. Endereços de e-mail não aparecem em registros técnicos.",
+        "Todo o tráfego do site é cifrado por HTTPS. Os dados da assinatura ficam em banco de acesso restrito, e o site não guarda senha alguma: não existe área de login. Endereços de e-mail e CPF não aparecem em registros técnicos.",
       ],
       itens: [],
     },
@@ -1658,10 +1658,82 @@ export const nexoPage = {
  * plataforma, e a estante é decorativa de qualquer forma.
  */
 export const cursos = {
+  /* 2026-10-14: a /cursos deixou de ser "em breve" e passou a vender a
+     ASSINATURA da plataforma Solution, R$ 49,90 por mês (pedido do Rodrigo:
+     acesso à Solution inteira; cartão, Pix ou boleto; cancelamento pelo
+     WhatsApp ou e-mail, sem fidelidade). */
   meta: {
-    titulo: "Em breve na Solution — IAgentics e Pecege",
+    titulo: "Assinatura da plataforma Solution por R$ 49,90 por mês | IAgentics",
     descricao:
-      "As formações de IA aplicada a Compras e Gestão de Gastos da IAgentics passam a ser oferecidas na Solution, a plataforma de educação online do Pecege.",
+      "Assine a Solution, a plataforma de educação online do Pecege, com as formações de IA da IAgentics. R$ 49,90 por mês, cancele quando quiser.",
+  },
+  /** A assinatura: oferta, como funciona, formulário, autorização, perguntas
+   *  e a página de retorno. O VALOR mora em lib/assinatura/regras.ts
+   *  (VALOR_ASSINATURA_CENTAVOS); o texto abaixo repete "R$ 49,90" e precisa
+   *  mudar junto se o preço mudar (o e2e confere os dois). */
+  assinatura: {
+    cta: "Assinar por R$ 49,90/mês",
+    preco: "R$ 49,90",
+    porMes: "por mês",
+    resumo: "Acesso à plataforma Solution inteira, com as formações de IA da IAgentics. Cartão, Pix ou boleto. Cancele quando quiser.",
+    comoFunciona: {
+      titulo: "Como funciona",
+      passos: [
+        { titulo: "Assine", texto: "Preencha seus dados e vá para a fatura do primeiro mês." },
+        { titulo: "Pague como preferir", texto: "Cartão, Pix ou boleto. Todo mês a nova fatura chega no seu e-mail." },
+        { titulo: "Receba o acesso", texto: "Com o pagamento confirmado, o Pecege libera seu acesso à Solution e avisa por e-mail." },
+        { titulo: "Cancele quando quiser", texto: "Sem fidelidade. Peça pelo WhatsApp ou e-mail; o acesso vale até o fim do mês pago." },
+      ],
+    },
+    formulario: {
+      titulo: "Assine a Solution",
+      nome: "Nome completo",
+      email: "E-mail",
+      cpf: "CPF",
+      cpfNota: "Pedido pelo Asaas para emitir a cobrança. Vai direto para ele e não fica guardado no nosso site.",
+      telefone: "Celular com DDD",
+      consentimento:
+        "Autorizo a cobrança mensal de R$ 49,90 até eu pedir o cancelamento, e o compartilhamento do meu nome, e-mail e telefone com o Pecege, responsável pela plataforma Solution, para a liberação do meu acesso.",
+      privacidade: "Ver política de privacidade",
+      botao: "Ir para o pagamento",
+      enviando: "Gerando sua fatura…",
+      erros: {
+        nome: "Escreva seu nome completo.",
+        email: "Confira o e-mail digitado.",
+        cpf: "Confira o CPF.",
+        telefone: "Informe o celular com DDD.",
+        consentimento: "Marque a autorização para continuar.",
+        muitas_tentativas: "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.",
+        falha: "Não foi possível gerar a fatura agora. Tente de novo em instantes.",
+      } as Record<string, string>,
+    },
+    faq: {
+      eyebrow: "Perguntas frequentes",
+      titulo: "Sobre a assinatura",
+      itens: [
+        { pergunta: "O que a assinatura inclui?", resposta: "Acesso à plataforma Solution, do Pecege, com as formações de IA aplicada da IAgentics, enquanto a assinatura estiver ativa." },
+        { pergunta: "Como pago a mensalidade?", resposta: "Por cartão, Pix ou boleto. Todo mês o Asaas, que processa os pagamentos, envia a fatura para o seu e-mail, e você escolhe a forma de pagar." },
+        { pergunta: "Quando recebo o acesso?", resposta: "Depois que o pagamento é confirmado, o Pecege libera seu acesso à Solution e avisa no e-mail informado na assinatura." },
+        { pergunta: "Como cancelo?", resposta: "Peça o cancelamento pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. Não há fidelidade nem multa, e o acesso continua até o fim do mês já pago." },
+      ],
+    },
+    pagina: {
+      titulo: "Sua assinatura",
+      eyebrow: "Assinatura da Solution",
+      ola: (nome: string) => `Olá, ${nome}.`,
+      pagar: "Pagar a primeira fatura",
+      cancelar: "Para cancelar, fale com a gente pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. O acesso continua até o fim do mês pago.",
+      voltar: "Voltar para a página da assinatura",
+      estados: {
+        pendente: { rotulo: "Aguardando o primeiro pagamento", texto: "A fatura foi enviada para o seu e-mail. Assim que o pagamento for confirmado, o Pecege libera seu acesso à Solution e avisa você." },
+        ativa: { rotulo: "Assinatura ativa", texto: "Pagamento confirmado. O Pecege libera seu acesso à Solution e avisa no e-mail informado." },
+        atrasada: { rotulo: "Pagamento em atraso", texto: "A última fatura ainda não foi paga. Confira o e-mail com a fatura para manter o acesso." },
+        cancelada: { rotulo: "Assinatura cancelada", texto: "Não haverá novas cobranças. O acesso continua até o fim do mês já pago." },
+        contestada: { rotulo: "Pagamento em contestação", texto: "Recebemos uma contestação deste pagamento. Fale com a gente para resolver." },
+        estornada: { rotulo: "Pagamento estornado", texto: "O pagamento foi devolvido. Fale com a gente se quiser assinar de novo." },
+        falhou: { rotulo: "Não foi possível criar a assinatura", texto: "Nenhuma cobrança foi feita. Tente assinar de novo em instantes." },
+      } as Record<string, { rotulo: string; texto: string }>,
+    },
   },
   /**
    * As formações, com ementa, carga horária, público-alvo e formato (Prompt 4
@@ -1710,18 +1782,18 @@ export const cursos = {
 
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
-    headline: "Em breve",
+    headline: "A Solution inteira por R$ 49,90 por mês",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
     /* Quebrado em três partes para o nome da plataforma virar link sem
        dangerouslySetInnerHTML: a string continua inteira e revisável aqui, e o
        componente monta o <a> no meio. */
-    subtextAntes: "As formações online da IAgentics serão disponibilizadas na ",
+    subtextAntes: "Assine a ",
     subtextLink: "Solution",
     subtextDepois:
-      ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
+      ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq, com as formações de IA aplicada da IAgentics.",
     urlSolution: "https://plataformasolution.com.br/",
-    subtextDois: "Uma parceria que traz o melhor da IA com o melhor do mundo acadêmico para nossos clientes!",
+    subtextDois: "Pague com cartão, Pix ou boleto, e cancele quando quiser.",
     estanteAlt: "Capas das formações de IA aplicada da IAgentics",
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
@@ -1774,184 +1846,3 @@ export const cursos = {
  */
 export type Tema = "rotina" | "dados" | "custos" | "estrategia" | "pessoas" | "ia";
 
-export const catalogo = {
-  precoBaseCentavos: 20000,
-  /* Catálogo enxuto (2026-10-02, pedido do Rodrigo): só dois cursos. A lista
-     de 62 cursos do Pecege (2026-09-26 a 2026-10-02), os packs por nível e o
-     questionário "Monte sua trilha" saíram — estão no histórico do git.
-
-     O `slug` é o que viaja no carrinho e fica gravado na venda — não renomeie
-     um slug de curso que já foi vendido.
-
-     `preco` é o preço de cada curso (cheio e o cobrado). Quando os dois são
-     iguais não há promoção: sem riscado e sem selo de lançamento. */
-  cursos: [
-    /* "Fundamentos de IA para Negócios": nasceu "Fundamentos de IA aplicado aos
-       Negócios" na Academy, com o mesmo slug. Capa com o professor (o quadro
-       do vídeo-convite do Vinícius) desde 2026-09-29; R$ 49,90, por R$ 19,90
-       no lançamento, desde 2026-10-02. */
-    {
-      slug: "fundamentos-ia-negocios",
-      nome: "Fundamentos de IA para Negócios",
-      nivel: 0,
-      temas: ["ia"],
-      introdutorio: true,
-      foto: "/academy/academy-convite-poster.jpg",
-      fotoDePessoa: true,
-      enquadre: { banner: "50% 24%" },
-      professor: "Vinícius",
-      preco: { cheioCentavos: 4990, promoCentavos: 1990 },
-    },
-    /* "Marketing com IA" (2026-10-02): R$ 59,90, sem promoção. A capa parte da
-       foto da professora, a Carol, enviada pelo Rodrigo. */
-    {
-      slug: "marketing-com-ia",
-      nome: "Marketing com IA",
-      nivel: 0,
-      temas: ["ia"],
-      foto: "/academy/marketing-com-ia-capa.jpg",
-      fotoDePessoa: true,
-      // Foto quase quadrada, rosto no alto: na paisagem o recorte sobe para
-      // não cortar a cabeça.
-      enquadre: { paisagem: "50% 6%", banner: "50% 8%" },
-      professor: "Carol",
-      preco: { cheioCentavos: 5990, promoCentavos: 5990 },
-    },
-  ] as {
-    slug: string;
-    nome: string;
-    nivel: 0 | 1 | 2 | 3;
-    temas: Tema[];
-    introdutorio?: boolean;
-    foto?: string;
-    /** Foto de gente (professor): a capa vira cartaz, com vinheta e respiro. */
-    fotoDePessoa?: boolean;
-    /** Ajuste fino do recorte (object-position) quando o padrão não serve à foto. */
-    enquadre?: { retrato?: string; paisagem?: string; banner?: string };
-    professor?: string;
-    preco?: { cheioCentavos: number; promoCentavos: number };
-  }[],
-  introdutorio: "Curso introdutório",
-  // Crédito na capa de curso com professor em destaque (ver Capa.tsx).
-  capaCom: (nome: string) => `Com ${nome}`,
-  // Selo do curso de preço próprio em promoção (capa e card).
-  lancamento: "Lançamento",
-  /* Capas (2026-09-26, pedido do Rodrigo): as fotos dos cursos da /academy.
-     Hoje os dois cursos têm foto própria; o rodízio por tema abaixo só vale
-     para curso novo sem `foto`.
-     Curso com `foto` própria usa ela (o assunto casa: Lean, Design Thinking,
-     Spend Analysis…); os demais recebem as fotos do tema principal em RODÍZIO,
-     na ordem do catálogo — cursos vizinhos na prateleira não repetem foto.
-     Nove fotos para 63 cursos repetem — para variar mais, é acrescentar
-     arquivos aqui (mesmo estilo e proporção 4:5, 724×900). */
-  fotosPorTema: {
-    rotina: ["/academy/lean-thinking-course.jpg", "/academy/neurociencia-produtividade-course.jpg", "/academy/copilot-course.jpg", "/academy/design-thinking-ia-course.jpg"],
-    dados: ["/academy/imersao-analise-dados-ia.jpg", "/academy/spend-management-course.jpg", "/academy/lean-thinking-course.jpg", "/academy/copilot-course.jpg"],
-    custos: ["/academy/spend-management-course.jpg", "/academy/transformacao-digital-course.jpg", "/academy/imersao-assistentes-ia.jpg", "/academy/design-thinking-ia-course.jpg"],
-    estrategia: ["/academy/transformacao-digital-course.jpg", "/academy/design-thinking-ia-course.jpg", "/academy/fundamentos-ia-negocios.jpg", "/academy/imersao-analise-dados-ia.jpg"],
-    pessoas: ["/academy/design-thinking-ia-course.jpg", "/academy/neurociencia-produtividade-course.jpg", "/academy/fundamentos-ia-negocios.jpg"],
-    ia: ["/academy/fundamentos-ia-negocios.jpg", "/academy/imersao-assistentes-ia.jpg", "/academy/copilot-course.jpg"],
-  } as Record<Tema, string[]>,
-  niveis: ["Iniciante", "Intermediário", "Especialista", "Avançado"],
-  temas: {
-    rotina: "Processo e rotina",
-    dados: "Dados e análise de gastos",
-    custos: "Negociação, custos e fornecedores",
-    estrategia: "Estratégia e gestão",
-    pessoas: "Comunicação e liderança",
-    ia: "IA e tecnologia",
-  } as Record<Tema, string>,
-  meta: {
-    titulo: "Catálogo de cursos (prévia)",
-    descricao: "Prévia de teste do catálogo de formações online da IAgentics na Solution.",
-  },
-  /* Na tela, não só no código: quem abre a prévia precisa saber que a
-     cobrança é real, só que pequena. */
-  avisoTeste: "Prévia: preços reais, cobrança real pelo Asaas.",
-  barra: {
-    rotulo: "Resumo do carrinho",
-    vazio: "Escolha um curso para começar.",
-    cursos: (n: number) => (n === 1 ? "1 curso" : `${n} cursos`),
-    ver: "Ver carrinho",
-  },
-  gaveta: { fechar: "Fechar", carrinho: "Seu carrinho" },
-  /* Vitrine (2026-09-26; enxugada em 2026-10-02 para dois cursos): hero com
-     as três marcas e os pôsteres, "Como funciona" em quatro passos e a grade
-     de cursos. */
-  vitrine: {
-    hero: {
-      logoIagenticsAlt: "IAgentics",
-      logoPecegeAlt: "Pecege",
-      logoSolutionAlt: "Solution",
-      eyebrow: "IAgentics e Pecege · cursos online",
-      titulo: "IA aplicada aos negócios, para começar agora.",
-      lead: "Cursos online criados pela IAgentics, na Solution, a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.",
-      conceitoRotulo: "Como funciona",
-      passos: [
-        { titulo: "Escolha o curso", texto: "Cursos online de IA aplicada aos negócios, criados pela IAgentics." },
-        { titulo: "Pague como preferir", texto: "Pix, boleto ou cartão, numa fatura segura do Asaas." },
-        { titulo: "Receba o acesso", texto: "O Pecege libera seu acesso de 30 dias na plataforma Solution e avisa você por e-mail." },
-        { titulo: "Estude no seu ritmo", texto: "São 30 dias de acesso na Solution, a plataforma online do Pecege, para estudar quando e onde quiser." },
-      ],
-      verCursos: "Ver os cursos",
-      postersAlt: "Capas dos cursos do catálogo",
-    },
-    cursosTitulo: "Cursos",
-    /* Prazo de acesso (2026-10-02, pedido do Rodrigo): a compra dá 30 dias na
-       plataforma. Aparece onde a pessoa decide — banner e carrinho — e de novo
-       no pedido, depois de pagar. */
-    acesso: "30 dias de acesso na plataforma Solution",
-    noCarrinho: "No carrinho",
-  },
-
-  card: {
-    adicionar: "Adicionar",
-    remover: "Remover",
-  },
-  carrinho: {
-    titulo: "Seu carrinho",
-    vazio: "Escolha um curso para começar.",
-    total: "Total",
-    economia: (valor: string) => `Você economiza ${valor}`,
-    acesso: "Cada curso dá 30 dias de acesso na plataforma Solution, contados a partir da liberação.",
-    finalizar: "Finalizar compra",
-  },
-  checkout: {
-    titulo: "Seus dados",
-    nome: "Nome completo",
-    email: "E-mail",
-    cpf: "CPF",
-    telefone: "Celular com DDD",
-    notaCpf: "O CPF é exigido pelo Asaas para emitir a cobrança. Ele vai direto para o Asaas e não fica guardado no nosso site.",
-    consentimento:
-      "Autorizo que meus dados sejam compartilhados com o Pecege, responsável pela plataforma Solution, para liberar meu acesso aos cursos.",
-    pagar: "Ir para o pagamento",
-    enviando: "Gerando a cobrança…",
-    voltar: "Voltar ao carrinho",
-    privacidade: "Ver política de privacidade",
-    erros: {
-      nome: "Escreva seu nome completo.",
-      email: "Confira o e-mail digitado.",
-      telefone: "Informe o celular com DDD.",
-      cpf: "Confira o CPF digitado.",
-      cursos: "Seu carrinho está vazio.",
-      consentimento: "Marque a autorização para continuar.",
-      geral: "Não foi possível gerar a cobrança agora. Tente de novo em instantes.",
-    } as Record<string, string>,
-  },
-  pedido: {
-    titulo: "Pedido recebido",
-    status: {
-      pendente: "Aguardando pagamento",
-      pago: "Pagamento confirmado",
-      cancelado: "Cobrança cancelada",
-      estornado: "Pagamento estornado",
-      falhou: "Não foi possível gerar a cobrança",
-    } as Record<string, string>,
-    proximos: "O Pecege libera seu acesso de 30 dias na plataforma Solution e avisa você no e-mail informado.",
-    abrirFatura: "Abrir a fatura",
-    cursos: "Cursos",
-    total: "Total",
-    voltar: "Voltar ao catálogo",
-  },
-} as const;

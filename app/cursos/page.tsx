@@ -3,19 +3,26 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CursosEstante } from "@/components/sections/cursos/Estante";
 import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
+import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
+import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { cursos as t } from "@/lib/content";
-import { cursosJsonLd, ogDaPagina } from "@/lib/seo";
+import { cursosJsonLd, faqJsonLd, ogDaPagina } from "@/lib/seo";
+import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 
 export const metadata: Metadata = {
-  title: t.meta.titulo,
+  /* O título já traz a marca: `absolute`, sem o sufixo do template. */
+  title: { absolute: t.meta.titulo },
   description: t.meta.descricao,
   alternates: { canonical: "/cursos" },
-  openGraph: ogDaPagina("/cursos", `${t.meta.titulo} · IAgentics`, t.meta.descricao),
+  openGraph: ogDaPagina("/cursos", t.meta.titulo, t.meta.descricao),
 };
 
 /**
- * /cursos — aviso de "em breve" da parceria IAgentics + Pecege (2026-08-28).
+ * /cursos — desde 2026-10-14 vende a ASSINATURA da plataforma Solution
+ * (R$ 49,90 por mês; checkout em /cursos/assinar, retorno em
+ * /cursos/assinatura/[id]). Foi o aviso de "em breve" da parceria IAgentics +
+ * Pecege de 2026-08-28 até então.
  *
  * A URL sobreviveu ao desligamento da plataforma própria de propósito: tinha
  * acabado de ser indexada, e um 404 jogaria fora a autoridade recém-ganha.
@@ -39,12 +46,17 @@ export default function PaginaCursos() {
           t.formacoes.itens
             .filter((f) => f.descricao)
             .map((f) => ({ nome: f.nome, descricao: f.descricao!, horas: f.cargaHoraria, formato: f.formato })),
+          { preco: (VALOR_ASSINATURA_CENTAVOS / 100).toFixed(2), categoria: "Subscription" },
         )}
       />
+      <JsonLd dados={faqJsonLd(t.assinatura.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <CursosEstante />
+        <CursosComoFunciona />
         <CursosFormacoes />
+        <CursosAssinar />
+        <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
       </main>
       <Footer />
     </>

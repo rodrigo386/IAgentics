@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { ListaEspera } from "@/components/sections/cursos/ListaEspera";
 import { Logo } from "@/components/ui/Logo";
 import { LogoSolution } from "@/components/ui/LogoSolution";
 import { cursos as t } from "@/lib/content";
 
 /**
- * Hero "Prateleira viva" (/cursos), agora servindo o aviso de "em breve" da
- * parceria IAgentics + Pecege.
+ * Hero "Prateleira viva" (/cursos). Serviu o aviso de "em breve" da parceria
+ * IAgentics + Pecege até 2026-10-14; agora abre a venda da assinatura da
+ * Solution, com o CTA que leva ao formulário.
  *
  * O layout é o mesmo de quando a página vendia a plataforma própria (pedido do
  * Rodrigo em 2026-08-28: "mantém a hero, troca o texto e tira os botões") — o
@@ -64,7 +64,7 @@ export function CursosEstante() {
           </div>
 
           <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted">{t.hero.eyebrow}</p>
-          <h1 className="mt-4 max-w-[14ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-[20ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
             {t.hero.headline}
           </h1>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">
@@ -84,7 +84,14 @@ export function CursosEstante() {
             {t.hero.subtextDepois}
           </p>
           <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-fg-muted">{t.hero.subtextDois}</p>
-          <ListaEspera />
+          {/* Desde 2026-10-14 a página vende a assinatura: o CTA leva ao
+              formulário, mais abaixo (a lista de espera saiu). */}
+          <a
+            href="#assinar"
+            className="mt-8 inline-block rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
+          >
+            {t.assinatura.cta}
+          </a>
         </div>
 
         <div
