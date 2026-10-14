@@ -16,6 +16,7 @@
     "video:render:nexo-varejo": "remotion render nexo-varejo public/nexo/nexo-varejo.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
     "video:render:nexo-orcamento": "remotion render nexo-orcamento public/nexo/nexo-orcamento.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p --muted",
     "video:render:solucoes": "for id in solucao-nexo solucao-academy solucao-spend-lab; do remotion render $id out/solucoes/$id.mp4 --codec=h264 --crf=24 --pixel-format=yuv420p --muted; done",
+    "video:render:hero-cursos": "remotion bundle --out-dir=out/bundle-hero && for c in tudo capa-aula rotina; do remotion render out/bundle-hero hero-cursos-$c out/hero-cursos/$c.mp4 --codec=h264 --crf=24 --pixel-format=yuv420p --color-space=bt709 --muted && remotion still out/bundle-hero hero-cursos-$c out/hero-cursos/$c.jpg --frame=480 --image-format=jpeg --jpeg-quality=82; done",
     "capas:vitrine": "./scripts/capas-vitrine.sh",
     "video:still:og": "remotion still og-certificado public/plataforma/og-certificado-v1.jpg",
     "test:unit": "vitest run",

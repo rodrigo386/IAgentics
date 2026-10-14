@@ -1676,6 +1676,42 @@ export const cursos = {
    *  o professor já estão desenhados na capa; `nome` e `professor` aqui são o
    *  que leitor de tela e buscador alcançam. Os nomes das linhas foram
    *  sugeridos pelo Rodrigo. */
+  /** Os três conceitos de filme para a hero da /cursos (2026-10-14, pedido
+   *  do Rodrigo: "um vídeo em motion de propaganda, estilo Apple", referência
+   *  skillry.dev/ai-videos/opus-5-5). Composições em remotion/hero-cursos/,
+   *  loops mudos de 18 s em 4:5; ele escolhe um na prévia /preview/cursos.
+   *  Preço, cursos e trilhas vêm de `assinatura` e `vitrine`; aqui só as
+   *  frases que existem apenas no filme. */
+  filmesHero: {
+    previa: {
+      titulo: "Filmes da hero da /cursos",
+      lead: "Três conceitos para o lugar da estante de capas. Loops mudos de 18 segundos.",
+      conceitos: [
+        { id: "tudo", nome: "1. Tudo numa assinatura", ideia: "Tipografia em cascata: os nomes dos cursos aceleram até virar +70 cursos, as capas formam uma grade e a grade vira o preço." },
+        { id: "capa-aula", nome: "2. Da capa à aula", ideia: "Plano contínuo: a capa abre e vira aula, a barra de progresso vira a capa seguinte, a câmera recua para as trilhas e fecha no preço." },
+        { id: "rotina", nome: "3. Cabe no seu dia", ideia: "Três horas do dia, três aparelhos, três cursos tocando. Fecha no seu ritmo e no preço." },
+      ],
+      pausar: "Pausar",
+      continuar: "Continuar",
+    },
+    tudo: {
+      destaques: ["Fundamentos de IA.", "Marketing com IA.", "Power BI."],
+      contagem: "+70 cursos",
+      fecho: "Cancele quando quiser.",
+    },
+    capaAula: {
+      ritmo: "Aprenda no seu ritmo.",
+    },
+    rotina: {
+      momentos: [
+        { hora: "7h", onde: "No café.", curso: "Inteligência Emocional", aparelho: "celular" },
+        { hora: "12h", onde: "No intervalo.", curso: "Power BI na Prática", aparelho: "notebook" },
+        { hora: "22h", onde: "No sofá.", curso: "Marketing com IA", aparelho: "tablet" },
+      ],
+      fecho: "No seu ritmo.",
+      apoio: "Pecege · parceiro da USP/Esalq",
+    },
+  },
   vitrine: {
     titulo: "Trilhas de Conhecimento",
     emBreve: "Em breve",
