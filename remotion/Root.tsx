@@ -1,5 +1,5 @@
 import { Composition } from "remotion";
-import { site } from "@/lib/content";
+import { cursos, site } from "@/lib/content";
 import { AberturaMarca, type PropsAbertura } from "./AberturaMarca";
 import { BannerBoasVindas } from "./BannerBoasVindas";
 import { FilmeSpendNf } from "./nexo-nf/FilmeSpendNf";
@@ -8,6 +8,7 @@ import { FilmeVarejo } from "./nexo-varejo/FilmeVarejo";
 import { FilmeOrcamento } from "./nexo-orcamento/FilmeOrcamento";
 import { CapaFundamentos } from "./capas/CapaFundamentos";
 import { CapaCurso, type PropsCapaCurso } from "./capas/CapaCurso";
+import { ALTURA_CAPA_VITRINE, CapaVitrine, LARGURA_CAPA_VITRINE, MOTIVOS, type PropsCapaVitrine } from "./capas/CapaVitrine";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
 import { DURACAO as DURACAO_NF } from "./nexo-kit/cues";
 import "./style.css";
@@ -94,6 +95,37 @@ export function RemotionRoot() {
       <Composition id="capa-fundamentos" component={CapaFundamentos} durationInFrames={1} fps={30} width={600} height={900} />
       {/* Capa genérica dos cursos da IAgentics sem capa (2026-10-14): título e área via --props. */}
       <Composition id="capa-curso" component={CapaCurso} durationInFrames={1} fps={30} width={600} height={900} defaultProps={{ titulo: "Strategic Sourcing 4.0", area: "Compras" } satisfies PropsCapaCurso} />
+      {/* As capas geradas da vitrine da /cursos (2026-10-14): uma por curso
+          marcado `gerada` em cursos.vitrine. O id leva o nome do arquivo de
+          `capa`, e é por ele que `npm run capas:vitrine` sabe onde gravar. */}
+      {capasGeradas().map(({ id, props }) => (
+        <Composition key={id} id={id} component={CapaVitrine} durationInFrames={1} fps={30} width={LARGURA_CAPA_VITRINE} height={ALTURA_CAPA_VITRINE} defaultProps={props} />
+      ))}
     </>
+  );
+}
+
+/** Os tons da marca nas capas geradas da vitrine. Cor e desenho correm em
+ *  ciclos de tamanhos diferentes (5 e 6), então capas vizinhas nunca repetem
+ *  o par, e a ordem segue a da vitrine. */
+const CORES_DAS_CAPAS = ["#7607e8", "#6693f8", "#6020ee", "#55afed", "#6c66f3"];
+
+function capasGeradas() {
+  let n = 0;
+  return cursos.vitrine.linhas.flatMap((linha) =>
+    linha.cursos.flatMap((c) => {
+      if (!("gerada" in c)) return [];
+      const i = n++;
+      const formacao = cursos.formacoes.itens.find((f) => f.nome === c.nome);
+      const props: PropsCapaVitrine = {
+        titulo: c.nome,
+        cor: CORES_DAS_CAPAS[i % CORES_DAS_CAPAS.length],
+        motivo: MOTIVOS[i % MOTIVOS.length],
+        emBreve: "emBreve" in c,
+        rodape: "professor" in c ? c.professor : "",
+        ...(formacao && "professor" in c ? { foto: formacao.foto, enquadre: formacao.enquadre } : {}),
+      };
+      return [{ id: `capa-vitrine-${c.capa.replace("/vitrine/", "").replace(".jpg", "")}`, props }];
+    }),
   );
 }

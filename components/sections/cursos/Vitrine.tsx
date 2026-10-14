@@ -7,13 +7,11 @@ import { LinhaVitrine } from "./LinhaVitrine";
  * com a planilha "Estrutura Plataforma" de referência): uma linha por trilha,
  * cards em retrato correndo na horizontal, como num streaming.
  *
- * Dois estados de card:
- *  - publicado: a capa da plataforma, que já traz desenhados o título, o
- *    professor e o ícone de salvar. O nome e o professor vão no `alt`, que é
- *    o que leitor de tela e buscador alcançam.
- *  - em breve: card cinza (#D9D9D9) com o nome. O selo "Em breve" está
- *    escrito porque a página vende a assinatura: quem assina não pode achar
- *    que o curso já está lá.
+ * Todo card é uma capa: as da plataforma (prints recortados) e as geradas no
+ * Remotion (`gerada` em content.ts), que trazem desenhados o título, o
+ * professor ou o selo "Em breve", e o ícone de salvar. O que a capa diz vai
+ * no `alt`, que é o que leitor de tela e buscador alcançam. Os cursos em breve
+ * eram cards cinza (#D9D9D9) só com o nome até ganharem capa, no mesmo dia.
  *
  * Canto arredondado é exceção à trava de superfícies retas do site
  * (DESIGN.md): as capas vêm da plataforma com o canto arredondado no próprio
@@ -39,26 +37,15 @@ export function CursosVitrine() {
             >
               {linha.cursos.map((c) => (
                 <li key={c.nome} className="w-[132px] shrink-0 snap-start sm:w-[160px] lg:w-[184px]">
-                  {"capa" in c ? (
-                    <div className="relative aspect-[306/466] overflow-hidden rounded-[10px] bg-brand-ink">
-                      <Image
-                        src={c.capa}
-                        alt={`${c.nome}, ${c.professor}`}
-                        fill
-                        sizes="(min-width: 1024px) 184px, (min-width: 640px) 160px, 132px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-[306/466] flex-col justify-between rounded-[10px] bg-[#D9D9D9] p-3 text-brand-ink sm:p-4">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-brand-ink/70">
-                        {t.emBreve}
-                      </span>
-                      <span className="text-sm font-medium leading-snug [text-wrap:balance] sm:text-base">
-                        {c.nome}
-                      </span>
-                    </div>
-                  )}
+                  <div className="relative aspect-[306/466] overflow-hidden rounded-[10px] bg-brand-ink">
+                    <Image
+                      src={c.capa}
+                      alt={"emBreve" in c ? `${c.nome}, ${t.emBreve.toLowerCase()}` : `${c.nome}, ${c.professor}`}
+                      fill
+                      sizes="(min-width: 1024px) 184px, (min-width: 640px) 160px, 132px"
+                      className="object-cover"
+                    />
+                  </div>
                 </li>
               ))}
             </LinhaVitrine>

@@ -142,8 +142,9 @@ test.describe("fluxo completo", () => {
 });
 
 /* A vitrine dos cursos da Solution (2026-10-14, pedido do Rodrigo): sete
-   trilhas em linhas horizontais, 27 cursos publicados com capa e 18 em breve
-   em card cinza, servidos do nosso domínio. */
+   trilhas em linhas horizontais, 28 cursos publicados e 18 em breve, todos
+   com capa servida do nosso domínio (as em breve e a do Marketing com IA,
+   geradas no Remotion). */
 test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   await page.goto("/cursos");
   const sec = page.getByRole("region", { name: "Cursos na Solution" });
@@ -156,9 +157,11 @@ test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
     "Liderança & Gestão",
     "Compras, Vendas & Supply 4.0",
   ]);
-  await expect(sec.getByRole("listitem")).toHaveCount(45);
-  await expect(sec.locator("img")).toHaveCount(27);
-  await expect(sec.getByText("Em breve", { exact: true })).toHaveCount(18);
+  await expect(sec.getByRole("listitem")).toHaveCount(46);
+  await expect(sec.locator("img")).toHaveCount(46);
+  await expect(sec.getByRole("img", { name: /, em breve$/ })).toHaveCount(18);
+  // O Marketing com IA abre a trilha AI First (pedido do Rodrigo).
+  await expect(page.getByRole("list", { name: "AI First" }).getByRole("img").first()).toHaveAccessibleName("Marketing com IA, Prof. Carol");
   // O nome e o professor de cada capa chegam como texto pelo alt.
   await expect(sec.getByRole("img", { name: "Fundamentos de IA para Negócios, Prof. Vinícius Ferreira" })).toBeVisible();
   await expect(sec.getByRole("img", { name: "Inovação, Prof. Léo Recondo" })).toBeAttached();
