@@ -61,6 +61,7 @@ Pedido do Rodrigo: "mudaremos a forma de compra da plataforma pelo site para ass
 - **`ASAAS_URL_BASE` não tem valor padrão: sem ela o cliente recusa antes de qualquer requisição.** Falha fechada, porque o `.env.local` guarda a chave de PRODUÇÃO. O e2e sobe um Asaas falso (`e2e/asaas-falso.mjs`, porta 4010, com `/subscriptions`, busca de cliente por CPF e cancelamento; ids de assinatura únicos entre reinícios porque `asaas_assinatura_id` é único no banco) — **servidor subido à mão para o e2e precisa de `ASAAS_URL_BASE=http://127.0.0.1:4010 ASAAS=chave-falsa-do-e2e ASSINATURA_LIMITE=1000`**.
 - **O Next não carrega o `ASAAS` do `.env.local`** (a chave começa com `$` e o dotenv-expand a esvazia); em produção o Railway injeta direto.
 - **Pendências fora do código, do Rodrigo**: (1) **site cadastrado no Asaas** está vazio (`/myAccount/commercialInfo`); (2) **habilitar no webhook do Asaas os eventos `PAYMENT_CHARGEBACK_REQUESTED`, `PAYMENT_CHARGEBACK_DISPUTE` e `PAYMENT_AWAITING_CHARGEBACK_REVERSAL`** (hoje só DELETED/REFUNDED/OVERDUE/RECEIVED/CONFIRMED); (3) o **Cloudflare bloqueia (1010) POST com user-agent `Java/1.8`** no webhook — se o primeiro pagamento não virar "ativa", criar regra no WAF pulando o Browser Integrity Check em `/api/asaas/webhook`; (4) **prazo de liberação** do Pecege não está escrito (o texto diz só "libera e avisa por e-mail"); (5) combinar com o Pecege a rotina de liberar/revogar pelo /admin.
+- **Cursos na Solution (2026-10-14, pedido do Rodrigo)**: 18 capas e nomes tirados da página PÚBLICA `plataformasolution.com.br/cursos`, baixados para `public/solution/` (600×900 JPEG) e listados em `cursos.catalogoSolution`; a estante animada do topo da /cursos usa as mesmas capas. Curso novo lá não aparece aqui sozinho: refazer a extração. **Atenção comercial**: o site da Solution vende plano anual a R$ 29,90/mês e semestral a R$ 69,90/mês; a nossa assinatura é R$ 49,90/mês sem fidelidade (combinar com o Pecege).
 - As notificações padrão do Asaas ficam LIGADAS: com Pix/boleto, é o e-mail do Asaas que leva a fatura de cada mês.
 
 ## SEO (ver [docs/PLANO-SEO.md](docs/PLANO-SEO.md))
@@ -91,7 +92,7 @@ Pedido do Rodrigo: "mudaremos a forma de compra da plataforma pelo site para ass
 
 ## Testes
 
-- `npm run test:unit` (vitest, 221) · `npm run test:e2e` (Playwright, 73, **workers: 1**). O `webServer` do Playwright sobe dois servidores: o Asaas falso (4010) e o `next start` com `ASAAS_URL_BASE` e `ASAAS` falsos.
+- `npm run test:unit` (vitest, 221) · `npm run test:e2e` (Playwright, 74, **workers: 1**). O `webServer` do Playwright sobe dois servidores: o Asaas falso (4010) e o `next start` com `ASAAS_URL_BASE` e `ASAAS` falsos.
 - Banco local: `npm run db:local` / `db:migrar` / `db:gerar`. **O e2e precisa dele de pé** — sem Postgres na 54329, os specs de lista de espera e do painel falham por motivo que não é o código.
 - **`drizzle/meta` não tem snapshot para as migrações `0010`/`0011`/`0012`** (foram escritas à mão, direto o `.sql`, sem passar por `drizzle-kit generate`). Um `db:gerar` futuro compararia o schema atual contra o snapshot da `0009` e tentaria recriar `entradas`/`vendas`/`assinaturas` do zero. Antes de rodar `drizzle-kit generate` de novo, regenerar os snapshots que faltam.
 

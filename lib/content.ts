@@ -1667,6 +1667,35 @@ export const cursos = {
     descricao:
       "Assine a Solution, a plataforma de educação online do Pecege, com as formações de IA da IAgentics. R$ 49,90 por mês, cancele quando quiser.",
   },
+  /** Os cursos da plataforma Solution (2026-10-14, pedido do Rodrigo: "use os
+   *  banners dos cursos do Pecege"). Capas e nomes tirados da página PÚBLICA
+   *  plataformasolution.com.br/cursos, baixadas para public/solution/ (600×900,
+   *  JPEG) para não depender do servidor deles. Curso novo lá não aparece aqui
+   *  sozinho: é refazer a extração. */
+  catalogoSolution: {
+    titulo: "Cursos na Solution",
+    lead: "Alguns dos mais de 70 cursos da plataforma, todos incluídos na assinatura.",
+    itens: [
+      { nome: "Excel Intermediário", src: "/solution/excel-intermediario.jpg" },
+      { nome: "Excel Avançado", src: "/solution/excel-avancado.jpg" },
+      { nome: "Excel Básico", src: "/solution/excel-basico.jpg" },
+      { nome: "Inteligência Artificial na Prática", src: "/solution/inteligencia-artificial-na-pratica.jpg" },
+      { nome: "MS Project Avançado", src: "/solution/ms-project-avancado.jpg" },
+      { nome: "Comunicação Estratégica no Trabalho", src: "/solution/comunicacao-estrategica-no-trabalho.jpg" },
+      { nome: "Liderança geracional", src: "/solution/lideranca-geracional.jpg" },
+      { nome: "Indicadores Estratégicos para Gestão de Pessoas", src: "/solution/indicadores-estrategicos-para-gestao-de-pessoas.jpg" },
+      { nome: "Cultura Organizacional: Práticas e Estratégias para Construir Comunidades", src: "/solution/cultura-organizacional-praticas-e-estrategias-para-construir.jpg" },
+      { nome: "Cultura Organizacional", src: "/solution/cultura-organizacional.jpg" },
+      { nome: "Remuneração variável que gera resultado", src: "/solution/remuneracao-variavel-que-gera-resultado.jpg" },
+      { nome: "IA no Atendimento: do Zero à Escala", src: "/solution/ia-no-atendimento-do-zero-a-escala.jpg" },
+      { nome: "Sucessão familiar", src: "/solution/sucessao-familiar.jpg" },
+      { nome: "Power BI na Prática: Dashboard Financeiro", src: "/solution/power-bi-na-pratica-dashboard-financeiro.jpg" },
+      { nome: "Técnicas de negociação", src: "/solution/tecnicas-de-negociacao.jpg" },
+      { nome: "MS Project Intermediário", src: "/solution/ms-project-intermediario.jpg" },
+      { nome: "Comunicação e Oratória", src: "/solution/comunicacao-e-oratoria.jpg" },
+      { nome: "Estratégia de Negociação", src: "/solution/estrategia-de-negociacao.jpg" },
+    ],
+  },
   /** A assinatura: oferta, como funciona, formulário, autorização, perguntas
    *  e a página de retorno. O VALOR mora em lib/assinatura/regras.ts
    *  (VALOR_ASSINATURA_CENTAVOS); o texto abaixo repete "R$ 49,90" e precisa
@@ -1794,7 +1823,7 @@ export const cursos = {
       ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq, com as formações de IA aplicada da IAgentics.",
     urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Pague com cartão, Pix ou boleto, e cancele quando quiser.",
-    estanteAlt: "Capas das formações de IA aplicada da IAgentics",
+    estanteAlt: "Capas de cursos da plataforma Solution",
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
      com o Pecege — decisão do Rodrigo na mesma data.
@@ -1823,16 +1852,21 @@ export const cursos = {
   },
   /* Estática desde o desligamento da plataforma: a estante é decorativa
      (aria-hidden) e não vale manter uma consulta ao banco viva só por ela. */
+  /* Desde 2026-10-14 a estante do topo mostra as capas da Solution (a
+     assinatura dá acesso à plataforma inteira), não mais as da Academy. */
   capasEstante: [
-    "/academy/copilot-course.jpg",
-    "/academy/design-thinking-ia-course.jpg",
-    "/academy/fundamentos-ia-negocios.jpg",
-    "/academy/imersao-analise-dados-ia.jpg",
-    "/academy/imersao-assistentes-ia.jpg",
-    "/academy/lean-thinking-course.jpg",
-    "/academy/neurociencia-produtividade-course.jpg",
-    "/academy/spend-management-course.jpg",
-    "/academy/transformacao-digital-course.jpg",
+    "/solution/excel-intermediario.jpg",
+    "/solution/excel-avancado.jpg",
+    "/solution/excel-basico.jpg",
+    "/solution/inteligencia-artificial-na-pratica.jpg",
+    "/solution/ms-project-avancado.jpg",
+    "/solution/comunicacao-estrategica-no-trabalho.jpg",
+    "/solution/lideranca-geracional.jpg",
+    "/solution/indicadores-estrategicos-para-gestao-de-pessoas.jpg",
+    "/solution/cultura-organizacional-praticas-e-estrategias-para-construir.jpg",
+    "/solution/cultura-organizacional.jpg",
+    "/solution/remuneracao-variavel-que-gera-resultado.jpg",
+    "/solution/ia-no-atendimento-do-zero-a-escala.jpg",
   ],
 } as const;
 

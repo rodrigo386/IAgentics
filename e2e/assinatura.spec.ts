@@ -140,3 +140,15 @@ test.describe("fluxo completo", () => {
     expect((await estado(request)).cancelamentos).toContain(sub.id);
   });
 });
+
+/* As capas dos cursos da Solution (2026-10-14), tiradas da página pública da
+   plataforma e servidas do nosso domínio. */
+test("a /cursos mostra os cursos da Solution com capa e nome", async ({ page }) => {
+  await page.goto("/cursos");
+  const sec = page.getByRole("region", { name: "Cursos na Solution" });
+  await expect(sec.getByRole("listitem")).toHaveCount(18);
+  await expect(sec).toContainText("Inteligência Artificial na Prática");
+  const src = await sec.locator("img").first().getAttribute("src");
+  expect(src).toContain("solution");
+  expect(src).not.toContain("blob.core.windows.net");
+});
