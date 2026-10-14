@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { acaoDoAdmin, pagoAteDaFatura, transicaoAssinatura, validarAssinatura } from "./regras";
 import { permitir } from "./limite";
 
-const ok = { nome: "Ana Silva", email: "Ana@Empresa.com.br", telefone: "(11) 98888-7777", cpf: "529.982.247-25", consentimento: true };
+const ok = { nome: "Ana Silva", email: "Ana@Empresa.com.br", telefone: "(11) 98888-7777", cpf: "529.982.247-25", consentimento: true, compartilhamento: true };
 
 describe("validarAssinatura", () => {
   it("aceita e normaliza", () => {
@@ -11,6 +11,8 @@ describe("validarAssinatura", () => {
   });
   it("exige consentimento de verdade", () => {
     expect(validarAssinatura({ ...ok, consentimento: "true" })).toEqual({ ok: false, motivo: "consentimento" });
+    expect(validarAssinatura({ ...ok, compartilhamento: false })).toEqual({ ok: false, motivo: "compartilhamento" });
+    expect(validarAssinatura({ ...ok, compartilhamento: undefined })).toEqual({ ok: false, motivo: "compartilhamento" });
   });
   it("recusa CPF inválido", () => {
     expect(validarAssinatura({ ...ok, cpf: "111.111.111-11" })).toEqual({ ok: false, motivo: "cpf" });

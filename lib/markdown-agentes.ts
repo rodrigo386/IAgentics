@@ -60,6 +60,14 @@ turndown.addRule("spanEmBloco", {
   replacement: (conteudo) => (conteudo.trim() ? `${conteudo.trim()} ` : ""),
 });
 
+/* Rótulo de formulário é inline para o turndown, e o campo dentro dele não
+   vira texto: "Nome completo" + "E-mail" saíam "Nome completoE-mail". Cada
+   <label> vira um parágrafo. */
+turndown.addRule("rotuloEmBloco", {
+  filter: "label",
+  replacement: (conteudo) => (conteudo.trim() ? `\n\n${conteudo.trim()}\n\n` : ""),
+});
+
 /** O miolo da página. Sem `<main>` (erro, 404), devolve null. */
 function extrairMain(html: string): string | null {
   const m = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);

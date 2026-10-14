@@ -1685,8 +1685,8 @@ export const cursos = {
    *  Preço, cursos e trilhas vêm de `assinatura` e `vitrine`; aqui só as
    *  frases que existem apenas no filme. */
   filmeHero: {
-    video: "/cursos-hero/misto-v4.mp4",
-    poster: "/cursos-hero/misto-v4.jpg",
+    video: "/cursos-hero/misto-v5.mp4",
+    poster: "/cursos-hero/misto-v5.jpg",
     pausar: "Pausar o filme",
     continuar: "Continuar o filme",
   },
@@ -1727,11 +1727,11 @@ export const cursos = {
           { nome: "Fundamentos de IA para Negócios", professor: "Prof. Vinícius Ferreira", capa: "/vitrine/fundamentos-de-ia-para-negocios.jpg" },
           { nome: "IA no Atendimento: do Zero à Escala", professor: "Prof. Alexandre Garcia", capa: "/vitrine/ia-no-atendimento.jpg" },
           { nome: "Data Visualization", professor: "Prof. Fabiano Castello", capa: "/vitrine/data-visualization.jpg" },
-          { nome: "Trabalhando com Dados: Big Data e I.A. Aplicada", professor: "Prof. Fabiano Castello", capa: "/vitrine/big-data-e-ia-aplicada.jpg" },
+          { nome: "Trabalhando com Dados: Big Data e IA Aplicada", professor: "Prof. Fabiano Castello", capa: "/vitrine/big-data-e-ia-aplicada.jpg" },
           { nome: "Transformação Digital", professor: "Prof. Rafael Terra", capa: "/vitrine/transformacao-digital.jpg" },
           { nome: "LGPD: Lei Geral de Proteção de Dados", professor: "Prof. Gustavo Galegale", capa: "/vitrine/lgpd.jpg" },
           { nome: "Power BI na Prática", professor: "Prof. Lucas Moreira Rocha", capa: "/vitrine/power-bi-na-pratica.jpg" },
-          { nome: "Análise de Dados com IA aplicada", capa: "/vitrine/analise-de-dados-com-ia-aplicada.jpg", emBreve: true, gerada: true },
+          { nome: "Análise de Dados com IA Aplicada", capa: "/vitrine/analise-de-dados-com-ia-aplicada.jpg", emBreve: true, gerada: true },
           { nome: "Change Management", capa: "/vitrine/change-management.jpg", emBreve: true, gerada: true },
         ],
       },
@@ -1816,7 +1816,7 @@ export const cursos = {
     comoFunciona: {
       titulo: "Como funciona",
       passos: [
-        { titulo: "Assine", texto: "Preencha seus dados e vá para a fatura do primeiro mês." },
+        { titulo: "Assine", texto: "Preencha seus dados" },
         { titulo: "Pague como preferir", texto: "Cartão, Pix ou boleto. Todo mês a nova fatura chega no seu e-mail." },
         { titulo: "Receba o acesso", texto: "Com o pagamento confirmado, o Pecege libera seu acesso à Solution e avisa por e-mail." },
         { titulo: "Cancele quando quiser", texto: "Sem fidelidade. Peça pelo WhatsApp ou e-mail; o acesso vale até o fim do mês pago." },
@@ -1829,8 +1829,15 @@ export const cursos = {
       cpf: "CPF",
       cpfNota: "Pedido pelo Asaas para emitir a cobrança. Vai direto para ele e não fica guardado no nosso site.",
       telefone: "Celular com DDD",
-      consentimento:
-        "Autorizo a cobrança mensal de R$ 49,90 até eu pedir o cancelamento, e o compartilhamento do meu nome, e-mail e telefone com o Pecege, responsável pela plataforma Solution, para a liberação do meu acesso.",
+      /* Dois checkboxes desde 2026-10-14 (revisão de LGPD repassada pelo
+         Rodrigo): um autoriza a COBRANÇA, o outro registra que a pessoa sabe
+         do COMPARTILHAMENTO com o Pecege. O segundo é ciência, não
+         consentimento: sem ele o acesso não tem como ser liberado (execução
+         do contrato, art. 7º, V, da LGPD), então chamar de "autorizo" seria
+         prometer uma escolha que não existe. */
+      consentimento: "Autorizo a cobrança mensal de R$ 49,90 até eu pedir o cancelamento.",
+      compartilhamento:
+        "Estou ciente de que meu nome, e-mail e telefone vão para o Pecege, responsável pela plataforma Solution, para a liberação do meu acesso.",
       privacidade: "Ver política de privacidade",
       botao: "Ir para o pagamento",
       enviando: "Gerando sua fatura…",
@@ -1839,7 +1846,8 @@ export const cursos = {
         email: "Confira o e-mail digitado.",
         cpf: "Confira o CPF.",
         telefone: "Informe o celular com DDD.",
-        consentimento: "Marque a autorização para continuar.",
+        consentimento: "Marque a autorização da cobrança para continuar.",
+        compartilhamento: "Marque a ciência do compartilhamento com o Pecege para continuar.",
         muitas_tentativas: "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.",
         falha: "Não foi possível gerar a fatura agora. Tente de novo em instantes.",
       } as Record<string, string>,

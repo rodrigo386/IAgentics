@@ -5,6 +5,7 @@ import { CursosEstante } from "@/components/sections/cursos/Estante";
 import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
 import { CursosVitrine } from "@/components/sections/cursos/Vitrine";
 import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
+import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { cursos as t } from "@/lib/content";
@@ -59,14 +60,17 @@ export default function PaginaCursos() {
       <Nav />
       <main id="conteudo" className="pt-16">
         <CursosEstante />
-        <CursosComoFunciona />
         {/* As formações da IAgentics vêm antes dos cursos do Pecege (pedido do
             Rodrigo, 2026-10-14). */}
         <CursosFormacoes />
         <CursosVitrine />
+        {/* "Como funciona" logo antes do formulário, depois do que se compra
+            (pedido do Rodrigo, 2026-10-14). */}
+        <CursosComoFunciona />
         <CursosAssinar />
         <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
       </main>
+      <BarraAssinar />
       <Footer />
     </>
   );

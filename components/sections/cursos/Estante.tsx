@@ -74,6 +74,7 @@ export function CursosEstante() {
           {/* Desde 2026-10-14 a página vende a assinatura: o CTA leva ao
               formulário, mais abaixo (a lista de espera saiu). */}
           <a
+            id="cta-hero"
             href="#assinar"
             className="mt-8 inline-block rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
           >

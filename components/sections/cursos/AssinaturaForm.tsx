@@ -6,7 +6,7 @@ import { cursos } from "@/lib/content";
 
 /**
  * Formulário da assinatura da Solution (2026-10-14). Manda nome, e-mail, CPF,
- * celular e o consentimento; o servidor decide o valor (R$ 49,90) e devolve a
+ * celular, a autorização da cobrança e a ciência do compartilhamento; o servidor decide o valor (R$ 49,90) e devolve a
  * URL da primeira fatura no Asaas, para onde a pessoa vai em seguida.
  *
  * O erro volta como um `motivo` só (o primeiro campo que falhou); a mensagem
@@ -33,6 +33,7 @@ export function AssinaturaForm() {
           cpf: f.get("cpf"),
           telefone: f.get("telefone"),
           consentimento: f.get("consentimento") === "on",
+          compartilhamento: f.get("compartilhamento") === "on",
         }),
       });
       const corpo = await r.json().catch(() => ({}));
@@ -61,8 +62,10 @@ export function AssinaturaForm() {
         <input name="email" type="email" required autoComplete="email" className={campo} />
       </label>
       <label className="flex flex-col gap-1.5">
-        <span className={rotulo}>{t.cpf}</span>
-        <input name="cpf" required inputMode="numeric" autoComplete="off" className={campo} />
+        <span className={rotulo}>{t.cpf}</span>{" "}
+        <input name="cpf" required inputMode="numeric" autoComplete="off" className={campo} />{" "}
+        {/* Os espaços entre os itens não mudam nada no flex, mas separam
+            rótulo e nota na leitura em texto ("CPFPedido pelo Asaas…"). */}
         <span className="text-xs text-fg-muted">{t.cpfNota}</span>
       </label>
       <label className="flex flex-col gap-1.5">
@@ -71,8 +74,12 @@ export function AssinaturaForm() {
       </label>
       <label className="flex items-start gap-3 text-sm leading-relaxed text-fg-muted">
         <input name="consentimento" type="checkbox" required className="mt-1 size-4 shrink-0 accent-[var(--accent)]" />
+        <span>{t.consentimento}</span>
+      </label>
+      <label className="flex items-start gap-3 text-sm leading-relaxed text-fg-muted">
+        <input name="compartilhamento" type="checkbox" required className="mt-1 size-4 shrink-0 accent-[var(--accent)]" />
         <span>
-          {t.consentimento}{" "}
+          {t.compartilhamento}{" "}
           <Link href="/privacidade" className="text-fg underline" prefetch={false}>
             {t.privacidade}
           </Link>

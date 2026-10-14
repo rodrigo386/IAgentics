@@ -38,7 +38,7 @@ export function CursosAssinar() {
             {t.formulario.titulo}
           </h2>
           <p className="mt-8 flex items-baseline gap-2">
-            <span className="tnum text-6xl font-medium tracking-[-0.04em] text-fg">{t.preco}</span>
+            <span className="tnum text-6xl font-medium tracking-[-0.04em] text-fg">{t.preco}</span>{" "}
             <span className="text-lg text-fg-muted">{t.porMes}</span>
           </p>
           <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-fg-muted">{t.resumo}</p>

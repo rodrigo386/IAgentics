@@ -32,6 +32,7 @@ const dados = (extra: Record<string, unknown> = {}) => ({
   telefone: "(11) 98888-7777",
   cpf: cpfValido(Date.now()),
   consentimento: true,
+  compartilhamento: true,
   ...extra,
 });
 async function estado(request: APIRequestContext) {
@@ -41,7 +42,8 @@ async function estado(request: APIRequestContext) {
 test("a /cursos vende a assinatura: preço, CTA e formulário", async ({ page }) => {
   await page.goto("/cursos");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("R$ 49,90 por mês");
-  await expect(page.getByRole("link", { name: "Assinar por R$ 49,90/mês" })).toHaveAttribute("href", "#assinar");
+  await expect(page.locator("#cta-hero")).toHaveAttribute("href", "#assinar");
+  await expect(page.locator("#cta-hero")).toHaveText("Assinar por R$ 49,90/mês");
   await expect(page.getByRole("button", { name: "Ir para o pagamento" })).toBeVisible();
   await expect(page.getByText("Entre na lista de espera")).toHaveCount(0);
   const blocos = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j));
@@ -59,6 +61,8 @@ test("o servidor recusa assinatura sem consentimento", async ({ request }) => {
   const r = await request.post("/cursos/assinar", { data: dados({ consentimento: false }) });
   expect(r.status()).toBe(422);
   expect((await r.json()).error).toBe("consentimento");
+  const r2 = await request.post("/cursos/assinar", { data: dados({ compartilhamento: false }) });
+  expect((await r2.json()).error).toBe("compartilhamento");
 });
 
 test("valor forjado no corpo é ignorado: a assinatura é de R$ 49,90, mensal, cartão/Pix/boleto", async ({ request }) => {
@@ -95,7 +99,9 @@ test.describe("fluxo completo", () => {
     const cpf = cpfValido(Date.now() + 13);
     await page.getByLabel("CPF").fill(cpf);
     await page.getByLabel("Celular com DDD").fill("11988887777");
-    await page.getByRole("checkbox").check();
+    // Dois checkboxes desde 2026-10-14: a cobrança e o compartilhamento com o Pecege.
+    await page.getByRole("checkbox", { name: /Autorizo a cobrança/ }).check();
+    await page.getByRole("checkbox", { name: /Estou ciente/ }).check();
     await page.getByRole("button", { name: "Ir para o pagamento" }).click();
     await expect(page).toHaveURL(/127\.0\.0\.1:4010\/fatura\//);
 
@@ -188,4 +194,18 @@ test("as formações da IAgentics vêm antes dos cursos da Solution", async ({ p
   const formacoes = await page.getByRole("heading", { name: "As formações IAgentics", level: 2 }).boundingBox();
   const solution = await page.getByRole("heading", { name: "Trilhas de Conhecimento", level: 2 }).boundingBox();
   expect(formacoes!.y).toBeLessThan(solution!.y);
+});
+
+/* O botão de assinar acompanha a rolagem (2026-10-14, pedido do Rodrigo):
+   escondido enquanto o da hero está na tela, visível no meio da página,
+   escondido de novo quando o formulário aparece. */
+test("o botão de assinar acompanha a rolagem e some no formulário", async ({ page }) => {
+  await page.goto("/cursos");
+  const barra = page.locator("#barra-assinar");
+  await expect(barra).toHaveAttribute("inert", "");
+  await page.getByRole("heading", { name: "Trilhas de Conhecimento" }).scrollIntoViewIfNeeded();
+  await expect(barra).not.toHaveAttribute("inert", "");
+  await expect(barra.getByRole("link", { name: "Assinar por R$ 49,90/mês" })).toBeInViewport();
+  await page.locator("#assinar").scrollIntoViewIfNeeded();
+  await expect(barra).toHaveAttribute("inert", "");
 });

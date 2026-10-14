@@ -13,21 +13,23 @@ export const VALOR_ASSINATURA_CENTAVOS = 4990;
 export type DadosAssinatura = { nome: string; email: string; telefone: string; cpf: string };
 export type ValidacaoAssinatura =
   | { ok: true; dados: DadosAssinatura }
-  | { ok: false; motivo: "nome" | "email" | "telefone" | "cpf" | "consentimento" };
+  | { ok: false; motivo: "nome" | "email" | "telefone" | "cpf" | "consentimento" | "compartilhamento" };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validarAssinatura(entrada: unknown): ValidacaoAssinatura {
-  const { nome, email, telefone, cpf, consentimento } = (entrada ?? {}) as Record<string, unknown>;
+  const { nome, email, telefone, cpf, consentimento, compartilhamento } = (entrada ?? {}) as Record<string, unknown>;
   if (typeof nome !== "string" || nome.trim().length < 2 || nome.trim().length > 200) return { ok: false, motivo: "nome" };
   if (typeof email !== "string" || email.trim().length > 254 || !EMAIL.test(email.trim())) return { ok: false, motivo: "email" };
   const fone = typeof telefone === "string" ? telefone.replace(/\D/g, "") : "";
   if (fone.length < 10 || fone.length > 11) return { ok: false, motivo: "telefone" };
   const cpfLimpo = typeof cpf === "string" ? validarCpf(cpf) : null;
   if (!cpfLimpo) return { ok: false, motivo: "cpf" };
-  /* Conferido NO SERVIDOR: é a autorização da cobrança recorrente e a base do
-     compartilhamento com o Pecege, e qualquer um posta direto na rota. */
+  /* Conferidos NO SERVIDOR, porque qualquer um posta direto na rota: a
+     autorização da cobrança recorrente e a ciência do compartilhamento com o
+     Pecege (dois checkboxes desde 2026-10-14). */
   if (consentimento !== true) return { ok: false, motivo: "consentimento" };
+  if (compartilhamento !== true) return { ok: false, motivo: "compartilhamento" };
   return { ok: true, dados: { nome: nome.trim(), email: email.trim().toLowerCase(), telefone: fone, cpf: cpfLimpo } };
 }
 
