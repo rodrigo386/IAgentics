@@ -1689,16 +1689,17 @@ export const cursos = {
       titulo: "Filmes da hero da /cursos",
       lead: "Quatro conceitos para o lugar da estante de capas. Loops mudos de 18 segundos (o 4, de 21).",
       conceitos: [
-        { id: "tudo", video: "/cursos-hero/tudo-v2.mp4", poster: "/cursos-hero/tudo-v2.jpg", nome: "1. Tudo numa assinatura", ideia: "Tipografia em cascata: os nomes dos cursos aceleram até virar +70 cursos, as capas formam uma grade e a grade vira o preço." },
+        { id: "tudo", video: "/cursos-hero/tudo-v3.mp4", poster: "/cursos-hero/tudo-v3.jpg", nome: "1. Tudo numa assinatura", ideia: "Tipografia em cascata: os nomes dos cursos aceleram até virar +70 cursos, as capas formam uma grade e a grade vira o preço." },
         { id: "capa-aula", video: "/cursos-hero/capa-aula-v1.mp4", poster: "/cursos-hero/capa-aula-v1.jpg", nome: "2. Da capa à aula", ideia: "Plano contínuo: a capa abre e vira aula, a barra de progresso vira a capa seguinte, a câmera recua para as trilhas e fecha no preço." },
-        { id: "rotina", video: "/cursos-hero/rotina-v1.mp4", poster: "/cursos-hero/rotina-v1.jpg", nome: "3. Cabe no seu dia", ideia: "Três horas do dia, três aparelhos, três cursos tocando. Fecha no seu ritmo e no preço." },
-        { id: "misto", video: "/cursos-hero/misto-v3.mp4", poster: "/cursos-hero/misto-v3.jpg", nome: "4. Misto (1, 2 e 3)", ideia: "O início do 1 até +300 horas de aula, as trilhas do 2 com todos os cursos passando e o fecho do 3 com os aparelhos e o preço. 21 segundos." },
+        { id: "rotina", video: "/cursos-hero/rotina-v2.mp4", poster: "/cursos-hero/rotina-v2.jpg", nome: "3. Cabe no seu dia", ideia: "Três horas do dia, três aparelhos, três cursos tocando. Fecha no seu ritmo e no preço." },
+        { id: "misto", video: "/cursos-hero/misto-v4.mp4", poster: "/cursos-hero/misto-v4.jpg", nome: "4. Misto (1, 2 e 3)", ideia: "O início do 1 até +300 horas de aula, as trilhas do 2 com todos os cursos passando e o fecho do 3 com os aparelhos e o preço. 21 segundos." },
       ],
       pausar: "Pausar",
       continuar: "Continuar",
     },
     tudo: {
-      destaques: ["Fundamentos de IA.", "Marketing com IA.", "Power BI."],
+      /* Sem ponto final nos nomes de curso (pedido do Rodrigo, 2026-10-14). */
+      destaques: ["Fundamentos de IA", "Marketing com IA", "Power BI"],
       contagem: "+70 cursos",
       fecho: "Cancele quando quiser.",
     },
@@ -1718,7 +1719,6 @@ export const cursos = {
         { hora: "22h", onde: "No sofá.", curso: "Marketing com IA", aparelho: "tablet" },
       ],
       fecho: "No seu ritmo.",
-      apoio: "Pecege · parceiro da USP/Esalq",
     },
   },
   vitrine: {

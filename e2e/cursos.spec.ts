@@ -70,14 +70,14 @@ test("a prévia dos filmes da hero alterna os quatro conceitos e não é indexad
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   const video = page.locator("video");
   for (const [nome, arquivo] of [
-    ["1. Tudo numa assinatura", "tudo-v2"],
+    ["1. Tudo numa assinatura", "tudo-v3"],
     ["2. Da capa à aula", "capa-aula-v1"],
-    ["3. Cabe no seu dia", "rotina-v1"],
-    ["4. Misto (1, 2 e 3)", "misto-v3"],
+    ["3. Cabe no seu dia", "rotina-v2"],
+    ["4. Misto (1, 2 e 3)", "misto-v4"],
   ]) {
     await page.getByRole("button", { name: nome }).click();
     await expect(page.getByRole("button", { name: nome })).toHaveAttribute("aria-pressed", "true");
     await expect(video).toHaveAttribute("src", `/cursos-hero/${arquivo}.mp4`);
   }
-  expect((await page.request.get("/cursos-hero/misto-v3.mp4")).status()).toBe(200);
+  expect((await page.request.get("/cursos-hero/misto-v4.mp4")).status()).toBe(200);
 });
