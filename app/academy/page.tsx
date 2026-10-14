@@ -47,7 +47,7 @@ export default function Page() {
       {/* Os cursos que a página mostra em "Cursos em destaque" (2026-10-09). */}
       <JsonLd dados={cursosJsonLd("/academy", academy.courses.items.map((c) => ({ nome: c.name, descricao: c.body, horas: c.hours, formato: c.mode })))} />
       <JsonLd dados={faqJsonLd(academy.faq.itens)} />
-      <Nav />
+      <Nav contato="#contato" />
       <main id="conteudo" className="pt-16">
         <AcademyCover />
         {/* O convite em vídeo vem LOGO ABAIXO DA CAPA, a pedido do Rodrigo

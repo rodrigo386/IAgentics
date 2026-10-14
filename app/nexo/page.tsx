@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <>
       <JsonLd dados={faqJsonLd(nexoPage.faq.itens)} />
-      <Nav />
+      <Nav contato="#contato" />
       <main id="conteudo" className="pt-16">
         <NexoCoverOrquestrador />
         <NexoVideoComercial />

@@ -82,3 +82,20 @@ test("o selo Claude Partner está no rodapé e na faixa de parcerias, sem script
   await expect(page.getByRole("list", { name: "Parcerias" }).getByRole("img", { name: /Selo Claude Partner/ })).toBeVisible();
   await expect(page.locator('script[src*="credly"]')).toHaveCount(0);
 });
+
+/* "Vamos conversar" sempre chega a um formulário (revisão de 2026-10-14): era
+   "#contato" fixo no menu, e na /cursos, nos artigos e na privacidade não
+   havia seção com esse id. Para cada página, segue o link e confere que o
+   destino existe. */
+test("o Vamos conversar do menu leva a uma seção de contato em toda página", async ({ page }) => {
+  await page.goto("/artigos");
+  const artigo = await page.locator('main a[href^="/artigos/"]').first().getAttribute("href");
+  const rotas = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/artigos", "/privacidade", artigo!];
+  for (const rota of rotas) {
+    await page.goto(rota);
+    const href = await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Vamos conversar" }).getAttribute("href");
+    const destino = new URL(href!, page.url());
+    await page.goto(destino.toString());
+    await expect(page.locator(destino.hash), `${rota} → ${href}`).toHaveCount(1);
+  }
+});

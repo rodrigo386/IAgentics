@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       <JsonLd dados={organizacaoJsonLd()} />
-      <Nav />
+      <Nav contato="#contato" />
       <main id="conteudo">
         <Hero />
         <Problema />

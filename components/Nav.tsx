@@ -10,8 +10,15 @@ import { nav, cta } from "@/lib/content";
 /**
  * Desktop nav is a single 64px line: lockup, five links, theme control, one CTA.
  * Below lg it collapses to a sheet so nothing ever wraps to a second line.
+ *
+ * `contato`: para onde vai o "Vamos conversar". O padrão é o formulário da
+ * home (/#contato), que serve em qualquer página; as páginas que têm o próprio
+ * <Contact> (home, /nexo, /academy, /spend-lab) passam "#contato". Era
+ * "#contato" fixo, e na /cursos, nos artigos e na privacidade o botão não
+ * levava a lugar nenhum (revisão de 2026-10-14). Decidido por página, no
+ * servidor: descobrir no cliente deixaria o HTML inicial com o link quebrado.
  */
-export function Nav() {
+export function Nav({ contato = "/#contato" }: { contato?: string } = {}) {
   const [open, setOpen] = useState(false);
 
   // Locks background scroll while the mobile sheet is open.
@@ -49,7 +56,7 @@ export function Nav() {
           <ThemeToggle />
 
           <a
-            href="#contato"
+            href={contato}
             className="hidden whitespace-nowrap rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-[background-color,transform] duration-200 hover:bg-accent-hover active:scale-[0.98] sm:inline-block"
           >
             {cta.contact}
@@ -88,7 +95,7 @@ export function Nav() {
           </ul>
           <div className="mx-auto max-w-[1400px] px-5 pb-6 pt-5 sm:px-8">
             <a
-              href="#contato"
+              href={contato}
               onClick={() => setOpen(false)}
               className="block rounded-control bg-accent px-5 py-3 text-center font-medium text-accent-on"
             >

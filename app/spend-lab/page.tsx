@@ -47,7 +47,7 @@ export default function Page() {
   return (
     <>
       <JsonLd dados={faqJsonLd(spendLab.faq.itens)} />
-      <Nav />
+      <Nav contato="#contato" />
       <main id="conteudo" className="pt-16">
         <SpendLabCover />
         <SpendLabPillars />
