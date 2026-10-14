@@ -1675,13 +1675,10 @@ export const cursos = {
   catalogoSolution: {
     titulo: "Cursos na Solution",
     lead: "Alguns dos mais de 70 cursos da plataforma, todos incluídos na assinatura.",
-    /* O Fundamentos (IAgentics) abre a grade, com capa no mesmo formato das do
-       Pecege (remotion/capas/CapaFundamentos.tsx), a pedido do Rodrigo. */
+    /* Só cursos do Pecege (2026-10-14): o Fundamentos saiu daqui porque é da
+       IAgentics (está em "As formações"), e os de Excel saíram a pedido do
+       Rodrigo. */
     itens: [
-      { nome: "Fundamentos de IA para Negócios", src: "/solution/fundamentos-ia-para-negocios.jpg" },
-      { nome: "Excel Intermediário", src: "/solution/excel-intermediario.jpg" },
-      { nome: "Excel Avançado", src: "/solution/excel-avancado.jpg" },
-      { nome: "Excel Básico", src: "/solution/excel-basico.jpg" },
       { nome: "Inteligência Artificial na Prática", src: "/solution/inteligencia-artificial-na-pratica.jpg" },
       { nome: "MS Project Avançado", src: "/solution/ms-project-avancado.jpg" },
       { nome: "Comunicação Estratégica no Trabalho", src: "/solution/comunicacao-estrategica-no-trabalho.jpg" },
@@ -1891,10 +1888,6 @@ export const cursos = {
   /* Desde 2026-10-14 a estante do topo mostra as capas da Solution (a
      assinatura dá acesso à plataforma inteira), não mais as da Academy. */
   capasEstante: [
-    "/solution/fundamentos-ia-para-negocios.jpg",
-    "/solution/excel-intermediario.jpg",
-    "/solution/excel-avancado.jpg",
-    "/solution/excel-basico.jpg",
     "/solution/inteligencia-artificial-na-pratica.jpg",
     "/solution/ms-project-avancado.jpg",
     "/solution/comunicacao-estrategica-no-trabalho.jpg",
@@ -1904,6 +1897,9 @@ export const cursos = {
     "/solution/cultura-organizacional.jpg",
     "/solution/remuneracao-variavel-que-gera-resultado.jpg",
     "/solution/ia-no-atendimento-do-zero-a-escala.jpg",
+    "/solution/sucessao-familiar.jpg",
+    "/solution/power-bi-na-pratica-dashboard-financeiro.jpg",
+    "/solution/tecnicas-de-negociacao.jpg",
   ],
 } as const;
 
