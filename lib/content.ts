@@ -1675,7 +1675,10 @@ export const cursos = {
   catalogoSolution: {
     titulo: "Cursos na Solution",
     lead: "Alguns dos mais de 70 cursos da plataforma, todos incluídos na assinatura.",
+    /* O Fundamentos (IAgentics) abre a grade, com capa no mesmo formato das do
+       Pecege (remotion/capas/CapaFundamentos.tsx), a pedido do Rodrigo. */
     itens: [
+      { nome: "Fundamentos de IA para Negócios", src: "/solution/fundamentos-ia-para-negocios.jpg" },
       { nome: "Excel Intermediário", src: "/solution/excel-intermediario.jpg" },
       { nome: "Excel Avançado", src: "/solution/excel-avancado.jpg" },
       { nome: "Excel Básico", src: "/solution/excel-basico.jpg" },
@@ -1811,16 +1814,17 @@ export const cursos = {
 
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
-    headline: "A Solution inteira por R$ 49,90 por mês",
+    /* Texto do Rodrigo (2026-10-14), com o preço no formato brasileiro. */
+    headline: "A plataforma online de cursos da IAgentics em parceria com o Pecege da USP/Esalq por R$ 49,90 por mês",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
     /* Quebrado em três partes para o nome da plataforma virar link sem
        dangerouslySetInnerHTML: a string continua inteira e revisável aqui, e o
        componente monta o <a> no meio. */
-    subtextAntes: "Assine a ",
+    subtextAntes: "Você estuda na ",
     subtextLink: "Solution",
     subtextDepois:
-      ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq, com as formações de IA aplicada da IAgentics.",
+      ", a plataforma online do Pecege: as formações de IA aplicada da IAgentics e mais de 70 cursos de gestão.",
     urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Pague com cartão, Pix ou boleto, e cancele quando quiser.",
     estanteAlt: "Capas de cursos da plataforma Solution",
@@ -1855,6 +1859,7 @@ export const cursos = {
   /* Desde 2026-10-14 a estante do topo mostra as capas da Solution (a
      assinatura dá acesso à plataforma inteira), não mais as da Academy. */
   capasEstante: [
+    "/solution/fundamentos-ia-para-negocios.jpg",
     "/solution/excel-intermediario.jpg",
     "/solution/excel-avancado.jpg",
     "/solution/excel-basico.jpg",

@@ -146,9 +146,20 @@ test.describe("fluxo completo", () => {
 test("a /cursos mostra os cursos da Solution com capa e nome", async ({ page }) => {
   await page.goto("/cursos");
   const sec = page.getByRole("region", { name: "Cursos na Solution" });
-  await expect(sec.getByRole("listitem")).toHaveCount(18);
+  await expect(sec.getByRole("listitem")).toHaveCount(19);
+  // O Fundamentos (IAgentics) abre a grade, junto das capas do Pecege.
+  await expect(sec.getByRole("listitem").first()).toContainText("Fundamentos de IA para Negócios");
   await expect(sec).toContainText("Inteligência Artificial na Prática");
   const src = await sec.locator("img").first().getAttribute("src");
   expect(src).toContain("solution");
   expect(src).not.toContain("blob.core.windows.net");
+});
+
+/* Ordem pedida pelo Rodrigo (2026-10-14): formações da IAgentics antes dos
+   cursos do Pecege. */
+test("as formações da IAgentics vêm antes dos cursos da Solution", async ({ page }) => {
+  await page.goto("/cursos");
+  const formacoes = await page.getByRole("heading", { name: "As formações", level: 2 }).boundingBox();
+  const solution = await page.getByRole("heading", { name: "Cursos na Solution", level: 2 }).boundingBox();
+  expect(formacoes!.y).toBeLessThan(solution!.y);
 });

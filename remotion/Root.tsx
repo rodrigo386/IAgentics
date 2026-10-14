@@ -6,6 +6,7 @@ import { FilmeSpendNf } from "./nexo-nf/FilmeSpendNf";
 import { FilmeLogistico } from "./nexo-logistico/FilmeLogistico";
 import { FilmeVarejo } from "./nexo-varejo/FilmeVarejo";
 import { FilmeOrcamento } from "./nexo-orcamento/FilmeOrcamento";
+import { CapaFundamentos } from "./capas/CapaFundamentos";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
 import { DURACAO as DURACAO_NF } from "./nexo-kit/cues";
 import "./style.css";
@@ -87,6 +88,9 @@ export function RemotionRoot() {
       <Composition id="solucao-nexo" component={FilmeSolucaoNexo} durationInFrames={DURACAO_SOLUCAO * 60} fps={60} width={1440} height={1080} />
       <Composition id="solucao-academy" component={FilmeSolucaoAcademy} durationInFrames={DURACAO_SOLUCAO * 60} fps={60} width={1440} height={1080} />
       <Composition id="solucao-spend-lab" component={FilmeSolucaoSpendLab} durationInFrames={DURACAO_SOLUCAO * 60} fps={60} width={1440} height={1080} />
+
+      {/* Capa 600×900 do Fundamentos para a /cursos, no formato das capas da Solution (2026-10-14). */}
+      <Composition id="capa-fundamentos" component={CapaFundamentos} durationInFrames={1} fps={30} width={600} height={900} />
     </>
   );
 }

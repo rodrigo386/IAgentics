@@ -64,7 +64,7 @@ export function CursosEstante() {
           </div>
 
           <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.24em] text-fg-muted">{t.hero.eyebrow}</p>
-          <h1 className="mt-4 max-w-[20ch] text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-[24ch] text-3xl font-medium leading-[1.08] tracking-[-0.03em] text-fg [text-wrap:balance] sm:text-4xl lg:text-5xl">
             {t.hero.headline}
           </h1>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-fg-muted">

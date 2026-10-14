@@ -55,8 +55,10 @@ export default function PaginaCursos() {
       <main id="conteudo" className="pt-16">
         <CursosEstante />
         <CursosComoFunciona />
-        <CursosSolution />
+        {/* As formações da IAgentics vêm antes dos cursos do Pecege (pedido do
+            Rodrigo, 2026-10-14). */}
         <CursosFormacoes />
+        <CursosSolution />
         <CursosAssinar />
         <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
       </main>
