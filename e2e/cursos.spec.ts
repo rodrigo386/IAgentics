@@ -50,12 +50,15 @@ test("as rotas da plataforma desligada não respondem mais", async ({ page }) =>
 });
 
 /* /cursos lista as formações (Prompt 4 de SEO, 2026-10-09): só o que está
-   preenchido aparece, e Course no JSON-LD só para formação com descrição. */
-test("a /cursos lista as formações e anuncia só o curso que descreve", async ({ page }) => {
+   preenchido aparece, e Course no JSON-LD só para formação com descrição.
+   Desde 2026-10-14 nenhuma tem descrição na página (pedido do Rodrigo), então
+   não há Course nenhum. */
+test("a /cursos lista as formações e só anuncia curso que descreve", async ({ page }) => {
   await page.goto("/cursos");
   const sec = page.getByRole("region", { name: "As formações IAgentics" });
   await expect(sec.getByRole("heading", { level: 3 })).toHaveText(["Fundamentos de IA para Negócios", "Marketing com IA"]);
-  await expect(sec).toContainText("8 horas");
-  const lista = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "ItemList");
-  expect(lista.itemListElement.map((i: { item: { name: string } }) => i.item.name)).toEqual(["Fundamentos de IA para Negócios"]);
+  await expect(sec).not.toContainText("Carga horária");
+  await expect(sec).not.toContainText("Base sólida");
+  const blocos = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j));
+  expect(blocos.some((b) => b["@type"] === "ItemList")).toBe(false);
 });

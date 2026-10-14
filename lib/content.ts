@@ -1677,8 +1677,7 @@ export const cursos = {
    *  que leitor de tela e buscador alcançam. Os nomes das linhas foram
    *  sugeridos pelo Rodrigo. */
   vitrine: {
-    titulo: "Cursos na Solution",
-    lead: "Cursos do Pecege e formações da IAgentics, todos incluídos na assinatura. Os marcados como em breve entram na plataforma assim que ficarem prontos.",
+    titulo: "Trilhas de Conhecimento",
     emBreve: "Em breve",
     anteriores: "Ver cursos anteriores",
     proximos: "Ver próximos cursos",
@@ -1859,9 +1858,11 @@ export const cursos = {
         /** Banner com o professor (2026-10-14): o quadro do vídeo-convite. */
         foto: "/academy/academy-convite-poster.jpg",
         enquadre: "50% 18%",
-        descricao: "Base sólida em Inteligência Artificial com foco em aplicações reais no mundo corporativo.",
-        cargaHoraria: "8 horas",
-        formato: "Online, no seu ritmo",
+        /* Descrição, carga horária e formato saíram da página a pedido do
+           Rodrigo (2026-10-14); com eles saiu o Course do JSON-LD. */
+        descricao: undefined as string | undefined,
+        cargaHoraria: undefined as string | undefined,
+        formato: undefined as string | undefined,
         publico: undefined as string | undefined,
         ementa: [] as string[],
       },

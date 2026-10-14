@@ -21,12 +21,11 @@ const t = cursos.vitrine;
 
 export function CursosVitrine() {
   return (
-    <section aria-labelledby="cursos-solution" className="border-t border-line py-20 sm:py-24">
+    <section aria-labelledby="trilhas" className="border-t border-line py-20 sm:py-24">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
-        <h2 id="cursos-solution" className="text-3xl font-medium tracking-[-0.02em] text-fg sm:text-4xl">
+        <h2 id="trilhas" className="text-3xl font-medium tracking-[-0.02em] text-fg sm:text-4xl">
           {t.titulo}
         </h2>
-        <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-fg-muted">{t.lead}</p>
         <div className="mt-12 space-y-12">
           {t.linhas.map((linha, n) => (
             <LinhaVitrine

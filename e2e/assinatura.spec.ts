@@ -38,15 +38,15 @@ async function estado(request: APIRequestContext) {
   return (await request.get(`${ASAAS_FALSO}/__estado`)).json();
 }
 
-test("a /cursos vende a assinatura: preço, CTA, formulário e oferta no JSON-LD", async ({ page }) => {
+test("a /cursos vende a assinatura: preço, CTA e formulário", async ({ page }) => {
   await page.goto("/cursos");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("R$ 49,90 por mês");
   await expect(page.getByRole("link", { name: "Assinar por R$ 49,90/mês" })).toHaveAttribute("href", "#assinar");
   await expect(page.getByRole("button", { name: "Ir para o pagamento" })).toBeVisible();
   await expect(page.getByText("Entre na lista de espera")).toHaveCount(0);
   const blocos = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j));
-  const lista = blocos.find((b) => b["@type"] === "ItemList");
-  expect(lista.itemListElement[0].item.offers.price).toBe("49.90");
+  // Sem formação descrita na página, não há Course (nem a oferta dele) no JSON-LD.
+  expect(blocos.some((b) => b["@type"] === "ItemList")).toBe(false);
   expect(blocos.some((b) => b["@type"] === "FAQPage")).toBe(true);
 });
 
@@ -141,13 +141,13 @@ test.describe("fluxo completo", () => {
   });
 });
 
-/* A vitrine dos cursos da Solution (2026-10-14, pedido do Rodrigo): sete
+/* A vitrine "Trilhas de Conhecimento" (2026-10-14, pedido do Rodrigo): sete
    trilhas em linhas horizontais, 28 cursos publicados e 18 em breve, todos
    com capa servida do nosso domínio (as em breve e a do Marketing com IA,
    geradas no Remotion). */
 test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   await page.goto("/cursos");
-  const sec = page.getByRole("region", { name: "Cursos na Solution" });
+  const sec = page.getByRole("region", { name: "Trilhas de Conhecimento" });
   await expect(sec.getByRole("heading", { level: 3 })).toHaveText([
     "IA, Dados & Tecnologia",
     "AI First",
@@ -186,6 +186,6 @@ test("as setas da vitrine andam pela trilha", async ({ page }) => {
 test("as formações da IAgentics vêm antes dos cursos da Solution", async ({ page }) => {
   await page.goto("/cursos");
   const formacoes = await page.getByRole("heading", { name: "As formações IAgentics", level: 2 }).boundingBox();
-  const solution = await page.getByRole("heading", { name: "Cursos na Solution", level: 2 }).boundingBox();
+  const solution = await page.getByRole("heading", { name: "Trilhas de Conhecimento", level: 2 }).boundingBox();
   expect(formacoes!.y).toBeLessThan(solution!.y);
 });

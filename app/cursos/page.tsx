@@ -38,18 +38,23 @@ export const metadata: Metadata = {
  * que foi removido em 2026-08-28 por anunciar curso fora da página. Agora o
  * curso anunciado é o curso mostrado.
  */
+const formacoesDescritas = t.formacoes.itens.flatMap((f) =>
+  f.descricao ? [{ nome: f.nome, descricao: f.descricao, horas: f.cargaHoraria, formato: f.formato }] : [],
+);
+
 export default function PaginaCursos() {
   return (
     <>
-      <JsonLd
-        dados={cursosJsonLd(
-          "/cursos",
-          t.formacoes.itens
-            .filter((f) => f.descricao)
-            .map((f) => ({ nome: f.nome, descricao: f.descricao!, horas: f.cargaHoraria, formato: f.formato })),
-          { preco: (VALOR_ASSINATURA_CENTAVOS / 100).toFixed(2), categoria: "Subscription" },
-        )}
-      />
+      {/* Course só para formação com descrição NA PÁGINA. Desde 2026-10-14 nenhuma
+          tem (o Rodrigo tirou a do Fundamentos), e lista vazia não se anuncia. */}
+      {formacoesDescritas.length > 0 ? (
+        <JsonLd
+          dados={cursosJsonLd("/cursos", formacoesDescritas, {
+            preco: (VALOR_ASSINATURA_CENTAVOS / 100).toFixed(2),
+            categoria: "Subscription",
+          })}
+        />
+      ) : null}
       <JsonLd dados={faqJsonLd(t.assinatura.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
