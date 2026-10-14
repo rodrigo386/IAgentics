@@ -15,7 +15,7 @@ test("/cursos abre com as três marcas e a assinatura, sem resto da plataforma a
 
   /* Desde 2026-10-14 a página vende a assinatura da Solution (o "em breve"
      saiu); o preço e o formulário são cobertos por e2e/assinatura.spec.ts. */
-  await expect(page.getByRole("heading", { level: 1, name: /IAgentics em parceria com o Pecege/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /IA aplicada aos negócios/ })).toBeVisible();
   /* Ancorado no <main>: o lockup da IAgentics aparece também no Nav e no
      rodapé, então contar ocorrências na página inteira seria frágil — quebraria
      a cada mudança de layout sem que a hero tivesse problema nenhum. O que

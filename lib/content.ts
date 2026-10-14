@@ -1822,19 +1822,20 @@ export const cursos = {
 
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
-    /* Texto do Rodrigo (2026-10-14), com o preço no formato brasileiro. */
-    headline: "A plataforma online de cursos da IAgentics em parceria com o Pecege da USP/Esalq por R$ 49,90 por mês",
+    /* Opção 1 escolhida pelo Rodrigo (2026-10-14): o benefício no título, a
+       parceria e a USP/Esalq no texto de apoio. */
+    headline: "Aprenda IA aplicada aos negócios por R$ 49,90 por mês",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
     /* Quebrado em três partes para o nome da plataforma virar link sem
        dangerouslySetInnerHTML: a string continua inteira e revisável aqui, e o
        componente monta o <a> no meio. */
-    subtextAntes: "Você estuda na ",
+    subtextAntes: "As formações da IAgentics e mais de 70 cursos de gestão na ",
     subtextLink: "Solution",
     subtextDepois:
-      ", a plataforma online do Pecege: as formações de IA aplicada da IAgentics e mais de 70 cursos de gestão.",
+      ", a plataforma online do Pecege, parceiro da USP/Esalq.",
     urlSolution: "https://plataformasolution.com.br/",
-    subtextDois: "Pague com cartão, Pix ou boleto, e cancele quando quiser.",
+    subtextDois: "Cartão, Pix ou boleto. Cancele quando quiser.",
     estanteAlt: "Capas de cursos da plataforma Solution",
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
