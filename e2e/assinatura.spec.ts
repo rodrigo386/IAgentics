@@ -141,20 +141,41 @@ test.describe("fluxo completo", () => {
   });
 });
 
-/* As capas dos cursos da Solution (2026-10-14), tiradas da página pública da
-   plataforma e servidas do nosso domínio. */
-test("a /cursos mostra os cursos da Solution com capa e nome", async ({ page }) => {
+/* A vitrine dos cursos da Solution (2026-10-14, pedido do Rodrigo): sete
+   trilhas em linhas horizontais, 27 cursos publicados com capa e 18 em breve
+   em card cinza, servidos do nosso domínio. */
+test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   await page.goto("/cursos");
   const sec = page.getByRole("region", { name: "Cursos na Solution" });
-  await expect(sec.getByRole("listitem")).toHaveCount(15);
-  // Só cursos do Pecege: o Fundamentos é da IAgentics (fica em "As formações")
-  // e os de Excel saíram a pedido do Rodrigo (2026-10-14).
-  await expect(sec).not.toContainText("Fundamentos de IA para Negócios");
+  await expect(sec.getByRole("heading", { level: 3 })).toHaveText([
+    "IA, Dados & Tecnologia",
+    "AI First",
+    "Estratégia, Inovação & Projetos",
+    "Comunicação & Comportamento",
+    "Negociação & Relacionamento",
+    "Liderança & Gestão",
+    "Compras, Vendas & Supply 4.0",
+  ]);
+  await expect(sec.getByRole("listitem")).toHaveCount(45);
+  await expect(sec.locator("img")).toHaveCount(27);
+  await expect(sec.getByText("Em breve", { exact: true })).toHaveCount(18);
+  // O nome e o professor de cada capa chegam como texto pelo alt.
+  await expect(sec.getByRole("img", { name: "Fundamentos de IA para Negócios, Prof. Vinícius Ferreira" })).toBeVisible();
+  await expect(sec.getByRole("img", { name: "Inovação, Prof. Léo Recondo" })).toBeAttached();
   await expect(sec).not.toContainText("Excel");
-  await expect(sec).toContainText("Inteligência Artificial na Prática");
   const src = await sec.locator("img").first().getAttribute("src");
-  expect(src).toContain("solution");
-  expect(src).not.toContain("blob.core.windows.net");
+  expect(src).toContain("vitrine");
+});
+
+test("as setas da vitrine andam pela trilha", async ({ page }) => {
+  await page.goto("/cursos");
+  const anteriores = page.getByRole("button", { name: "Ver cursos anteriores: IA, Dados & Tecnologia" });
+  const proximos = page.getByRole("button", { name: "Ver próximos cursos: IA, Dados & Tecnologia" });
+  const lista = page.getByRole("list", { name: "IA, Dados & Tecnologia" });
+  await expect(anteriores).toBeDisabled();
+  await proximos.click();
+  await expect.poll(() => lista.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
+  await expect(anteriores).toBeEnabled();
 });
 
 /* Ordem pedida pelo Rodrigo (2026-10-14): formações da IAgentics antes dos

@@ -111,7 +111,7 @@ export function CursosEstante() {
                     coluna.map((capa) => (
                       <div
                         key={`${copia}-${capa}`}
-                        className="relative aspect-[2/3] w-full shrink-0 overflow-hidden border border-line bg-surface"
+                        className="relative aspect-[306/466] w-full shrink-0 overflow-hidden rounded-[10px] bg-brand-ink"
                       >
                         <Image
                           src={capa}

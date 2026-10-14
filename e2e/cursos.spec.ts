@@ -54,16 +54,8 @@ test("as rotas da plataforma desligada não respondem mais", async ({ page }) =>
 test("a /cursos lista as formações e anuncia só o curso que descreve", async ({ page }) => {
   await page.goto("/cursos");
   const sec = page.getByRole("region", { name: "As formações IAgentics" });
-  await expect(sec.getByRole("heading", { level: 3 })).toHaveText(["Fundamentos de IA para Negócios", "Marketing com IA", "Mais formações"]);
+  await expect(sec.getByRole("heading", { level: 3 })).toHaveText(["Fundamentos de IA para Negócios", "Marketing com IA"]);
   await expect(sec).toContainText("8 horas");
   const lista = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "ItemList");
   expect(lista.itemListElement.map((i: { item: { name: string } }) => i.item.name)).toEqual(["Fundamentos de IA para Negócios"]);
-});
-
-/* As demais formações da IAgentics, com capa gerada (2026-10-14). */
-test("as formações da IAgentics trazem as 13 capas a mais", async ({ page }) => {
-  await page.goto("/cursos");
-  const sec = page.getByRole("region", { name: "As formações IAgentics" });
-  await expect(sec.getByText("Strategic Sourcing 4.0")).toBeVisible();
-  await expect(sec.locator('img[src*="formacoes"]')).toHaveCount(13);
 });

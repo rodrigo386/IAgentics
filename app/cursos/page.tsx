@@ -3,7 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CursosEstante } from "@/components/sections/cursos/Estante";
 import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
-import { CursosSolution } from "@/components/sections/cursos/CursosSolution";
+import { CursosVitrine } from "@/components/sections/cursos/Vitrine";
 import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -58,7 +58,7 @@ export default function PaginaCursos() {
         {/* As formações da IAgentics vêm antes dos cursos do Pecege (pedido do
             Rodrigo, 2026-10-14). */}
         <CursosFormacoes />
-        <CursosSolution />
+        <CursosVitrine />
         <CursosAssinar />
         <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
       </main>

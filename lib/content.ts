@@ -1667,33 +1667,102 @@ export const cursos = {
     descricao:
       "Assine a Solution, a plataforma de educação online do Pecege, com as formações de IA da IAgentics. R$ 49,90 por mês, cancele quando quiser.",
   },
-  /** Os cursos da plataforma Solution (2026-10-14, pedido do Rodrigo: "use os
-   *  banners dos cursos do Pecege"). Capas e nomes tirados da página PÚBLICA
-   *  plataformasolution.com.br/cursos, baixadas para public/solution/ (600×900,
-   *  JPEG) para não depender do servidor deles. Curso novo lá não aparece aqui
-   *  sozinho: é refazer a extração. */
-  catalogoSolution: {
+  /** A vitrine dos cursos da plataforma Solution, no estilo streaming
+   *  (2026-10-14, pedido do Rodrigo, aba "Estrutura Plataforma" do cursos.xlsx
+   *  dele): uma linha por trilha, na ordem da planilha. Curso com `capa` está
+   *  publicado; sem `capa`, está em breve e vira card cinza só com o nome.
+   *  As capas são os prints da plataforma que vieram na planilha, recortados
+   *  da moldura da tela (306×466) e servidos de public/vitrine/. O título e
+   *  o professor já estão desenhados na capa; `nome` e `professor` aqui são o
+   *  que leitor de tela e buscador alcançam. Os nomes das linhas foram
+   *  sugeridos pelo Rodrigo. */
+  vitrine: {
     titulo: "Cursos na Solution",
-    lead: "Alguns dos mais de 70 cursos da plataforma, todos incluídos na assinatura.",
-    /* Só cursos do Pecege (2026-10-14): o Fundamentos saiu daqui porque é da
-       IAgentics (está em "As formações"), e os de Excel saíram a pedido do
-       Rodrigo. */
-    itens: [
-      { nome: "Inteligência Artificial na Prática", src: "/solution/inteligencia-artificial-na-pratica.jpg" },
-      { nome: "MS Project Avançado", src: "/solution/ms-project-avancado.jpg" },
-      { nome: "Comunicação Estratégica no Trabalho", src: "/solution/comunicacao-estrategica-no-trabalho.jpg" },
-      { nome: "Liderança geracional", src: "/solution/lideranca-geracional.jpg" },
-      { nome: "Indicadores Estratégicos para Gestão de Pessoas", src: "/solution/indicadores-estrategicos-para-gestao-de-pessoas.jpg" },
-      { nome: "Cultura Organizacional: Práticas e Estratégias para Construir Comunidades", src: "/solution/cultura-organizacional-praticas-e-estrategias-para-construir.jpg" },
-      { nome: "Cultura Organizacional", src: "/solution/cultura-organizacional.jpg" },
-      { nome: "Remuneração variável que gera resultado", src: "/solution/remuneracao-variavel-que-gera-resultado.jpg" },
-      { nome: "IA no Atendimento: do Zero à Escala", src: "/solution/ia-no-atendimento-do-zero-a-escala.jpg" },
-      { nome: "Sucessão familiar", src: "/solution/sucessao-familiar.jpg" },
-      { nome: "Power BI na Prática: Dashboard Financeiro", src: "/solution/power-bi-na-pratica-dashboard-financeiro.jpg" },
-      { nome: "Técnicas de negociação", src: "/solution/tecnicas-de-negociacao.jpg" },
-      { nome: "MS Project Intermediário", src: "/solution/ms-project-intermediario.jpg" },
-      { nome: "Comunicação e Oratória", src: "/solution/comunicacao-e-oratoria.jpg" },
-      { nome: "Estratégia de Negociação", src: "/solution/estrategia-de-negociacao.jpg" },
+    lead: "Cursos do Pecege e formações da IAgentics, todos incluídos na assinatura. Os marcados como em breve entram na plataforma assim que ficarem prontos.",
+    emBreve: "Em breve",
+    anteriores: "Ver cursos anteriores",
+    proximos: "Ver próximos cursos",
+    linhas: [
+      {
+        titulo: "IA, Dados & Tecnologia",
+        cursos: [
+          { nome: "Fundamentos de IA para Negócios", professor: "Prof. Vinícius Ferreira", capa: "/vitrine/fundamentos-de-ia-para-negocios.jpg" },
+          { nome: "IA no Atendimento: do Zero à Escala", professor: "Prof. Alexandre Garcia", capa: "/vitrine/ia-no-atendimento.jpg" },
+          { nome: "Data Visualization", professor: "Prof. Fabiano Castello", capa: "/vitrine/data-visualization.jpg" },
+          { nome: "Trabalhando com Dados: Big Data e I.A. Aplicada", professor: "Prof. Fabiano Castello", capa: "/vitrine/big-data-e-ia-aplicada.jpg" },
+          { nome: "Transformação Digital", professor: "Prof. Rafael Terra", capa: "/vitrine/transformacao-digital.jpg" },
+          { nome: "LGPD: Lei Geral de Proteção de Dados", professor: "Prof. Gustavo Galegale", capa: "/vitrine/lgpd.jpg" },
+          { nome: "Power BI na Prática", professor: "Prof. Lucas Moreira Rocha", capa: "/vitrine/power-bi-na-pratica.jpg" },
+          { nome: "Análise de Dados com IA aplicada" },
+          { nome: "Change Management" },
+        ],
+      },
+      {
+        titulo: "AI First",
+        cursos: [
+          { nome: "Roadmap AI First" },
+          { nome: "Spend Management & Ativos" },
+          { nome: "Copilot aplicado ao Microsoft 365" },
+          { nome: "Skill para Negócios: Vendas, Compras e Supply" },
+          { nome: "Lean aplicado à IA" },
+          { nome: "Liderança AI First" },
+          { nome: "Gestão de Compras e Fornecedores com IA" },
+        ],
+      },
+      {
+        titulo: "Estratégia, Inovação & Projetos",
+        cursos: [
+          { nome: "Design Thinking", professor: "Prof. Edson Barbero", capa: "/vitrine/design-thinking.jpg" },
+          { nome: "Inteligência de Mercado", professor: "Prof. Edson Barbero", capa: "/vitrine/inteligencia-de-mercado.jpg" },
+          { nome: "Pesquisa de Marketing", professor: "Prof. José Hernandez", capa: "/vitrine/pesquisa-de-marketing.jpg" },
+          { nome: "Inovação", professor: "Prof. Léo Recondo", capa: "/vitrine/inovacao.jpg" },
+          { nome: "OKR: Direcionando seu Negócio para Resultados", professor: "Prof. Gino Terentim", capa: "/vitrine/okr.jpg" },
+          { nome: "Métodos Ágeis", professor: "Prof. André Ricardi", capa: "/vitrine/metodos-ageis.jpg" },
+          { nome: "Gestão de Projetos & IA", professor: "Prof. André Ricardi", capa: "/vitrine/gestao-de-projetos-e-ia.jpg" },
+        ],
+      },
+      {
+        titulo: "Comunicação & Comportamento",
+        cursos: [
+          { nome: "Comunicação e Oratória", professor: "Parceria com Clube-Fala", capa: "/vitrine/comunicacao-e-oratoria.jpg" },
+          { nome: "Comunicação Não-Violenta", professor: "Prof. Tatiana Vial", capa: "/vitrine/comunicacao-nao-violenta.jpg" },
+          { nome: "Inteligência Emocional", professor: "Prof. Andrea Ribeiro Gomes", capa: "/vitrine/inteligencia-emocional.jpg" },
+          { nome: "Pitch de Vendas", professor: "Parceria com Clube-Fala", capa: "/vitrine/pitch-de-vendas.jpg" },
+          { nome: "Técnicas de Apresentação", professor: "Parceria com Clube-Fala", capa: "/vitrine/tecnicas-de-apresentacao.jpg" },
+          { nome: "Storytelling e suas Aplicações", professor: "Prof. Max Pompilio", capa: "/vitrine/storytelling.jpg" },
+        ],
+      },
+      {
+        titulo: "Negociação & Relacionamento",
+        cursos: [
+          { nome: "Estratégias de Negociação", professor: "Prof. Marcelo Ramalho", capa: "/vitrine/estrategias-de-negociacao.jpg" },
+          { nome: "Feedback & Comunicação", professor: "Prof. Tatiana Vial", capa: "/vitrine/feedback-e-comunicacao.jpg" },
+          { nome: "Gestão de Conflitos", professor: "Prof. Tatiana Vial", capa: "/vitrine/gestao-de-conflitos.jpg" },
+        ],
+      },
+      {
+        titulo: "Liderança & Gestão",
+        cursos: [
+          { nome: "Pensamento Estratégico", professor: "Prof. Edson Barbero", capa: "/vitrine/pensamento-estrategico.jpg" },
+          { nome: "Balanced Scorecard", professor: "Prof. Haroldo José Torres da Silva", capa: "/vitrine/balanced-scorecard.jpg" },
+          { nome: "Comportamento Organizacional", professor: "Prof. Denise Moura", capa: "/vitrine/comportamento-organizacional.jpg" },
+          { nome: "Liderança & Líder Coach", professor: "Prof. Denise Moura", capa: "/vitrine/lideranca-e-lider-coach.jpg" },
+        ],
+      },
+      {
+        titulo: "Compras, Vendas & Supply 4.0",
+        cursos: [
+          { nome: "Strategic Sourcing 4.0" },
+          { nome: "Vendas Consultivas 4.0" },
+          { nome: "Pipeline 4.0" },
+          { nome: "Fundamentos de Compras" },
+          { nome: "Fundamentos de Vendas" },
+          { nome: "Fundamentos de Supply Chain" },
+          { nome: "Gestão de Estoque 4.0" },
+          { nome: "Network Design Inteligente" },
+          { nome: "Agentes S&OP" },
+        ],
+      },
     ],
   },
   /** A assinatura: oferta, como funciona, formulário, autorização, perguntas
@@ -1781,29 +1850,6 @@ export const cursos = {
        nome do título para leitor de tela e buscador. */
     titulo: "As formações",
     marca: "IAgentics",
-    /** As demais formações da IAgentics (2026-10-14, da planilha do Rodrigo),
-     *  ainda sem foto de professor: capa gerada no padrão (Remotion,
-     *  `capa-curso`, título e área via --props), em public/formacoes/. Ficaram
-     *  de fora "Spend Management & Alianças" e "Skill para Negócios: Vendas,
-     *  Compras e Supply", cujos nomes o Rodrigo pediu para desconsiderar. */
-    mais: {
-      titulo: "Mais formações",
-      itens: [
-        { nome: "Análise de Dados com IA aplicada", area: "Dados", src: "/formacoes/analise-de-dados-com-ia-aplicada.jpg" },
-        { nome: "Change Management", area: "Gestão", src: "/formacoes/change-management.jpg" },
-        { nome: "Roadmap AI First", area: "Estratégia", src: "/formacoes/roadmap-ai-first.jpg" },
-        { nome: "Copilot aplicado ao Microsoft 365", area: "Produtividade", src: "/formacoes/copilot-aplicado-ao-microsoft-365.jpg" },
-        { nome: "Lean aplicado à IA", area: "Processos", src: "/formacoes/lean-aplicado-a-ia.jpg" },
-        { nome: "Liderança AI First", area: "Liderança", src: "/formacoes/lideranca-ai-first.jpg" },
-        { nome: "Gestão de Compras e Fornecedores com IA", area: "Compras", src: "/formacoes/gestao-de-compras-e-fornecedores-com-ia.jpg" },
-        { nome: "Strategic Sourcing 4.0", area: "Compras", src: "/formacoes/strategic-sourcing-4-0.jpg" },
-        { nome: "Vendas Consultivas 4.0", area: "Vendas", src: "/formacoes/vendas-consultivas-4-0.jpg" },
-        { nome: "Pipeline 4.0", area: "Vendas", src: "/formacoes/pipeline-4-0.jpg" },
-        { nome: "Fundamentos de Compras", area: "Compras", src: "/formacoes/fundamentos-de-compras.jpg" },
-        { nome: "Fundamentos de Vendas", area: "Vendas", src: "/formacoes/fundamentos-de-vendas.jpg" },
-        { nome: "Fundamentos de Supply Chain", area: "Supply Chain", src: "/formacoes/fundamentos-de-supply-chain.jpg" },
-      ],
-    },
     rotulos: { cargaHoraria: "Carga horária", formato: "Formato", publico: "Para quem", ementa: "Ementa", com: "Com" },
     itens: [
       {
@@ -1886,20 +1932,21 @@ export const cursos = {
   /* Estática desde o desligamento da plataforma: a estante é decorativa
      (aria-hidden) e não vale manter uma consulta ao banco viva só por ela. */
   /* Desde 2026-10-14 a estante do topo mostra as capas da Solution (a
-     assinatura dá acesso à plataforma inteira), não mais as da Academy. */
+     assinatura dá acesso à plataforma inteira), não mais as da Academy: as
+     mesmas da vitrine (public/vitrine/), misturando as trilhas. */
   capasEstante: [
-    "/solution/inteligencia-artificial-na-pratica.jpg",
-    "/solution/ms-project-avancado.jpg",
-    "/solution/comunicacao-estrategica-no-trabalho.jpg",
-    "/solution/lideranca-geracional.jpg",
-    "/solution/indicadores-estrategicos-para-gestao-de-pessoas.jpg",
-    "/solution/cultura-organizacional-praticas-e-estrategias-para-construir.jpg",
-    "/solution/cultura-organizacional.jpg",
-    "/solution/remuneracao-variavel-que-gera-resultado.jpg",
-    "/solution/ia-no-atendimento-do-zero-a-escala.jpg",
-    "/solution/sucessao-familiar.jpg",
-    "/solution/power-bi-na-pratica-dashboard-financeiro.jpg",
-    "/solution/tecnicas-de-negociacao.jpg",
+    "/vitrine/fundamentos-de-ia-para-negocios.jpg",
+    "/vitrine/power-bi-na-pratica.jpg",
+    "/vitrine/design-thinking.jpg",
+    "/vitrine/comunicacao-e-oratoria.jpg",
+    "/vitrine/estrategias-de-negociacao.jpg",
+    "/vitrine/lideranca-e-lider-coach.jpg",
+    "/vitrine/big-data-e-ia-aplicada.jpg",
+    "/vitrine/okr.jpg",
+    "/vitrine/inteligencia-emocional.jpg",
+    "/vitrine/pensamento-estrategico.jpg",
+    "/vitrine/ia-no-atendimento.jpg",
+    "/vitrine/storytelling.jpg",
   ],
 } as const;
 
