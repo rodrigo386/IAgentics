@@ -5,7 +5,7 @@ import { cursos } from "@/lib/content";
 import { FilmeHero } from "./FilmeHero";
 
 /**
- * Só da prévia /preview/cursos (2026-10-14): os três conceitos de filme no
+ * Só da prévia /preview/cursos (2026-10-14): os conceitos de filme no
  * lugar da estante, com um seletor em cima para o Rodrigo comparar. Aprovado
  * um, a hero oficial recebe o FilmeHero direto e isto some com a prévia.
  */
@@ -35,8 +35,8 @@ export function PreviaFilmes() {
       <div className="mt-5">
         <FilmeHero
           key={id}
-          src={`/cursos-hero/${id}-v1.mp4`}
-          poster={`/cursos-hero/${id}-v1.jpg`}
+          src={atual.video}
+          poster={atual.poster}
           rotulos={{ pausar: t.pausar, continuar: t.continuar }}
         />
       </div>

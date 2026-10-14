@@ -65,14 +65,19 @@ test("a /cursos lista as formações e só anuncia curso que descreve", async ({
 
 /* Prévia dos filmes da hero (2026-10-14): escondida dos buscadores, e cada
    conceito troca o vídeo no lugar da estante. */
-test("a prévia dos filmes da hero alterna os três conceitos e não é indexada", async ({ page }) => {
+test("a prévia dos filmes da hero alterna os quatro conceitos e não é indexada", async ({ page }) => {
   await page.goto("/preview/cursos");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   const video = page.locator("video");
-  for (const [nome, id] of [["1. Tudo numa assinatura", "tudo"], ["2. Da capa à aula", "capa-aula"], ["3. Cabe no seu dia", "rotina"]]) {
+  for (const [nome, arquivo] of [
+    ["1. Tudo numa assinatura", "tudo-v2"],
+    ["2. Da capa à aula", "capa-aula-v1"],
+    ["3. Cabe no seu dia", "rotina-v1"],
+    ["4. Da aula ao tudo (1+2)", "misto-v1"],
+  ]) {
     await page.getByRole("button", { name: nome }).click();
     await expect(page.getByRole("button", { name: nome })).toHaveAttribute("aria-pressed", "true");
-    await expect(video).toHaveAttribute("src", `/cursos-hero/${id}-v1.mp4`);
+    await expect(video).toHaveAttribute("src", `/cursos-hero/${arquivo}.mp4`);
   }
-  expect((await page.request.get("/cursos-hero/rotina-v1.mp4")).status()).toBe(200);
+  expect((await page.request.get("/cursos-hero/misto-v1.mp4")).status()).toBe(200);
 });

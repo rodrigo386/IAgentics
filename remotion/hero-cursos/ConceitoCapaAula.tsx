@@ -18,16 +18,16 @@ const PLAYER_L = 960;
 const PLAYER_A = (PLAYER_L * 9) / 16;
 const PLAYER_Y = 300;
 
-type Aula = { capa: string; foto: string; enquadre: string; nome: string; professor: string; ini: number };
+export type Aula = { capa: string; foto: string; enquadre: string; nome: string; professor: string; ini: number };
 const fund = curso("Fundamentos de IA");
 const mkt = curso("Marketing com IA");
-const AULAS: Aula[] = [
+export const AULAS: Aula[] = [
   { capa: fund.capa, foto: "/academy/academy-convite-poster.jpg", enquadre: "50% 20%", nome: fund.nome, professor: "professor" in fund ? fund.professor : "", ini: 0.3 },
   { capa: mkt.capa, foto: "/academy/marketing-com-ia-capa.jpg", enquadre: "50% 22%", nome: mkt.nome, professor: "professor" in mkt ? mkt.professor : "", ini: 4.4 },
 ];
 
 /** Uma aula: capa → player → barra enche → achata em linha. Depois de `ini`. */
-function AulaEmCena({ t, a, ultima }: { t: number; a: Aula; ultima: boolean }) {
+export function AulaEmCena({ t, a, ultima }: { t: number; a: Aula; ultima: boolean }) {
   const r = t - a.ini;
   if (r < 0 || r > 4.6) return null;
   // A primeira capa nasce do papel; a segunda nasce da linha da anterior.
