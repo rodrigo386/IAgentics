@@ -3,12 +3,11 @@ titulo: "Saving em Compras: como calcular e apresentar para o CFO reconhecer no 
 tituloSeo: "Saving em compras: como calcular e provar ao CFO | IAgentics"
 descricao: "Saving em compras para o CFO: como escolher o baseline, separar saving de cost avoidance e reportar o realizado que a controladoria valida."
 slug: "saving-em-compras-para-o-cfo"
-data: 2026-10-09
+data: 2026-10-14
 autor: "Rodrigo Costa"
 categoria: "ROI e business case"
 produto: "spend-lab"
-status: "agendado"
-publicarEm: 2026-10-11
+status: "publicado"
 faq:
   - pergunta: "O que é saving em compras?"
     resposta: "Saving em compras é a redução de custo obtida por uma ação de Compras, medida contra um preço de referência (o baseline) e multiplicada pelo volume efetivamente comprado. Saving que o CFO reconhece é o que aparece como custo menor no resultado do período."
