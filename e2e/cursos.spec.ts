@@ -73,11 +73,11 @@ test("a prévia dos filmes da hero alterna os quatro conceitos e não é indexad
     ["1. Tudo numa assinatura", "tudo-v2"],
     ["2. Da capa à aula", "capa-aula-v1"],
     ["3. Cabe no seu dia", "rotina-v1"],
-    ["4. Misto (1, 2 e 3)", "misto-v2"],
+    ["4. Misto (1, 2 e 3)", "misto-v3"],
   ]) {
     await page.getByRole("button", { name: nome }).click();
     await expect(page.getByRole("button", { name: nome })).toHaveAttribute("aria-pressed", "true");
     await expect(video).toHaveAttribute("src", `/cursos-hero/${arquivo}.mp4`);
   }
-  expect((await page.request.get("/cursos-hero/misto-v2.mp4")).status()).toBe(200);
+  expect((await page.request.get("/cursos-hero/misto-v3.mp4")).status()).toBe(200);
 });

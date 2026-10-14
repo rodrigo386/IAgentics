@@ -107,19 +107,20 @@ export function AulaEmCena({ t, a, primeira, ultima }: { t: number; a: Aula; pri
   );
 }
 
-/** As trilhas correndo, a câmera recuando, os nomes passando. */
-function Trilhas({ t }: { t: number }) {
-  const ini = 8.6;
-  if (t < ini || t > 14.6) return null;
+/** As trilhas correndo, a câmera recuando, os nomes passando; no fim tudo se
+ *  recolhe no centro. Dura 6 s a partir de `ini`. Peça com hora de início
+ *  porque o conceito 4 (ConceitoMisto) usa esta cena no meio. */
+export function Trilhas({ t, ini }: { t: number; ini: number }) {
+  if (t < ini || t > ini + 6.0) return null;
   const recua = ent(t, ini, 2.2);
-  const recolhe = ent(t, 13.4, 0.8);
+  const recolhe = ent(t, ini + 4.8, 0.8);
   const linhas = 6;
   const larg = 150;
   const alt = (larg * 466) / 306;
   const gap = 16;
   const altLinha = alt + gap;
   const total = linhas * altLinha;
-  const veu = ent(t, 9.4, 0.6) * (1 - recolhe);
+  const veu = ent(t, ini + 0.8, 0.6) * (1 - recolhe);
   return (
     <>
       <div
@@ -130,7 +131,7 @@ function Trilhas({ t }: { t: number }) {
           width: 0,
           height: 0,
           scale: `${mix(2.4, 1, recua) * mix(1, 0.02, recolhe)}`,
-          opacity: ent(t, ini, 0.4) * (1 - ent(t, 13.9, 0.3)),
+          opacity: ent(t, ini, 0.4) * (1 - ent(t, ini + 5.3, 0.3)),
         }}
       >
         {Array.from({ length: linhas }).map((_, l) => {
@@ -163,7 +164,7 @@ function Trilhas({ t }: { t: number }) {
             letterSpacing: "-0.045em",
             lineHeight: 1,
             textWrap: "balance",
-            ...aparece(t, 9.6 + i * 0.95, i === 3 ? 13.3 : 9.6 + (i + 1) * 0.95, 0.35),
+            ...aparece(t, ini + 1.0 + i * 0.95, i === 3 ? ini + 4.7 : ini + 1.0 + (i + 1) * 0.95, 0.35),
           }}
         >
           {nome}
@@ -183,7 +184,7 @@ export function ConceitoCapaAula() {
       {AULAS.map((a, i) => (
         <AulaEmCena key={a.capa} t={t} a={a} primeira={i === 0} ultima={i === AULAS.length - 1} />
       ))}
-      <Trilhas t={t} />
+      <Trilhas t={t} ini={8.6} />
 
       {/* O ponto violeta: onde tudo se recolhe, e de onde a frase sai. */}
       {t >= 13.8 && t < 15.2 ? (
