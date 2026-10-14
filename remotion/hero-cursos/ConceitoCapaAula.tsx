@@ -27,12 +27,13 @@ export const AULAS: Aula[] = [
 ];
 
 /** Uma aula: capa → player → barra enche → achata em linha. Depois de `ini`. */
-export function AulaEmCena({ t, a, ultima }: { t: number; a: Aula; ultima: boolean }) {
+/** `primeira`: nasce do papel; senão, nasce da linha da aula anterior.
+ *  `ultima`: a linha final some, porque não há aula seguinte para virar. */
+export function AulaEmCena({ t, a, primeira, ultima }: { t: number; a: Aula; primeira: boolean; ultima: boolean }) {
   const r = t - a.ini;
   if (r < 0 || r > 4.6) return null;
-  // A primeira capa nasce do papel; a segunda nasce da linha da anterior.
-  const nasce = a.ini < 1 ? ent(t, a.ini, 0.7) : 1;
-  const moldura = a.ini < 1 ? 1 : ent(t, a.ini, 0.6); // linha → moldura da capa
+  const nasce = primeira ? ent(t, a.ini, 0.7) : 1;
+  const moldura = primeira ? 1 : ent(t, a.ini, 0.6); // linha → moldura da capa
   const abre = ent(t, a.ini + 1.0, 0.9); // capa → player
   const enche = ent(t, a.ini + 1.9, 1.5);
   const achata = ent(t, a.ini + 3.5, 0.6); // player → linha
@@ -180,7 +181,7 @@ export function ConceitoCapaAula() {
   return (
     <AbsoluteFill style={{ background: COR.papel, fontFamily: FONTE, color: COR.tinta, overflow: "hidden" }}>
       {AULAS.map((a, i) => (
-        <AulaEmCena key={a.capa} t={t} a={a} ultima={i === AULAS.length - 1} />
+        <AulaEmCena key={a.capa} t={t} a={a} primeira={i === 0} ultima={i === AULAS.length - 1} />
       ))}
       <Trilhas t={t} />
 

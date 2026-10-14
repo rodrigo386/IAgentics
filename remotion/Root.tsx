@@ -11,7 +11,7 @@ import { CapaCurso, type PropsCapaCurso } from "./capas/CapaCurso";
 import { ConceitoTudo } from "./hero-cursos/ConceitoTudo";
 import { ConceitoCapaAula } from "./hero-cursos/ConceitoCapaAula";
 import { ConceitoRotina } from "./hero-cursos/ConceitoRotina";
-import { ConceitoMisto } from "./hero-cursos/ConceitoMisto";
+import { ConceitoMisto, DURACAO_MISTO } from "./hero-cursos/ConceitoMisto";
 import { DURACAO as DURACAO_HERO, FPS as FPS_HERO, H as H_HERO, W as W_HERO } from "./hero-cursos/base";
 import { ALTURA_CAPA_VITRINE, CapaVitrine, LARGURA_CAPA_VITRINE, MOTIVOS, type PropsCapaVitrine } from "./capas/CapaVitrine";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
@@ -103,7 +103,7 @@ export function RemotionRoot() {
       {/* Os três conceitos de filme para a hero da /cursos (2026-10-14), 4:5, 18 s, mudos. */}
       <Composition id="hero-cursos-tudo" component={ConceitoTudo} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
       <Composition id="hero-cursos-capa-aula" component={ConceitoCapaAula} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
-      <Composition id="hero-cursos-misto" component={ConceitoMisto} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
+      <Composition id="hero-cursos-misto" component={ConceitoMisto} durationInFrames={DURACAO_MISTO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
       <Composition id="hero-cursos-rotina" component={ConceitoRotina} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
       {/* As capas geradas da vitrine da /cursos (2026-10-14): uma por curso
           marcado `gerada` em cursos.vitrine. O id leva o nome do arquivo de

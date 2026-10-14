@@ -91,11 +91,13 @@ export function Cascata({ t, ini, fim }: { t: number; ini: number; fim: number }
   );
 }
 
-export function Contagem({ t, ini, fim }: { t: number; ini: number; fim: number }) {
-  const [numero, ...resto] = f.contagem.split(" ");
+/** O número grande; a primeira palavra vai no violeta. `texto` troca o
+ *  "+70 cursos" (o conceito 4 usa "+300 horas de aula"). */
+export function Contagem({ t, ini, fim, texto = f.contagem }: { t: number; ini: number; fim: number; texto?: string }) {
+  const [numero, ...resto] = texto.split(" ");
   return (
-    <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", ...aparece(t, ini, fim, 0.5) }}>
-      <div style={{ fontSize: 188, fontWeight: 700, letterSpacing: "-0.055em", lineHeight: 1 }}>
+    <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", padding: "0 70px", ...aparece(t, ini, fim, 0.5) }}>
+      <div style={{ fontSize: 188, fontWeight: 700, letterSpacing: "-0.055em", lineHeight: 0.98, textAlign: "center", textWrap: "balance" }}>
         <span style={{ color: COR.violeta }}>{numero}</span> {resto.join(" ")}
       </div>
     </div>

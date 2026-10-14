@@ -75,6 +75,42 @@ const TAMANHO: Record<string, [number, number]> = { celular: [400, 820], noteboo
 const DUR_MOMENTO = 4.6;
 const INI = 0.3;
 
+/** O fecho: os três aparelhos pequenos, lado a lado, o ritmo e o preço.
+ *  Peça com hora de início porque o conceito 4 (ConceitoMisto) também fecha
+ *  assim. */
+export function FechoAparelhos({ t, ini, sai }: { t: number; ini: number; sai: number }) {
+  if (t < ini - 0.1) return null;
+  return (
+    <div style={{ position: "absolute", inset: 0, opacity: 1 - sai }}>
+      {/* `scale` não muda a caixa no layout: cada aparelho mora numa caixa
+          do tamanho já reduzido, e escala a partir do canto. */}
+      <div style={{ position: "absolute", top: 150, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 44 }}>
+        {f.momentos.map((m, i) => {
+          const u = ent(t, ini + i * 0.15, 0.8);
+          const [larg, alt] = TAMANHO[m.aparelho];
+          const e = 0.34;
+          return (
+            <div key={m.hora} style={{ position: "relative", width: larg * e, height: alt * e, opacity: u, translate: `0 ${(1 - u) * 60}px` }}>
+              <div style={{ position: "absolute", left: 0, top: 0, scale: `${e}`, transformOrigin: "0 0" }}>
+                <Aparelho tipo={m.aparelho}>
+                  <Tela nome={m.curso} larga={m.aparelho !== "celular"} progresso={0.85} />
+                </Aparelho>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ position: "absolute", top: 560, left: 0, right: 0, display: "grid", gap: 70, justifyItems: "center" }}>
+        <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: "-0.045em", ...aparece(t, ini + 0.6) }}>{f.fecho}</div>
+        <Preco t={t} ini={ini + 1.2} tamanho={150} />
+      </div>
+      <div style={{ position: "absolute", bottom: 70, left: 0, right: 0, textAlign: "center", fontFamily: MONO, fontSize: 24, letterSpacing: "0.18em", textTransform: "uppercase", color: COR.apagado, ...aparece(t, ini + 1.8) }}>
+        {f.apoio}
+      </div>
+    </div>
+  );
+}
+
 export function ConceitoRotina() {
   const t = useT();
   const final = 14.2;
@@ -119,36 +155,7 @@ export function ConceitoRotina() {
         );
       })}
 
-      {/* Fecho: os três aparelhos pequenos, lado a lado, e o preço. */}
-      {t >= final - 0.1 ? (
-        <div style={{ position: "absolute", inset: 0, opacity: 1 - sai }}>
-          {/* `scale` não muda a caixa no layout: cada aparelho mora numa caixa
-              do tamanho já reduzido, e escala a partir do canto. */}
-          <div style={{ position: "absolute", top: 150, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 44 }}>
-            {f.momentos.map((m, i) => {
-              const u = ent(t, final + i * 0.15, 0.8);
-              const [larg, alt] = TAMANHO[m.aparelho];
-              const e = 0.34;
-              return (
-                <div key={m.hora} style={{ position: "relative", width: larg * e, height: alt * e, opacity: u, translate: `0 ${(1 - u) * 60}px` }}>
-                  <div style={{ position: "absolute", left: 0, top: 0, scale: `${e}`, transformOrigin: "0 0" }}>
-                    <Aparelho tipo={m.aparelho}>
-                      <Tela nome={m.curso} larga={m.aparelho !== "celular"} progresso={0.85} />
-                    </Aparelho>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ position: "absolute", top: 560, left: 0, right: 0, display: "grid", gap: 70, justifyItems: "center" }}>
-            <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: "-0.045em", ...aparece(t, final + 0.6) }}>{f.fecho}</div>
-            <Preco t={t} ini={final + 1.2} tamanho={150} />
-          </div>
-          <div style={{ position: "absolute", bottom: 70, left: 0, right: 0, textAlign: "center", fontFamily: MONO, fontSize: 24, letterSpacing: "0.18em", textTransform: "uppercase", color: COR.apagado, ...aparece(t, final + 1.8) }}>
-            {f.apoio}
-          </div>
-        </div>
-      ) : null}
+      <FechoAparelhos t={t} ini={final} sai={sai} />
     </AbsoluteFill>
   );
 }

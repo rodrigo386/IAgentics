@@ -1687,12 +1687,12 @@ export const cursos = {
   filmesHero: {
     previa: {
       titulo: "Filmes da hero da /cursos",
-      lead: "Quatro conceitos para o lugar da estante de capas. Loops mudos de 18 segundos.",
+      lead: "Quatro conceitos para o lugar da estante de capas. Loops mudos de 18 segundos (o 4, de 24).",
       conceitos: [
         { id: "tudo", video: "/cursos-hero/tudo-v2.mp4", poster: "/cursos-hero/tudo-v2.jpg", nome: "1. Tudo numa assinatura", ideia: "Tipografia em cascata: os nomes dos cursos aceleram até virar +70 cursos, as capas formam uma grade e a grade vira o preço." },
         { id: "capa-aula", video: "/cursos-hero/capa-aula-v1.mp4", poster: "/cursos-hero/capa-aula-v1.jpg", nome: "2. Da capa à aula", ideia: "Plano contínuo: a capa abre e vira aula, a barra de progresso vira a capa seguinte, a câmera recua para as trilhas e fecha no preço." },
         { id: "rotina", video: "/cursos-hero/rotina-v1.mp4", poster: "/cursos-hero/rotina-v1.jpg", nome: "3. Cabe no seu dia", ideia: "Três horas do dia, três aparelhos, três cursos tocando. Fecha no seu ritmo e no preço." },
-        { id: "misto", video: "/cursos-hero/misto-v1.mp4", poster: "/cursos-hero/misto-v1.jpg", nome: "4. Da aula ao tudo (1+2)", ideia: "A abertura do 2 e o fecho do 1: a capa do Fundamentos vira a aula, a barra vira linha, os nomes aceleram até +70 cursos, as capas caem em grade e a grade vira o preço." },
+        { id: "misto", video: "/cursos-hero/misto-v2.mp4", poster: "/cursos-hero/misto-v2.jpg", nome: "4. Misto (1, 2 e 3)", ideia: "O início do 1 até +300 horas de aula, as aulas do 2 (Fundamentos e Marketing com IA) e o fecho do 3 com os aparelhos e o preço. 24 segundos." },
       ],
       pausar: "Pausar",
       continuar: "Continuar",
@@ -1705,11 +1705,11 @@ export const cursos = {
     capaAula: {
       ritmo: "Aprenda no seu ritmo.",
     },
-    /** Conceito 4, pedido do Rodrigo depois de ver os três: a abertura do 2
-     *  com o fecho do 1. O Fundamentos já aparece como aula, então os
-     *  destaques começam no segundo curso. */
+    /** Conceito 4, pedido do Rodrigo depois de ver os três: o início do 1
+     *  (com "+300 horas de aula" no lugar de "+70 cursos"), os cursos do 2 e
+     *  o fecho do 3. Os demais textos vêm dos outros três. */
     misto: {
-      destaques: ["Marketing com IA.", "Power BI."],
+      contagem: "+300 horas de aula",
     },
     rotina: {
       momentos: [
