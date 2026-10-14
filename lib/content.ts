@@ -1784,6 +1784,29 @@ export const cursos = {
        nome do título para leitor de tela e buscador. */
     titulo: "As formações",
     marca: "IAgentics",
+    /** As demais formações da IAgentics (2026-10-14, da planilha do Rodrigo),
+     *  ainda sem foto de professor: capa gerada no padrão (Remotion,
+     *  `capa-curso`, título e área via --props), em public/formacoes/. Ficaram
+     *  de fora "Spend Management & Alianças" e "Skill para Negócios: Vendas,
+     *  Compras e Supply", cujos nomes o Rodrigo pediu para desconsiderar. */
+    mais: {
+      titulo: "Mais formações",
+      itens: [
+        { nome: "Análise de Dados com IA aplicada", area: "Dados", src: "/formacoes/analise-de-dados-com-ia-aplicada.jpg" },
+        { nome: "Change Management", area: "Gestão", src: "/formacoes/change-management.jpg" },
+        { nome: "Roadmap AI First", area: "Estratégia", src: "/formacoes/roadmap-ai-first.jpg" },
+        { nome: "Copilot aplicado ao Microsoft 365", area: "Produtividade", src: "/formacoes/copilot-aplicado-ao-microsoft-365.jpg" },
+        { nome: "Lean aplicado à IA", area: "Processos", src: "/formacoes/lean-aplicado-a-ia.jpg" },
+        { nome: "Liderança AI First", area: "Liderança", src: "/formacoes/lideranca-ai-first.jpg" },
+        { nome: "Gestão de Compras e Fornecedores com IA", area: "Compras", src: "/formacoes/gestao-de-compras-e-fornecedores-com-ia.jpg" },
+        { nome: "Strategic Sourcing 4.0", area: "Compras", src: "/formacoes/strategic-sourcing-4-0.jpg" },
+        { nome: "Vendas Consultivas 4.0", area: "Vendas", src: "/formacoes/vendas-consultivas-4-0.jpg" },
+        { nome: "Pipeline 4.0", area: "Vendas", src: "/formacoes/pipeline-4-0.jpg" },
+        { nome: "Fundamentos de Compras", area: "Compras", src: "/formacoes/fundamentos-de-compras.jpg" },
+        { nome: "Fundamentos de Vendas", area: "Vendas", src: "/formacoes/fundamentos-de-vendas.jpg" },
+        { nome: "Fundamentos de Supply Chain", area: "Supply Chain", src: "/formacoes/fundamentos-de-supply-chain.jpg" },
+      ],
+    },
     rotulos: { cargaHoraria: "Carga horária", formato: "Formato", publico: "Para quem", ementa: "Ementa", com: "Com" },
     itens: [
       {

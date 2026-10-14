@@ -7,6 +7,7 @@ import { FilmeLogistico } from "./nexo-logistico/FilmeLogistico";
 import { FilmeVarejo } from "./nexo-varejo/FilmeVarejo";
 import { FilmeOrcamento } from "./nexo-orcamento/FilmeOrcamento";
 import { CapaFundamentos } from "./capas/CapaFundamentos";
+import { CapaCurso, type PropsCapaCurso } from "./capas/CapaCurso";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
 import { DURACAO as DURACAO_NF } from "./nexo-kit/cues";
 import "./style.css";
@@ -91,6 +92,8 @@ export function RemotionRoot() {
 
       {/* Capa 600×900 do Fundamentos para a /cursos, no formato das capas da Solution (2026-10-14). */}
       <Composition id="capa-fundamentos" component={CapaFundamentos} durationInFrames={1} fps={30} width={600} height={900} />
+      {/* Capa genérica dos cursos da IAgentics sem capa (2026-10-14): título e área via --props. */}
+      <Composition id="capa-curso" component={CapaCurso} durationInFrames={1} fps={30} width={600} height={900} defaultProps={{ titulo: "Strategic Sourcing 4.0", area: "Compras" } satisfies PropsCapaCurso} />
     </>
   );
 }

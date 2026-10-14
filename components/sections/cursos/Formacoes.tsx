@@ -47,7 +47,7 @@ export function CursosFormacoes() {
             return (
               <li
                 key={f.nome}
-                className="flex flex-col overflow-hidden border border-line bg-surface"
+                className="flex flex-col self-start overflow-hidden border border-line bg-surface"
               >
                 {/* O banner: escuro fixo (tinta da marca), como um cartaz. */}
                 <div className="relative aspect-[16/9] overflow-hidden bg-brand-ink text-brand-paper">
@@ -118,6 +118,19 @@ export function CursosFormacoes() {
               </li>
             );
           })}
+        </ul>
+
+        {/* As demais formações, em capas no formato das do Pecege. */}
+        <h3 className="mt-16 font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.mais.titulo}</h3>
+        <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+          {t.mais.itens.map((c) => (
+            <li key={c.src}>
+              <div className="relative aspect-[2/3] overflow-hidden border border-line bg-brand-ink">
+                <Image src={c.src} alt="" fill sizes="(min-width: 1024px) 220px, (min-width: 640px) 30vw, 45vw" className="object-cover" />
+              </div>
+              <p className="mt-3 text-sm leading-snug text-fg">{c.nome}</p>
+            </li>
+          ))}
         </ul>
       </div>
     </section>
