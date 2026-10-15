@@ -14,6 +14,7 @@ import { ConceitoRotina } from "./hero-cursos/ConceitoRotina";
 import { ConceitoMisto, DURACAO_MISTO } from "./hero-cursos/ConceitoMisto";
 import { DURACAO_LANCAMENTO, Lancamento } from "./social/Lancamento";
 import { DURACAO_DENTRO, Dentro } from "./social/Dentro";
+import { Miniatura, type PropsMiniatura } from "./social/Miniatura";
 import { DURACAO as DURACAO_HERO, FPS as FPS_HERO, H as H_HERO, W as W_HERO } from "./hero-cursos/base";
 import { ALTURA_CAPA_VITRINE, CapaVitrine, LARGURA_CAPA_VITRINE, MOTIVOS, type PropsCapaVitrine } from "./capas/CapaVitrine";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
@@ -113,6 +114,12 @@ export function RemotionRoot() {
       <Composition id="social-lancamento-feed" component={Lancamento} durationInFrames={DURACAO_LANCAMENTO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
       <Composition id="social-dentro-vertical" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
       <Composition id="social-dentro-feed" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
+      {/* Miniaturas (capas) dos vídeos de lançamento, um quadro só. */}
+      {(["lancamento", "dentro"] as const).flatMap((video) =>
+        ([["vertical", 1920], ["feed", 1350]] as const).map(([formato, altura]) => (
+          <Composition key={`${video}-${formato}`} id={`social-miniatura-${video}-${formato}`} component={Miniatura} durationInFrames={1} fps={30} width={1080} height={altura} defaultProps={{ video } satisfies PropsMiniatura} />
+        )),
+      )}
       {/* As capas geradas da vitrine da /cursos (2026-10-14): uma por curso
           marcado `gerada` em cursos.vitrine. O id leva o nome do arquivo de
           `capa`, e é por ele que `npm run capas:vitrine` sabe onde gravar. */}
