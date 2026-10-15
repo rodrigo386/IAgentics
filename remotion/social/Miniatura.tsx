@@ -1,7 +1,6 @@
 import { AbsoluteFill, useVideoConfig } from "remotion";
-import { Logo } from "@/components/ui/Logo";
 import { cursos } from "@/lib/content";
-import { Capa, COR, FONTE, PUBLICADOS, POR_MES, PRECO, TODOS } from "../hero-cursos/base";
+import { Capa, COR, FONTE, LogoAcademy, POR_MES, PRECO, PUBLICADOS, TODOS } from "../hero-cursos/base";
 
 /**
  * Miniatura (capa) dos vídeos de lançamento (2026-10-15, pedido do Rodrigo).
@@ -36,7 +35,7 @@ export function Miniatura({ video }: PropsMiniatura) {
           a tela cheia do Reels sem sair da faixa central da grade. */}
       <AbsoluteFill style={{ scale: `${sobra > 0 ? 1.12 : 1}`, transformOrigin: `50% ${topoTexto}px` }}>
       <div style={{ position: "absolute", left: 0, right: 0, top: topoTexto, display: "flex", flexDirection: "column", alignItems: "center", gap: 34, padding: "0 70px", textAlign: "center" }}>
-        <Logo className="w-[360px]" />
+        <LogoAcademy largura={400} />
         {video === "lancamento" ? (
           <>
             <div style={{ fontSize: 230, fontWeight: 700, letterSpacing: "-0.06em", lineHeight: 0.9, marginTop: 10 }}>{f.lancamento.chegou}</div>

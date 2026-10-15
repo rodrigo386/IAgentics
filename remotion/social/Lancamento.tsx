@@ -1,7 +1,6 @@
 import { AbsoluteFill } from "remotion";
-import { Logo } from "@/components/ui/Logo";
 import { cursos } from "@/lib/content";
-import { aparece, COR, FONTE, useT } from "../hero-cursos/base";
+import { aparece, COR, FONTE, LogoAcademy, useT } from "../hero-cursos/base";
 import { Trilhas } from "../hero-cursos/ConceitoCapaAula";
 import { Cascata, Contagem } from "../hero-cursos/ConceitoTudo";
 import { FechoSocial } from "./comum";
@@ -29,9 +28,10 @@ export function Lancamento() {
     <AbsoluteFill style={{ background: COR.papel, fontFamily: FONTE, color: COR.tinta, overflow: "hidden" }}>
       <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 36, padding: "0 80px", textAlign: "center" }}>
         {/* A marca abre o vídeo (pedido do Rodrigo): no feed, quem fala é
-            reconhecido antes do que é dito. */}
+            reconhecido antes do que é dito. IAgentics Academy desde
+            2026-10-15. */}
         <div style={{ marginBottom: 40, ...aparece(t, 0.02, 2.45, 0.35) }}>
-          <Logo className="w-[440px]" />
+          <LogoAcademy largura={480} />
         </div>
         <div style={{ fontSize: 210, fontWeight: 700, letterSpacing: "-0.055em", lineHeight: 0.95, ...aparece(t, 0.15, 2.45, 0.35) }}>{f.lancamento.chegou}</div>
         <div style={{ fontSize: 66, fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.08, textWrap: "balance", color: COR.apagado, ...aparece(t, 0.6, 2.45, 0.4) }}>

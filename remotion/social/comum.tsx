@@ -21,7 +21,7 @@ export function FechoSocial({ t, ini, frase }: { t: number; ini: number; frase?:
       ) : null}
       <Preco t={t} ini={ini + d} tamanho={170} />
       <div style={{ fontSize: 46, fontWeight: 500, letterSpacing: "-0.02em", ...aparece(t, ini + d + 0.5) }}>{f.cancele}</div>
-      <Marcas style={aparece(t, ini + d + 0.8)} />
+      <Marcas academy style={aparece(t, ini + d + 0.8)} />
       <div style={{ fontFamily: MONO, fontWeight: 500, fontSize: 44, letterSpacing: "0.01em", color: COR.violeta, ...aparece(t, ini + d + 1.1) }}>{f.url}</div>
     </AbsoluteFill>
   );

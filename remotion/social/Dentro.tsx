@@ -1,7 +1,6 @@
 import { AbsoluteFill, useVideoConfig } from "remotion";
-import { Logo } from "@/components/ui/Logo";
 import { cursos } from "@/lib/content";
-import { aparece, Capa, COR, ent, FONTE, mix, PUBLICADOS, TODOS, useT } from "../hero-cursos/base";
+import { aparece, Capa, COR, ent, FONTE, LogoAcademy, mix, PUBLICADOS, TODOS, useT } from "../hero-cursos/base";
 import { FechoSocial } from "./comum";
 
 /**
@@ -56,9 +55,9 @@ export function Dentro() {
   return (
     <AbsoluteFill style={{ background: COR.papel, fontFamily: FONTE, color: COR.tinta, overflow: "hidden" }}>
       <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 40, textAlign: "center" }}>
-        {/* A marca abre o vídeo (pedido do Rodrigo). */}
+        {/* A marca abre o vídeo (pedido do Rodrigo); IAgentics Academy desde 2026-10-15. */}
         <div style={{ marginBottom: 30, ...aparece(t, 0.02, INI_TRILHAS - 0.05, 0.35) }}>
-          <Logo className="w-[440px]" />
+          <LogoAcademy largura={480} />
         </div>
         <Numero t={t} ini={0.1} numero={LINHAS.length} texto={f.dentro.trilhas} />
         <Numero t={t} ini={1.0} numero={PUBLICADOS.length} texto={f.dentro.noAr} />

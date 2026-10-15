@@ -102,13 +102,40 @@ export function Preco({ t, ini, tamanho = 150 }: { t: number; ini: number; taman
   );
 }
 
+/**
+ * O lockup "IAgentics ACADEMY" (public/plataforma/academy-logo.png, 893×254),
+ * nos vídeos de lançamento a pedido do Rodrigo (2026-10-15). O arquivo é
+ * cinza-claro, feito para fundo escuro: vai como MÁSCARA na cor `cor`, a mesma
+ * técnica do <Logo> da IAgentics no site, para ficar nítido no papel.
+ */
+export function LogoAcademy({ largura, cor = COR.tinta, style }: { largura: number; cor?: string; style?: CSSProperties }) {
+  const mascara = `url(${staticFile("plataforma/academy-logo.png")})`;
+  return (
+    <div
+      style={{
+        width: largura,
+        height: (largura * 254) / 893,
+        backgroundColor: cor,
+        WebkitMaskImage: mascara,
+        maskImage: mascara,
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        ...style,
+      }}
+    />
+  );
+}
+
 /** As três marcas da hero da /cursos, lado a lado (fecho do filme da hero e
  *  dos posts de lançamento). Mesmos arquivos e proporções da hero; ver o
- *  comentário em components/sections/cursos/Estante.tsx. */
-export function Marcas({ style }: { style?: CSSProperties }) {
+ *  comentário em components/sections/cursos/Estante.tsx. `academy`: troca o
+ *  lockup da IAgentics pelo da IAgentics Academy (os posts de lançamento). */
+export function Marcas({ style, academy = false }: { style?: CSSProperties; academy?: boolean }) {
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 40, color: COR.tinta, ...style }}>
-      <Logo className="w-[230px]" />
+      {academy ? <LogoAcademy largura={250} /> : <Logo className="w-[230px]" />}
       <span style={{ width: 2, height: 64, background: COR.linha }} />
       <Img src={staticFile("partner-pecege.png")} style={{ height: 88, width: "auto" }} />
       <span style={{ width: 2, height: 64, background: COR.linha }} />
