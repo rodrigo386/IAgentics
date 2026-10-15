@@ -274,9 +274,9 @@ export const partners = {
    * at their official colors on a neutral brand plate.
    */
   logos: [
-    { name: "Microsoft AI Cloud Partner", src: "/partner-microsoft.png", w: 922, h: 235 },
+    { name: "Microsoft AI Cloud Partner", src: "/partner-microsoft-v2.png", w: 888, h: 182 },
     { name: "Oracle Partner", src: "/partner-oracle.png", w: 721, h: 233 },
-    { name: "SAP Partner", src: "/partner-sap.jpg", w: 600, h: 600 },
+    { name: "SAP Partner", src: "/partner-sap-v2.png", w: 600, h: 595 },
     { name: "Desk Manager Partners", src: "/partner-deskmanager.png", w: 1057, h: 347 },
     /* Programa de startups da NVIDIA, conquistado em 2026-10 (Rodrigo,
        2026-10-15). É programa, não revenda: o nome é o do selo, "NVIDIA
@@ -555,7 +555,7 @@ export const academy = {
       { name: "Claude Partner Network", src: "/academy/claude-partner-network.png", w: 600, h: 232 },
       /* 600x215 depois de aparar: o arquivo original era 77% de margem branca, e
          sobre a placa branca isso fazia o Sebrae parecer menor que os outros. */
-      { name: "Sebrae for Startups", src: "/academy/sebrae-for-startups.png", w: 600, h: 215 },
+      { name: "Sebrae for Startups", src: "/academy/sebrae-for-startups-v2.png", w: 556, h: 178 },
       { name: "NVIDIA Inception Program", src: "/partner-nvidia-inception.png", w: 451, h: 166 },
     ],
   },
@@ -1445,7 +1445,7 @@ export const nexoPage = {
         nome: "Ambiente do cliente",
         texto: "Entrega embarcada, integrada ao ERP do cliente. Certificação ISO/IEC 27001.",
         placas: [
-          { src: "/partner-microsoft.png", alt: "Microsoft AI Cloud Partner", w: 640, h: 200 },
+          { src: "/partner-microsoft-v2.png", alt: "Microsoft AI Cloud Partner", w: 888, h: 182 },
           { src: "/partner-deskmanager.png", alt: "Desk Manager", w: 640, h: 200 },
           { src: "/selo-iso27001-v1.jpg", alt: "Certificação ISO/IEC 27001", w: 400, h: 400 },
         ],
