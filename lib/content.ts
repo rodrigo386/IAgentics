@@ -278,6 +278,10 @@ export const partners = {
     { name: "Oracle Partner", src: "/partner-oracle.png", w: 721, h: 233 },
     { name: "SAP Partner", src: "/partner-sap.jpg", w: 600, h: 600 },
     { name: "Desk Manager Partners", src: "/partner-deskmanager.png", w: 1057, h: 347 },
+    /* Programa de startups da NVIDIA, conquistado em 2026-10 (Rodrigo,
+       2026-10-15). É programa, não revenda: o nome é o do selo, "NVIDIA
+       Inception Program", e nunca "parceira NVIDIA". */
+    { name: "NVIDIA Inception Program", src: "/partner-nvidia-inception.png", w: 451, h: 166 },
   ],
   /** Anthropic ships a clean single-color mark via simple-icons, so it renders as SVG. */
   anthropic: { name: "Anthropic" },
@@ -552,6 +556,7 @@ export const academy = {
       /* 600x215 depois de aparar: o arquivo original era 77% de margem branca, e
          sobre a placa branca isso fazia o Sebrae parecer menor que os outros. */
       { name: "Sebrae for Startups", src: "/academy/sebrae-for-startups.png", w: 600, h: 215 },
+      { name: "NVIDIA Inception Program", src: "/partner-nvidia-inception.png", w: 451, h: 166 },
     ],
   },
 
@@ -1036,6 +1041,7 @@ export const spendLab = {
       { name: "Claude Partner Network", src: "/spend-lab/claude-partner-network.png", w: 600, h: 232 },
       { name: "Microsoft AI Cloud Partner", src: "/spend-lab/microsoft.png", w: 600, h: 600 },
       { name: "Oracle", src: "/spend-lab/oracle.png", w: 600, h: 78 },
+      { name: "NVIDIA Inception Program", src: "/partner-nvidia-inception.png", w: 451, h: 166 },
     ],
   },
 
@@ -1704,8 +1710,8 @@ export const cursos = {
     },
   },
   filmeHero: {
-    video: "/cursos-hero/misto-v5.mp4",
-    poster: "/cursos-hero/misto-v5.jpg",
+    video: "/cursos-hero/misto-v6.mp4",
+    poster: "/cursos-hero/misto-v6.jpg",
     pausar: "Pausar o filme",
     continuar: "Continuar o filme",
   },
@@ -1757,7 +1763,7 @@ export const cursos = {
       {
         titulo: "AI First",
         cursos: [
-          { nome: "Marketing com IA", professor: "Prof. Carol", capa: "/vitrine/marketing-com-ia.jpg", gerada: true },
+          { nome: "Marketing com IA", professor: "Prof. Carol Cavalcante", capa: "/vitrine/marketing-com-ia-v2.jpg", gerada: true },
           { nome: "Roadmap AI First", capa: "/vitrine/roadmap-ai-first.jpg", emBreve: true, gerada: true },
           { nome: "Spend Management & Ativos", capa: "/vitrine/spend-management-ativos.jpg", emBreve: true, gerada: true },
           { nome: "Copilot aplicado ao Microsoft 365", capa: "/vitrine/copilot-aplicado-ao-microsoft-365.jpg", emBreve: true, gerada: true },
@@ -1934,7 +1940,7 @@ export const cursos = {
       },
       {
         nome: "Marketing com IA",
-        professor: "Carol",
+        professor: "Carol Cavalcante",
         foto: "/academy/marketing-com-ia-capa.jpg",
         enquadre: "50% 22%",
         descricao: undefined as string | undefined,

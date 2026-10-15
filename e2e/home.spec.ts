@@ -19,9 +19,11 @@ test("a hero usa o grafo do orquestrador e mantém a manchete do pitch", async (
   await expect(page.locator("#topo")).not.toContainText("NEXO APP");
   /* As parcerias subiram para dentro da coluna, logo abaixo dos CTAs
      (2026-09-22). O que importa travar é que continuem na primeira tela e com
-     as cinco placas — no pé da seção, onde estavam, dependiam de rolar. */
+     as placas — no pé da seção, onde estavam, dependiam de rolar. Seis desde
+     2026-10-15, com o NVIDIA Inception Program. */
   const parcerias = page.locator('#topo ul[aria-label="Parcerias"]');
-  await expect(parcerias.getByRole("listitem")).toHaveCount(5);
+  await expect(parcerias.getByRole("listitem")).toHaveCount(6);
+  await expect(parcerias.getByRole("img", { name: "NVIDIA Inception Program" })).toBeVisible();
   await expect(parcerias).toBeVisible();
 });
 

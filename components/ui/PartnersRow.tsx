@@ -25,6 +25,9 @@ import { credenciais, partners } from "@/lib/content";
  * `faixa` é a original: largura total da página, com a calha do site. É a da
  * /nexo, e segue sendo o padrão.
  *
+ * Seis placas desde 2026-10-15 (entrou o NVIDIA Inception): a `faixa` cabe
+ * numa linha no desktop, e a `coluna` fecha duas linhas de três.
+ *
  * `coluna` é a da home, onde as parcerias subiram para dentro da coluna da
  * hero, logo abaixo dos CTAs. Ali não cabem cinco placas numa linha: a coluna
  * dá ~766px, cinco placas sobram ~116px de conteúdo cada, e o lockup da
@@ -39,7 +42,7 @@ import { credenciais, partners } from "@/lib/content";
 const VARIANTES = {
   faixa: {
     grade:
-      "mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-5",
+      "mx-auto grid w-full max-w-[1400px] grid-cols-2 gap-3 px-5 sm:grid-cols-3 sm:px-8 lg:grid-cols-6",
     placa:
       "flex h-20 items-center justify-center border border-line bg-brand-paper px-4 sm:px-6",
     largo: "max-h-10 sm:max-h-11 lg:max-h-12",

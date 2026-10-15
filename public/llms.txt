@@ -2,7 +2,7 @@
 
 > Automações Inteligentes para Compras e Gestão de Gastos. A IAgentics coloca agentes de IA para rodar dentro da plataforma que sua empresa já usa; os dados permanecem no servidor da sua empresa. Site em português do Brasil (pt-BR).
 
-A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAgentics Academy (escola de negócios de IA) e IA Spend Lab (consultoria de implementação de IA em Compras). Parcerias: Microsoft AI Cloud Partner, Oracle, SAP, Desk Manager e Anthropic (Claude Partner Network). Certificação ISO/IEC 27001.
+A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAgentics Academy (escola de negócios de IA) e IA Spend Lab (consultoria de implementação de IA em Compras). Parcerias: Microsoft AI Cloud Partner, Oracle, SAP, Desk Manager, Anthropic (Claude Partner Network) e NVIDIA Inception Program. Certificação ISO/IEC 27001.
 
 ## Soluções
 

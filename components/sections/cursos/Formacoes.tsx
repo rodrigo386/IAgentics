@@ -5,7 +5,7 @@ import { cursos } from "@/lib/content";
 /**
  * As formações da IAgentics na /cursos. Desde 2026-10-14 (pedido do Rodrigo):
  * o título leva o LOGO da IAgentics no lugar da palavra, e cada formação abre
- * com um banner do professor (Vinícius no Fundamentos, Carol no Marketing com
+ * com um banner do professor (Vinícius no Fundamentos, Carol Cavalcante no Marketing com
  * IA): fundo escuro, foto à direita fundindo no escuro, nome e crédito à
  * esquerda — o formato dos banners de série que o catálogo teve em outubro.
  *

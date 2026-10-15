@@ -167,7 +167,7 @@ test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   await expect(sec.locator("img")).toHaveCount(46);
   await expect(sec.getByRole("img", { name: /, em breve$/ })).toHaveCount(18);
   // O Marketing com IA abre a trilha AI First (pedido do Rodrigo).
-  await expect(page.getByRole("list", { name: "AI First" }).getByRole("img").first()).toHaveAccessibleName("Marketing com IA, Prof. Carol");
+  await expect(page.getByRole("list", { name: "AI First" }).getByRole("img").first()).toHaveAccessibleName("Marketing com IA, Prof. Carol Cavalcante");
   // O nome e o professor de cada capa chegam como texto pelo alt.
   await expect(sec.getByRole("img", { name: "Fundamentos de IA para Negócios, Prof. Vinícius Ferreira" })).toBeVisible();
   await expect(sec.getByRole("img", { name: "Inovação, Prof. Léo Recondo" })).toBeAttached();
