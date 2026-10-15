@@ -12,6 +12,8 @@ import { ConceitoTudo } from "./hero-cursos/ConceitoTudo";
 import { ConceitoCapaAula } from "./hero-cursos/ConceitoCapaAula";
 import { ConceitoRotina } from "./hero-cursos/ConceitoRotina";
 import { ConceitoMisto, DURACAO_MISTO } from "./hero-cursos/ConceitoMisto";
+import { DURACAO_LANCAMENTO, Lancamento } from "./social/Lancamento";
+import { DURACAO_DENTRO, Dentro } from "./social/Dentro";
 import { DURACAO as DURACAO_HERO, FPS as FPS_HERO, H as H_HERO, W as W_HERO } from "./hero-cursos/base";
 import { ALTURA_CAPA_VITRINE, CapaVitrine, LARGURA_CAPA_VITRINE, MOTIVOS, type PropsCapaVitrine } from "./capas/CapaVitrine";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
@@ -105,6 +107,12 @@ export function RemotionRoot() {
       <Composition id="hero-cursos-capa-aula" component={ConceitoCapaAula} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
       <Composition id="hero-cursos-misto" component={ConceitoMisto} durationInFrames={DURACAO_MISTO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
       <Composition id="hero-cursos-rotina" component={ConceitoRotina} durationInFrames={DURACAO_HERO * FPS_HERO} fps={FPS_HERO} width={W_HERO} height={H_HERO} />
+      {/* Vídeos de lançamento para Instagram e LinkedIn (2026-10-14): cada um em
+          9:16 (Reels, Stories) e 4:5 (feed). As cenas leem o tamanho do quadro. */}
+      <Composition id="social-lancamento-vertical" component={Lancamento} durationInFrames={DURACAO_LANCAMENTO * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
+      <Composition id="social-lancamento-feed" component={Lancamento} durationInFrames={DURACAO_LANCAMENTO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
+      <Composition id="social-dentro-vertical" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
+      <Composition id="social-dentro-feed" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
       {/* As capas geradas da vitrine da /cursos (2026-10-14): uma por curso
           marcado `gerada` em cursos.vitrine. O id leva o nome do arquivo de
           `capa`, e é por ele que `npm run capas:vitrine` sabe onde gravar. */}

@@ -1,9 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { AbsoluteFill, Img, staticFile } from "remotion";
-import { Logo } from "@/components/ui/Logo";
-import { LogoSolution } from "@/components/ui/LogoSolution";
 import { cursos } from "@/lib/content";
-import { aparece, COR, curso, ent, FONTE, H, MONO, mix, Preco, useT, W } from "./base";
+import { aparece, COR, curso, ent, FONTE, H, Marcas, MONO, mix, Preco, useT, W } from "./base";
 
 /**
  * Conceito 3, "Cabe no seu dia": três horas do dia, três aparelhos, três
@@ -109,13 +107,7 @@ export function FechoAparelhos({ t, ini, sai }: { t: number; ini: number; sai: n
       {/* As três marcas no rodapé, como na abertura da hero (pedido do Rodrigo,
           2026-10-14: logos no lugar do texto "Pecege · parceiro da USP/Esalq").
           Mesmos arquivos e proporções da hero; ver o comentário em Estante.tsx. */}
-      <div style={{ position: "absolute", bottom: 64, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 40, color: COR.tinta, ...aparece(t, ini + 1.8) }}>
-        <Logo className="w-[230px]" />
-        <span style={{ width: 2, height: 64, background: COR.linha }} />
-        <Img src={staticFile("partner-pecege.png")} style={{ height: 88, width: "auto" }} />
-        <span style={{ width: 2, height: 64, background: COR.linha }} />
-        <LogoSolution className="w-[220px]" />
-      </div>
+      <Marcas style={{ position: "absolute", bottom: 64, left: 0, right: 0, ...aparece(t, ini + 1.8) }} />
     </div>
   );
 }

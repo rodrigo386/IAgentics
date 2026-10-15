@@ -1684,6 +1684,26 @@ export const cursos = {
    *  nova (-v5…) em `video`/`poster`: o Cloudflare guarda pelo endereço.
    *  Preço, cursos e trilhas vêm de `assinatura` e `vitrine`; aqui só as
    *  frases que existem apenas no filme. */
+  /** Os vídeos de lançamento para Instagram e LinkedIn (2026-10-14, pedido
+   *  do Rodrigo, opções 1 e 3 de três propostas). Composições em
+   *  remotion/social/, cada uma em 9:16 (Reels, Stories) e 4:5 (feed), com
+   *  trilha original sintetizada (scripts/trilha-lancamento.py). Não vão para
+   *  o site: saem em out/social/. As contagens da opção 3 são calculadas da
+   *  vitrine, não escritas aqui. */
+  filmesSocial: {
+    url: "iagentics.com.br/cursos",
+    cancele: "Cancele quando quiser.",
+    lancamento: {
+      chegou: "Chegou.",
+      linha: "Trilhas de IA aplicada aos negócios",
+    },
+    dentro: {
+      trilhas: "trilhas",
+      noAr: "cursos no ar",
+      chegando: "chegando",
+      fecho: "Novos cursos chegando na mesma assinatura.",
+    },
+  },
   filmeHero: {
     video: "/cursos-hero/misto-v5.mp4",
     poster: "/cursos-hero/misto-v5.jpg",

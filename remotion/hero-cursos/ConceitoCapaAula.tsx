@@ -1,4 +1,4 @@
-import { AbsoluteFill, Img, staticFile } from "remotion";
+import { AbsoluteFill, Img, staticFile, useVideoConfig } from "remotion";
 import { cursos } from "@/lib/content";
 import { aparece, Capa, COR, curso, ent, FONTE, H, mix, Preco, PUBLICADOS, TRILHAS, useT, W } from "./base";
 
@@ -111,14 +111,17 @@ export function AulaEmCena({ t, a, primeira, ultima }: { t: number; a: Aula; pri
  *  recolhe no centro. Dura 6 s a partir de `ini`. Peça com hora de início
  *  porque o conceito 4 (ConceitoMisto) usa esta cena no meio. */
 export function Trilhas({ t, ini }: { t: number; ini: number }) {
+  // O tamanho do quadro vem da composição: a cena roda no filme da hero (4:5)
+  // e nos posts de lançamento (4:5 e 9:16).
+  const { width: W, height: H } = useVideoConfig();
   if (t < ini || t > ini + 6.0) return null;
   const recua = ent(t, ini, 2.2);
   const recolhe = ent(t, ini + 4.8, 0.8);
-  const linhas = 6;
   const larg = 150;
   const alt = (larg * 466) / 306;
   const gap = 16;
   const altLinha = alt + gap;
+  const linhas = Math.ceil(H / altLinha); // 6 no 4:5, 8 no 9:16
   const total = linhas * altLinha;
   const veu = ent(t, ini + 0.8, 0.6) * (1 - recolhe);
   return (

@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 import { cancelRender, continueRender, delayRender, Img, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { Logo } from "@/components/ui/Logo";
+import { LogoSolution } from "@/components/ui/LogoSolution";
 import { loadFont as carregarGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
 import { loadFont as carregarMono } from "@remotion/google-fonts/JetBrainsMono";
 import { cursos } from "@/lib/content";
@@ -96,6 +98,21 @@ export function Preco({ t, ini, tamanho = 150 }: { t: number; ini: number; taman
       <div style={{ fontSize: tamanho * 0.36, fontWeight: 500, letterSpacing: "-0.02em", color: COR.apagado, marginTop: 18, ...aparece(t, ini + 0.25) }}>
         {POR_MES}
       </div>
+    </div>
+  );
+}
+
+/** As três marcas da hero da /cursos, lado a lado (fecho do filme da hero e
+ *  dos posts de lançamento). Mesmos arquivos e proporções da hero; ver o
+ *  comentário em components/sections/cursos/Estante.tsx. */
+export function Marcas({ style }: { style?: CSSProperties }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 40, color: COR.tinta, ...style }}>
+      <Logo className="w-[230px]" />
+      <span style={{ width: 2, height: 64, background: COR.linha }} />
+      <Img src={staticFile("partner-pecege.png")} style={{ height: 88, width: "auto" }} />
+      <span style={{ width: 2, height: 64, background: COR.linha }} />
+      <LogoSolution className="w-[220px]" />
     </div>
   );
 }
