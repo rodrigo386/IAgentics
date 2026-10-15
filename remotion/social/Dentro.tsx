@@ -1,6 +1,7 @@
 import { AbsoluteFill, useVideoConfig } from "remotion";
+import { Logo } from "@/components/ui/Logo";
 import { cursos } from "@/lib/content";
-import { aparece, Capa, COR, ent, FONTE, mix, MONO, PUBLICADOS, TODOS, useT } from "../hero-cursos/base";
+import { aparece, Capa, COR, ent, FONTE, mix, PUBLICADOS, TODOS, useT } from "../hero-cursos/base";
 import { FechoSocial } from "./comum";
 
 /**
@@ -39,10 +40,7 @@ function Trilha({ t, i }: { t: number; i: number }) {
   return (
     <AbsoluteFill>
       <div style={{ position: "absolute", left: 0, right: 0, top: H * 0.17, textAlign: "center", padding: "0 70px", translate: `${desliza(0)}px 0` }}>
-        <div style={{ fontFamily: MONO, fontWeight: 500, fontSize: 30, letterSpacing: "0.2em", color: COR.violeta }}>
-          {String(i + 1).padStart(2, "0")} / {String(LINHAS.length).padStart(2, "0")}
-        </div>
-        <div style={{ marginTop: 22, fontSize: 84, fontWeight: 700, letterSpacing: "-0.045em", lineHeight: 1.02, textWrap: "balance" }}>{linha.titulo}</div>
+        <div style={{ fontSize: 84, fontWeight: 700, letterSpacing: "-0.045em", lineHeight: 1.02, textWrap: "balance" }}>{linha.titulo}</div>
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, top: H * 0.58 - altCapa / 2, display: "flex", justifyContent: "center", gap: 28 }}>
         {linha.cursos.slice(0, 3).map((c, j) => (
@@ -58,7 +56,11 @@ export function Dentro() {
   return (
     <AbsoluteFill style={{ background: COR.papel, fontFamily: FONTE, color: COR.tinta, overflow: "hidden" }}>
       <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 40, textAlign: "center" }}>
-        <Numero t={t} ini={0.02} numero={LINHAS.length} texto={f.dentro.trilhas} />
+        {/* A marca abre o vídeo (pedido do Rodrigo). */}
+        <div style={{ marginBottom: 30, ...aparece(t, 0.02, INI_TRILHAS - 0.05, 0.35) }}>
+          <Logo className="w-[440px]" />
+        </div>
+        <Numero t={t} ini={0.1} numero={LINHAS.length} texto={f.dentro.trilhas} />
         <Numero t={t} ini={1.0} numero={PUBLICADOS.length} texto={f.dentro.noAr} />
         <Numero t={t} ini={2.0} numero={TODOS.length - PUBLICADOS.length} texto={f.dentro.chegando} />
       </AbsoluteFill>
