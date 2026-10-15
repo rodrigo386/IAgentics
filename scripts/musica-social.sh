@@ -11,7 +11,8 @@
 # O trecho de cada música foi escolhido medindo a energia: a retomada depois
 # de uma pausa cai no corte principal do vídeo (2,5 s no lançamento, quando a
 # cascata começa; 3 s no "dentro", quando entra a primeira trilha). Os vídeos
-# mudos vêm de out/social/mudo/ (npm run video:render:social os gera).
+# mudos vêm de out/social/mudo/; `npm run video:render:social` renderiza os
+# mudos e roda este script.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 M=out/social/musica
@@ -19,7 +20,7 @@ mkdir -p "$M"
 
 # id da faixa na API (api.freetouse.com/v3) | início do trecho (s) | vídeo | duração (s)
 FAIXAS=(
-  "bf10318d-acb3-6542-7b8c-248b65abd669 44.55 lancamento 17"  # Snap Your Fingers: retomada em 47,05 s
+  "bf10318d-acb3-6542-7b8c-248b65abd669 44.55 lancamento 19"  # Snap Your Fingers: retomada em 47,05 s
   "9bb9e170-8e47-4f86-9039-d610c0744ccd 29.68 dentro 22"      # Rush Factor: retomada em 32,68 s
 )
 

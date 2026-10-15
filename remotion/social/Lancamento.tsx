@@ -9,15 +9,18 @@ import { FechoSocial } from "./comum";
 /**
  * Vídeo de lançamento 1, "O lançamento" (2026-10-14, para Instagram e
  * LinkedIn): o filme da hero encurtado, com gancho no primeiro segundo e
- * fecho de anúncio. 17 s, em 9:16 e 4:5 (a mesma composição; as cenas leem o
+ * fecho de anúncio. 19 s, em 9:16 e 4:5 (a mesma composição; as cenas leem o
  * tamanho do quadro).
  *
- * Os cortes caem no grid da trilha (120 BPM, 0,5 s por tempo): impacto em 0
- * ("Chegou."), bateria em 2,5 (cascata), impacto em 6 ("+300 horas de aula"),
- * groove cheio nas trilhas e impacto em 12,5 (preço). Mudou um tempo aqui,
- * mude a trilha junto (scripts/trilha-lancamento.py, DESTAQUES).
+ * A cascata de nomes é mais lenta e maior que a do filme da hero (pedido do
+ * Rodrigo, 2026-10-15: "diminua o ritmo para dar mais leitura, aumente a
+ * fonte"): 5,5 s, cada nome entre 0,6 s e 0,2 s, letra 116.
+ *
+ * Cortes: cascata em 2,5 s (onde cai a volta forte da música, ver
+ * scripts/musica-social.sh), "+300 horas de aula" em 8, trilhas em 9,6,
+ * preço em 14,5. Mudou um tempo aqui, confira os dois scripts de áudio.
  */
-export const DURACAO_LANCAMENTO = 17;
+export const DURACAO_LANCAMENTO = 19;
 const f = cursos.filmesSocial;
 
 export function Lancamento() {
@@ -35,10 +38,10 @@ export function Lancamento() {
           {f.lancamento.linha}
         </div>
       </AbsoluteFill>
-      <Cascata t={t} ini={2.5} fim={6.0} />
-      <Contagem t={t} ini={5.95} fim={7.9} texto={cursos.filmesHero.misto.contagem} />
-      <Trilhas t={t} ini={7.6} />
-      <FechoSocial t={t} ini={12.5} />
+      <Cascata t={t} ini={2.5} fim={8.0} passo={0.6} minimo={0.2} tamanho={116} borra={0.8} />
+      <Contagem t={t} ini={7.95} fim={9.9} texto={cursos.filmesHero.misto.contagem} />
+      <Trilhas t={t} ini={9.6} />
+      <FechoSocial t={t} ini={14.5} />
     </AbsoluteFill>
   );
 }

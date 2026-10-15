@@ -12,6 +12,10 @@ a cada bumbo), arpejo, subidas de ruído e impactos.
 A FOLHA DE TEMPOS de cada vídeo (FOLHAS, abaixo) segue os cortes das
 composições em remotion/social/: mudou um tempo lá, mude aqui.
 
+É a ALTERNATIVA sem licença: os vídeos publicados usam as músicas do Free To
+Use (scripts/musica-social.sh). `npm run video:render:social:trilha-original`
+gera a versão com esta trilha.
+
 Uso: python3 scripts/trilha-lancamento.py lancamento out/social/trilha-lancamento.wav
      python3 scripts/trilha-lancamento.py dentro out/social/trilha-dentro.wav
 Precisa só de numpy.
@@ -35,20 +39,21 @@ ACORDES = [
 ]
 
 FOLHAS = {
-    # Vídeo 1, "O lançamento" (17 s): impacto em "Chegou.", bateria com a
-    # cascata, impacto em "+300 horas", groove nas trilhas, impacto no preço.
+    # Vídeo 1, "O lançamento" (19 s desde 2026-10-15, com a cascata mais
+    # lenta): impacto em "Chegou.", bateria com a cascata, impacto em
+    # "+300 horas", groove nas trilhas, impacto no preço.
     "lancamento": {
-        "duracao": 17.0,
-        "impactos": [0.0, 6.0, 12.5],
+        "duracao": 19.0,
+        "impactos": [0.0, 8.0, 14.5],
         "acentos": [],
-        "subidas": [(4.5, 6.0), (11.5, 12.5)],
-        "silencio_antes": [6.0, 12.5],  # meio tempo sem bateria antes da queda
+        "subidas": [(6.5, 8.0), (13.5, 14.5)],
+        "silencio_antes": [8.0, 14.5],  # meio tempo sem bateria antes da queda
         "secoes": [
             (0.0, 2.5, "intro"),
-            (2.5, 6.0, "construcao"),
-            (6.0, 12.5, "groove"),
-            (12.5, 15.5, "groove_leve"),
-            (15.5, 17.0, "fim"),
+            (2.5, 8.0, "construcao"),
+            (8.0, 14.5, "groove"),
+            (14.5, 17.5, "groove_leve"),
+            (17.5, 19.0, "fim"),
         ],
         "viradas": [],
     },
@@ -224,7 +229,8 @@ def compor(nome):
             mesa.poe(palma(), t0, 0.55)
         if sec == "construcao":
             # o chimbal acelera com a cascata: colcheia, semicolcheia, fusa
-            u = (t0 - 2.5) / 3.5
+            ini_c, fim_c = next((i, f) for i, f, n in folha["secoes"] if n == "construcao")
+            u = (t0 - ini_c) / (fim_c - ini_c)
             div = 2 if u < 0.35 else 4 if u < 0.7 else 8
             for s in range(div):
                 mesa.poe(chimbal(), t0 + s * TEMPO / div, 0.35 + 0.3 * u, pan=0.25)

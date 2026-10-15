@@ -48,25 +48,46 @@ export function Destaques({ t, ini, textos, passo = 1.15 }: { t: number; ini: nu
 }
 
 /** Os nomes de todos os cursos, cada um um pouco mais rápido, até o borrão. */
-function agenda(ini: number, fim: number) {
+function agenda(ini: number, fim: number, passo: number, minimo: number) {
   const nomes = TODOS.map((c) => c.nome);
   const marcas: { nome: string; de: number; ate: number }[] = [];
   let t = ini;
-  let d = 0.32;
+  let d = passo;
   let i = 0;
   while (t < fim) {
     marcas.push({ nome: nomes[i % nomes.length], de: t, ate: t + d });
     t += d;
-    d = Math.max(0.05, d * 0.86);
+    d = Math.max(minimo, d * 0.86);
     i++;
   }
   return marcas;
 }
 
-export function Cascata({ t, ini, fim }: { t: number; ini: number; fim: number }) {
-  const atual = agenda(ini, fim).find((m) => t >= m.de && t < m.ate);
+/** `passo`: quanto o primeiro nome fica na tela; cada um seguinte fica 14%
+ *  menos, até `minimo`. `borra`: os últimos segundos, em que os nomes viram
+ *  borrão. Os padrões são os do filme da hero; o vídeo de lançamento dos
+ *  posts usa nomes mais lentos e maiores (pedido do Rodrigo, 2026-10-15:
+ *  "dar mais leitura"). */
+export function Cascata({
+  t,
+  ini,
+  fim,
+  passo = 0.32,
+  minimo = 0.05,
+  tamanho = 84,
+  borra = 1.4,
+}: {
+  t: number;
+  ini: number;
+  fim: number;
+  passo?: number;
+  minimo?: number;
+  tamanho?: number;
+  borra?: number;
+}) {
+  const atual = agenda(ini, fim, passo, minimo).find((m) => t >= m.de && t < m.ate);
   if (!atual) return null;
-  const borrao = ent(t, fim - 1.4, 1.4);
+  const borrao = ent(t, fim - borra, borra);
   return (
     <div
       style={{
@@ -76,7 +97,7 @@ export function Cascata({ t, ini, fim }: { t: number; ini: number; fim: number }
         placeItems: "center",
         padding: "0 90px",
         textAlign: "center",
-        fontSize: 84,
+        fontSize: tamanho,
         fontWeight: 600,
         letterSpacing: "-0.035em",
         lineHeight: 1.02,

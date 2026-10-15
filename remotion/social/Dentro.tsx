@@ -67,7 +67,10 @@ export function Dentro() {
       {LINHAS.map((_, i) => (
         <Trilha key={i} t={t} i={i} />
       ))}
-      <FechoSocial t={t} ini={INI_TRILHAS + LINHAS.length * POR_TRILHA} frase={f.dentro.fecho} />
+      {/* Sem a frase "Novos cursos chegando na mesma assinatura." no fecho:
+          o Rodrigo achou que ela ficava perdida (2026-10-15). Os 18 "chegando"
+          já estão na abertura. */}
+      <FechoSocial t={t} ini={INI_TRILHAS + LINHAS.length * POR_TRILHA} />
     </AbsoluteFill>
   );
 }

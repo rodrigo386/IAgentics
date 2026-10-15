@@ -1701,7 +1701,6 @@ export const cursos = {
       trilhas: "trilhas",
       noAr: "cursos no ar",
       chegando: "chegando",
-      fecho: "Novos cursos chegando na mesma assinatura.",
     },
   },
   filmeHero: {
