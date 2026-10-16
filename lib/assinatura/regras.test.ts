@@ -59,6 +59,12 @@ describe("acaoDoAdmin", () => {
   it("contestada com acesso: revogar já", () => {
     expect(acaoDoAdmin({ ...base, status: "contestada", acessoLiberadoEm: new Date() }, "2026-10-20")).toBe("revogar");
   });
+  it("revogado que pagou de novo: liberar outra vez", () => {
+    expect(acaoDoAdmin({ ...base, acessoLiberadoEm: new Date("2026-09-01"), acessoRevogadoEm: new Date("2026-10-15") }, "2026-10-20")).toBe("liberar");
+  });
+  it("revogado e sem mês pago: nada a fazer", () => {
+    expect(acaoDoAdmin({ ...base, status: "atrasada", pagoAte: "2026-10-01", acessoLiberadoEm: new Date("2026-09-01"), acessoRevogadoEm: new Date("2026-10-02") }, "2026-10-20")).toBeNull();
+  });
   it("pendente: nada a fazer", () => {
     expect(acaoDoAdmin({ ...base, status: "pendente", pagoAte: null }, "2026-10-20")).toBeNull();
   });

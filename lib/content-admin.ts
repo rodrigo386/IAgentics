@@ -159,4 +159,77 @@ export const admin = {
     igual: "sem variação vs. período anterior",
     semBase: "sem base de comparação",
   },
+
+  /** Link do /admin para o painel de cursos. */
+  irParaCursos: "Painel da plataforma de cursos →",
+
+  /** /admin/cursos (2026-10-16, pedido do Rodrigo: "controle mais completo da
+   *  plataforma cursos, com dashboard, gráficos e fluxo do cliente"). */
+  cursos: {
+    meta: { titulo: "Painel de cursos" },
+    titulo: "Plataforma de cursos",
+    lead: "A assinatura da Solution, da visita na /cursos ao acesso liberado.",
+    voltar: "← Painel geral",
+    periodo: "Período",
+    periodos: [7, 30, 90] as const,
+    dias: (n: number) => `${n} dias`,
+    indicadores: {
+      ativas: "Assinantes ativos",
+      receita: "Receita recorrente mensal",
+      receitaNota: "Ativos × R$ 49,90",
+      conversao: "Visita → assinatura paga",
+      conversaoNota: (pagas: number, visitas: number) => `${pagas} pagas / ${visitas} visitas na /cursos`,
+      liberar: "Aguardando liberação",
+      liberarNota: (atrasadas: number) => (atrasadas ? `${atrasadas} fora das 24 horas úteis` : "todas dentro das 24 horas úteis"),
+      atrasadas: "Pagamento atrasado",
+      canceladas: "Cancelamentos no período",
+      canceladasNota: (base: number) => `de ${base} que já pagaram`,
+    },
+    funil: {
+      titulo: "Funil do período",
+      etapas: ["Visitas na /cursos", "Formulário enviado", "Pagaram", "Acesso liberado"] as const,
+      taxa: (p: string) => `${p}% da etapa anterior`,
+      nota: "As três últimas etapas contam as mesmas assinaturas: as iniciadas no período. Visitas não são pessoas: a mesma pessoa abrindo a página três vezes conta três.",
+    },
+    graficos: {
+      visitas: "Visitas na /cursos por dia",
+      assinaturas: "Assinaturas iniciadas por dia",
+      pagas: "pagas",
+      naoPagas: "ainda não pagas",
+      origens: "De onde chegam as visitas da /cursos",
+      semDados: "Sem dados no período.",
+      origem: {
+        direto: "Direto (link digitado, colado no WhatsApp ou sem origem)",
+        busca: "Busca",
+        social: "Redes sociais",
+        ia: "Assistentes de IA",
+        site: "Outra página do site",
+        indicacao: "Links em outros sites",
+      } as Record<string, string>,
+    },
+    fluxo: {
+      titulo: "Fluxo do cliente",
+      lead: "Cada assinatura na etapa em que está. As colunas com ação pedem algo do time hoje.",
+      etapas: {
+        pagamento: { nome: "Aguardando pagamento", ajuda: "Assinou e não pagou a primeira fatura." },
+        liberar: { nome: "Pago · liberar acesso", ajuda: "Pedir ao Pecege a liberação e marcar aqui. Prazo prometido: 24 horas úteis." },
+        "com-acesso": { nome: "Com acesso", ajuda: "Pago e liberado na Solution." },
+        atrasada: { nome: "Pagamento atrasado", ajuda: "Fatura vencida; o acesso vale até o fim do mês pago." },
+        revogar: { nome: "Revogar acesso", ajuda: "Sem mês pago, contestado ou estornado: pedir ao Pecege para tirar o acesso." },
+        encerrada: { nome: "Encerradas", ajuda: "Canceladas sem acesso, estornadas ou que falharam." },
+      } as Record<string, { nome: string; ajuda: string }>,
+      vazio: "Ninguém nesta etapa.",
+      maisAntigas: (n: number) => `+ ${n} mais antigas, na tabela abaixo`,
+      prazo: {
+        "no-prazo": (h: string) => `${h} h úteis de 24`,
+        "vence-logo": (h: string) => `${h} h úteis de 24 · vence logo`,
+        atrasado: (h: string) => `${h} h úteis · fora do prazo`,
+      } as Record<string, (h: string) => string>,
+      assinouEm: (d: string) => `Assinou em ${d}`,
+      pagoAte: (d: string) => `Pago até ${d}`,
+      whatsapp: "WhatsApp",
+      boasVindas: "Boas-vindas enviado",
+    },
+    tabela: { titulo: "Todas as assinaturas", exportar: "Exportar CSV" },
+  },
 } as const;

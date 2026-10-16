@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { assinaturas } from "@/lib/db/schema";
 import { cancelarAssinaturaAsaas } from "@/lib/asaas/cliente";
@@ -110,7 +110,8 @@ export async function marcarAcessoLiberado(id: string): Promise<boolean> {
   const r = await db
     .update(assinaturas)
     .set({ acessoLiberadoEm: sql`now()`, acessoRevogadoEm: null })
-    .where(and(eq(assinaturas.id, id), isNull(assinaturas.acessoLiberadoEm)))
+    // Primeira liberação, ou de novo depois de uma revogação (pagou outra vez).
+    .where(and(eq(assinaturas.id, id), or(isNull(assinaturas.acessoLiberadoEm), isNotNull(assinaturas.acessoRevogadoEm))))
     .returning({ id: assinaturas.id });
   return r.length > 0;
 }

@@ -23,7 +23,7 @@ const cred = credencial();
    vazamento de dado pessoal — e a trava tem que valer para TODA rota sob
    /admin, não só para a página. */
 test("sem credencial, nem a página nem o CSV abrem", async ({ request }) => {
-  for (const rota of ["/admin", "/admin/lista-espera.csv"]) {
+  for (const rota of ["/admin", "/admin/lista-espera.csv", "/admin/cursos"]) {
     const r = await request.get(rota);
     expect(r.status(), `${rota} sem auth`).toBe(401);
     expect(r.headers()["www-authenticate"] ?? "").toContain("Basic");
@@ -102,5 +102,25 @@ test("o painel não é indexável", async ({ browser }) => {
   const page = await contexto.newPage();
   await page.goto("/admin");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await contexto.close();
+});
+
+/* Painel da plataforma de cursos (2026-10-16): indicadores, funil, gráficos e
+   o quadro do fluxo do cliente, numa página própria atrás da mesma senha. */
+test("o painel de cursos abre com indicadores, funil, período e as seis etapas do fluxo", async ({ browser }) => {
+  const contexto = await browser.newContext({ httpCredentials: { username: cred!.usuario, password: cred!.senha } });
+  const page = await contexto.newPage();
+  await page.goto("/admin");
+  await page.getByRole("link", { name: /Painel da plataforma de cursos/ }).click();
+  await expect(page).toHaveURL(/\/admin\/cursos$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Plataforma de cursos" })).toBeVisible();
+  await expect(page.getByText("Assinantes ativos")).toBeVisible();
+  await expect(page.getByText("Receita recorrente mensal")).toBeVisible();
+  await expect(page.getByText("Funil do período · 30 dias")).toBeVisible();
+  for (const etapa of ["Aguardando pagamento", "Pago · liberar acesso", "Com acesso", "Pagamento atrasado", "Revogar acesso", "Encerradas"]) {
+    await expect(page.getByRole("region", { name: etapa })).toBeVisible();
+  }
+  await page.getByRole("link", { name: "7 dias" }).click();
+  await expect(page.getByText("Funil do período · 7 dias")).toBeVisible();
   await contexto.close();
 });

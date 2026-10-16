@@ -96,6 +96,10 @@ export function acaoDoAdmin(a: {
   const temAcesso = a.acessoLiberadoEm !== null && a.acessoRevogadoEm === null;
   const pagoVigente = a.pagoAte !== null && a.pagoAte >= hoje;
   if (temAcesso && (a.status === "contestada" || a.status === "estornada" || !pagoVigente)) return "revogar";
-  if (!temAcesso && a.acessoRevogadoEm === null && pagoVigente && a.status !== "contestada" && a.status !== "estornada") return "liberar";
+  /* Revogado e com o mês pago de novo = pagou outra vez (revogação só
+     acontece com o mês vencido, contestação ou estorno): volta a "liberar".
+     Até 2026-10-16 a regra exigia "nunca revogado", e quem voltava a pagar
+     sumia da coluna Fazer. */
+  if (!temAcesso && pagoVigente && a.status !== "contestada" && a.status !== "estornada") return "liberar";
   return null;
 }

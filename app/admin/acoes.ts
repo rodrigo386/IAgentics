@@ -15,15 +15,21 @@ export async function liberarAcesso(formData: FormData) {
   revalidatePath("/admin");
 }
 
-/* Assinaturas da Solution (2026-10-14). */
+/* Assinaturas da Solution (2026-10-14). Os botões vivem no /admin e no
+   quadro do fluxo do /admin/cursos (2026-10-16): as duas páginas se atualizam. */
+function atualizarPaineis() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/cursos");
+}
+
 export async function liberarAcessoAssinatura(formData: FormData) {
   await liberarAssinatura(String(formData.get("id") ?? ""));
-  revalidatePath("/admin");
+  atualizarPaineis();
 }
 
 export async function revogarAcessoAssinatura(formData: FormData) {
   await revogarAssinatura(String(formData.get("id") ?? ""));
-  revalidatePath("/admin");
+  atualizarPaineis();
 }
 
 export async function cancelarAssinaturaAdmin(formData: FormData) {
@@ -33,5 +39,5 @@ export async function cancelarAssinaturaAdmin(formData: FormData) {
     // Só o código: a mensagem do Asaas pode trazer dado do cliente.
     console.error("[admin] cancelar assinatura falhou", erro instanceof Error ? erro.message.slice(0, 40) : "erro");
   }
-  revalidatePath("/admin");
+  atualizarPaineis();
 }

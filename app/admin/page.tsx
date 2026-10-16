@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
+import Link from "next/link";
+import { Cartao } from "@/components/admin/Cartao";
 import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
 import { cancelarAssinaturaAdmin, liberarAcesso, liberarAcessoAssinatura, revogarAcessoAssinatura } from "./acoes";
 import { listarAssinaturas } from "@/lib/assinatura/assinaturas";
@@ -28,16 +30,6 @@ export const dynamic = "force-dynamic";
 const numero = new Intl.NumberFormat("pt-BR");
 const dataHora = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
 const dataCurta = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", timeZone: "UTC" });
-
-function Cartao({ rotulo, valor, nota }: { rotulo: string; valor: string; nota?: string }) {
-  return (
-    <div className="border border-line bg-surface p-5">
-      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{rotulo}</p>
-      <p className="mt-2 text-3xl font-medium tabular-nums tracking-[-0.02em] text-fg">{valor}</p>
-      {nota ? <p className="mt-1 text-xs text-fg-muted">{nota}</p> : null}
-    </div>
-  );
-}
 
 /** Variação entre as duas janelas de 7 dias, em texto — sem base, diz que não
  *  tem base em vez de inventar 100%. */
@@ -78,6 +70,9 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
       <header>
         <h1 className="text-3xl font-medium tracking-[-0.03em] text-fg">{t.titulo}</h1>
         <p className="mt-2 text-fg-muted">{t.lead}</p>
+        <Link href="/admin/cursos" className="mt-4 inline-block rounded-control bg-accent px-4 py-2 text-sm font-medium text-accent-on">
+          {t.irParaCursos}
+        </Link>
       </header>
 
       {/* Antes dos números, não depois: quem abre o painel é da casa, e cada
