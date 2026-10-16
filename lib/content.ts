@@ -1696,6 +1696,54 @@ export const cursos = {
    *  trilha original sintetizada (scripts/trilha-lancamento.py). Não vão para
    *  o site: saem em out/social/. As contagens da opção 3 são calculadas da
    *  vitrine, não escritas aqui. */
+  /** Os quatro depoimentos do Vinícius sobre o lançamento (gravados em
+   *  2026-10-15, Dia dos Professores), editados no conceito B "moldura da
+   *  marca" (escolha do Rodrigo): fundo da marca, o vídeo numa janela, tema
+   *  em cima, legenda palavra a palavra embaixo, destaques da marca quando
+   *  ele diz a frase-âncora e o fecho dos vídeos de lançamento. Composições
+   *  em remotion/social/Depoimento.tsx; saem em out/social/. `ancora` = as
+   *  palavras da fala onde o destaque entra (procuradas na transcrição). */
+  depoimentos: {
+    nome: "Vinícius Ferreira",
+    cargo: "IAgentics Academy",
+    videos: [
+      {
+        id: "15.42.25",
+        tema: "Dia dos Professores, dia de lançamento",
+        destaques: [
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "resultados reais", texto: "+300 horas de aula" },
+          { ancora: "valor especial", texto: "R$ 49,90 por mês" },
+        ],
+      },
+      {
+        id: "15.50.25",
+        tema: "Teoria que vira prática no seu dia a dia",
+        destaques: [
+          { ancora: "17 anos", texto: "17 anos de educação corporativa" },
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "valor especial", texto: "R$ 49,90 por mês" },
+        ],
+      },
+      {
+        id: "16.00.47",
+        tema: "Você é competente ou está competente?",
+        destaques: [
+          { ancora: "ser competente", texto: "Ser ou estar?" },
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+        ],
+      },
+      {
+        id: "16.11.29",
+        tema: "Por que criamos a IAgentics Academy",
+        destaques: [
+          { ancora: "passo a passo", texto: "Teoria → passo a passo → resultado" },
+          { ancora: "primeiro passo", texto: "Dê o primeiro passo" },
+          { ancora: "dentro da plataforma", texto: "IAgentics Academy · 7 trilhas" },
+        ],
+      },
+    ],
+  },
   filmesSocial: {
     url: "iagentics.com.br/cursos",
     cancele: "Cancele quando quiser.",

@@ -15,6 +15,7 @@ import { ConceitoMisto, DURACAO_MISTO } from "./hero-cursos/ConceitoMisto";
 import { DURACAO_LANCAMENTO, Lancamento } from "./social/Lancamento";
 import { DURACAO_DENTRO, Dentro } from "./social/Dentro";
 import { Miniatura, type PropsMiniatura } from "./social/Miniatura";
+import { Depoimento, duracaoDepoimento, type PropsDepoimento } from "./social/Depoimento";
 import { DURACAO as DURACAO_HERO, FPS as FPS_HERO, H as H_HERO, W as W_HERO } from "./hero-cursos/base";
 import { ALTURA_CAPA_VITRINE, CapaVitrine, LARGURA_CAPA_VITRINE, MOTIVOS, type PropsCapaVitrine } from "./capas/CapaVitrine";
 import { DURACAO_SOLUCAO, FilmeSolucaoAcademy, FilmeSolucaoNexo, FilmeSolucaoSpendLab } from "./home-solucoes/FilmesSolucoes";
@@ -114,6 +115,15 @@ export function RemotionRoot() {
       <Composition id="social-lancamento-feed" component={Lancamento} durationInFrames={DURACAO_LANCAMENTO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
       <Composition id="social-dentro-vertical" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
       <Composition id="social-dentro-feed" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
+      {/* Depoimentos do Vinícius (2026-10-15), conceito B "moldura da marca",
+          em 9:16 e 4:5. O id leva a hora da gravação com hífens (o Remotion
+          não aceita ponto em id). Precisam do bundle com --public-dir
+          out/publico-depoimentos (scripts/depoimentos-social.sh). */}
+      {cursos.depoimentos.videos.flatMap(({ id }) =>
+        ([["vertical", 1920], ["feed", 1350]] as const).map(([formato, altura]) => (
+          <Composition key={`${id}-${formato}`} id={`depoimento-${id.replaceAll(".", "-")}-${formato}`} component={Depoimento} durationInFrames={Math.ceil(duracaoDepoimento(id) * 30)} fps={30} width={1080} height={altura} defaultProps={{ id } satisfies PropsDepoimento} />
+        )),
+      )}
       {/* Miniaturas (capas) dos vídeos de lançamento, um quadro só. */}
       {(["lancamento", "dentro"] as const).flatMap((video) =>
         ([["vertical", 1920], ["feed", 1350]] as const).map(([formato, altura]) => (
