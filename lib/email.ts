@@ -22,6 +22,8 @@ export async function enviarEmail(msg: {
   assunto: string;
   texto: string;
   html: string;
+  /** Para onde vai o "responder" (o remetente é nao-responda). */
+  responderPara?: string;
 }): Promise<{ ok: boolean }> {
   const chave = process.env.RESEND_API_KEY;
   if (!chave) return { ok: false };
@@ -34,6 +36,7 @@ export async function enviarEmail(msg: {
         from: process.env.CONTATO_DE ?? "IAgentics <nao-responda@iagentics.com.br>",
         to: [msg.para],
         subject: msg.assunto,
+        ...(msg.responderPara ? { reply_to: msg.responderPara } : {}),
         text: msg.texto,
         html: msg.html,
       }),
@@ -115,6 +118,43 @@ export function emailListaEspera(nome: string) {
           `${ondeAntes}<a href="${URL_SOLUTION}" style="color:#7607e8;text-decoration:underline">Solution</a>${ondeDepois}`,
         ) +
         paragrafo(promessa),
+    ),
+  };
+}
+
+/**
+ * Boas-vindas a quem pagou a assinatura (2026-10-16, pedido do Rodrigo: "o
+ * usuário tem que receber um e-mail de boas-vindas dizendo que em até 24
+ * horas úteis iremos liberar o acesso através da Plataforma Solution").
+ * Enviado UMA vez por assinatura, no primeiro pagamento confirmado
+ * (lib/assinatura/assinaturas.ts). Respostas vão para o contato.
+ */
+export const RESPONDER_ASSINATURA = "contato@iagentics.com.br";
+
+export function emailBoasVindas(nome: string) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const seguro = escapeHtml(primeiroNome);
+  const URL_SOLUTION = "https://plataformasolution.com.br/";
+
+  const confirmado = "Seu pagamento foi confirmado e a sua assinatura está ativa. Boas-vindas!";
+  const prazo = "Em até 24 horas úteis vamos liberar o seu acesso pela Plataforma Solution, a plataforma online do Pecege, da USP/Esalq. Você vai receber um e-mail com os dados de entrada assim que o acesso estiver liberado.";
+  const inclui = "A assinatura dá acesso às formações de IA aplicada da IAgentics Academy e às trilhas de cursos da Solution, no seu ritmo.";
+  const cobranca = "A mensalidade é de R$ 49,90, e a fatura de cada mês chega por e-mail. Para cancelar, é só falar com a gente pelo WhatsApp ou por este e-mail; o acesso continua até o fim do mês pago.";
+  const duvidas = "Ficou alguma dúvida? Responda este e-mail.";
+
+  const paragrafo = (conteudo: string) =>
+    `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+
+  return {
+    assunto: "Boas-vindas! Seu acesso à Solution chega em até 24 horas úteis",
+    texto: [`Olá, ${primeiroNome}.`, confirmado, prazo, inclui, cobranca, duvidas, `Solution: ${URL_SOLUTION}`, "IAgentics · iagentics.com.br"].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">Olá, ${seguro}.</p>` +
+        `<p style="margin:0 0 16px;font-size:17px;line-height:1.5;font-weight:bold;color:#131723">${confirmado}</p>` +
+        paragrafo(prazo.replace("Plataforma Solution", `<a href="${URL_SOLUTION}" style="color:#7607e8;text-decoration:underline">Plataforma Solution</a>`)) +
+        paragrafo(inclui) +
+        paragrafo(cobranca) +
+        paragrafo(duvidas),
     ),
   };
 }

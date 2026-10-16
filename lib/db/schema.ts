@@ -165,6 +165,10 @@ export const assinaturas = pgTable(
     acessoLiberadoEm: timestamp("acesso_liberado_em", { withTimezone: true }),
     acessoRevogadoEm: timestamp("acesso_revogado_em", { withTimezone: true }),
     canceladaEm: timestamp("cancelada_em", { withTimezone: true }),
+    /** E-mail de boas-vindas enviado (2026-10-16): marcado ANTES do envio, para
+     *  os dois avisos do mesmo pagamento (confirmado e recebido) não mandarem
+     *  dois e-mails; desfeito se o envio falhar. */
+    boasVindasEm: timestamp("boas_vindas_em", { withTimezone: true }),
   },
   (t) => [
     check(

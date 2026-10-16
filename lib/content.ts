@@ -94,7 +94,7 @@ export const privacidade = {
         {
           termo: "Assinatura da plataforma Solution",
           texto:
-            "Nome, e-mail, celular, a situação de cada pagamento mensal, até quando o acesso está pago e a data em que você autorizou a cobrança e o compartilhamento com o Pecege. Servem para cobrar a mensalidade e para o Pecege liberar e encerrar seu acesso na Solution. O CPF é pedido porque o Asaas, que emite as cobranças, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
+            "Nome, e-mail, celular, a situação de cada pagamento mensal, até quando o acesso está pago e a data em que você autorizou a cobrança e o compartilhamento com o Pecege. Servem para cobrar a mensalidade, para enviar o e-mail de boas-vindas quando o pagamento é confirmado e para o Pecege liberar e encerrar seu acesso na Solution. O CPF é pedido porque o Asaas, que emite as cobranças, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
         },
         {
           termo: "Lista de espera e compras avulsas anteriores",
@@ -1891,7 +1891,7 @@ export const cursos = {
       passos: [
         { titulo: "Assine", texto: "Preencha seus dados" },
         { titulo: "Pague como preferir", texto: "Cartão, Pix ou boleto. Todo mês a nova fatura chega no seu e-mail." },
-        { titulo: "Receba o acesso", texto: "Com o pagamento confirmado, o Pecege libera seu acesso à Solution e avisa por e-mail." },
+        { titulo: "Receba o acesso", texto: "Com o pagamento confirmado, você recebe um e-mail de boas-vindas, e o acesso à Solution é liberado em até 24 horas úteis." },
         { titulo: "Cancele quando quiser", texto: "Sem fidelidade. Peça pelo WhatsApp ou e-mail; o acesso vale até o fim do mês pago." },
       ],
     },
@@ -1931,7 +1931,7 @@ export const cursos = {
       itens: [
         { pergunta: "O que a assinatura inclui?", resposta: "Acesso à plataforma Solution, do Pecege, com as formações de IA aplicada da IAgentics, enquanto a assinatura estiver ativa." },
         { pergunta: "Como pago a mensalidade?", resposta: "Por cartão, Pix ou boleto. Todo mês o Asaas, que processa os pagamentos, envia a fatura para o seu e-mail, e você escolhe a forma de pagar." },
-        { pergunta: "Quando recebo o acesso?", resposta: "Depois que o pagamento é confirmado, o Pecege libera seu acesso à Solution e avisa no e-mail informado na assinatura." },
+        { pergunta: "Quando recebo o acesso?", resposta: "Em até 24 horas úteis depois que o pagamento é confirmado. Você recebe um e-mail de boas-vindas assim que o pagamento é confirmado e outro com os dados de entrada quando o acesso à Solution é liberado." },
         { pergunta: "Como cancelo?", resposta: "Peça o cancelamento pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. Não há fidelidade nem multa, e o acesso continua até o fim do mês já pago." },
       ],
     },
@@ -1943,8 +1943,8 @@ export const cursos = {
       cancelar: "Para cancelar, fale com a gente pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. O acesso continua até o fim do mês pago.",
       voltar: "Voltar para a página da assinatura",
       estados: {
-        pendente: { rotulo: "Aguardando o primeiro pagamento", texto: "A fatura foi enviada para o seu e-mail. Assim que o pagamento for confirmado, o Pecege libera seu acesso à Solution e avisa você." },
-        ativa: { rotulo: "Assinatura ativa", texto: "Pagamento confirmado. O Pecege libera seu acesso à Solution e avisa no e-mail informado." },
+        pendente: { rotulo: "Aguardando o primeiro pagamento", texto: "A fatura foi enviada para o seu e-mail. Assim que o pagamento for confirmado, você recebe um e-mail de boas-vindas, e o acesso à Solution é liberado em até 24 horas úteis." },
+        ativa: { rotulo: "Assinatura ativa", texto: "Pagamento confirmado. Seu acesso à Solution é liberado em até 24 horas úteis, e você recebe um e-mail com os dados de entrada." },
         atrasada: { rotulo: "Pagamento em atraso", texto: "A última fatura ainda não foi paga. Confira o e-mail com a fatura para manter o acesso." },
         cancelada: { rotulo: "Assinatura cancelada", texto: "Não haverá novas cobranças. O acesso continua até o fim do mês já pago." },
         contestada: { rotulo: "Pagamento em contestação", texto: "Recebemos uma contestação deste pagamento. Fale com a gente para resolver." },

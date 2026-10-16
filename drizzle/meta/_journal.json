@@ -92,6 +92,13 @@
       "when": 1791982457993,
       "tag": "0012_assinaturas",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792188101503,
+      "tag": "0013_boas_vindas",
+      "breakpoints": true
     }
   ]
 }

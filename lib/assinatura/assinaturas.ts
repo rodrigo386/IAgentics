@@ -3,6 +3,7 @@ import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { assinaturas } from "@/lib/db/schema";
 import { cancelarAssinaturaAsaas } from "@/lib/asaas/cliente";
+import { emailBoasVindas, enviarEmail, RESPONDER_ASSINATURA } from "@/lib/email";
 import { EVENTOS_PAGO, pagoAteDaFatura, transicaoAssinatura } from "./regras";
 
 /**
@@ -79,7 +80,28 @@ export async function aplicarEventoAssinatura(evento: EventoAssinatura): Promise
     .set({ status: transicao.para })
     .where(and(eq(assinaturas.asaasAssinaturaId, idAsaas), inArray(assinaturas.status, transicao.de)))
     .returning({ id: assinaturas.id });
+  if (pago) await enviarBoasVindas(idAsaas);
   return linhas.length > 0 || pagoAtualizado > 0 ? "atualizado" : "sem-efeito";
+}
+
+/**
+ * E-mail de boas-vindas, uma vez por assinatura ativa (2026-10-16). A marca
+ * `boasVindasEm` é gravada ANTES do envio: o Asaas manda dois avisos para o
+ * mesmo pagamento no cartão (confirmado e recebido), e só quem conseguir
+ * marcar envia. Se o envio falhar, a marca é desfeita para o próximo aviso
+ * tentar de novo. Falha de e-mail nunca derruba o webhook: o pagamento já
+ * foi gravado, e o Asaas não precisa reentregar por causa disso.
+ */
+export async function enviarBoasVindas(idAsaas: string): Promise<boolean> {
+  const [a] = await db
+    .update(assinaturas)
+    .set({ boasVindasEm: sql`now()` })
+    .where(and(eq(assinaturas.asaasAssinaturaId, idAsaas), eq(assinaturas.status, "ativa"), isNull(assinaturas.boasVindasEm)))
+    .returning({ id: assinaturas.id, nome: assinaturas.nome, email: assinaturas.email });
+  if (!a) return false;
+  const { ok } = await enviarEmail({ para: a.email, responderPara: RESPONDER_ASSINATURA, ...emailBoasVindas(a.nome) }).catch(() => ({ ok: false }));
+  if (!ok) await db.update(assinaturas).set({ boasVindasEm: null }).where(eq(assinaturas.id, a.id));
+  return ok;
 }
 
 /** Botões do /admin. Cada um só vale uma vez (clicar de novo não reescreve). */
