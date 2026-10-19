@@ -147,7 +147,7 @@ test.describe("fluxo completo", () => {
   });
 });
 
-/* A vitrine "Trilhas de Conhecimento" (2026-10-14, pedido do Rodrigo): sete
+/* A vitrine "Trilhas de Conhecimento" (2026-10-14, pedido do Rodrigo): seis
    trilhas em linhas horizontais, 28 cursos publicados e 18 em breve, todos
    com capa servida do nosso domínio (as em breve e a do Marketing com IA,
    geradas no Remotion). */
@@ -156,7 +156,6 @@ test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   const sec = page.getByRole("region", { name: "Trilhas de Conhecimento" });
   await expect(sec.getByRole("heading", { level: 3 })).toHaveText([
     "IA, Dados & Tecnologia",
-    "AI First",
     "Estratégia, Inovação & Projetos",
     "Comunicação & Comportamento",
     "Negociação & Relacionamento",
@@ -166,8 +165,8 @@ test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   await expect(sec.getByRole("listitem")).toHaveCount(46);
   await expect(sec.locator("img")).toHaveCount(46);
   await expect(sec.getByRole("img", { name: /, em breve$/ })).toHaveCount(18);
-  // O Marketing com IA abre a trilha AI First (pedido do Rodrigo).
-  await expect(page.getByRole("list", { name: "AI First" }).getByRole("img").first()).toHaveAccessibleName("Marketing com IA, Prof. Carol Cavalcante");
+  // O Marketing com IA fecha os publicados da trilha de IA (a "AI First" foi juntada a ela em 2026-10-19).
+  await expect(page.getByRole("list", { name: "IA, Dados & Tecnologia" }).getByRole("img").nth(7)).toHaveAccessibleName("Marketing com IA, Prof. Carol Cavalcante");
   // O nome e o professor de cada capa chegam como texto pelo alt.
   await expect(sec.getByRole("img", { name: "Fundamentos de IA para Negócios, Prof. Vinícius Ferreira" })).toBeVisible();
   await expect(sec.getByRole("img", { name: "Inovação, Prof. Léo Recondo" })).toBeAttached();

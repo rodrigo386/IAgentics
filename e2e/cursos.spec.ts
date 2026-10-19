@@ -69,10 +69,10 @@ test("a /cursos lista as formações e só anuncia curso que descreve", async ({
 test("a hero da /cursos traz o filme aprovado, com pausa, e a prévia saiu", async ({ page }) => {
   await page.goto("/cursos");
   const video = page.locator("video");
-  await expect(video).toHaveAttribute("src", "/cursos-hero/misto-v6.mp4");
-  await expect(video).toHaveAttribute("poster", "/cursos-hero/misto-v6.jpg");
+  await expect(video).toHaveAttribute("src", "/cursos-hero/misto-v7.mp4");
+  await expect(video).toHaveAttribute("poster", "/cursos-hero/misto-v7.jpg");
   await expect(video).toHaveAttribute("aria-hidden", "true");
   await expect(page.getByRole("button", { name: /o filme$/ })).toBeVisible();
-  expect((await page.request.get("/cursos-hero/misto-v6.mp4")).status()).toBe(200);
+  expect((await page.request.get("/cursos-hero/misto-v7.mp4")).status()).toBe(200);
   expect((await page.request.get("/preview/cursos")).status()).toBe(404);
 });

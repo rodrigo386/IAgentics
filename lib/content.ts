@@ -1711,7 +1711,7 @@ export const cursos = {
         id: "15.42.25",
         tema: "Dia dos Professores, dia de lançamento",
         destaques: [
-          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 6 trilhas" },
           { ancora: "resultados reais", texto: "+300 horas de aula" },
           { ancora: "valor especial", texto: "R$ 49,90 por mês" },
         ],
@@ -1721,7 +1721,7 @@ export const cursos = {
         tema: "Teoria que vira prática no seu dia a dia",
         destaques: [
           { ancora: "17 anos", texto: "17 anos de educação corporativa" },
-          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 6 trilhas" },
           { ancora: "valor especial", texto: "R$ 49,90 por mês" },
         ],
       },
@@ -1730,7 +1730,7 @@ export const cursos = {
         tema: "Você é competente ou está competente?",
         destaques: [
           { ancora: "ser competente", texto: "Ser ou estar?" },
-          { ancora: "plataforma educacional", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "plataforma educacional", texto: "IAgentics Academy · 6 trilhas" },
         ],
       },
       {
@@ -1739,7 +1739,7 @@ export const cursos = {
         destaques: [
           { ancora: "passo a passo", texto: "Teoria → passo a passo → resultado" },
           { ancora: "primeiro passo", texto: "Dê o primeiro passo" },
-          { ancora: "dentro da plataforma", texto: "IAgentics Academy · 7 trilhas" },
+          { ancora: "dentro da plataforma", texto: "IAgentics Academy · 6 trilhas" },
         ],
       },
     ],
@@ -1758,8 +1758,8 @@ export const cursos = {
     },
   },
   filmeHero: {
-    video: "/cursos-hero/misto-v6.mp4",
-    poster: "/cursos-hero/misto-v6.jpg",
+    video: "/cursos-hero/misto-v7.mp4",
+    poster: "/cursos-hero/misto-v7.jpg",
     pausar: "Pausar o filme",
     continuar: "Continuar o filme",
   },
@@ -1804,14 +1804,12 @@ export const cursos = {
           { nome: "Transformação Digital", professor: "Prof. Rafael Terra", capa: "/vitrine/transformacao-digital.jpg" },
           { nome: "LGPD: Lei Geral de Proteção de Dados", professor: "Prof. Gustavo Galegale", capa: "/vitrine/lgpd.jpg" },
           { nome: "Power BI na Prática", professor: "Prof. Lucas Moreira Rocha", capa: "/vitrine/power-bi-na-pratica.jpg" },
+          /* A trilha "AI First" foi juntada a esta em 2026-10-19 (pedido do
+             Rodrigo: os dois títulos eram redundantes). Publicados primeiro,
+             depois os em breve. */
+          { nome: "Marketing com IA", professor: "Prof. Carol Cavalcante", capa: "/vitrine/marketing-com-ia-v2.jpg", gerada: true },
           { nome: "Análise de Dados com IA Aplicada", capa: "/vitrine/analise-de-dados-com-ia-aplicada.jpg", emBreve: true, gerada: true },
           { nome: "Change Management", capa: "/vitrine/change-management.jpg", emBreve: true, gerada: true },
-        ],
-      },
-      {
-        titulo: "AI First",
-        cursos: [
-          { nome: "Marketing com IA", professor: "Prof. Carol Cavalcante", capa: "/vitrine/marketing-com-ia-v2.jpg", gerada: true },
           { nome: "Roadmap AI First", capa: "/vitrine/roadmap-ai-first.jpg", emBreve: true, gerada: true },
           { nome: "Spend Management & Ativos", capa: "/vitrine/spend-management-ativos.jpg", emBreve: true, gerada: true },
           { nome: "Copilot aplicado ao Microsoft 365", capa: "/vitrine/copilot-aplicado-ao-microsoft-365.jpg", emBreve: true, gerada: true },
