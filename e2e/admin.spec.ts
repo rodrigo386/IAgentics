@@ -124,3 +124,24 @@ test("o painel de cursos abre com indicadores, funil, período e as seis etapas 
   await expect(page.getByText("Funil do período · 7 dias")).toBeVisible();
   await contexto.close();
 });
+
+/* Filtros e números dos gráficos (2026-10-20): a busca filtra o quadro e a
+   tabela, de/até troca o período dos gráficos, e os números de cada dia
+   abrem numa tabela. */
+test("o painel de cursos filtra o fluxo e mostra os números de cada dia", async ({ browser }) => {
+  const contexto = await browser.newContext({ httpCredentials: { username: cred!.usuario, password: cred!.senha } });
+  const page = await contexto.newPage();
+  await page.goto("/admin/cursos");
+  await page.getByLabel("Nome, e-mail ou telefone").fill("ninguem-com-este-nome-xyz");
+  await page.getByRole("button", { name: "Aplicar filtros" }).click();
+  await expect(page).toHaveURL(/q=ninguem-com-este-nome-xyz/);
+  await expect(page.getByText(/^0 de \d+ assinaturas com os filtros$/)).toBeVisible();
+  await expect(page.locator("table").last().locator("tbody tr")).toHaveCount(0);
+
+  await page.goto("/admin/cursos?de=2026-10-01&ate=2026-10-15");
+  await expect(page.getByText("Funil do período · 01/10 a 15/10")).toBeVisible();
+  await page.getByText("Ver os números de cada dia").click();
+  await expect(page.getByRole("columnheader", { name: "Assinaturas iniciadas" })).toBeVisible();
+  await expect(page.locator("details").getByRole("cell", { name: "15/10/2026", exact: true })).toBeVisible();
+  await contexto.close();
+});

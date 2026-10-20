@@ -11,9 +11,12 @@ import { db } from "@/lib/db";
  * seguinte do gráfico. Nada aqui devolve dado pessoal: nome, e-mail e
  * telefone só aparecem no quadro do fluxo, que lê `listarAssinaturas()`.
  */
-const HOJE_SP = sql`(now() at time zone 'America/Sao_Paulo')::date`;
 const DIA_SP = (coluna: string) => sql.raw(`(${coluna} at time zone 'America/Sao_Paulo')::date`);
-const janela = (dias: number) => sql`${HOJE_SP} - ${sql.raw(String(dias - 1))}`;
+
+/** O período dos filtros (lib/admin/filtros.ts), de e até inclusos, em datas de SP. */
+export type Intervalo = { de: string; ate: string };
+const DE = (i: Intervalo) => sql`${i.de}::date`;
+const ATE = (i: Intervalo) => sql`${i.ate}::date`;
 
 type Linhas<T> = { rows?: T[] } | T[];
 const linhas = <T>(r: Linhas<T>): T[] => (Array.isArray(r) ? r : (r.rows ?? []));
@@ -32,63 +35,63 @@ export type Resumo = {
 };
 
 /** Visualizações da /cursos por dia, com os dias sem visita valendo zero. */
-export async function visitasCursosPorDia(dias: number): Promise<DiaVisitas[]> {
+export async function visitasCursosPorDia(i: Intervalo): Promise<DiaVisitas[]> {
   return linhas(
     await db.execute<DiaVisitas>(sql`
       select d::date::text as dia,
              coalesce((select sum(visitas) from page_views where rota = '/cursos' and dia = d::date), 0)::int as visitas
-      from generate_series(${janela(dias)}, ${HOJE_SP}, interval '1 day') as d
+      from generate_series(${DE(i)}, ${ATE(i)}, interval '1 day') as d
       order by d`),
   );
 }
 
 /** Assinaturas iniciadas por dia (formulário enviado) e quantas delas já pagaram. */
-export async function assinaturasPorDia(dias: number): Promise<DiaAssinaturas[]> {
+export async function assinaturasPorDia(i: Intervalo): Promise<DiaAssinaturas[]> {
   return linhas(
     await db.execute<DiaAssinaturas>(sql`
       select d::date::text as dia,
              count(a.id)::int as iniciadas,
              count(a.id) filter (where a.pago_ate is not null)::int as pagas
-      from generate_series(${janela(dias)}, ${HOJE_SP}, interval '1 day') as d
+      from generate_series(${DE(i)}, ${ATE(i)}, interval '1 day') as d
       left join assinaturas a on ${DIA_SP("a.criada_em")} = d::date
       group by d order by d`),
   );
 }
 
 /** De onde vêm as visitas que CHEGAM pela /cursos (tabela `entradas`). */
-export async function origensCursos(dias: number): Promise<Origem[]> {
+export async function origensCursos(i: Intervalo): Promise<Origem[]> {
   return linhas(
     await db.execute<Origem>(sql`
       select origem, sum(visitas)::int as visitas
-      from entradas where rota = '/cursos' and dia >= ${janela(dias)}
+      from entradas where rota = '/cursos' and dia between ${DE(i)} and ${ATE(i)}
       group by origem order by visitas desc`),
   );
 }
 
 /** Funil do período: visitas → formulário enviado → pagou → acesso liberado. As
  *  três últimas etapas contam as MESMAS assinaturas (as iniciadas no período). */
-export async function funilCursos(dias: number): Promise<Funil> {
+export async function funilCursos(i: Intervalo): Promise<Funil> {
   const [r] = linhas(
     await db.execute<Funil>(sql`
       select
-        (select coalesce(sum(visitas), 0) from page_views where rota = '/cursos' and dia >= ${janela(dias)})::int as visitas,
+        (select coalesce(sum(visitas), 0) from page_views where rota = '/cursos' and dia between ${DE(i)} and ${ATE(i)})::int as visitas,
         count(*)::int as iniciadas,
         count(*) filter (where pago_ate is not null)::int as pagaram,
         count(*) filter (where acesso_liberado_em is not null)::int as liberadas
-      from assinaturas where ${DIA_SP("criada_em")} >= ${janela(dias)}`),
+      from assinaturas where ${DIA_SP("criada_em")} between ${DE(i)} and ${ATE(i)}`),
   );
   return r ?? { visitas: 0, iniciadas: 0, pagaram: 0, liberadas: 0 };
 }
 
-export async function resumoCursos(dias: number): Promise<Resumo> {
+export async function resumoCursos(i: Intervalo): Promise<Resumo> {
   const [r] = linhas(
     await db.execute<Resumo>(sql`
       select
         count(*) filter (where status = 'ativa')::int as ativas,
         count(*) filter (where status = 'atrasada')::int as atrasadas,
         /* Só quem já tinha pago: cancelar um checkout nunca pago não é perder assinante. */
-        count(*) filter (where cancelada_em is not null and pago_ate is not null and ${DIA_SP("cancelada_em")} >= ${janela(dias)})::int as "canceladasNoPeriodo",
-        count(*) filter (where pago_ate is not null and ${DIA_SP("criada_em")} >= ${janela(dias)})::int as "pagaramNoPeriodo",
+        count(*) filter (where cancelada_em is not null and pago_ate is not null and ${DIA_SP("cancelada_em")} between ${DE(i)} and ${ATE(i)})::int as "canceladasNoPeriodo",
+        count(*) filter (where pago_ate is not null and ${DIA_SP("criada_em")} between ${DE(i)} and ${ATE(i)})::int as "pagaramNoPeriodo",
         count(*) filter (where pago_ate is not null)::int as "pagaramDesdeSempre"
       from assinaturas`),
   );
