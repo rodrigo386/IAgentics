@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { cursos } from "@/lib/content";
+import { registrarEvento } from "@/lib/eventos-cliente";
 
 /**
  * Formulário da assinatura da Solution (2026-10-14). Manda nome, e-mail, CPF,
@@ -17,12 +18,20 @@ const t = cursos.assinatura.formulario;
 export function AssinaturaForm() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  // Funil por dentro (2026-10-29): "começou o formulário" conta uma vez por visita.
+  const comecou = useRef(false);
+  const aoComecar = () => {
+    if (comecou.current) return;
+    comecou.current = true;
+    registrarEvento("formulario_inicio");
+  };
 
   async function enviar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setEnviando(true);
     setErro(null);
+    registrarEvento("formulario_envio");
     try {
       const r = await fetch("/cursos/assinar", {
         method: "POST",
@@ -38,11 +47,14 @@ export function AssinaturaForm() {
       });
       const corpo = await r.json().catch(() => ({}));
       if (r.ok && corpo.url) {
+        registrarEvento("formulario_ok");
         window.location.href = corpo.url;
         return;
       }
+      registrarEvento("formulario_erro");
       setErro(t.erros[corpo.error] ?? t.erros.falha);
     } catch {
+      registrarEvento("formulario_erro");
       setErro(t.erros.falha);
     }
     setEnviando(false);
@@ -52,7 +64,7 @@ export function AssinaturaForm() {
   const rotulo = "font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted";
 
   return (
-    <form onSubmit={enviar} className="flex flex-col gap-4">
+    <form onSubmit={enviar} onFocusCapture={aoComecar} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5">
         <span className={rotulo}>{t.nome}</span>
         <input name="nome" required autoComplete="name" className={campo} />
@@ -92,6 +104,7 @@ export function AssinaturaForm() {
       >
         {enviando ? t.enviando : t.botao}
       </button>
+      <p className="text-center text-xs text-fg-muted">{cursos.assinatura.garantia}</p>
       {erro ? (
         <p role="alert" className="text-sm text-fg">
           {erro}

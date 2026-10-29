@@ -99,6 +99,13 @@
       "when": 1792188101503,
       "tag": "0013_boas_vindas",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1793316546629,
+      "tag": "0014_eventos_cursos",
+      "breakpoints": true
     }
   ]
 }

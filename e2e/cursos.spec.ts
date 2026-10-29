@@ -76,3 +76,36 @@ test("a hero da /cursos traz o filme aprovado, com pausa, e a prévia saiu", asy
   expect((await page.request.get("/cursos-hero/misto-v7.mp4")).status()).toBe(200);
   expect((await page.request.get("/preview/cursos")).status()).toBe(404);
 });
+
+/* Item 5 da análise de performance (2026-10-29): a garantia de 7 dias está
+   escrita onde a pessoa decide. */
+test("a /cursos mostra a garantia de 7 dias no topo, no preço, no botão e no FAQ", async ({ page }) => {
+  await page.goto("/cursos");
+  await expect(page.locator("main")).toContainText("Garantia de 7 dias e cancelamento quando quiser.");
+  await expect(page.locator("#assinar").getByText("Garantia de 7 dias: se desistir nesse prazo, devolvemos 100% do valor.")).toHaveCount(2);
+  await expect(page.getByText("E se eu não gostar?")).toBeVisible();
+});
+
+/* Item 2: o site leva para a /cursos pela /academy, pela home e pelos artigos. */
+test("academy, home e artigos levam para a assinatura", async ({ page }) => {
+  await page.goto("/academy");
+  await expect(page.getByRole("link", { name: "Conhecer as trilhas" }).first()).toHaveAttribute("href", "/cursos");
+  await expect(page.getByRole("link", { name: "Ver as trilhas e assinar" })).toHaveAttribute("href", "/cursos");
+  await expect(page.getByText(/Em construção com o Pecege/)).toHaveCount(0);
+
+  await page.goto("/");
+  await expect(page.locator("#solucoes").getByRole("link", { name: "Conhecer as trilhas" })).toHaveAttribute("href", "/cursos");
+
+  await page.goto("/artigos");
+  const artigo = await page.locator('main a[href^="/artigos/"]').first().getAttribute("href");
+  await page.goto(artigo!);
+  await expect(page.getByRole("heading", { name: "Leve isso para o seu dia a dia" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Conhecer as trilhas" })).toHaveAttribute("href", "/cursos");
+});
+
+/* Item 1: os eventos da página chegam ao banco, só os da lista fechada. */
+test("a rota de eventos aceita só a lista fechada e sempre responde 204", async ({ request }) => {
+  expect((await request.post("/api/eventos", { data: { evento: "cta_topo" } })).status()).toBe(204);
+  expect((await request.post("/api/eventos", { data: { evento: "inventado" } })).status()).toBe(204);
+  expect((await request.post("/api/eventos", { data: "lixo" })).status()).toBe(204);
+});

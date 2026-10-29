@@ -139,7 +139,7 @@ export function emailBoasVindas(nome: string) {
   const confirmado = "Seu pagamento foi confirmado e a sua assinatura está ativa. Boas-vindas!";
   const prazo = "Em até 24 horas úteis vamos liberar o seu acesso pela Plataforma Solution, a plataforma online do Pecege, da USP/Esalq. Você vai receber um e-mail com os dados de entrada assim que o acesso estiver liberado.";
   const inclui = "A assinatura dá acesso às formações de IA aplicada da IAgentics Academy e às trilhas de cursos da Solution, no seu ritmo.";
-  const cobranca = "A mensalidade é de R$ 49,90, e a fatura de cada mês chega por e-mail. Para cancelar, é só falar com a gente pelo WhatsApp ou por este e-mail; o acesso continua até o fim do mês pago.";
+  const cobranca = "A mensalidade é de R$ 49,90, e a fatura de cada mês chega por e-mail. Você tem 7 dias de garantia: se desistir nesse prazo, devolvemos 100% do valor. Depois disso, para cancelar é só falar com a gente pelo WhatsApp ou por este e-mail; o acesso continua até o fim do mês pago.";
   const duvidas = "Ficou alguma dúvida? Responda este e-mail.";
 
   const paragrafo = (conteudo: string) =>

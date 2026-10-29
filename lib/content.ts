@@ -112,6 +112,11 @@ export const privacidade = {
             "Na primeira página de cada visita, registramos o TIPO de site que trouxe você — busca, rede social, assistente de IA, indicação de outro site, ou nenhum. Seu navegador nos envia apenas o domínio de quem indicou (por exemplo, google.com), nunca o endereço completo nem o termo que você pesquisou, e esse domínio vira categoria antes de ser gravado. É a categoria que fica; o domínio, não.",
         },
         {
+          termo: "O que acontece na página de cursos",
+          texto:
+            "Na página de cursos, contamos algumas ações para saber onde a página precisa melhorar: quantas vezes alguém rola até a metade ou até o fim, clica em assinar, começa ou envia o formulário de assinatura, ou é levado à fatura. Cada ação vira só mais um no total do dia: não guardamos quem fez, o que foi digitado, nem nada que identifique você ou o seu navegador.",
+        },
+        {
           termo: "Google Analytics",
           texto:
             "Usamos o Google Analytics nas páginas públicas para entender o uso do site. Ele grava cookies no seu navegador e trata dados conforme a política do Google.",
@@ -311,7 +316,19 @@ export const credenciais = {
   },
 } as const;
 
+/** O preço da assinatura da Solution, numa constante só (2026-10-29): aparece
+ *  na /cursos, na /academy, na home e no fim dos artigos. O valor COBRADO mora
+ *  em lib/assinatura/regras.ts (VALOR_ASSINATURA_CENTAVOS): mudou um, mude o
+ *  outro (o e2e confere a /cursos). */
+export const PRECO_MENSAL = "R$ 49,90";
+
 export const solutions = {
+  /** Linha embaixo das três soluções na home (2026-10-29): o caminho da home
+   *  para a assinatura, que antes só existia no menu. */
+  assinaturaAcademy: {
+    texto: `A IAgentics Academy também é online, por assinatura: ${PRECO_MENSAL} por mês.`,
+    cta: "Conhecer as trilhas",
+  },
   eyebrow: "Modelos de negócio",
   headline: "As 3 soluções da IAgentics",
   items: [
@@ -484,6 +501,13 @@ export const nexo = {
 --------------------------------------------------------------------------- */
 
 export const academy = {
+  /** Faixa depois dos cursos em destaque (2026-10-29): quem rolou a página
+   *  inteira da Academy, que vende in company, e prefere estudar sozinho. */
+  assinatura: {
+    titulo: "Prefere estudar no seu ritmo?",
+    texto: `As formações da IAgentics Academy também estão na Solution, a plataforma online do Pecege, da USP/Esalq. ${PRECO_MENSAL} por mês, sem fidelidade.`,
+    cta: "Ver as trilhas e assinar",
+  },
   /**
    * Os três slides do carrossel do hero, observados ao vivo por 60s. Qual deles
    * vira o H1 desta página - ou se os três giram - é decisão do time; hoje a
@@ -528,14 +552,16 @@ export const academy = {
     /* Reescrito em 2026-08-28: a plataforma própria saiu e o que vem é a
        construída com o Pecege. O quadro continua na home porque a educação
        segue sendo oferta da casa — o que mudou é com quem. */
-    body: "Em construção com o Pecege: formações de IA aplicada a Compras e Gestão de Gastos.",
+    /* Atualizado em 2026-10-29 (análise de performance): dizia "em construção"
+       duas semanas depois de a assinatura entrar no ar. */
+    body: `Formações de IA aplicada da IAgentics e trilhas da Solution, do Pecege, por assinatura: ${PRECO_MENSAL} por mês.`,
     /**
      * O botão da plataforma. `appHref: null` = ainda sem endereço, e o botão
      * aparece desabilitado com a marca "em breve" em vez de fingir que leva a
      * algum lugar. Preencha aqui e ele vira link de verdade sozinho - mesmo
      * padrão dos quadros de mídia do /nexo.
      */
-    appLabel: "Saiba mais",
+    appLabel: "Conhecer as trilhas",
     /* Aponta para /cursos, que desde 2026-08-28 é o aviso de "em breve" da
        parceria. O rótulo deixou de ser "Acessar plataforma" no mesmo dia: não
        há mais plataforma para acessar, e botão que promete o que não entrega
@@ -1219,6 +1245,14 @@ export const explicadores = {
 } as const;
 
 export const artigos = {
+  /** Bloco no fim de cada artigo (2026-10-29): os artigos trazem gente da
+   *  busca e não levavam para lugar nenhum. */
+  ctaCursos: {
+    eyebrow: "IAgentics Academy",
+    titulo: "Leve isso para o seu dia a dia",
+    texto: `As trilhas de IA aplicada e de Compras, Vendas & Supply 4.0 estão na assinatura da IAgentics Academy, na Solution, a plataforma online do Pecege. ${PRECO_MENSAL} por mês, com 7 dias de garantia.`,
+    cta: "Conhecer as trilhas",
+  },
   /* `meta` é o que vai para <title> e <meta description>; `hero.titulo` é o
      H1 na tela, e os dois NÃO são a mesma coisa. Na página, "Artigos" basta:
      a pessoa já sabe onde está. No resultado de busca ela não sabe, e foi por
@@ -1881,8 +1915,13 @@ export const cursos = {
    *  mudar junto se o preço mudar (o e2e confere os dois). */
   assinatura: {
     cta: "Assinar por R$ 49,90/mês",
-    preco: "R$ 49,90",
+    preco: PRECO_MENSAL,
     porMes: "por mês",
+    /** Garantia de 7 dias (2026-10-29, item 5 da análise de performance). É o
+     *  direito de arrependimento da compra online (CDC, art. 49), escrito para
+     *  tirar o medo de assinar. Devolver = estornar no Asaas E cancelar no
+     *  /admin (o estorno sozinho não para as próximas cobranças). */
+    garantia: "Garantia de 7 dias: se desistir nesse prazo, devolvemos 100% do valor.",
     resumo: "Acesso à plataforma Solution inteira, com as formações de IA da IAgentics. Cartão, Pix ou boleto. Cancele quando quiser.",
     comoFunciona: {
       titulo: "Como funciona",
@@ -1930,6 +1969,7 @@ export const cursos = {
         { pergunta: "O que a assinatura inclui?", resposta: "Acesso à plataforma Solution, do Pecege, com as formações de IA aplicada da IAgentics, enquanto a assinatura estiver ativa." },
         { pergunta: "Como pago a mensalidade?", resposta: "Por cartão, Pix ou boleto. Todo mês o Asaas, que processa os pagamentos, envia a fatura para o seu e-mail, e você escolhe a forma de pagar." },
         { pergunta: "Quando recebo o acesso?", resposta: "Em até 24 horas úteis depois que o pagamento é confirmado. Você recebe um e-mail de boas-vindas assim que o pagamento é confirmado e outro com os dados de entrada quando o acesso à Solution é liberado." },
+        { pergunta: "E se eu não gostar?", resposta: "Você tem 7 dias, contados do pagamento, para desistir e receber 100% do valor de volta. É só pedir pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. Depois desse prazo, a assinatura pode ser cancelada quando você quiser, sem multa, e o acesso vale até o fim do mês pago." },
         { pergunta: "Como cancelo?", resposta: "Peça o cancelamento pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. Não há fidelidade nem multa, e o acesso continua até o fim do mês já pago." },
       ],
     },
@@ -2023,7 +2063,7 @@ export const cursos = {
     subtextDepois:
       ", a plataforma online do Pecege, da USP/Esalq.",
     urlSolution: "https://plataformasolution.com.br/",
-    subtextDois: "Cartão, Pix ou boleto. Cancele quando quiser.",
+    subtextDois: "Cartão, Pix ou boleto. Garantia de 7 dias e cancelamento quando quiser.",
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
      com o Pecege — decisão do Rodrigo na mesma data.

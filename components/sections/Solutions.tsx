@@ -188,6 +188,15 @@ export function Solutions() {
             );
           })}
         </ol>
+
+        {/* O caminho da home para a assinatura (2026-10-29): antes só o menu
+            levava à /cursos. Fica embaixo da lista, na coluna dos nomes. */}
+        <p className="order-4 mt-8 text-fg-muted lg:order-none lg:col-span-5 lg:row-start-3">
+          {solutions.assinaturaAcademy.texto}{" "}
+          <Link href="/cursos" className="font-medium text-accent-text underline underline-offset-4">
+            {solutions.assinaturaAcademy.cta}
+          </Link>
+        </p>
       </div>
     </section>
   );

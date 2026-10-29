@@ -145,3 +145,26 @@ test("o painel de cursos filtra o fluxo e mostra os números de cada dia", async
   await expect(page.locator("details").getByRole("cell", { name: "15/10/2026", exact: true })).toBeVisible();
   await contexto.close();
 });
+
+/* O funil por dentro da página (2026-10-29): o clique no "Assinar" do topo
+   aparece no painel. */
+test("um clique no Assinar da /cursos aparece no funil dentro da página", async ({ browser }) => {
+  const visitante = await browser.newContext();
+  const pagina = await visitante.newPage();
+  // O total antes do clique, para conferir que ESTE clique somou.
+  const contexto = await browser.newContext({ httpCredentials: { username: cred!.usuario, password: cred!.senha } });
+  const page = await contexto.newPage();
+  const cliques = async () => {
+    await page.goto("/admin/cursos?dias=7");
+    const linha = page.locator("li", { hasText: "Cliques em assinar (topo + botão fixo)" });
+    return (await linha.count()) ? Number((await linha.locator("strong").textContent())?.replace(/\D/g, "") || 0) : 0;
+  };
+  const antes = await cliques();
+
+  await pagina.goto("/cursos");
+  await pagina.locator("#cta-hero").click();
+  // sendBeacon manda o corpo como Blob, que o Playwright não expõe: confere pelo painel.
+  await expect.poll(cliques, { timeout: 10_000 }).toBeGreaterThan(antes);
+  await visitante.close();
+  await contexto.close();
+});

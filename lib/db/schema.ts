@@ -52,6 +52,20 @@ export const pageViews = pgTable("page_views", {
  * `rota` aqui é a PÁGINA DE ENTRADA, e é o cruzamento que decide pauta: um
  * artigo que aparece com origem "busca" está trazendo gente de fora.
  */
+/**
+ * O que acontece DENTRO da /cursos (2026-10-29, pedido do Rodrigo depois da
+ * análise de performance: "medir o funil por dentro"). Um total por dia e por
+ * evento, de uma lista fechada (lib/eventos.ts): rolou até a metade, rolou
+ * até o fim, clicou em assinar, começou o formulário, enviou, deu erro, foi
+ * para o pagamento. Sem cookie e sem id, como `page_views`: conta ações, não
+ * pessoas.
+ */
+export const eventosCursos = pgTable("eventos_cursos", {
+  dia: date("dia").notNull(),
+  evento: text("evento").notNull(),
+  total: integer("total").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.evento] })]);
+
 export const entradas = pgTable("entradas", {
   dia: date("dia").notNull(),
   rota: text("rota").notNull(),

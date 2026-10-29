@@ -4,6 +4,7 @@ import { AcademyCover } from "@/components/sections/academy/Cover";
 import { AcademyProof, AcademyClients } from "@/components/sections/academy/Proof";
 import { AcademyApproach } from "@/components/sections/academy/Approach";
 import { AcademyFormats } from "@/components/sections/academy/Formats";
+import { AcademyAssinatura } from "@/components/sections/academy/Assinatura";
 import { AcademyCourses } from "@/components/sections/academy/Courses";
 import { AcademyConvite } from "@/components/sections/academy/Convite";
 import { Contact } from "@/components/sections/Contact";
@@ -64,6 +65,7 @@ export default function Page() {
         <AcademyApproach />
         <AcademyFormats />
         <AcademyCourses />
+        <AcademyAssinatura />
         {/* O FAQ antes do contato: as objeções de quem compra treinamento
             corporativo, respondidas em texto que um assistente de IA cita. */}
         <SecaoFaq eyebrow={academy.faq.eyebrow} titulo={academy.faq.titulo} itens={academy.faq.itens} />

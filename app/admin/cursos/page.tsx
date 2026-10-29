@@ -6,7 +6,7 @@ import { listarAssinaturas, type Assinatura } from "@/lib/assinatura/assinaturas
 import { ETAPAS, etapaDoCliente, prazoDeLiberacao, type Etapa } from "@/lib/assinatura/fluxo";
 import { hojeSP, VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import { formatarReais } from "@/lib/catalogo/preco";
-import { assinaturasPorDia, funilCursos, origensCursos, resumoCursos, visitasCursosPorDia } from "@/lib/admin/cursos";
+import { assinaturasPorDia, funilCursos, funilInterno, origensCursos, resumoCursos, visitasCursosPorDia } from "@/lib/admin/cursos";
 import { filtrarAssinaturas, lerFiltros, PERIODOS, type Filtros } from "@/lib/admin/filtros";
 import { cancelarAssinaturaAdmin, liberarAcessoAssinatura, revogarAcessoAssinatura } from "../acoes";
 
@@ -237,13 +237,14 @@ export default async function PaginaCursos({ searchParams }: { searchParams: Pro
   const rotuloPeriodo = t.rotuloPeriodo(f.pronto, diaMes(f.de), diaMes(f.ate));
   const agora = new Date();
 
-  const [resumo, funil, visitas, porDia, origens, todas] = await Promise.all([
+  const [resumo, funil, visitas, porDia, origens, todas, interno] = await Promise.all([
     resumoCursos(intervalo),
     funilCursos(intervalo),
     visitasCursosPorDia(intervalo),
     assinaturasPorDia(intervalo),
     origensCursos(intervalo),
     listarAssinaturas(),
+    funilInterno(intervalo),
   ]);
 
   const todasComEtapa = todas.map((a) => ({ a, etapa: etapaDoCliente(a, hoje) }));
@@ -324,6 +325,40 @@ export default async function PaginaCursos({ searchParams }: { searchParams: Pro
           })}
         </ol>
         <p className="max-w-[80ch] text-xs text-fg-muted">{t.funil.nota}</p>
+      </section>
+
+      {/* Funil por dentro da página (2026-10-29) */}
+      <section className="flex flex-col gap-4">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">
+          {t.interno.titulo} · {rotuloPeriodo}
+        </h2>
+        {interno.inicio === null ? (
+          <p className="text-sm text-fg-muted">{t.interno.semDados}</p>
+        ) : (
+          <>
+            <ol className="flex flex-col gap-3">
+              {t.interno.etapas.map((e, i) => {
+                const valor = i === 0 ? interno.visitas : e.eventos.reduce((soma, ev) => soma + (interno.totais[ev] ?? 0), 0);
+                return (
+                  <li key={e.rotulo} className="grid grid-cols-[180px_1fr] items-center gap-4 sm:grid-cols-[260px_1fr]">
+                    <span className="text-sm text-fg">{e.rotulo}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="h-6 bg-accent/60" style={{ width: `${Math.max(1.5, (valor / Math.max(1, interno.visitas)) * 100)}%` }} />
+                      <span className="shrink-0 text-sm tabular-nums text-fg">
+                        <strong className="font-medium">{numero.format(valor)}</strong>
+                        {i > 0 ? <span className="ml-2 text-fg-muted">{t.interno.dasVisitas(pct(valor, interno.visitas))}</span> : null}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="text-sm text-fg-muted">
+              {t.interno.erros(interno.totais.formulario_erro ?? 0)} · {t.interno.desde(dataCompleta(interno.inicio))}
+            </p>
+          </>
+        )}
+        <p className="max-w-[80ch] text-xs text-fg-muted">{t.interno.nota}</p>
       </section>
 
       {/* Gráficos */}
@@ -421,6 +456,7 @@ export default async function PaginaCursos({ searchParams }: { searchParams: Pro
         <div>
           <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.fluxo.titulo}</h2>
           <p className="mt-2 text-sm text-fg-muted">{t.fluxo.lead}</p>
+          <p className="mt-1 text-sm text-fg-muted">{t.fluxo.garantia}</p>
           <p className="mt-1 text-sm font-medium text-fg">{t.filtros.resultado(comEtapa.length, todasComEtapa.length)}</p>
         </div>
         <div className="-mx-5 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8">

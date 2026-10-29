@@ -6,6 +6,7 @@ import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
 import { CursosVitrine } from "@/components/sections/cursos/Vitrine";
 import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
 import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
+import { MedidorCursos } from "@/components/sections/cursos/MedidorCursos";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { cursos as t } from "@/lib/content";
@@ -71,6 +72,7 @@ export default function PaginaCursos() {
         <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
       </main>
       <BarraAssinar />
+      <MedidorCursos />
       <Footer />
     </>
   );

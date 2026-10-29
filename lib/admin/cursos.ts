@@ -97,3 +97,37 @@ export async function resumoCursos(i: Intervalo): Promise<Resumo> {
   );
   return r ?? { ativas: 0, atrasadas: 0, canceladasNoPeriodo: 0, pagaramNoPeriodo: 0, pagaramDesdeSempre: 0 };
 }
+
+export type FunilInterno = {
+  /** Primeiro dia com evento medido no período (null: nada medido ainda). */
+  inicio: string | null;
+  /** Visitas na /cursos do início da medição até o fim do período. */
+  visitas: number;
+  totais: Record<string, number>;
+};
+
+/** O funil dentro da página (2026-10-29): os totais de cada evento de
+ *  lib/eventos.ts no período, e as visitas contadas só desde que a medição
+ *  começou, para as porcentagens compararem a mesma janela. */
+export async function funilInterno(i: Intervalo): Promise<FunilInterno> {
+  const eventos = linhas(
+    await db.execute<{ evento: string; total: number }>(sql`
+      select evento, sum(total)::int as total from eventos_cursos
+      where dia between ${DE(i)} and ${ATE(i)} group by evento`),
+  );
+  const [r] = linhas(
+    await db.execute<{ inicio: string | null }>(sql`
+      select min(dia)::text as inicio from eventos_cursos where dia between ${DE(i)} and ${ATE(i)}`),
+  );
+  const inicio = r?.inicio ?? null;
+  let visitas = 0;
+  if (inicio) {
+    const [v] = linhas(
+      await db.execute<{ visitas: number }>(sql`
+        select coalesce(sum(visitas), 0)::int as visitas from page_views
+        where rota = '/cursos' and dia between ${inicio}::date and ${ATE(i)}`),
+    );
+    visitas = v?.visitas ?? 0;
+  }
+  return { inicio, visitas, totais: Object.fromEntries(eventos.map((e) => [e.evento, e.total])) };
+}

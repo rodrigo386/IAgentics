@@ -145,6 +145,23 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                   </div>
                 ) : null;
               })}
+
+              {/* Convite para as trilhas no fim do artigo (2026-10-29): os
+                  artigos trazem gente da busca e não levavam a lugar nenhum. */}
+              <aside aria-labelledby="cta-cursos" className="mt-16 border border-line bg-surface p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-text">{t.ctaCursos.eyebrow}</p>
+                <h2 id="cta-cursos" className="mt-3 text-2xl font-medium tracking-[-0.02em] text-fg">
+                  {t.ctaCursos.titulo}
+                </h2>
+                <p className="mt-3 max-w-[60ch] leading-relaxed text-fg-muted">{t.ctaCursos.texto}</p>
+                <Link
+                  href="/cursos"
+                  prefetch={false}
+                  className="mt-6 inline-block rounded-control bg-accent px-6 py-3 font-medium text-accent-on transition-colors hover:bg-accent-hover"
+                >
+                  {t.ctaCursos.cta}
+                </Link>
+              </aside>
             </div>
           </div>
         </article>

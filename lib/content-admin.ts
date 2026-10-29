@@ -209,6 +209,23 @@ export const admin = {
       taxa: (p: string) => `${p}% da etapa anterior`,
       nota: "As três últimas etapas contam as mesmas assinaturas: as iniciadas no período. Visitas não são pessoas: a mesma pessoa abrindo a página três vezes conta três.",
     },
+    interno: {
+      titulo: "Dentro da página",
+      etapas: [
+        { rotulo: "Visitas na /cursos", eventos: [] as string[] },
+        { rotulo: "Rolaram até a metade", eventos: ["rolagem_50"] },
+        { rotulo: "Rolaram até o fim", eventos: ["rolagem_100"] },
+        { rotulo: "Cliques em assinar (topo + botão fixo)", eventos: ["cta_topo", "cta_fixo"] },
+        { rotulo: "Começaram o formulário", eventos: ["formulario_inicio"] },
+        { rotulo: "Enviaram o formulário", eventos: ["formulario_envio"] },
+        { rotulo: "Foram para o pagamento", eventos: ["formulario_ok"] },
+      ],
+      erros: (n: number) => `${n} ${n === 1 ? "envio voltou" : "envios voltaram"} com erro`,
+      dasVisitas: (p: string) => `${p}% das visitas`,
+      desde: (dia: string) => `Medindo desde ${dia}.`,
+      semDados: "A medição dentro da página começou em 29/10/2026 e ainda não há eventos neste período.",
+      nota: "Cada etapa é contada sobre as visitas, não sobre a etapa anterior: alguém pode clicar em assinar sem rolar até o fim. São ações, não pessoas, e quem marcou \"não contar\" no painel fica de fora.",
+    },
     graficos: {
       visitas: "Visitas na /cursos por dia",
       assinaturas: "Assinaturas iniciadas por dia",
@@ -240,6 +257,7 @@ export const admin = {
     fluxo: {
       titulo: "Fluxo do cliente",
       lead: "Cada assinatura na etapa em que está. As colunas com ação pedem algo do time hoje.",
+      garantia: "Garantia de 7 dias: para devolver, estorne a cobrança no painel do Asaas (a assinatura vira \"estornada\" e vai para \"Revogar acesso\") e cancele a assinatura aqui, para parar as próximas cobranças.",
       etapas: {
         pagamento: { nome: "Aguardando pagamento", ajuda: "Assinou e não pagou a primeira fatura." },
         liberar: { nome: "Pago · liberar acesso", ajuda: "Pedir ao Pecege a liberação e marcar aqui. Prazo prometido: 24 horas úteis." },

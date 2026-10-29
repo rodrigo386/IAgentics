@@ -1,3 +1,4 @@
+import { ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import { cursos } from "@/lib/content";
 import { AssinaturaForm } from "./AssinaturaForm";
 
@@ -42,6 +43,10 @@ export function CursosAssinar() {
             <span className="text-lg text-fg-muted">{t.porMes}</span>
           </p>
           <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-fg-muted">{t.resumo}</p>
+          <p className="mt-5 flex max-w-[44ch] items-start gap-2 text-base font-medium text-fg">
+            <ShieldCheck size={22} weight="regular" aria-hidden="true" className="mt-0.5 shrink-0 text-accent-text" />
+            {t.garantia}
+          </p>
         </div>
         <div className="border border-line bg-surface p-6 sm:p-8 lg:col-span-6 lg:col-start-7">
           <AssinaturaForm />
