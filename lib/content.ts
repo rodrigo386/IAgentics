@@ -68,7 +68,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 14 de outubro de 2026",
+    atualizado: "Atualizada em 31 de outubro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -95,6 +95,11 @@ export const privacidade = {
           termo: "Assinatura da plataforma Solution",
           texto:
             "Nome, e-mail, celular, a situação de cada pagamento mensal, até quando o acesso está pago e a data em que você autorizou a cobrança e o compartilhamento com o Pecege. Servem para cobrar a mensalidade, para enviar o e-mail de boas-vindas quando o pagamento é confirmado e para o Pecege liberar e encerrar seu acesso na Solution. O CPF é pedido porque o Asaas, que emite as cobranças, exige: ele vai direto para o Asaas e não é gravado no nosso site.",
+        },
+        {
+          termo: "Diagnose de Compras",
+          texto:
+            "Nome, e-mail de trabalho, empresa, cargo, WhatsApp (se você informar), seu papel na área e as notas que você dá a cada processo. Servem para a equipe da IAgentics Academy preparar o seu diagnóstico e falar com você sobre ele, e só são enviados com a sua autorização marcada. Chegam até nós por e-mail e não ficam gravados no site. Enquanto você responde, o progresso fica guardado apenas no seu navegador, para você poder parar e voltar depois; começar do zero apaga essas respostas.",
         },
         {
           termo: "Lista de espera e compras avulsas anteriores",
@@ -138,7 +143,7 @@ export const privacidade = {
           termo: "Asaas",
           texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato e as respostas da Diagnose de Compras." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
       ],
@@ -146,7 +151,7 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato ficam na nossa caixa de e-mail pelo tempo do atendimento e do relacionamento comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
@@ -2102,3 +2107,369 @@ export const cursos = {
  */
 export type Tema = "rotina" | "dados" | "custos" | "estrategia" | "pessoas" | "ia";
 
+
+/**
+ * Diagnose de Compras, /diagnose-compras (2026-10-31, pedido do Rodrigo: "use
+ * esta diagnose para criar uma página nova dentro do site"). Autoavaliação de
+ * maturidade da área de Compras em 7 pilares e 38 processos, trazida do
+ * `diagnose-compras.html` da IAgentics Academy (contato: Vinícius). Os textos
+ * dos pilares, das réguas e da escala são os do arquivo original.
+ *
+ * A ORDEM dos pilares e dos processos é a identidade de cada resposta (a chave
+ * "pilar-processo" que o navegador guarda e o servidor valida). Incluir,
+ * tirar ou reordenar processo muda o significado das respostas salvas: troque
+ * também `chaveProgresso`, para quem estava no meio começar do zero.
+ */
+export const diagnose = {
+  meta: {
+    titulo: "Diagnose de Compras: maturidade da sua área",
+    descricao: "Autoavaliação de maturidade da área de Compras em 7 pilares e 38 processos, de cotação a IA. Gratuita, com o radar da sua área no final.",
+  },
+  chaveProgresso: "iagentics-diagnose-compras-v1",
+  contato: "vinicius.ferreira@iagentics.com.br",
+  capa: {
+    kicker: "IAgentics Academy · Diagnose de Compras",
+    titulo: "Qual é a maturidade da sua área de Compras?",
+    lead: "Avalie 38 processos em 7 pilares, de cotação a IA. Cada processo tem uma régua com exemplos concretos, então você não precisa adivinhar a nota. No final você vê o radar da sua área, e a IAgentics Academy prepara as prioridades para uma conversa com você.",
+    fatos: [
+      { valor: "38", rotulo: "processos" },
+      { valor: "7", rotulo: "pilares" },
+      { valor: "12 min", rotulo: "em média" },
+    ],
+    cta: "Começar o diagnóstico",
+  },
+  abertura: {
+    titulo: "Como funciona",
+    texto: "Gestores avaliam como a área está hoje, onde dá para chegar em 12 meses e o impacto de cada processo no negócio. Pessoas do time avaliam só como está hoje. Quando gestor e time da mesma empresa respondem, o diagnóstico mostra onde a percepção de vocês é diferente.",
+    nota: "O progresso fica salvo neste navegador. Dá para parar e voltar depois.",
+    comecar: "Começar o diagnóstico",
+    continuar: "Continuar de onde parei",
+    zerar: "Começar do zero",
+  },
+  identificacao: {
+    eyebrow: "Antes de começar",
+    titulo: "Quem está respondendo?",
+    nome: "Nome",
+    email: "E-mail de trabalho",
+    empresa: "Empresa",
+    empresaNota: "Use o mesmo nome que seus colegas",
+    cargo: "Cargo",
+    whatsapp: "WhatsApp",
+    opcional: "opcional",
+    papel: "Seu papel na área",
+    papeis: {
+      gestor: { titulo: "Gestor(a) de Compras", nota: "Responde hoje, potencial e impacto" },
+      time: { titulo: "Faço parte do time", nota: "Responde só como está hoje" },
+    },
+    consentimento: "Autorizo a IAgentics Academy a usar estas respostas e meus dados de contato para preparar o diagnóstico e falar comigo sobre ele.",
+    privacidade: "Ver a política de privacidade",
+    falta: "Falta preencher:",
+    faltas: {
+      nome: "nome",
+      email: "e-mail válido",
+      empresa: "empresa",
+      cargo: "cargo",
+      papel: "seu papel",
+      consentimento: "a autorização",
+    },
+    voltar: "Voltar",
+    seguir: "Ir para o 1º pilar",
+  },
+  pilar: {
+    contagem: (n: number, total: number) => `Pilar ${n} de ${total}`,
+    processos: (n: number) => `${n} processos`,
+    instrucao: "Leia a régua de cada processo. Se a realidade fica entre duas frases, use 2 ou 4. Na dúvida, fique com a nota menor.",
+    hoje: "Como está hoje",
+    potencial: "Onde chegar em 12 meses",
+    potencialNota: "realista, com o time atual",
+    impacto: "Impacto no negócio",
+    impactoNota: "1 pesa pouco · 5 crítico",
+    faltaUm: "Falta responder 1 processo, marcado em destaque.",
+    faltam: (n: number) => `Faltam ${n} processos, marcados em destaque.`,
+    voltar: "Voltar",
+    proximo: "Próximo pilar",
+    enviar: "Enviar e ver a prévia",
+    enviando: "Enviando...",
+    tentarDeNovo: "Tentar enviar de novo",
+    erroEnvio: "Não conseguimos enviar. Confira a internet e tente de novo. Se continuar, escreva para",
+  },
+  previa: {
+    eyebrow: "Prévia do diagnóstico",
+    media: "Maturidade média hoje",
+    radar: "Radar de maturidade por pilar",
+    hoje: "Hoje",
+    em12: "Em 12 meses",
+    escala: "Escala de 1 a 5",
+    gestorTitulo: "As prioridades ficam para a nossa conversa",
+    gestorTexto: "Suas respostas chegaram à equipe da IAgentics Academy. Vamos cruzar gap e impacto dos 38 processos e entrar em contato em até 2 dias úteis para apresentar as 5 prioridades da sua área e o plano de 12 meses.",
+    maiorSalto: "Pelo que você respondeu, o maior salto possível está em",
+    timeTitulo: "Obrigado por responder",
+    timeTexto: (empresa: string) => `Suas respostas chegaram à equipe da IAgentics Academy e entram no diagnóstico da ${empresa}, junto com as do seu gestor.`,
+    convidarTitulo: "Peça para 2 ou 3 pessoas do time responderem",
+    convidarTexto: "Com o mesmo nome de empresa, o diagnóstico mostra onde você e o time enxergam a área de forma diferente. Costuma ser o achado mais útil da reunião.",
+    copiar: "Copiar o link para o time",
+    copiado: "Link copiado",
+    mensagemTime: (link: string, empresa: string) =>
+      `Oi! Estou fazendo um diagnóstico da nossa área de Compras com a IAgentics Academy. Leva uns 10 minutos: ${link} (empresa: ${empresa}, papel: "Faço parte do time").`,
+    duvidas: "Dúvidas:",
+    refazer: "Fazer um novo diagnóstico",
+  },
+  rodape: "Suas respostas vão somente para a equipe da IAgentics Academy e servem para preparar o seu diagnóstico.",
+  pilares: [
+    {
+      nome: "Gestão de Fornecedores",
+      curto: "Fornecedores",
+      processos: [
+        {
+          nome: "Requisições e cotações (RFI, RFP, RFQ)",
+          oque: "Como a área pede informação, proposta e preço ao mercado",
+          regua: ["Cada comprador pede cotação do seu jeito, por e-mail", "Modelos padrão de RFI, RFP e RFQ usados por todos", "Processo digital com prazos, comparativo automático e histórico consultável"],
+        },
+        {
+          nome: "Should cost e custo total (TCO)",
+          oque: "Se a área sabe quanto um item deveria custar e o custo total de posse",
+          regua: ["Compra pelo menor preço da cotação", "Abertura de custo e TCO feitas para itens críticos", "Modelos de custo atualizados guiam toda negociação relevante"],
+        },
+        {
+          nome: "Seleção e homologação",
+          oque: "Critérios para aprovar um fornecedor novo",
+          regua: ["Fornecedor entra por indicação, sem critério", "Checklist de homologação documentado e aplicado", "Homologação com critérios de risco, ESG e saúde financeira, revista periodicamente"],
+        },
+        {
+          nome: "Contratos e SLA",
+          oque: "Formalização de preço, prazo, nível de serviço e multa",
+          regua: ["Muitas compras sem contrato; prazos e SLA combinados de boca", "Contratos padrão nas categorias principais, com SLA", "Base de contratos com alerta de vencimento e reajuste; SLA medido"],
+        },
+        {
+          nome: "Avaliação de desempenho do fornecedor",
+          oque: "Medição de prazo, qualidade e preço entregues",
+          regua: ["Só se fala do fornecedor quando há problema", "Avaliação periódica dos principais fornecedores", "Nota contínua de todos os relevantes, com plano de ação e consequência"],
+        },
+        {
+          nome: "Percepção do fornecedor",
+          oque: "Como os fornecedores enxergam a empresa como cliente",
+          regua: ["Nunca perguntamos", "Pesquisa pontual com fornecedores estratégicos", "Pesquisa regular vira plano de melhoria e vantagem na negociação"],
+        },
+        {
+          nome: "Relacionamento e desenvolvimento",
+          oque: "Parceria com fornecedores estratégicos",
+          regua: ["Relação apenas transacional", "Reuniões periódicas com os estratégicos", "Programa de desenvolvimento com metas conjuntas e inovação compartilhada"],
+        },
+      ],
+    },
+    {
+      nome: "Categorias e Strategic Sourcing",
+      curto: "Categorias",
+      processos: [
+        {
+          nome: "Categorização do gasto",
+          oque: "Agrupamento das compras em famílias, cada uma com um dono",
+          regua: ["Gasto não é categorizado", "Árvore de categorias definida, com responsável", "Gasto 100% classificado automaticamente e revisado"],
+        },
+        {
+          nome: "Matriz de risco e impacto (Kraljic)",
+          oque: "Estratégia por categoria conforme risco de suprimento e impacto no negócio",
+          regua: ["Todas as categorias tratadas do mesmo jeito", "Matriz feita para as categorias principais", "Estratégia por quadrante revista todo ano e ligada às metas"],
+        },
+        {
+          nome: "Análise de mercado",
+          oque: "Conhecimento de oferta, preços e tendências de cada categoria",
+          regua: ["Mercado conhecido só pelos fornecedores atuais", "Estudos de mercado nas categorias críticas", "Monitoramento contínuo de preços, índices e novos fornecedores"],
+        },
+        {
+          nome: "Política de compras e alçadas",
+          oque: "Regras de quem compra, como e com qual aprovação",
+          regua: ["Não existe política escrita", "Política documentada e divulgada", "Política cumprida e medida; exceções rastreadas no sistema"],
+        },
+        {
+          nome: "Especificação técnica (SPEC)",
+          oque: "Clareza do que se compra, definida com a área requisitante",
+          regua: ["Pedido chega vago e muda no meio da cotação", "Modelos de especificação para itens recorrentes", "Especificação revista com engenharia e mercado para reduzir custo"],
+        },
+        {
+          nome: "Gestão de riscos de fornecimento",
+          oque: "Continuidade, dependência de fornecedor único e contingência",
+          regua: ["Risco só aparece quando falta material", "Riscos mapeados nas categorias críticas", "Riscos monitorados, com fornecedor alternativo e plano testado"],
+        },
+      ],
+    },
+    {
+      nome: "Planejamento e Gestão da Área",
+      curto: "Planejamento",
+      processos: [
+        {
+          nome: "Planejamento estratégico",
+          oque: "Plano de Compras ligado à estratégia da empresa",
+          regua: ["A área só reage a pedidos", "Plano anual de Compras escrito", "Plano ligado à estratégia, revisto por trimestre com a diretoria"],
+        },
+        {
+          nome: "Planejamento de budget",
+          oque: "Participação de Compras na construção do orçamento",
+          regua: ["Orçamento feito pelo histórico, sem Compras", "Compras participa do orçamento", "Orçamento por categoria, com metas de economia acompanhadas"],
+        },
+        {
+          nome: "Objetivos e metas",
+          oque: "Metas da área e das pessoas",
+          regua: ["Sem metas formais", "Metas anuais definidas para a área", "Metas desdobradas por pessoa e ligadas a resultado"],
+        },
+        {
+          nome: "Indicadores de gestão",
+          oque: "Medição do desempenho da área",
+          regua: ["Não há indicadores", "Indicadores básicos medidos à mão", "Painel atualizado, discutido em rotina de gestão"],
+        },
+        {
+          nome: "Gestão de projetos",
+          oque: "Condução de projetos de melhoria e economia",
+          regua: ["Projetos sem dono nem prazo", "Projetos com cronograma e responsável", "Carteira de projetos priorizada e medida pelo retorno"],
+        },
+        {
+          nome: "Gestão de processos",
+          oque: "Mapeamento e melhoria dos processos da área",
+          regua: ["Processos não mapeados", "Processos principais mapeados e documentados", "Processos medidos e melhorados continuamente (Lean, PDCA)"],
+        },
+        {
+          nome: "Planejamento de demanda e S&OP",
+          oque: "Antecipação das necessidades de compra",
+          regua: ["Compras só sabe da demanda quando o pedido chega", "Previsão de demanda compartilhada com Compras", "Compras participa do S&OP e se antecipa ao mercado"],
+        },
+        {
+          nome: "Papéis e responsabilidades",
+          oque: "Estrutura, funções e carga de trabalho",
+          regua: ["Funções sobrepostas e sem descrição", "Papéis definidos e comunicados", "Estrutura revista por carga, competência e categoria"],
+        },
+      ],
+    },
+    {
+      nome: "Negociação",
+      curto: "Negociação",
+      processos: [
+        {
+          nome: "Preparação e processo de negociação",
+          oque: "Rito de preparo, condução e registro das negociações",
+          regua: ["Negocia no improviso", "Roteiro de preparação com preço-alvo", "Preparação com dados, cenários e lições registradas"],
+        },
+        {
+          nome: "Táticas aplicadas",
+          oque: "Repertório de táticas usado pelo time",
+          regua: ["Só pede desconto", "Time conhece e usa algumas táticas", "Táticas escolhidas por categoria e treinadas"],
+        },
+        {
+          nome: "Análise de poder",
+          oque: "Leitura de dependência mútua e alternativas (BATNA)",
+          regua: ["Não analisa", "Alternativas mapeadas nas negociações grandes", "Análise de poder em toda negociação relevante"],
+        },
+        {
+          nome: "Mensuração de saving",
+          oque: "Método para medir a economia gerada",
+          regua: ["Saving não é medido", "Saving medido à mão, sem método único", "Método aprovado pela controladoria e reportado todo mês"],
+        },
+      ],
+    },
+    {
+      nome: "Inteligência em Compras",
+      curto: "Inteligência",
+      processos: [
+        {
+          nome: "Definição do escopo do estudo",
+          oque: "Perguntas de negócio que guiam cada análise",
+          regua: ["Estudos feitos sem pergunta clara", "Escopo definido antes de cada estudo", "Agenda de estudos ligada às prioridades de categoria"],
+        },
+        {
+          nome: "Coleta de informações",
+          oque: "Origem e frequência dos dados internos e de mercado",
+          regua: ["Dados buscados na hora, em vários lugares", "Fontes definidas e coleta periódica", "Coleta automática de dados internos e de mercado"],
+        },
+        {
+          nome: "Análise",
+          oque: "Profundidade das análises feitas",
+          regua: ["Planilhas pontuais", "Análises padrão (curva ABC, gasto por categoria)", "Análises preditivas e de cenário"],
+        },
+        {
+          nome: "Mensuração",
+          oque: "Acompanhamento do efeito das decisões tomadas",
+          regua: ["Não se mede o efeito", "Resultados medidos nos projetos principais", "Todo ganho rastreado da análise até o resultado"],
+        },
+        {
+          nome: "Disseminação",
+          oque: "Como a informação chega a quem decide",
+          regua: ["Informação fica com quem fez a análise", "Relatórios enviados com frequência definida", "Painéis acessíveis às áreas e à diretoria"],
+        },
+      ],
+    },
+    {
+      nome: "Tecnologia e Sistemas",
+      curto: "Tecnologia",
+      processos: [
+        {
+          nome: "Sistemas ERP",
+          oque: "Uso do ERP no ciclo de compra",
+          regua: ["ERP usado só para registrar pedido", "Requisição, pedido e recebimento no ERP", "ERP integrado, com dados confiáveis para análise"],
+        },
+        {
+          nome: "Ferramentas de gestão e automação",
+          oque: "E-sourcing, gestão de contratos, procure-to-pay",
+          regua: ["Tudo em e-mail e planilha", "Ferramentas em algumas etapas", "Jornada de compra automatizada de ponta a ponta"],
+        },
+        {
+          nome: "Integração de dados",
+          oque: "Se os sistemas conversam entre si",
+          regua: ["Dados redigitados entre sistemas", "Integração nos fluxos principais", "Dados únicos e integrados, sem retrabalho"],
+        },
+      ],
+    },
+    {
+      nome: "IA e Dados",
+      curto: "IA e Dados",
+      processos: [
+        {
+          nome: "Uso de IA no dia a dia",
+          oque: "Quanto a IA já faz parte do trabalho do time",
+          regua: ["Time não usa IA", "Uso frequente, mas individual", "IA presente nas rotinas da área, com ganho medido"],
+        },
+        {
+          nome: "Rotinas e prompts padronizados",
+          oque: "Padronização do uso de IA nas tarefas da área",
+          regua: ["Cada um pergunta do seu jeito", "Biblioteca de prompts para tarefas comuns", "Agentes e rotinas automatizadas, revisados pelo time"],
+        },
+        {
+          nome: "Governança de dados para IA",
+          oque: "Regras sobre que dado pode ir para qual ferramenta",
+          regua: ["Não há regra", "Regra escrita e divulgada", "Ferramentas aprovadas, regra treinada e auditada"],
+        },
+        {
+          nome: "Qualidade e acesso aos dados de compras",
+          oque: "Se os dados estão prontos para análise com IA",
+          regua: ["Dados incompletos e espalhados", "Base principal organizada", "Dados limpos, atualizados e prontos para análise"],
+        },
+        {
+          nome: "Capacitação do time em IA",
+          oque: "Formação do time para usar IA em Compras",
+          regua: ["Nenhuma formação", "Treinamento pontual", "Trilha contínua com casos reais da área"],
+        },
+      ],
+    },
+  ],
+  /** Os cinco níveis, na ordem 1 a 5. */
+  escala: [
+    {
+      nome: "Inicial",
+      texto: "Há evidências de que a organização reconhece que a área de Compras existe e deve ser considerada junto às medidas do negócio. Entretanto, não há processos padronizados, apenas abordagens eventuais que tendem a ser aplicadas de forma isolada ou caso a caso. A abordagem da administração em geral não é organizada.",
+    },
+    {
+      nome: "Repetitivo",
+      texto: "Os processos foram desenvolvidos até o estágio em que procedimentos similares são adotados por pessoas distintas que realizam a mesma tarefa. Não há treinamento ou divulgação formais de procedimentos padronizados e as responsabilidades são deixadas a cargo das pessoas. Há um alto grau de confiança no conhecimento pessoal e consequente tendência a erros.",
+    },
+    {
+      nome: "Definido",
+      texto: "Os procedimentos foram padronizados e documentados, bem como divulgados através de treinamento. Contudo, cabe às pessoas seguir tais processos, sendo pouco provável que desvios sejam detectados. Os procedimentos em si não são sofisticados, consistindo na formalização de práticas existentes.",
+    },
+    {
+      nome: "Gerenciado",
+      texto: "É possível monitorar e mensurar o cumprimento dos procedimentos, bem como adotar medidas quando os processos aparentarem não funcionar efetivamente. Os processos estão sob constante melhoria e propiciam boas práticas. Automação e ferramentas são utilizadas de forma limitada ou fragmentada.",
+    },
+    {
+      nome: "Otimizado",
+      texto: "Os processos foram refinados ao nível das melhores práticas, com base nos resultados de melhorias contínuas e comparação de maturidade com outras organizações. Adoção de ferramentas e sistemas de gestão com intuito de automação, produtividade e resultados.",
+    },
+  ],
+};

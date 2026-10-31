@@ -117,6 +117,7 @@ export const config = {
     "/academy",
     "/cursos",
     "/spend-lab",
+    "/diagnose-compras",
     "/privacidade",
     "/artigos",
     "/artigos/:slug",

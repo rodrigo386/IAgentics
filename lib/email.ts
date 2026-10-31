@@ -1,5 +1,6 @@
 import "server-only";
-import { site } from "@/lib/content";
+import { site, diagnose } from "@/lib/content";
+import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
 /**
  * Envio transacional do site.
@@ -24,6 +25,8 @@ export async function enviarEmail(msg: {
   html: string;
   /** Para onde vai o "responder" (o remetente é nao-responda). */
   responderPara?: string;
+  /** Anexos em texto (o Resend recebe o conteúdo em base64). */
+  anexos?: { arquivo: string; conteudo: string }[];
 }): Promise<{ ok: boolean }> {
   const chave = process.env.RESEND_API_KEY;
   if (!chave) return { ok: false };
@@ -39,6 +42,9 @@ export async function enviarEmail(msg: {
         ...(msg.responderPara ? { reply_to: msg.responderPara } : {}),
         text: msg.texto,
         html: msg.html,
+        ...(msg.anexos?.length
+          ? { attachments: msg.anexos.map((a) => ({ filename: a.arquivo, content: Buffer.from(a.conteudo, "utf-8").toString("base64") })) }
+          : {}),
       }),
     });
     if (!resposta.ok) {
@@ -155,6 +161,82 @@ export function emailBoasVindas(nome: string) {
         paragrafo(inclui) +
         paragrafo(cobranca) +
         paragrafo(duvidas),
+    ),
+  };
+}
+
+/**
+ * As respostas da Diagnose de Compras para a equipe da Academy (2026-10-31).
+ * Vai para DIAGNOSE_PARA (padrão: o Vinícius, contato que o questionário
+ * original já trazia), com "responder" para quem respondeu.
+ *
+ * O resumo no corpo é o MESMO cálculo da prévia (lib/diagnose.ts). As notas
+ * de cada processo vão num CSV anexo, uma linha por processo e com a empresa
+ * em toda linha: juntar os CSVs do gestor e do time de uma empresa numa
+ * planilha é o que mostra onde as percepções divergem.
+ */
+export const PARA_DIAGNOSE = "vinicius.ferreira@iagentics.com.br";
+
+/** Célula de CSV: aspas escapadas e fórmula neutralizada (o Excel executaria "=..."). */
+function celula(v: string | number | null | undefined): string {
+  let s = v === null || v === undefined ? "" : String(v);
+  if (/^[=+\-@]/.test(s)) s = `'${s}`;
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
+export function emailDiagnose(d: EnvioValido) {
+  const gestor = d.papel === "gestor";
+  const r = resumir(d.respostas, d.papel);
+  const geral = r.geral ?? 0;
+  const lv = nivel(geral);
+  const salto = gestor ? maiorSalto(r) : null;
+  const papel = diagnose.identificacao.papeis[d.papel].titulo;
+
+  const quem = [
+    `Nome: ${d.nome}`,
+    `E-mail: ${d.email}`,
+    `Empresa: ${d.empresa}`,
+    `Cargo: ${d.cargo}`,
+    `WhatsApp: ${d.whatsapp || "não informado"}`,
+    `Papel: ${papel}`,
+  ];
+  const linhaPilar = (p: (typeof r.pilares)[number]) =>
+    `${p.nome}: hoje ${p.hoje === null ? "-" : decimal(p.hoje)}${gestor && p.potencial !== null ? ` · em 12 meses ${decimal(p.potencial)}` : ""}`;
+
+  const cabecalho = ["empresa", "nome", "email", "cargo", "papel", "pilar", "processo", "hoje", "potencial_12_meses", "impacto"];
+  const linhas = diagnose.pilares.flatMap((p, pi) =>
+    p.processos.map((pr, ii) => {
+      const n = d.respostas[chave(pi, ii)];
+      return [d.empresa, d.nome, d.email, d.cargo, d.papel, p.nome, pr.nome, n.h, n.p ?? null, n.i ?? null].map(celula).join(";");
+    }),
+  );
+  /* BOM para o Excel em português abrir com acento e separar por ";". */
+  const csv = "\uFEFF" + [cabecalho.join(";"), ...linhas].join("\r\n");
+  const arquivo = `diagnose-compras-${d.empresa.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "empresa"}-${d.papel}.csv`;
+
+  const e = escapeHtml;
+  const paragrafo = (conteudo: string) => `<p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+
+  return {
+    assunto: `Diagnose de Compras: ${d.empresa} (${gestor ? "gestor" : "time"}, ${d.nome})`,
+    anexos: [{ arquivo, conteudo: csv }],
+    texto: [
+      "Nova resposta da Diagnose de Compras.",
+      quem.join("\n"),
+      `Maturidade média hoje: ${decimal(geral)} (${lv.nome})`,
+      r.pilares.map(linhaPilar).join("\n"),
+      salto ? `Maior salto possível: ${salto.nome}` : "",
+      "As notas de cada processo estão no CSV anexo.",
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:17px;font-weight:bold;color:#131723">Nova resposta da Diagnose de Compras</p>` +
+        paragrafo(quem.map(e).join("<br>")) +
+        paragrafo(`<b>Maturidade média hoje: ${decimal(geral)} (${e(lv.nome)})</b>`) +
+        paragrafo(r.pilares.map((p) => e(linhaPilar(p))).join("<br>")) +
+        (salto ? paragrafo(`Maior salto possível: <b>${e(salto.nome)}</b>`) : "") +
+        paragrafo("As notas de cada processo estão no CSV anexo."),
     ),
   };
 }

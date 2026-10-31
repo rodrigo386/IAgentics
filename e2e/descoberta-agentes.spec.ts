@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
    responde 200. Um Link header para recurso inexistente passa em verificador
    automático e quebra na cara do agente que seguir o link. */
 
-const ROTAS_HTML = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/artigos", "/privacidade"];
+const ROTAS_HTML = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/artigos", "/privacidade"];
 
 test("as páginas HTML trazem Link headers com describedby e privacy-policy", async ({ request }) => {
   for (const rota of ROTAS_HTML) {

@@ -14,6 +14,10 @@ A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAge
 
 - [Cursos](https://iagentics.com.br/cursos): assinatura da [Solution](https://plataformasolution.com.br/), a plataforma de educação online do Pecege (a mesma organização por trás dos MBAs USP/Esalq), com as formações de IA aplicada da IAgentics, por R$ 49,90 por mês. Pagamento por cartão, Pix ou boleto, sem fidelidade; o cancelamento é pelo WhatsApp ou e-mail e o acesso vale até o fim do mês pago. A plataforma própria de cursos da IAgentics foi desligada em agosto de 2026, quando a parceria foi fechada.
 
+## Ferramentas
+
+- [Diagnose de Compras](https://iagentics.com.br/diagnose-compras): autoavaliação gratuita de maturidade da área de Compras, da IAgentics Academy, em 7 pilares (Gestão de Fornecedores, Categorias e Strategic Sourcing, Planejamento e Gestão da Área, Negociação, Inteligência em Compras, Tecnologia e Sistemas, IA e Dados) e 38 processos, cada um com uma régua de 1 a 5. Gestores avaliam hoje, potencial em 12 meses e impacto; o time avalia hoje. No final, a pessoa vê a média e o radar por pilar, e a equipe da Academy entra em contato com as prioridades.
+
 ## Resultados publicados
 
 - Indústria química brasileira (Compras e Jurídico): −50% no ciclo de contratos — o agente revisa e sinaliza cláusulas, analisa riscos pela política interna e sugere melhorias.

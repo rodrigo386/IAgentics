@@ -13,7 +13,7 @@ import { estimarTokens, markdownDaRota } from "@/lib/markdown-agentes";
 export const dynamic = "force-dynamic";
 
 /** Só rotas HTML públicas do próprio site — nada de /admin, /api ou externo. */
-const PERMITIDAS = /^\/(?:|nexo|academy|cursos|spend-lab|privacidade|artigos(?:\/[a-z0-9-]+)?)\/?$/;
+const PERMITIDAS = /^\/(?:|nexo|academy|cursos|spend-lab|diagnose-compras|privacidade|artigos(?:\/[a-z0-9-]+)?)\/?$/;
 
 export async function GET(req: Request) {
   const rota = req.headers.get("x-md-rota") ?? new URL(req.url).searchParams.get("rota") ?? "/";

@@ -13,7 +13,7 @@ describe("endereço canônico", () => {
 
 describe("rotas do sitemap", () => {
   it("lista as páginas públicas", () => {
-    expect([...ROTAS_SITEMAP]).toEqual(["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/privacidade"]);
+    expect([...ROTAS_SITEMAP]).toEqual(["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/privacidade"]);
   });
 
   it("toda rota do sitemap tem prioridade declarada", () => {

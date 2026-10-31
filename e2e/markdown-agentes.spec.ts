@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /* Negociação de conteúdo: a mesma URL devolve HTML para navegador e markdown
    para quem pede `Accept: text/markdown`. */
 
-const ROTAS = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/privacidade", "/artigos"];
+const ROTAS = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/privacidade", "/artigos"];
 const ARTIGO = "/artigos/prompts-para-compras";
 
 test("as páginas públicas respondem markdown quando pedido", async ({ request }) => {

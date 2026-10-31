@@ -92,7 +92,7 @@ test("o selo Claude Partner está no rodapé e na faixa de parcerias, sem script
 test("o Vamos conversar do menu leva a uma seção de contato em toda página", async ({ page }) => {
   await page.goto("/artigos");
   const artigo = await page.locator('main a[href^="/artigos/"]').first().getAttribute("href");
-  const rotas = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/artigos", "/privacidade", artigo!];
+  const rotas = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/artigos", "/privacidade", artigo!];
   for (const rota of rotas) {
     await page.goto(rota);
     const href = await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Vamos conversar" }).getAttribute("href");

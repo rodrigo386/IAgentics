@@ -11,6 +11,7 @@ const ARQUIVOS_DA_ROTA: Record<string, string[]> = {
   "/academy": ["app/academy", "components/sections/academy"],
   "/cursos": ["app/cursos", "components/sections/cursos"],
   "/spend-lab": ["app/spend-lab", "components/sections/spend-lab"],
+  "/diagnose-compras": ["app/diagnose-compras", "components/sections/diagnose"],
   "/privacidade": ["app/privacidade"],
 };
 

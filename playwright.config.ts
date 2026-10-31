@@ -24,7 +24,7 @@ export default defineConfig({
          o Asaas falso. E o Next nem carregaria a chave do .env.local — valor
          que começa com `$` é lido como referência a variável e vira vazio,
          então sem esta linha o checkout falha com "env ASAAS ausente". */
-      env: { ASAAS_URL_BASE: "http://127.0.0.1:4010", ASAAS: "chave-falsa-do-e2e", ASSINATURA_LIMITE: "1000" },
+      env: { ASAAS_URL_BASE: "http://127.0.0.1:4010", ASAAS: "chave-falsa-do-e2e", ASSINATURA_LIMITE: "1000", DIAGNOSE_LIMITE: "1000" },
     },
   ],
 });
