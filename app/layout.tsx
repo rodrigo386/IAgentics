@@ -3,6 +3,7 @@ import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { site } from "@/lib/content";
 import { Beacon } from "@/components/site/Beacon";
 import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
+import { MetricoolPixel } from "@/components/site/MetricoolPixel";
 import "./globals.css";
 
 /**
@@ -92,6 +93,8 @@ export default function RootLayout({
         <Beacon />
         {/* GA4, também só nas rotas públicas (ver o componente). */}
         <GoogleAnalytics />
+        {/* Pixel da Metricool, mesma fronteira (ver o componente). */}
+        <MetricoolPixel />
       </body>
     </html>
   );

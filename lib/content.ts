@@ -126,6 +126,11 @@ export const privacidade = {
           texto:
             "Usamos o Google Analytics nas páginas públicas para entender o uso do site. Ele grava cookies no seu navegador e trata dados conforme a política do Google.",
         },
+        {
+          termo: "Metricool",
+          texto:
+            "As páginas públicas carregam uma imagem invisível da Metricool, que usamos para medir de onde vêm as visitas e cruzar com as nossas redes sociais. Ao carregar a imagem, o seu navegador envia à Metricool dados técnicos da visita, como endereço IP, navegador e a página de onde você veio, tratados conforme a política da Metricool.",
+        },
       ],
     },
     {
@@ -145,6 +150,7 @@ export const privacidade = {
         },
         { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato e as respostas da Diagnose de Compras." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
+        { termo: "Metricool", texto: "Medição das visitas às páginas públicas e da origem delas nas redes sociais." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
       ],
     },
@@ -173,7 +179,7 @@ export const privacidade = {
     {
       titulo: "Cookies",
       paragrafos: [
-        "O site usa cookies em um caso só: os do Google Analytics, nas páginas públicas. Não existe área de login e, portanto, nenhum cookie de sessão. Você pode bloquear cookies nas configurações do seu navegador, sem prejuízo algum ao uso do site.",
+        "Nas páginas públicas, o Google Analytics grava cookies, e a Metricool, cuja imagem de medição é carregada do domínio dela, pode gravar os seus. Não existe área de login e, portanto, nenhum cookie de sessão. Você pode bloquear cookies nas configurações do seu navegador, sem prejuízo algum ao uso do site.",
       ],
       itens: [],
     },
