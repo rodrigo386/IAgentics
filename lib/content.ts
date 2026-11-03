@@ -2526,14 +2526,31 @@ export const bolsas = {
     horas: "horas",
     minutos: "min",
   },
-  /** As 50 vagas desenhadas na capa, coloridas pelas cotas (seção 6 do regulamento). */
-  vagas: {
-    rotulo: "As 50 vagas",
-    grupos: [
-      { total: 30, nome: "praticantes" },
-      { total: 10, nome: "gestores" },
-      { total: 10, nome: "vozes da área" },
-    ],
+  /**
+   * A oferta da capa (2026-11-03, pedido do Rodrigo: "mais destaque aos
+   * benefícios, 30 dias grátis, depois 29,90, mostrar desconto vs o preço
+   * atual, mostrar exclusividade"). O percentual de desconto é CALCULADO na
+   * página a partir dos valores do servidor, nunca escrito aqui.
+   */
+  oferta: {
+    gratis: "30 dias grátis.",
+    depois: "Depois,",
+    de: "de",
+    por: "por",
+    porMes: "por mês",
+    desconto: (pct: number) => `-${pct}%`,
+    descontoLongo: (pct: number) => `${pct}% de desconto`,
+    nota: "Preço de fundador por 12 meses, só para quem participa do desafio. Cancele antes da primeira cobrança e não paga nada.",
+    vagasNumero: "50",
+    vagasRotulo: "vagas. Nenhuma a mais.",
+    exclusivos: ["Só 50 vagas", "Seleção por mérito, sem sorteio", "Preço de fundador só para inscritos", "Inscrições até 11/11"],
+    foto: {
+      /* Pexels, foto 8297058 de Mikhail Nilov (licença Pexels: uso comercial
+         livre, sem atribuição obrigatória). Trocou a foto? Nome novo (-v2),
+         pelo cache do Cloudflare. */
+      src: "/bolsas/capa-planilha-v1.jpg",
+      alt: "Profissional diante de uma planilha no notebook, com pastas e calculadora na mesa",
+    },
   },
   /** O que a página diz fora da janela de inscrição. */
   fases: {

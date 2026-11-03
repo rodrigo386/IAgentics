@@ -194,3 +194,13 @@ export function novoToken(): string {
 export function tokenValido(v: unknown): v is string {
   return typeof v === "string" && /^[A-Za-z0-9_-]{43}$/.test(v);
 }
+
+/** Preço de fundador (R$ 29,90 por 12 meses; decisão do Rodrigo, 2026-11-03).
+ *  O texto está em `PRECO_FUNDADOR` (content.ts); o teste confere os dois. */
+export const VALOR_FUNDADOR_CENTAVOS = 2990;
+export const MESES_FUNDADOR = 12;
+
+/** Desconto do preço de fundador sobre o preço público, arredondado. */
+export function descontoFundador(publicoCentavos: number): number {
+  return Math.round((1 - VALOR_FUNDADOR_CENTAVOS / publicoCentavos) * 100);
+}

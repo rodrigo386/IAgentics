@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, Broadcast, CalendarCheck, Tag, Ticket, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDown, Broadcast, CalendarCheck, CalendarDots, Medal, SealPercent, Star, Tag, Ticket, UsersThree, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/ui/Reveal";
@@ -8,10 +9,10 @@ import { SecaoFaq } from "@/components/sections/Faq";
 import { BarraBolsas } from "@/components/sections/bolsas/BarraBolsas";
 import { Contagem } from "@/components/sections/bolsas/Contagem";
 import { InscricaoForm } from "@/components/sections/bolsas/InscricaoForm";
-import { Vagas } from "@/components/sections/bolsas/Vagas";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { bolsas as t } from "@/lib/content";
-import { agoraBolsas, faseDasInscricoes, INSCRICOES_ABREM, INSCRICOES_FECHAM } from "@/lib/bolsas/regras";
+import { bolsas as t, PRECO_FUNDADOR, PRECO_MENSAL } from "@/lib/content";
+import { agoraBolsas, descontoFundador, faseDasInscricoes, INSCRICOES_ABREM, INSCRICOES_FECHAM } from "@/lib/bolsas/regras";
+import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import { faqJsonLd, ogDaPagina } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -30,8 +31,8 @@ export const dynamic = "force-dynamic";
  *
  * Redesenhada no mesmo dia, a pedido do Rodrigo ("falta um botão grande para
  * cadastro, a página tá muito poluída, precisa ser mais visual e convidativa,
- * use motions"): capa escura com o botão grande, a contagem e as 50 vagas
- * desenhadas pelas cotas; cada seção com UMA imagem que diz o essencial
+ * use motions"): capa escura com a oferta, o botão grande e a contagem; cada
+ * seção com UMA imagem que diz o essencial
  * (linha do tempo, os números da entrega, a régua dos 60 segundos, as barras
  * dos pesos) e o detalhe nas perguntas frequentes e no regulamento. Um botão
  * fixo acompanha a rolagem até o formulário.
@@ -42,12 +43,14 @@ export const dynamic = "force-dynamic";
 const eyebrow = "font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted";
 const h2 = "mt-5 max-w-[20ch] text-4xl font-medium tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl";
 const ICONES_GANHA = [CalendarCheck, WhatsappLogo, Broadcast, Ticket, Tag];
+const ICONES_EXCLUSIVO = [UsersThree, Medal, SealPercent, CalendarDots];
 const CORES_ROTEIRO = ["bg-brand-violet", "bg-brand-indigo", "bg-brand-periwinkle", "bg-brand-sky"];
 
 export default function PaginaBolsas() {
   const agora = agoraBolsas();
   const fase = faseDasInscricoes(agora);
-  const { capa } = t;
+  const { capa, oferta } = t;
+  const desconto = descontoFundador(VALOR_ASSINATURA_CENTAVOS);
   const contagem =
     fase === "antes"
       ? { alvo: INSCRICOES_ABREM.getTime(), rotulo: "abre" as const }
@@ -62,50 +65,105 @@ export default function PaginaBolsas() {
       <JsonLd dados={faqJsonLd(t.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">
-        {/* CAPA: superfície escura nos dois temas (ver .bolsas-capa). Altura
-            descontando o nav, que aqui fica ACIMA do main (CLAUDE.md). */}
-        <section className="bolsas-capa relative isolate flex min-h-[calc(100dvh-4rem)] items-center overflow-hidden py-16 sm:py-20">
-          <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-7">
+        {/* CAPA (redesenhada em 2026-11-03, pedido do Rodrigo: "mais destaque
+            aos benefícios", "mostrar exclusividade", "ser mais ousado no
+            layout", sem animação na capa). A foto sangra até a borda direita;
+            a oferta é a manchete; o "50" vazado e a faixa de baixo dizem que
+            é exclusivo. Superfície escura nos dois temas (.bolsas-capa). */}
+        <section className="bolsas-capa relative isolate flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden">
+          <div aria-hidden="true" className="absolute inset-0 -z-10 lg:left-auto lg:w-[60%] lg:[mask-image:linear-gradient(to_right,transparent_0%,black_50%)]">
+            <Image src={oferta.foto.src} alt="" fill priority sizes="(min-width: 1024px) 60vw, 100vw" className="object-cover object-[70%_center] opacity-35 lg:opacity-100" />
+            {/* No desktop a foto se dissolve no fundo por máscara (um degradê de
+                cor deixava emenda, porque o fundo da capa não é uma cor só); no
+                celular ela fica atrás do texto, escurecida. */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0d1017] via-[#0d1017]/40 to-transparent lg:hidden" />
+            <p className="bolsas-contorno absolute right-6 bottom-24 hidden text-[13rem] leading-[0.8] font-medium tracking-[-0.06em] lg:block xl:text-[16rem]">
+              {oferta.vagasNumero}
+            </p>
+          </div>
+
+          <div className="relative mx-auto flex w-full max-w-[1400px] flex-1 items-center px-5 py-12 sm:px-8 sm:py-14">
+            <div className="max-w-[640px]">
               <p className="hero-fade font-mono text-[11px] uppercase tracking-[0.22em] text-brand-paper/70" style={{ animationDelay: "40ms" }}>
                 {capa.kicker}
               </p>
-              <h1 className="mt-6 text-[min(11vw,3.25rem)] font-medium leading-[1.04] tracking-[-0.045em] text-brand-paper sm:text-[min(8vw,4.25rem)] lg:text-[4.25rem] xl:text-[4.75rem]">
-                <span className="block overflow-hidden pb-[0.12em]">
-                  <span className="hero-line block" style={{ animationDelay: "120ms" }}>
-                    {capa.titulo}
+              <h1 className="mt-6 text-brand-paper">
+                <span className="block overflow-hidden pb-[0.08em]">
+                  <span
+                    className="hero-line block text-[min(19vw,5.5rem)] font-medium leading-[0.92] tracking-[-0.055em] text-brand-sky sm:text-[6.5rem] xl:text-[7.25rem]"
+                    style={{ animationDelay: "100ms" }}
+                  >
+                    {oferta.gratis}
                   </span>
+                </span>{" "}
+                <span
+                  className="hero-fade mt-4 block max-w-[26ch] text-[min(7vw,1.75rem)] font-medium leading-[1.15] tracking-[-0.03em] sm:text-[2rem]"
+                  style={{ animationDelay: "200ms" }}
+                >
+                  {capa.titulo}.
                 </span>
               </h1>
-              <p className="hero-fade mt-7 max-w-[46ch] text-lg leading-relaxed text-brand-paper/75 sm:text-xl" style={{ animationDelay: "260ms" }}>
-                {capa.lead}
+
+              <div className="hero-fade mt-7 flex flex-wrap items-end gap-x-5 gap-y-3" style={{ animationDelay: "300ms" }}>
+                <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-brand-paper">
+                  <span className="text-xl text-brand-paper/75">{oferta.depois}</span>{" "}
+                  <span className="sr-only">{oferta.de}</span>{" "}
+                  <del className="tnum text-2xl text-brand-paper/50 decoration-2">{PRECO_MENSAL}</del>{" "}
+                  <span className="sr-only">{oferta.por}</span>{" "}
+                  <strong className="tnum text-6xl font-medium tracking-[-0.04em]">{PRECO_FUNDADOR}</strong>{" "}
+                  <span className="text-lg text-brand-paper/75">{oferta.porMes}</span>
+                </p>
+                <p className="mb-2 -rotate-6 bg-brand-sky px-3 py-1.5 font-mono text-lg font-medium text-brand-ink">
+                  <span aria-hidden="true">{oferta.desconto(desconto)}</span>
+                  <span className="sr-only">{oferta.descontoLongo(desconto)}</span>
+                </p>
+              </div>
+              <p className="hero-fade mt-3 max-w-[52ch] text-sm leading-relaxed text-brand-paper/65" style={{ animationDelay: "320ms" }}>
+                {oferta.nota}
               </p>
 
-              <div className="hero-fade mt-10" style={{ animationDelay: "380ms" }}>
+              <div className="hero-fade mt-8 flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-10" style={{ animationDelay: "400ms" }}>
                 {fase !== "encerradas" ? (
-                  <div className="flex flex-col gap-3">
-                    <a
-                      id="cta-bolsas"
-                      href="#inscricao"
-                      className="bolsas-cta group inline-flex w-full items-center justify-center gap-3 rounded-control bg-accent px-10 py-5 text-lg font-medium text-accent-on transition-[background-color,transform] duration-200 hover:bg-accent-hover active:scale-[0.98] sm:w-fit sm:px-12 sm:text-xl"
-                    >
-                      <span className="whitespace-nowrap">{capa.cta}</span>
-                      <ArrowDown size={22} weight="bold" className="transition-transform duration-300 group-hover:translate-y-1" />
-                    </a>
-                    <p className="text-sm text-brand-paper/65">{capa.gratis}</p>
-                  </div>
+                  <a
+                    id="cta-bolsas"
+                    href="#inscricao"
+                    className="bolsas-cta group inline-flex w-full shrink-0 items-center justify-center gap-3 rounded-control bg-accent px-10 py-5 text-lg font-medium text-accent-on transition-[background-color,transform] duration-200 hover:bg-accent-hover active:scale-[0.98] sm:w-fit sm:px-12 sm:text-xl"
+                  >
+                    <span className="whitespace-nowrap">{capa.cta}</span>
+                    <ArrowDown size={22} weight="bold" className="transition-transform duration-300 group-hover:translate-y-1" />
+                  </a>
                 ) : (
                   <p className="max-w-[46ch] text-lg font-medium text-brand-paper">{t.fases.encerradas}</p>
                 )}
+                {/* No celular a contagem fica aqui; no desktop, no selo sobre a foto. */}
+                {contagem ? (
+                  <div className="lg:hidden">
+                    <Contagem alvo={contagem.alvo} agora={agora.getTime()} rotulo={contagem.rotulo} claro />
+                  </div>
+                ) : null}
               </div>
+              {fase !== "encerradas" ? <p className="mt-4 text-sm text-brand-paper/60">{capa.gratis}</p> : null}
             </div>
+            {contagem ? (
+              <div className="cinehero-chip absolute top-12 right-8 hidden p-6 lg:block">
+                <Contagem alvo={contagem.alvo} agora={agora.getTime()} rotulo={contagem.rotulo} claro />
+              </div>
+            ) : null}
+          </div>
 
-            {/* A contagem fica sobre as vagas: na coluna do título ela caía
-                abaixo da dobra num notebook de 900 px de altura. */}
-            <div className="hero-fade flex flex-col gap-10 lg:col-span-5" style={{ animationDelay: "450ms" }}>
-              {contagem ? <Contagem alvo={contagem.alvo} agora={agora.getTime()} rotulo={contagem.rotulo} claro /> : null}
-              <Vagas />
-            </div>
+          {/* A faixa da exclusividade, de ponta a ponta no pé da capa. */}
+          <div className="relative border-t border-white/10 bg-black/30 backdrop-blur-sm">
+            <ul className="mx-auto flex max-w-[1400px] flex-wrap gap-x-10 gap-y-3 px-5 py-5 sm:px-8">
+              {oferta.exclusivos.map((item, i) => {
+                const Icone = ICONES_EXCLUSIVO[i] ?? Star;
+                return (
+                  <li key={item} className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-brand-paper/85">
+                    <Icone size={18} aria-hidden="true" className="text-brand-sky" />
+                    {item}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </section>
 

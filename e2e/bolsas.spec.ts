@@ -47,13 +47,18 @@ async function preencher(page: Page, email: string) {
   await page.getByRole("checkbox", { name: /Estou ciente/ }).check();
 }
 
-test("a capa tem o botão grande, a contagem e as 50 vagas; os critérios mostram os pesos", async ({ page }) => {
+test("a capa destaca a oferta (30 dias grátis, R$ 29,90 contra R$ 49,90, -40%), a exclusividade e o botão", async ({ page }) => {
   await page.goto("/bolsas");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("50 bolsas para resolver um problema real do seu trabalho com IA");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "30 dias grátis. 50 bolsas para resolver um problema real do seu trabalho com IA.",
+  );
+  await expect(page.locator("del")).toHaveText("R$ 49,90");
+  await expect(page.locator("strong", { hasText: "R$ 29,90" })).toBeVisible();
+  await expect(page.getByText("40% de desconto")).toBeAttached();
+  await expect(page.getByText("Só 50 vagas")).toBeVisible();
   await expect(page.locator("#cta-bolsas")).toHaveText("Quero minha bolsa");
   // Relógio do e2e parado em 06/11 12h: faltam 5 dias, 11 horas e 59 min para o fim.
   await expect(page.getByLabel(/As inscrições terminam em 5 dias, 11 horas e 59 min/).first()).toBeVisible();
-  await expect(page.locator(".bolsas-vaga")).toHaveCount(50);
   const clareza = page.getByRole("listitem").filter({ has: page.getByRole("heading", { name: "Clareza do problema" }) });
   await expect(clareza).toContainText("peso 30");
   await expect(page.getByText("Número de seguidores não entra na nota", { exact: false })).toBeVisible();

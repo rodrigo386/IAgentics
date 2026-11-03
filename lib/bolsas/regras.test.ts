@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { bolsas } from "@/lib/content";
+import { bolsas, PRECO_FUNDADOR, PRECO_MENSAL } from "@/lib/content";
+import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import {
   faseDasInscricoes,
+  descontoFundador,
   grupoDoNivel,
+  VALOR_FUNDADOR_CENTAVOS,
   normalizarInstagram,
   normalizarLinkedin,
   novoToken,
@@ -114,5 +117,14 @@ describe("cotas e token", () => {
   });
   it("sem travessão nos textos (regra de texto do site)", () => {
     expect(JSON.stringify(bolsas)).not.toMatch(/[—–]/);
+  });
+});
+
+describe("preço de fundador", () => {
+  const reais = (c: number) => `R$ ${(c / 100).toFixed(2).replace(".", ",")}`;
+  it("o texto da página bate com o valor do servidor, e o desconto é 40%", () => {
+    expect(PRECO_FUNDADOR).toBe(reais(VALOR_FUNDADOR_CENTAVOS));
+    expect(PRECO_MENSAL).toBe(reais(VALOR_ASSINATURA_CENTAVOS));
+    expect(descontoFundador(VALOR_ASSINATURA_CENTAVOS)).toBe(40);
   });
 });
