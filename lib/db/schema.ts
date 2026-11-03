@@ -191,3 +191,57 @@ export const assinaturas = pgTable(
     ),
   ],
 );
+
+/**
+ * INSCRIÇÕES do Desafio das 50 Bolsas (2026-11-03, docs/PLANO-BOLSAS.md).
+ *
+ * Seleção por mérito: a banca dá nota fora do site (CSV do /admin/bolsas), e
+ * o resultado volta para `status`. Uma inscrição por e-mail (único por
+ * lower(), como a lista de espera).
+ *
+ * `token` é o link pessoal de quem se inscreveu (enviar o vídeo, depois o
+ * aceite e o preço de fundador). Aleatório, 32 bytes; quem tem o link fala
+ * por aquela inscrição, e nada além disso.
+ *
+ * As quatro caixas do formulário viram quatro datas: duas obrigatórias
+ * (regulamento, ciência do uso na seleção) e duas opcionais (contato
+ * comercial depois do desafio, uso de nome e imagem). Data e não booleano
+ * pelo mesmo motivo de `lista_espera.consentimento_em`: é a prova de quando.
+ *
+ * Sem CPF: só o aceite da bolsa pede, e ele vai direto ao Asaas.
+ */
+export type StatusBolsa = "inscrito" | "selecionado" | "espera" | "nao_selecionado" | "aceitou" | "perdeu";
+
+export const bolsasInscricoes = pgTable(
+  "bolsas_inscricoes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    criadaEm: timestamp("criada_em", { withTimezone: true }).notNull().defaultNow(),
+    token: text("token").notNull().unique(),
+    nome: text("nome").notNull(),
+    email: text("email").notNull(),
+    whatsapp: text("whatsapp").notNull(),
+    cargo: text("cargo").notNull(),
+    nivel: text("nivel").notNull(),
+    empresa: text("empresa").notNull(),
+    area: text("area").notNull(),
+    tamanhoTime: text("tamanho_time").notNull(),
+    instagram: text("instagram"),
+    linkedin: text("linkedin"),
+    problema: text("problema").notNull(),
+    videoUrl: text("video_url"),
+    videoEm: timestamp("video_em", { withTimezone: true }),
+    status: text("status").$type<StatusBolsa>().notNull().default("inscrito"),
+    regulamentoEm: timestamp("regulamento_em", { withTimezone: true }).notNull(),
+    cienciaDadosEm: timestamp("ciencia_dados_em", { withTimezone: true }).notNull(),
+    contatoComercialEm: timestamp("contato_comercial_em", { withTimezone: true }),
+    usoImagemEm: timestamp("uso_imagem_em", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("bolsas_inscricoes_email_unico").on(sql`lower(${t.email})`),
+    check(
+      "bolsas_inscricoes_status_valido",
+      sql`${t.status} in ('inscrito', 'selecionado', 'espera', 'nao_selecionado', 'aceitou', 'perdeu')`,
+    ),
+  ],
+);

@@ -24,7 +24,21 @@ export default defineConfig({
          o Asaas falso. E o Next nem carregaria a chave do .env.local — valor
          que começa com `$` é lido como referência a variável e vira vazio,
          então sem esta linha o checkout falha com "env ASAAS ausente". */
-      env: { ASAAS_URL_BASE: "http://127.0.0.1:4010", ASAAS: "chave-falsa-do-e2e", ASSINATURA_LIMITE: "1000", DIAGNOSE_LIMITE: "1000" },
+      env: {
+        ASAAS_URL_BASE: "http://127.0.0.1:4010",
+        ASAAS: "chave-falsa-do-e2e",
+        ASSINATURA_LIMITE: "1000",
+        DIAGNOSE_LIMITE: "1000",
+        /* Desafio das 50 Bolsas (2026-11-03): relógio parado dentro da janela
+           de inscrição, e o envio de e-mail desligado de vez. A inscrição
+           manda e-mail do SERVIDOR para o endereço digitado, e o e2e não pode
+           interceptar isso pelo navegador: com a chave do Resend descomentada
+           no .env.local, cada teste mandaria um e-mail de verdade. Variável
+           definida aqui vence o .env.local. */
+        BOLSAS_RELOGIO: "2026-11-06T12:00:00-03:00",
+        BOLSAS_LIMITE: "1000",
+        RESEND_API_KEY: "",
+      },
     },
   ],
 });

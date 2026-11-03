@@ -118,6 +118,8 @@ export const config = {
     "/cursos",
     "/spend-lab",
     "/diagnose-compras",
+    "/bolsas",
+    "/bolsas/regulamento",
     "/privacidade",
     "/artigos",
     "/artigos/:slug",

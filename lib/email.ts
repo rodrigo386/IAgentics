@@ -1,5 +1,5 @@
 import "server-only";
-import { site, diagnose } from "@/lib/content";
+import { site, diagnose, bolsas } from "@/lib/content";
 import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
 /**
@@ -237,6 +237,59 @@ export function emailDiagnose(d: EnvioValido) {
         paragrafo(r.pilares.map((p) => e(linhaPilar(p))).join("<br>")) +
         (salto ? paragrafo(`Maior salto possível: <b>${e(salto.nome)}</b>`) : "") +
         paragrafo("As notas de cada processo estão no CSV anexo."),
+    ),
+  };
+}
+
+/**
+ * Confirmação da inscrição no Desafio das 50 Bolsas (2026-11-03). Leva o
+ * próximo passo inteiro (roteiro do vídeo e o link pessoal para enviá-lo) e o
+ * regulamento, que o documento da campanha pede "na hora". Respostas vão para
+ * o contato: é por elas que o inscrito corrige um dado.
+ */
+export const RESPONDER_BOLSAS = "contato@iagentics.com.br";
+
+export function emailInscricaoBolsa(nome: string, token: string) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const linkVideo = `${site.url}/bolsas/video/${token}`;
+  const linkRegulamento = `${site.url}/bolsas/regulamento`;
+  const r = bolsas.roteiro;
+
+  const recebida = "Sua inscrição no Desafio das 50 Bolsas da IAgentics Academy está confirmada.";
+  const proximo = "O próximo passo é o vídeo de entrada: até 60 segundos apresentando o problema que você quer resolver. Prazo: 15 de novembro, às 23h59.";
+  const roteiro = r.partes.map((p) => `${p.nome} (${p.tempo}): ${p.texto}`);
+  const comoEnviar = `${r.envio} ${r.cuidado}`;
+  const resultado = "O resultado sai em 17 de novembro, às 19h, numa live e por e-mail.";
+  const corrigir = "Errou algum dado? Responda este e-mail contando o que corrigir.";
+
+  const e = escapeHtml;
+  const paragrafo = (conteudo: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+  const botao = `<p style="margin:0 0 24px"><a href="${linkVideo}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">Enviar meu vídeo</a></p>`;
+
+  return {
+    assunto: "Inscrição confirmada: Desafio das 50 Bolsas",
+    texto: [
+      `Olá, ${primeiroNome}.`,
+      recebida,
+      proximo,
+      `Roteiro:\n${roteiro.join("\n")}`,
+      comoEnviar,
+      `Envie o link do seu vídeo por aqui (o link é só seu): ${linkVideo}`,
+      `Regulamento: ${linkRegulamento}`,
+      resultado,
+      corrigir,
+      "IAgentics Academy · iagentics.com.br",
+    ].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">Olá, ${e(primeiroNome)}.</p>` +
+        `<p style="margin:0 0 16px;font-size:17px;line-height:1.5;font-weight:bold;color:#131723">${e(recebida)}</p>` +
+        paragrafo(e(proximo)) +
+        paragrafo(`<b>Roteiro</b><br>${roteiro.map(e).join("<br>")}`) +
+        paragrafo(e(comoEnviar)) +
+        botao +
+        paragrafo(`O link acima é só seu. Leia também o <a href="${linkRegulamento}" style="color:#7607e8;text-decoration:underline">regulamento</a>.`) +
+        paragrafo(e(resultado)) +
+        paragrafo(e(corrigir)),
     ),
   };
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { diagnose } from "@/lib/content";
-import { emailBoasVindas, emailDiagnose, RESPONDER_ASSINATURA } from "./email";
+import { emailBoasVindas, emailDiagnose, emailInscricaoBolsa, RESPONDER_ASSINATURA } from "./email";
 
 /* E-mail de boas-vindas de quem pagou a assinatura (2026-10-16). O prazo de
    24 horas úteis é a promessa que o Rodrigo pediu; se mudar, muda aqui, no
@@ -50,5 +50,16 @@ describe("emailDiagnose", () => {
     expect(e.html).not.toContain("<b>,");
     expect(e.html).toContain("=Ana &lt;b&gt;");
     expect(e.anexos[0].conteudo).toContain(`"'=Ana <b>"`);
+  });
+});
+
+describe("emailInscricaoBolsa", () => {
+  it("leva o link pessoal do vídeo, o regulamento e o prazo, com o nome escapado", () => {
+    const e = emailInscricaoBolsa("<b>Ana</b> Souza", "x".repeat(43));
+    expect(e.texto).toContain(`https://iagentics.com.br/bolsas/video/${"x".repeat(43)}`);
+    expect(e.texto).toContain("https://iagentics.com.br/bolsas/regulamento");
+    expect(e.texto).toContain("15 de novembro");
+    expect(e.html).not.toContain("<b>Ana</b>");
+    expect(e.html).toContain("&lt;b&gt;Ana&lt;/b&gt;");
   });
 });

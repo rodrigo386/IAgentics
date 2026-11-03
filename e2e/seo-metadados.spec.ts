@@ -15,6 +15,7 @@ const PAGINAS = [
   "/cursos",
   "/spend-lab",
   "/diagnose-compras",
+  "/bolsas",
   "/artigos",
   "/privacidade",
   "/artigos/prompts-para-compras",

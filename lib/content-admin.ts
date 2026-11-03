@@ -162,6 +162,7 @@ export const admin = {
 
   /** Link do /admin para o painel de cursos. */
   irParaCursos: "Painel da plataforma de cursos →",
+  irParaBolsas: "Desafio das 50 Bolsas →",
 
   /** /admin/cursos (2026-10-16, pedido do Rodrigo: "controle mais completo da
    *  plataforma cursos, com dashboard, gráficos e fluxo do cliente"). */
@@ -279,5 +280,30 @@ export const admin = {
       boasVindas: "Boas-vindas enviado",
     },
     tabela: { titulo: "Todas as assinaturas", exportar: "Exportar CSV" },
+  },
+
+  /* Desafio das 50 Bolsas (2026-11-03). Meta de vídeos do documento do
+     Vinícius: 200 até 15/11, e reforço se houver menos de 100 em 12/11. */
+  bolsas: {
+    meta: { titulo: "Desafio das 50 Bolsas" },
+    voltar: "← Painel",
+    titulo: "Desafio das 50 Bolsas",
+    lead: "Inscrições de 5 a 11/11, vídeos até 15/11, resultado em 17/11 às 19h.",
+    cartoes: {
+      inscritos: "Inscritos",
+      metaInscritos: "Meta: 500",
+      comVideo: "Com vídeo",
+      metaVideo: "Meta: 200 até 15/11 (reforçar se menos de 100 em 12/11)",
+      contato: "Aceitaram contato comercial",
+      imagem: "Autorizaram nome e imagem",
+    },
+    porDia: { titulo: "Por dia", dia: "Dia", inscritos: "Inscrições", videos: "Vídeos" },
+    porArea: "Por área",
+    porNivel: "Por nível",
+    porTamanho: "Por tamanho do time",
+    colunas: { chave: "Grupo", total: "Inscritos", comVideo: "Com vídeo" },
+    semDados: "Nenhuma inscrição ainda.",
+    exportar: "Exportar CSV para a banca",
+    exportarNota: "Uma linha por inscrição, com as colunas de nota dos dois avaliadores vazias, nos cinco critérios, e a frase de retorno.",
   },
 } as const;
