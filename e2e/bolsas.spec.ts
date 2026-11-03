@@ -58,7 +58,7 @@ test("a capa destaca a oferta (30 dias grátis, R$ 29,90 contra R$ 49,90, -40%),
   await expect(page.getByText("Só 50 vagas")).toBeVisible();
   await expect(page.locator("#cta-bolsas")).toHaveText("Quero minha bolsa");
   // Relógio do e2e parado em 06/11 12h: faltam 5 dias, 11 horas e 59 min para o fim.
-  await expect(page.getByLabel(/As inscrições terminam em 5 dias, 11 horas e 59 min/).first()).toBeVisible();
+  await expect(page.getByLabel(/As inscrições terminam em 5 dias, 11 horas e 59 min/).filter({ visible: true }).first()).toBeVisible();
   const clareza = page.getByRole("listitem").filter({ has: page.getByRole("heading", { name: "Clareza do problema" }) });
   await expect(clareza).toContainText("peso 30");
   await expect(page.getByText("Número de seguidores não entra na nota", { exact: false })).toBeVisible();
