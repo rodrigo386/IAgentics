@@ -17,6 +17,8 @@ const campo = "w-full rounded-control border border-line bg-bg px-4 py-3 text-fg
 const rotulo = "font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted";
 const caixa = "flex items-start gap-3 text-sm leading-relaxed text-fg-muted";
 const check = "mt-1 size-4 shrink-0 accent-[var(--accent)]";
+/* A caixa do problema não é pílula: com cinco linhas, o raio dos campos a
+   transformava numa oval. */
 
 /* Fora do formulário de propósito: definido lá dentro, viraria um componente
    novo a cada letra digitada no problema, e o React remontaria os selects,
@@ -159,7 +161,7 @@ export function InscricaoForm() {
           maxLength={MAX}
           value={problema}
           onChange={(e) => setProblema(e.target.value)}
-          className={`${campo} mt-1 resize-y`}
+          className={`${campo.replace("rounded-control", "rounded-[1.25rem]")} mt-1 resize-y`}
         />
       </label>
       <p className="-mt-2 text-right font-mono text-xs tabular-nums text-fg-muted" aria-live="polite">

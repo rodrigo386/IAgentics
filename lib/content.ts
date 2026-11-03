@@ -2504,12 +2504,12 @@ export const bolsas = {
   meta: {
     titulo: "Desafio das 50 Bolsas | IAgentics Academy",
     descricao:
-      "50 bolsas de 30 dias na IAgentics Academy, com chancela Pecege-USP, escolhidas por mérito. Inscrições gratuitas de 5 a 11 de novembro de 2026.",
+      "50 bolsas de 30 dias na IAgentics Academy, com chancela do Pecege, escolhidas por mérito. Inscrições gratuitas de 5 a 11 de novembro de 2026.",
   },
   capa: {
-    kicker: "IAgentics Academy · Pecege-USP",
+    kicker: "IAgentics Academy · Pecege",
     titulo: "50 bolsas para resolver um problema real do seu trabalho com IA",
-    lead: "30 dias de acesso completo à IAgentics Academy, com chancela Pecege-USP. Conte o problema, grave 60 segundos e dispute uma das 50 vagas.",
+    lead: "30 dias de acesso completo à IAgentics Academy, com chancela do Pecege. Conte o problema, grave 60 segundos e dispute uma das 50 vagas.",
     fatos: [
       { valor: "50", rotulo: "bolsas" },
       { valor: "30", rotulo: "dias de acesso" },
@@ -2552,6 +2552,28 @@ export const bolsas = {
       alt: "Profissional diante de uma planilha no notebook, com pastas e calculadora na mesa",
     },
   },
+  /**
+   * "O que a bolsa abre" (2026-11-03, pedido do Rodrigo: "use prints e vídeos
+   * do site cursos"): o filme da hero da /cursos e as capas da vitrine. Os
+   * números são CALCULADOS da vitrine na página, nunca escritos aqui.
+   */
+  plataforma: {
+    eyebrow: "A plataforma",
+    titulo: "30 dias com a plataforma inteira liberada",
+    texto: "As formações de IA aplicada da IAgentics Academy e as trilhas de cursos da Solution, a plataforma online do Pecege. No seu ritmo, no computador ou no celular.",
+    cursosNoAr: "cursos no ar",
+    trilhas: "trilhas de conhecimento",
+    chegando: "chegando na mesma plataforma",
+    faixa: { pausar: "Pausar as capas", continuar: "Continuar as capas", rotulo: "Alguns dos cursos da plataforma" },
+    filme: { pausar: "Pausar o filme", continuar: "Continuar o filme" },
+  },
+  /** O celular da seção do vídeo: só desenho, o roteiro está escrito ao lado. */
+  celular: {
+    foto: "/academy/academy-convite-poster.jpg",
+    gravando: "Gravando",
+  },
+  /** A barra dos 100 pontos da banca. */
+  pontos: { total: "100 pontos", rotulo: "Como os 100 pontos se dividem" },
   /** O que a página diz fora da janela de inscrição. */
   fases: {
     antes: "As inscrições abrem em 5 de novembro de 2026.",

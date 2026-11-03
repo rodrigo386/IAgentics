@@ -1847,7 +1847,8 @@ dialog.gaveta.gaveta-centro[open] {
    Movimento só CSS (DESIGN.md §6), tudo dentro de no-preference:
    - a capa não tem animação própria (pedido do Rodrigo: as 50 vagas animadas
      mostravam dado interno das cotas e saíram);
-   - barras de peso, régua do vídeo e linha do tempo andam com a ROLAGEM
+   - linha do tempo, barra dos pesos e as barrinhas de Stories do celular
+     andam com a ROLAGEM
      (animation-timeline: view()). Sem suporte a view(), a regra não se aplica
      e tudo aparece no estado final.
 --------------------------------------------------------------------------- */
@@ -1881,14 +1882,6 @@ dialog.gaveta.gaveta-centro[open] {
   }
 }
 
-@keyframes bolsas-cursor {
-  from {
-    left: 0%;
-  }
-  to {
-    left: 100%;
-  }
-}
 
 @keyframes bolsas-brilho {
   0%,
@@ -1915,14 +1908,17 @@ dialog.gaveta.gaveta-centro[open] {
       animation-range: entry 10% cover 45%;
     }
 
-    .bolsas-trilho {
-      view-timeline-name: --bolsas-trilho;
+    /* As barrinhas de Stories do celular enchem uma depois da outra conforme
+       o celular atravessa a tela. Cada uma tem a própria faixa de rolagem,
+       passada inline pela página (`animationRange`). */
+    .bolsas-celular {
+      view-timeline-name: --bolsas-celular;
     }
 
-    .bolsas-cursor {
-      animation: bolsas-cursor linear both;
-      animation-timeline: --bolsas-trilho;
-      animation-range: entry 60% cover 70%;
+    .bolsas-story {
+      transform-origin: left center;
+      animation: bolsas-cresce linear both;
+      animation-timeline: --bolsas-celular;
     }
   }
 }
