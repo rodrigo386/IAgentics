@@ -2509,14 +2509,31 @@ export const bolsas = {
   capa: {
     kicker: "IAgentics Academy · Pecege-USP",
     titulo: "50 bolsas para resolver um problema real do seu trabalho com IA",
-    lead: "30 dias de acesso completo à plataforma da IAgentics Academy, com chancela Pecege-USP. A seleção é por mérito: conte o problema que você quer resolver, grave um vídeo de até 60 segundos e a banca escolhe as 50 bolsas.",
+    lead: "30 dias de acesso completo à IAgentics Academy, com chancela Pecege-USP. Conte o problema, grave 60 segundos e dispute uma das 50 vagas.",
     fatos: [
       { valor: "50", rotulo: "bolsas" },
       { valor: "30", rotulo: "dias de acesso" },
       { valor: "11/11", rotulo: "fim das inscrições" },
     ],
-    cta: "Quero me inscrever",
+    cta: "Quero minha bolsa",
     gratis: "Inscrição gratuita, sem compra e sem precisar seguir nenhum perfil.",
+  },
+  /** A contagem regressiva da capa e do formulário. */
+  contagem: {
+    abre: "As inscrições abrem em",
+    fecha: "As inscrições terminam em",
+    dias: "dias",
+    horas: "horas",
+    minutos: "min",
+  },
+  /** As 50 vagas desenhadas na capa, coloridas pelas cotas (seção 6 do regulamento). */
+  vagas: {
+    rotulo: "As 50 vagas",
+    grupos: [
+      { total: 30, nome: "praticantes" },
+      { total: 10, nome: "gestores" },
+      { total: 10, nome: "vozes da área" },
+    ],
   },
   /** O que a página diz fora da janela de inscrição. */
   fases: {
@@ -2537,6 +2554,12 @@ export const bolsas = {
         `Preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses, se quiser continuar depois da bolsa`,
       ],
     },
+    /** O que se entrega, em números grandes. */
+    numeros: [
+      { valor: "1", rotulo: "problema do seu trabalho resolvido com IA" },
+      { valor: "4", rotulo: "posts no mês, um por semana" },
+      { valor: "1", rotulo: "número no final: horas, retrabalho ou custo" },
+    ],
     entrega: {
       titulo: "O bolsista entrega",
       itens: [
@@ -2560,28 +2583,29 @@ export const bolsas = {
       {
         nome: "Inscrição",
         quando: "5 a 11 de novembro",
-        texto: "Formulário de 2 minutos nesta página. O centro dele é o problema: o que você quer resolver em 30 dias, de preferência com um número.",
+        texto: "2 minutos nesta página. Conte o problema que quer resolver, com um número.",
       },
       {
         nome: "Vídeo de entrada",
         quando: "até 15 de novembro",
-        texto: "Até 60 segundos apresentando o problema. O roteiro e o link para enviar chegam no e-mail da inscrição. Post público ou link privado: os dois valem igual na nota.",
+        texto: "60 segundos apresentando o problema. O roteiro chega no seu e-mail.",
       },
       {
         nome: "Avaliação",
         quando: "16 e 17 de novembro",
-        texto: "Dois avaliadores dão nota de 0 a 100, cada um por conta própria, nos cinco critérios abaixo. Vale a média.",
+        texto: "Dois avaliadores dão nota de 0 a 100. Vale a média.",
       },
       {
         nome: "Resultado",
         quando: "17 de novembro, 19h",
-        texto: "Anunciado numa live, e no mesmo minuto por e-mail para todos os inscritos. Os selecionados têm 48 horas para aceitar a bolsa.",
+        texto: "Ao vivo, numa live, e por e-mail para todos no mesmo minuto.",
       },
     ],
   },
   criterios: {
     eyebrow: "A nota",
     titulo: "Os cinco critérios da banca",
+    pesoDe: (n: number) => `peso ${n}`,
     colunas: { criterio: "Critério", peso: "Peso", alta: "Nota alta quando" },
     itens: [
       { nome: "Clareza do problema", peso: 30, alta: "O problema é específico e tem número: horas, reais, retrabalho." },
@@ -2597,6 +2621,7 @@ export const bolsas = {
   roteiro: {
     eyebrow: "O vídeo",
     titulo: "Roteiro de 60 segundos",
+    regua: "A régua dos 60 segundos",
     partes: [
       { tempo: "10 s", nome: "Quem sou", texto: "Nome, cargo e área." },
       { tempo: "25 s", nome: "O problema", texto: "O que trava e quanto tempo ou dinheiro custa. Se puder, mostre a tela ou a planilha." },
@@ -2703,6 +2728,19 @@ export const bolsas = {
       {
         pergunta: "E se eu não fizer os posts?",
         resposta: "Quem não publicar os posts das semanas 1 e 2 até 1º de dezembro perde o acesso, e a vaga vai para a lista de espera. A regra está no termo de adesão.",
+      },
+      {
+        pergunta: "Como as 50 vagas são divididas?",
+        resposta:
+          "30 vagas para praticantes (analistas, compradores e coordenadores), 10 para gestores (gerentes e diretores) e 10 para vozes da área (professores, criadores de conteúdo e líderes de comunidade). Grupo sem candidatos com nota 60 ou mais cede a vaga para o próximo da lista geral. No máximo 2 bolsistas por empresa. Empate se resolve pela nota em clareza do problema e depois pela data de inscrição. Os 20 seguintes formam a lista de espera.",
+      },
+      {
+        pergunta: "Os posts da bolsa precisam ser identificados?",
+        resposta: "Sim. Como o acesso é dado em troca dos posts, todo post leva a identificação de parceria paga da rede (ou #publi no começo da legenda) e marca a IAgentics Academy.",
+      },
+      {
+        pergunta: "O que acontece no fim dos 30 dias?",
+        resposta: "Os 3 maiores ganhos medidos, em percentual do tempo ou do custo inicial, ganham vaga na Imersão de janeiro. Todos que concluírem recebem o certificado de conclusão da turma fundadora.",
       },
       { pergunta: "Errei um dado na inscrição. E agora?", resposta: "Responda o e-mail de confirmação contando o que corrigir. Cada e-mail vale uma inscrição." },
     ],

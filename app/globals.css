@@ -1836,3 +1836,102 @@ dialog.gaveta.gaveta-centro[open] {
   83%, 97% { opacity: 1; translate: 0 0; }
   100% { opacity: 0; translate: 0 8px; }
 }
+
+/* ---------------------------------------------------------------------------
+   DESAFIO DAS 50 BOLSAS (/bolsas, 2026-11-03; pedido do Rodrigo: "mais visual
+   e convidativa, use motions").
+
+   A capa é superfície escura nos DOIS temas, como o cartão da hero cinemática:
+   tratamento de componente, não seção que troca de tema. Cores fixas da marca.
+
+   Movimento só CSS (DESIGN.md §6), tudo dentro de no-preference:
+   - as 50 vagas acendem uma a uma na entrada (fill `backwards`: o repouso é o
+     visível);
+   - barras de peso, régua do vídeo e linha do tempo andam com a ROLAGEM
+     (animation-timeline: view()). Sem suporte a view(), a regra não se aplica
+     e tudo aparece no estado final.
+--------------------------------------------------------------------------- */
+
+.bolsas-capa {
+  background:
+    radial-gradient(900px circle at 85% 20%, rgb(118 7 232 / 0.45) 0%, transparent 55%),
+    radial-gradient(700px circle at 10% 110%, rgb(85 175 237 / 0.18) 0%, transparent 60%),
+    linear-gradient(150deg, #24104f 0%, #0d1017 70%);
+}
+
+.bolsas-cta {
+  box-shadow:
+    0 18px 40px -12px rgb(118 7 232 / 0.75),
+    inset 0 1px 1px rgb(255 255 255 / 0.25);
+}
+
+@keyframes bolsas-vaga {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bolsas-cresce {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes bolsas-cursor {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes bolsas-brilho {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bolsas-vaga {
+    animation: bolsas-vaga 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: calc(500ms + var(--i) * 28ms);
+  }
+
+  /* O ponto "ao vivo" da contagem: o único laço da página, pequeno e com
+     significado (a contagem está correndo). */
+  .bolsas-ao-vivo {
+    animation: bolsas-brilho 2s ease-in-out infinite;
+  }
+
+  @supports (animation-timeline: view()) {
+    .bolsas-barra {
+      transform-origin: left center;
+      animation: bolsas-cresce linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+
+    .bolsas-trilho {
+      view-timeline-name: --bolsas-trilho;
+    }
+
+    .bolsas-cursor {
+      animation: bolsas-cursor linear both;
+      animation-timeline: --bolsas-trilho;
+      animation-range: entry 60% cover 70%;
+    }
+  }
+}
