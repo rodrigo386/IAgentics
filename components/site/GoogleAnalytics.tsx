@@ -12,7 +12,9 @@ const GA_ID = "G-R26J12D835";
  */
 export function GoogleAnalytics() {
   const pathname = usePathname();
-  if (!pathname || /^\/(app|admin)(\/|$)/.test(pathname)) return null;
+  /* /bolsas/video/[token] também fica de fora (2026-11-03): o token no
+     endereço é a chave da inscrição, e o rastreador registraria a URL inteira. */
+  if (!pathname || /^\/(app|admin)(\/|$)/.test(pathname) || pathname.startsWith("/bolsas/video/")) return null;
 
   return (
     <>

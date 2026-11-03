@@ -128,3 +128,13 @@ test("o painel e o CSV das bolsas ficam atrás da senha", async ({ request }) =>
   expect(texto).toContain("a1_clareza");
   expect(texto).not.toContain("token");
 });
+
+test("a página pessoal do vídeo não carrega rastreador de terceiro (o token está no endereço)", async ({ page }) => {
+  const terceiros: string[] = [];
+  page.on("request", (r) => {
+    if (/googletagmanager|google-analytics|metricool/.test(r.url())) terceiros.push(r.url());
+  });
+  await page.goto(`/bolsas/video/${"x".repeat(43)}`);
+  await page.waitForLoadState("networkidle");
+  expect(terceiros).toEqual([]);
+});
