@@ -2027,11 +2027,21 @@ export const cursos = {
    *  componente `DepoimentoAluna`. */
   depoimentoAluna: {
     eyebrow: "Quem já fez",
-    citacao:
-      "Concluir o curso Inteligência Artificial na Prática na IAgentics foi um excelente passo na minha jornada de atualização profissional. O que mais me impressionou foi a objetividade e o foco em resultados reais: a metodologia foge da teoria abstrata e entrega ferramentas e aplicações que podem ser integradas de imediato à rotina. Uma experiência de aprendizado dinâmica, eficiente. Recomendo muito para quem quer dominar IA com foco em produtividade e aplicabilidade!",
-    nome: "Denise",
+    /* Os parágrafos e os **destaques** seguem a arte das redes (2026-11-04);
+       o texto continua verbatim. O componente lê os ** como negrito. */
+    paragrafos: [
+      "Concluir o curso **Inteligência Artificial na Prática na IAgentics** foi um excelente passo na minha jornada de atualização profissional.",
+      "O que mais me impressionou foi a **objetividade e o foco em resultados reais**: a metodologia foge da teoria abstrata e entrega ferramentas e aplicações que podem ser integradas de imediato à rotina.",
+      "Uma experiência de aprendizado dinâmica, eficiente. **Recomendo muito para quem quer dominar IA com foco em produtividade e aplicabilidade!**",
+    ],
+    nome: "Denise Garcia",
     cargo: "Compradora",
-    empresa: "Santa Helena Alimentos",
+    empresa: "Grupo Santa Helena",
+    selo: "Early Adopter",
+    /* Recorte da arte das redes (baixa resolução): trocar pela foto original
+       quando chegar, com nome novo (-v2) por causa do cache do Cloudflare. */
+    foto: "/depoimentos/denise-garcia-v1.jpg",
+    fotoAlt: "Denise Garcia",
     /* O curso que ela chama de "Inteligência Artificial na Prática" é o
        Fundamentos (confirmado pelo Rodrigo em 2026-11-04). A citação fica
        como ela escreveu; o nome oficial vai na legenda. */
