@@ -2038,9 +2038,9 @@ export const cursos = {
     cargo: "Compradora",
     empresa: "Grupo Santa Helena",
     selo: "Early Adopter",
-    /* Recorte da arte das redes (baixa resolução): trocar pela foto original
-       quando chegar, com nome novo (-v2) por causa do cache do Cloudflare. */
-    foto: "/depoimentos/denise-garcia-v1.jpg",
+    /* Foto original enviada pelo Rodrigo (2026-11-04). Trocou a foto? Nome
+       novo (-v3), por causa do cache do Cloudflare. */
+    foto: "/depoimentos/denise-garcia-v2.jpg",
     fotoAlt: "Denise Garcia",
     /* O curso que ela chama de "Inteligência Artificial na Prática" é o
        Fundamentos (confirmado pelo Rodrigo em 2026-11-04). A citação fica

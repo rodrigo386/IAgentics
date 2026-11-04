@@ -4,9 +4,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { cursos } from "@/lib/content";
 
 /**
- * A foto vai em preto e branco: o recorte da arte traz o fundo azul das redes,
- * que brigaria com o violeta.
- *
  * Depoimento de quem concluiu um curso (2026-11-04). Na /cursos fica antes de
  * "Como funciona" e na /bolsas antes da inscrição, perto da decisão.
  *
@@ -63,9 +60,10 @@ export function DepoimentoAluna() {
             <Image
               src={t.foto}
               alt={t.fotoAlt}
-              width={100}
-              height={146}
-              className="h-32 w-auto shrink-0 border-2 border-accent-on/80 object-cover grayscale contrast-110 sm:h-36 lg:h-44"
+              width={400}
+              height={400}
+              sizes="(min-width: 1024px) 176px, 144px"
+              className="size-32 shrink-0 border-2 border-accent-on/80 object-cover sm:size-36 lg:size-44"
             />
             <figcaption>
               <span className="inline-block bg-accent-on px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-brand-violet">
