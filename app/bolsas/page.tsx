@@ -26,6 +26,7 @@ import { Marquee } from "@/components/ui/Marquee";
 import { PausaAnimacao } from "@/components/ui/PausaAnimacao";
 import { Reveal } from "@/components/ui/Reveal";
 import { FilmeHero } from "@/components/sections/cursos/FilmeHero";
+import { DepoimentoAluna } from "@/components/sections/cursos/DepoimentoAluna";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { BarraBolsas } from "@/components/sections/bolsas/BarraBolsas";
 import { Contagem } from "@/components/sections/bolsas/Contagem";
@@ -465,6 +466,9 @@ export default function PaginaBolsas() {
             </ol>
           </div>
         </section>
+
+        {/* Quem já fez um curso (depoimento da Denise, 2026-11-04). */}
+        <DepoimentoAluna />
 
         {/* INSCRIÇÃO */}
         <section id="inscricao" aria-labelledby="inscricao-titulo" className="scroll-mt-16 border-t border-line bg-surface py-24 sm:py-32">

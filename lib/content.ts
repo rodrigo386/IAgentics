@@ -2019,6 +2019,19 @@ export const cursos = {
    * alvo dos dois, e a descrição, a carga horária e o formato do Marketing
    * com IA.
    */
+  /** Depoimento escrito da Denise, compradora na Santa Helena Alimentos, sobre
+   *  o curso que ela concluiu (enviado pelo Rodrigo em 2026-11-04). Texto
+   *  VERBATIM, inclusive o nome do curso como ela escreveu. Aparece na /cursos
+   *  (antes de "Como funciona") e na /bolsas (antes da inscrição), pelo mesmo
+   *  componente `DepoimentoAluna`. */
+  depoimentoAluna: {
+    eyebrow: "Quem já fez",
+    citacao:
+      "Concluir o curso Inteligência Artificial na Prática na IAgentics foi um excelente passo na minha jornada de atualização profissional. O que mais me impressionou foi a objetividade e o foco em resultados reais: a metodologia foge da teoria abstrata e entrega ferramentas e aplicações que podem ser integradas de imediato à rotina. Uma experiência de aprendizado dinâmica, eficiente. Recomendo muito para quem quer dominar IA com foco em produtividade e aplicabilidade!",
+    nome: "Denise",
+    cargo: "Compradora",
+    empresa: "Santa Helena Alimentos",
+  },
   formacoes: {
     /* Na tela, "IAgentics" é o logo (pedido do Rodrigo, 2026-10-14); este é o
        nome do título para leitor de tela e buscador. */

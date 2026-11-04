@@ -109,3 +109,12 @@ test("a rota de eventos aceita só a lista fechada e sempre responde 204", async
   expect((await request.post("/api/eventos", { data: { evento: "inventado" } })).status()).toBe(204);
   expect((await request.post("/api/eventos", { data: "lixo" })).status()).toBe(204);
 });
+
+test("o depoimento da Denise aparece na /cursos e na /bolsas", async ({ page }) => {
+  for (const rota of ["/cursos", "/bolsas"]) {
+    await page.goto(rota);
+    const depoimento = page.getByRole("region", { name: /Denise, Compradora na Santa Helena Alimentos/ });
+    await expect(depoimento.locator("blockquote")).toContainText("Inteligência Artificial na Prática");
+    await expect(depoimento.locator("figcaption")).toContainText("Santa Helena Alimentos");
+  }
+});

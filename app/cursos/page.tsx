@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { CursosEstante } from "@/components/sections/cursos/Estante";
 import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
 import { CursosVitrine } from "@/components/sections/cursos/Vitrine";
+import { DepoimentoAluna } from "@/components/sections/cursos/DepoimentoAluna";
 import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
 import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
 import { MedidorCursos } from "@/components/sections/cursos/MedidorCursos";
@@ -65,6 +66,7 @@ export default function PaginaCursos() {
             Rodrigo, 2026-10-14). */}
         <CursosFormacoes />
         <CursosVitrine />
+        <DepoimentoAluna />
         {/* "Como funciona" logo antes do formulário, depois do que se compra
             (pedido do Rodrigo, 2026-10-14). */}
         <CursosComoFunciona />
