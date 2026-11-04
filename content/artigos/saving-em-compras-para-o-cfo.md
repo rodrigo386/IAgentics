@@ -1,7 +1,7 @@
 ---
 titulo: "Saving em Compras: como calcular e apresentar para o CFO reconhecer no resultado"
-tituloSeo: "Saving em compras: como calcular e provar ao CFO | IAgentics"
-descricao: "Saving em compras para o CFO: como escolher o baseline, separar saving de cost avoidance e reportar o realizado que a controladoria valida."
+tituloSeo: "O que é saving em compras e como calcular | IAgentics"
+descricao: "O que é saving em compras, como calcular a partir do baseline, a diferença para custo evitado (cost avoidance) e o saving realizado que o CFO aceita. Com exemplo."
 slug: "saving-em-compras-para-o-cfo"
 data: 2026-10-14
 autor: "Rodrigo Costa"

@@ -9,6 +9,7 @@ import { NexoNaPratica } from "@/components/sections/nexo/NaPratica";
 import { NexoDifferentiators } from "@/components/sections/nexo/Differentiators";
 import { NexoComparativo } from "@/components/sections/nexo/Comparativo";
 import { Contact } from "@/components/sections/Contact";
+import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -59,6 +60,7 @@ export default function Page() {
         <NexoDifferentiators />
         <NexoComparativo />
         <SecaoFaq eyebrow={nexoPage.faq.eyebrow} titulo={nexoPage.faq.titulo} itens={nexoPage.faq.itens} />
+        <ArtigosRelacionados pagina="nexo" />
         <Contact />
       </main>
       <Footer />

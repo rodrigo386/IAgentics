@@ -1293,6 +1293,19 @@ export const artigos = {
   /** As categorias, na ordem em que aparecem na listagem. Todo artigo tem de
    *  usar uma delas (lib/artigos.test.ts confere). */
   categorias: ["Sourcing e cotação", "Spend e tail spend", "IA e agentes em Compras", "ROI e business case"],
+  /** O bloco de artigos no pé da home, da /nexo, da /spend-lab e da /academy
+   *  (2026-11-04). Existe pelo Search Console: a /artigos foi rastreada e não
+   *  indexada, e artigo sem link das páginas fortes do site fica à margem. */
+  relacionados: {
+    eyebrow: "Artigos",
+    titulos: {
+      home: "Para ler antes da conversa",
+      nexo: "Para entender o processo de compras com IA",
+      "spend-lab": "Para entender os gastos da sua área",
+      academy: "Para começar a usar IA em Compras",
+    },
+    todos: "Ver todos os artigos",
+  },
   rotulos: {
     /* "3 min de leitura" — o número vem calculado do próprio texto. */
     leitura: "min de leitura",
@@ -1719,9 +1732,12 @@ export const cursos = {
      acesso à Solution inteira; cartão, Pix ou boleto; cancelamento pelo
      WhatsApp ou e-mail, sem fidelidade). */
   meta: {
-    titulo: "Assinatura da plataforma Solution por R$ 49,90 por mês | IAgentics",
+    /* Reescrito em 2026-11-04 pelo Search Console: a página aparecia para
+       "plataforma solution pecege" (posição 6) e o título antigo, com 66
+       caracteres, era cortado antes do que se buscava. */
+    titulo: "Plataforma Solution Pecege: cursos de IA | IAgentics",
     descricao:
-      "Assine a Solution, a plataforma de educação online do Pecege, com as formações de IA da IAgentics. R$ 49,90 por mês, cancele quando quiser.",
+      "Cursos de IA aplicada aos negócios na plataforma Solution do Pecege, com as formações da IAgentics. Mais de 300 horas de aula por R$ 49,90 por mês, sem fidelidade.",
   },
   /** A vitrine dos cursos da plataforma Solution, no estilo streaming
    *  (2026-10-14, pedido do Rodrigo, aba "Estrutura Plataforma" do cursos.xlsx

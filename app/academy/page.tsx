@@ -8,6 +8,7 @@ import { AcademyAssinatura } from "@/components/sections/academy/Assinatura";
 import { AcademyCourses } from "@/components/sections/academy/Courses";
 import { AcademyConvite } from "@/components/sections/academy/Convite";
 import { Contact } from "@/components/sections/Contact";
+import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { academy } from "@/lib/content";
 import { SecaoFaq } from "@/components/sections/Faq";
@@ -69,6 +70,7 @@ export default function Page() {
         {/* O FAQ antes do contato: as objeções de quem compra treinamento
             corporativo, respondidas em texto que um assistente de IA cita. */}
         <SecaoFaq eyebrow={academy.faq.eyebrow} titulo={academy.faq.titulo} itens={academy.faq.itens} />
+        <ArtigosRelacionados pagina="academy" />
         <Contact />
       </main>
       <Footer />

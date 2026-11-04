@@ -52,3 +52,12 @@ test("o llms.txt descreve o site atual, não o desligado", async ({ request }) =
   expect(txt).not.toContain("/certificados");
   expect(txt).not.toContain("R$ 39,90");
 });
+
+test("home e páginas de solução levam aos artigos e à /artigos", async ({ page }) => {
+  for (const rota of ["/", "/nexo", "/spend-lab", "/academy"]) {
+    await page.goto(rota);
+    const bloco = page.locator("section", { has: page.locator("#artigos-relacionados") });
+    await expect(bloco.getByRole("link", { name: "Ver todos os artigos" })).toHaveAttribute("href", "/artigos");
+    await expect(bloco.locator('a[href^="/artigos/"]')).toHaveCount(3);
+  }
+});

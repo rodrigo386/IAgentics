@@ -52,6 +52,9 @@ export type Artigo = {
   /** Perguntas frequentes do frontmatter: a página mostra onde o markdown tem
    *  `<!-- faq -->`, e o FAQPage sai do mesmo objeto (sem divergir). */
   faq: { pergunta: string; resposta: string }[];
+  /** A solução de que o artigo trata (frontmatter `produto`): decide em que
+   *  página ele aparece como relacionado (ArtigosRelacionados). */
+  produto?: string;
 };
 
 /** Artigo sem `ordem` no frontmatter cai depois dos que têm. */
@@ -112,6 +115,7 @@ function ler(arquivo: string): Artigo | null {
     ordem: Number(data.ordem ?? ORDEM_PADRAO),
     atualizado: commit > publicado ? commit : publicado,
     ...(data.tituloSeo ? { tituloSeo: String(data.tituloSeo) } : {}),
+    ...(data.produto ? { produto: String(data.produto) } : {}),
     faq: Array.isArray(data.faq) ? data.faq.map((f: { pergunta: unknown; resposta: unknown }) => ({ pergunta: String(f.pergunta), resposta: String(f.resposta) })) : [],
   };
 }
@@ -133,6 +137,17 @@ export function todosOsArtigos(): Artigo[] {
        mesmo dia — que é o caso quando vários artigos vão ao ar juntos, e aí a
        sequência de leitura é decisão editorial, não cronológica. */
     .sort((a, b) => b.data.localeCompare(a.data) || a.ordem - b.ordem);
+}
+
+/**
+ * Até `limite` artigos para uma página do site: primeiro os da solução dela
+ * (`produto`), do mais recente para o mais antigo, completando com os outros
+ * se faltar. Sem `produto` (a home), os mais recentes.
+ */
+export function artigosRelacionados(produto?: string, limite = 3): Artigo[] {
+  const todos = todosOsArtigos();
+  const daSolucao = produto ? todos.filter((a) => a.produto === produto) : [];
+  return [...daSolucao, ...todos.filter((a) => !daSolucao.includes(a))].slice(0, limite);
 }
 
 /**

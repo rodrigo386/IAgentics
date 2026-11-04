@@ -1,7 +1,7 @@
 ---
 titulo: "Tail spend: o guia em português"
-descricao: "Tail spend em português: percentuais de referência da curva ABC, a diferença para maverick buying e como reduzir a cauda de gastos em Compras."
-tituloSeo: "Tail spend: benchmarks, percentuais e guia | IAgentics"
+descricao: "Benchmarks de tail spend com fonte: 5% a 20% do gasto, 80% das transações, US$ 29,59 por pedido (APQC) e 5% a 15% de economia ao gerir a cauda."
+tituloSeo: "Tail spend: benchmarks com fonte e como reduzir | IAgentics"
 faq:
   - pergunta: "O que é tail spend?"
     resposta: "Tail spend é a cauda longa das compras: aquisições de baixo valor, pouco frequentes e espalhadas por muitos fornecedores. Cada uma parece irrelevante sozinha, e somadas elas formam a maior parte das transações da empresa."

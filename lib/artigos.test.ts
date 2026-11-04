@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { describe, it, expect } from "vitest";
-import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown } from "@/lib/artigos";
+import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown, artigosRelacionados } from "@/lib/artigos";
 import { IDS_EXPLICADORES, MARCADOR_EXPLICADOR } from "@/lib/explicadores";
 import { artigos as textosArtigos } from "@/lib/content";
 
@@ -205,5 +205,19 @@ describe("renderização de markdown", () => {
     /* Os artigos linkam /nexo, /spend-lab e /cursos — se o parser mexesse no
        href, o link interno viraria externo ou quebrado. */
     expect(renderizarMarkdown("[Nexo](/nexo)")).toContain('href="/nexo"');
+  });
+});
+
+describe("artigosRelacionados", () => {
+  it("põe os da solução primeiro, completa com os outros e não repete", () => {
+    const todos = todosOsArtigos();
+    for (const produto of ["nexo", "spend-lab", "academy", undefined]) {
+      const lista = artigosRelacionados(produto);
+      expect(lista.length).toBe(Math.min(3, todos.length));
+      expect(new Set(lista.map((a) => a.slug)).size).toBe(lista.length);
+      const daSolucao = todos.filter((a) => a.produto === produto).length;
+      lista.slice(0, Math.min(3, daSolucao)).forEach((a) => expect(a.produto).toBe(produto));
+    }
+    expect(artigosRelacionados().map((a) => a.slug)).toEqual(todos.slice(0, 3).map((a) => a.slug));
   });
 });

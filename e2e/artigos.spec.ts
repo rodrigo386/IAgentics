@@ -130,7 +130,7 @@ test("o artigo traz Article com autor e dateModified, e a trilha de navegação"
    visível e FAQPage do mesmo objeto, e nenhum [VALIDAR] no ar. */
 test("o artigo de tail spend tem título de busca, FAQ e nenhum placeholder", async ({ page }) => {
   await page.goto("/artigos/tail-spend-guia-em-portugues");
-  await expect(page).toHaveTitle("Tail spend: benchmarks, percentuais e guia | IAgentics");
+  await expect(page).toHaveTitle("Tail spend: benchmarks com fonte e como reduzir | IAgentics");
   await expect(page.getByRole("heading", { name: "Perguntas frequentes" })).toBeVisible();
   const faq = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "FAQPage");
   expect(faq.mainEntity).toHaveLength(4);

@@ -8,6 +8,7 @@ import { SpendLabPartners } from "@/components/sections/spend-lab/Partners";
 import { SpendLabMethod } from "@/components/sections/spend-lab/Method";
 import { SpendLabComparison } from "@/components/sections/spend-lab/Comparison";
 import { Contact } from "@/components/sections/Contact";
+import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -59,6 +60,7 @@ export default function Page() {
         {/* Fecha o argumento antes do contato, como no /nexo: o que sobra de
             dúvida depois de ver método e comparação. */}
         <SecaoFaq eyebrow={spendLab.faq.eyebrow} titulo={spendLab.faq.titulo} itens={spendLab.faq.itens} />
+        <ArtigosRelacionados pagina="spend-lab" />
         <Contact />
       </main>
       <Footer />

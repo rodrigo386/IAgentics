@@ -1,6 +1,7 @@
 ---
 titulo: "Agente de IA em Compras não é agentic commerce"
-descricao: "Dois conceitos diferentes dividem o mesmo nome em português. Confundi-los leva a implantar, dentro do departamento de Compras, exatamente aquilo que o departamento existe para evitar."
+tituloSeo: "Agentic commerce ou agente de IA em Compras? | IAgentics"
+descricao: "Agentic commerce é o agente que compra pelo consumidor; o agente de IA em Compras conduz o processo da empresa. A diferença, os cinco agentes e o que perguntar."
 slug: "agente-de-ia-em-compras-nao-e-agentic-commerce"
 data: 2026-08-20
 autor: "Rodrigo Costa"

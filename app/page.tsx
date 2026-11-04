@@ -4,6 +4,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Problema } from "@/components/sections/Problema";
 import { Solutions } from "@/components/sections/Solutions";
 import { Contact } from "@/components/sections/Contact";
+import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizacaoJsonLd, ogDaPagina } from "@/lib/seo";
@@ -41,6 +42,7 @@ export default function Home() {
         <Hero />
         <Problema />
         <Solutions />
+        <ArtigosRelacionados pagina="home" />
         <Contact />
       </main>
       <Footer />
