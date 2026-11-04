@@ -116,5 +116,6 @@ test("o depoimento da Denise aparece na /cursos e na /bolsas", async ({ page }) 
     const depoimento = page.getByRole("region", { name: /Denise, Compradora na Santa Helena Alimentos/ });
     await expect(depoimento.locator("blockquote")).toContainText("Inteligência Artificial na Prática");
     await expect(depoimento.locator("figcaption")).toContainText("Santa Helena Alimentos");
+    await expect(depoimento.locator("figcaption")).toContainText("Fundamentos de IA para Negócios");
   }
 });

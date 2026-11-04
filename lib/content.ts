@@ -2020,8 +2020,9 @@ export const cursos = {
    * com IA.
    */
   /** Depoimento escrito da Denise, compradora na Santa Helena Alimentos, sobre
-   *  o curso que ela concluiu (enviado pelo Rodrigo em 2026-11-04). Texto
-   *  VERBATIM, inclusive o nome do curso como ela escreveu. Aparece na /cursos
+   *  o curso que ela concluiu (enviado pelo Rodrigo em 2026-11-04, uso
+   *  autorizado por ela). Texto VERBATIM, inclusive o nome do curso como ela
+   *  escreveu. Aparece na /cursos
    *  (antes de "Como funciona") e na /bolsas (antes da inscrição), pelo mesmo
    *  componente `DepoimentoAluna`. */
   depoimentoAluna: {
@@ -2031,6 +2032,10 @@ export const cursos = {
     nome: "Denise",
     cargo: "Compradora",
     empresa: "Santa Helena Alimentos",
+    /* O curso que ela chama de "Inteligência Artificial na Prática" é o
+       Fundamentos (confirmado pelo Rodrigo em 2026-11-04). A citação fica
+       como ela escreveu; o nome oficial vai na legenda. */
+    curso: "Curso: Fundamentos de IA para Negócios, com Vinícius",
   },
   formacoes: {
     /* Na tela, "IAgentics" é o logo (pedido do Rodrigo, 2026-10-14); este é o

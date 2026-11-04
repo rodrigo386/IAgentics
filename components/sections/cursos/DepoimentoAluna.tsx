@@ -25,6 +25,7 @@ export function DepoimentoAluna() {
               <span className="text-fg-muted">
                 {t.cargo} · {t.empresa}
               </span>
+              <span className="basis-full font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">{t.curso}</span>
             </figcaption>
           </figure>
         </Reveal>
