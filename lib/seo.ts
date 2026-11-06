@@ -1,3 +1,4 @@
+import { ROTAS_EN, type Lingua, type RotaComIngles } from "@/lib/i18n";
 import { site, contact, privacidade } from "@/lib/content";
 
 /**
@@ -62,13 +63,26 @@ function absoluta(caminho: string): string {
  * rota anunciava a home como seu endereço, fazendo LinkedIn e WhatsApp
  * atribuírem qualquer compartilhamento à página inicial.
  */
-export function ogDaPagina(caminho: string, title: string, description: string) {
+/**
+ * Canonical e as versões de idioma de uma página que existe em português e em
+ * inglês (2026-11-06). Cada versão é canônica de si mesma e aponta a outra
+ * (hreflang); `x-default` é o português, a versão principal do site.
+ */
+export function alternatesDe(rotaPt: RotaComIngles, lingua: Lingua) {
+  const en = ROTAS_EN[rotaPt];
+  return {
+    canonical: lingua === "en" ? en : rotaPt,
+    languages: { "pt-BR": rotaPt, en, "x-default": rotaPt },
+  };
+}
+
+export function ogDaPagina(caminho: string, title: string, description: string, lingua: Lingua = "pt") {
   return {
     title,
     description,
     url: absoluta(caminho),
     siteName: site.name,
-    locale: "pt_BR",
+    locale: lingua === "en" ? "en_US" : "pt_BR",
     type: "website" as const,
   };
 }

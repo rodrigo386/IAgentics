@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { List, X } from "@phosphor-icons/react";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { nav, cta } from "@/lib/content";
+import { nav as navPt, cta as ctaPt, ui as uiPt } from "@/lib/content";
+import { nav as navEn, cta as ctaEn } from "@/lib/content-en/geral";
+import { ui as uiEn } from "@/lib/content-en/ui";
+import { rotaNoOutroIdioma } from "@/lib/i18n";
+import { useLingua } from "@/lib/lingua-cliente";
 
 /**
  * Desktop nav is a single 64px line: lockup, five links, theme control, one CTA.
@@ -18,7 +23,11 @@ import { nav, cta } from "@/lib/content";
  * levava a lugar nenhum (revisão de 2026-10-14). Decidido por página, no
  * servidor: descobrir no cliente deixaria o HTML inicial com o link quebrado.
  */
-export function Nav({ contato = "/#contato" }: { contato?: string } = {}) {
+export function Nav({ contato: contatoPedido }: { contato?: string } = {}) {
+  const lingua = useLingua();
+  const rota = usePathname() ?? "/";
+  const contato = contatoPedido ?? (lingua === "en" ? "/en#contato" : "/#contato");
+  const [nav, cta, ui] = lingua === "en" ? [navEn, ctaEn, uiEn] : [navPt, ctaPt, uiPt];
   const [open, setOpen] = useState(false);
 
   // Locks background scroll while the mobile sheet is open.
@@ -32,10 +41,10 @@ export function Nav({ contato = "/#contato" }: { contato?: string } = {}) {
   return (
     <header className="fixed inset-x-0 top-0 z-[50] border-b border-line bg-bg/85 backdrop-blur-md">
       <nav
-        aria-label="Principal"
+        aria-label={ui.principal}
         className="mx-auto flex h-16 max-w-[1400px] items-center gap-6 px-5 sm:px-8"
       >
-        <Link href="/" className="shrink-0 text-fg" aria-label="IAgentics, início">
+        <Link href={lingua === "en" ? "/en" : "/"} className="shrink-0 text-fg" aria-label={ui.inicio}>
           <Logo className="w-[132px]" />
         </Link>
 
@@ -53,6 +62,17 @@ export function Nav({ contato = "/#contato" }: { contato?: string } = {}) {
         </ul>
 
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
+          {/* O idioma de destino, com o nome por extenso para leitor de tela
+              (2026-11-06). Página sem versão em inglês leva à home em inglês. */}
+          <Link
+            href={rotaNoOutroIdioma(rota)}
+            hrefLang={ui.idioma.lingua}
+            lang={ui.idioma.lingua}
+            aria-label={ui.idioma.nome}
+            className="grid h-10 place-items-center rounded-control border border-line px-3 font-mono text-xs tracking-[0.12em] text-fg transition-colors duration-200 hover:border-line-strong"
+          >
+            {ui.idioma.rotulo}
+          </Link>
           <ThemeToggle />
 
           <a
@@ -67,7 +87,7 @@ export function Nav({ contato = "/#contato" }: { contato?: string } = {}) {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="menu-mobile"
-            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-label={open ? ui.fecharMenu : ui.abrirMenu}
             className="grid size-10 place-items-center rounded-control border border-line text-fg transition-colors duration-200 hover:border-line-strong active:scale-[0.96] lg:hidden"
           >
             {open ? <X size={18} weight="regular" /> : <List size={18} weight="regular" />}

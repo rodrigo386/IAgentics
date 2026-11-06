@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * As três camadas do Nexo Compras (pitch Hacktown, slide 6): agentes →
@@ -12,6 +12,7 @@ import { nexoPage } from "@/lib/content";
  * e não flipam com o tema: são arte registrada de terceiros (DESIGN.md §4).
  */
 export function NexoCamadas() {
+  const { nexoPage } = textos();
   const t = nexoPage.camadas;
 
   return (

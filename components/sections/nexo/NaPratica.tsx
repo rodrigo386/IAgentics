@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { VideoVitrine } from "@/components/ui/VideoVitrine";
-import { nexo, nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 import posterSpendNf from "@/public/nexo/nexo-spend-nf-poster.jpg";
 import posterLogistico from "@/public/nexo/nexo-logistico-poster.jpg";
 import posterVarejo from "@/public/nexo/nexo-varejo-poster.jpg";
@@ -25,7 +25,7 @@ import posterOrcamento from "@/public/nexo/nexo-orcamento-poster.jpg";
  * mapa abaixo, por id.
  */
 const capas = { nf: posterSpendNf, logistico: posterLogistico, varejo: posterVarejo, orcamento: posterOrcamento } as const;
-type Item = (typeof nexoPage.naPratica.itens)[number];
+type Item = ReturnType<typeof textos>["nexoPage"]["naPratica"]["itens"][number];
 
 function Prancha({ tela }: { tela: Item["telas"][number] }) {
   return (
@@ -52,6 +52,7 @@ function Prancha({ tela }: { tela: Item["telas"][number] }) {
 }
 
 function Filme({ item }: { item: Item }) {
+  const { nexo } = textos();
   if (!("video" in item) || !(item.id in capas)) return null;
   return (
     <figure className="min-w-0 lg:col-span-8">
@@ -68,6 +69,7 @@ function Filme({ item }: { item: Item }) {
 }
 
 function Modulo({ item }: { item: Item }) {
+  const { nexoPage } = textos();
   const temFilme = "video" in item && item.id in capas;
   const temTelas = temFilme || item.telas.length > 0;
   return (
@@ -113,6 +115,7 @@ function Modulo({ item }: { item: Item }) {
 }
 
 export function NexoNaPratica() {
+  const { nexoPage } = textos();
   return (
     <section id="na-pratica">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

@@ -1,7 +1,7 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { AutoplayVideo } from "@/components/ui/AutoplayVideo";
 import { Reveal } from "@/components/ui/Reveal";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Pilares e a faixa "Para Empresas". Os formatos saíram para Formats.tsx quando
@@ -23,6 +23,7 @@ import { academy } from "@/lib/content";
  * contraste dependeria do quadro que estivesse passando.
  */
 export function AcademyApproach() {
+  const { academy } = textos();
   return (
     <>
       <section className="border-t border-line py-24 sm:py-32">

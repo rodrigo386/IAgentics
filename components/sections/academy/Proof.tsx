@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal } from "@/components/ui/Reveal";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * As duas faixas de prova social da Academy: apoiadores (quem chancela a
@@ -47,6 +47,7 @@ const placa =
 
 /** Os apoiadores, logo abaixo da capa. */
 export function AcademyProof() {
+  const { academy } = textos();
   return (
     <section className="border-t border-line py-20 sm:py-24">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
@@ -93,6 +94,7 @@ export function AcademyProof() {
 
 /** Clientes e depoimentos, na faixa escura. */
 export function AcademyClients() {
+  const { academy } = textos();
   return (
     <section className="assurance-band py-20 sm:py-28">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * A ementa das oito semanas.
@@ -13,6 +13,7 @@ import { spendLab } from "@/lib/content";
  * A numeração fica porque é sequência real - semana 3 vem depois da 2.
  */
 export function SpendLabSyllabus() {
+  const { spendLab } = textos();
   return (
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

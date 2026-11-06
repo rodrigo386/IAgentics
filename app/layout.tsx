@@ -4,6 +4,7 @@ import { site } from "@/lib/content";
 import { Beacon } from "@/components/site/Beacon";
 import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
 import { MetricoolPixel } from "@/components/site/MetricoolPixel";
+import { PularConteudo } from "@/components/site/PularConteudo";
 import "./globals.css";
 
 /**
@@ -82,12 +83,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <a
-          href="#conteudo"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-accent focus:px-5 focus:py-3 focus:text-accent-on"
-        >
-          Ir para o conteúdo
-        </a>
+        <PularConteudo />
         {children}
         {/* Contador de visitas do site (só rotas públicas; ver o componente). */}
         <Beacon />

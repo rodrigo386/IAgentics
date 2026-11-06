@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { VideoComVelocidade } from "@/components/ui/VideoComVelocidade";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * O convite em vídeo da Academy.
@@ -28,6 +28,7 @@ import { academy } from "@/lib/content";
  * atravessa a fronteira; esta seção continua renderizando no servidor.
  */
 export function AcademyConvite() {
+  const { academy } = textos();
   const { convite } = academy;
 
   return (

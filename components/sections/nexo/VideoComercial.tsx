@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { VideoVitrine } from "@/components/ui/VideoVitrine";
-import { nexo, nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 import poster from "@/public/nexo/nexo-comercial-poster.jpg";
 
 /**
@@ -10,6 +10,7 @@ import poster from "@/public/nexo/nexo-comercial-poster.jpg";
  * desenho do convite da /academy.
  */
 export function NexoVideoComercial() {
+  const { nexo, nexoPage } = textos();
   const t = nexoPage.videoComercial;
 
   return (

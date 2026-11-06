@@ -1,4 +1,4 @@
-import { nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * ORQUESTRADOR GRAPH - o visual da capa da /nexo.
@@ -78,6 +78,7 @@ const POSICAO: Record<Quadrante, { transform: string; align: string }> = {
 };
 
 export function OrquestradorGraph() {
+  const { nexoPage } = textos();
   const modulos = nexoPage.orquestrador.modulos;
   const total = modulos.length;
   const nos = modulos.map((_, i) => no(i, total));

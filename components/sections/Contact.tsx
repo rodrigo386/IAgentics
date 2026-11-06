@@ -2,7 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle, CircleNotch } from "@phosphor-icons/react";
-import { contact, site } from "@/lib/content";
+import { contact as contactPt, site as sitePt } from "@/lib/content";
+import { contact as contactEn, site as siteEn } from "@/lib/content-en/geral";
+import { useLingua } from "@/lib/lingua-cliente";
 
 type Status = "idle" | "sending" | "sent" | "error";
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
@@ -18,6 +20,8 @@ type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
  * (5.96:1 light, 5.87:1 dark).
  */
 export function Contact() {
+  const lingua = useLingua();
+  const [contact, site] = lingua === "en" ? [contactEn, siteEn] : [contactPt, sitePt];
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
 

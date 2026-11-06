@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * "Veja o IA Spend Lab na prática" - a seção que faltava na nossa versão.
@@ -25,6 +25,7 @@ import { spendLab } from "@/lib/content";
  * inventar palavras que vocês não disseram.
  */
 export function SpendLabPractice() {
+  const { spendLab, ui } = textos();
   const { practice } = spendLab;
 
   return (
@@ -44,7 +45,7 @@ export function SpendLabPractice() {
               quanto dura até o play - o controle mostraria "0:00" para quem só
               passou o olho. */}
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-subtle">
-            Vídeo · 2 min 37
+            {ui.duracaoVideoSpendLab}
           </p>
         </Reveal>
 

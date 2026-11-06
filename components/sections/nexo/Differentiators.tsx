@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Why Nexo, set with hanging headings.
@@ -8,6 +8,7 @@ import { nexoPage } from "@/lib/content";
  * the way a dossier annotates. No boxes: the plates own the frames on this page.
  */
 export function NexoDifferentiators() {
+  const { nexoPage } = textos();
   return (
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

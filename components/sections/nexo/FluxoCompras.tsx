@@ -4,7 +4,9 @@ import Image from "next/image";
 import { Play } from "@phosphor-icons/react";
 import { Reveal } from "@/components/ui/Reveal";
 import { VideoVitrine } from "@/components/ui/VideoVitrine";
-import { nexo } from "@/lib/content";
+import { nexo as nexoPt } from "@/lib/content";
+import { nexo as nexoEn } from "@/lib/content-en/nexo";
+import { useLingua } from "@/lib/lingua-cliente";
 import posterPassoAPasso from "@/public/nexo/nexo-passo-a-passo-poster.jpg";
 
 /**
@@ -25,12 +27,13 @@ import posterPassoAPasso from "@/public/nexo/nexo-passo-a-passo-poster.jpg";
  * MESMO elemento — dois <video> com um escondido baixariam o arquivo duas
  * vezes (ver a nota de `preload` no AutoplayVideo).
  */
-const passos = nexo.fluxo.passos;
+/* Os tempos (`inicio`) são os mesmos nos dois idiomas: o vídeo é um só. */
+const tempos = nexoPt.fluxo.passos.map((p) => p.inicio);
 
 function capituloEm(segundos: number) {
   let atual = -1;
-  passos.forEach((p, i) => {
-    if (segundos >= p.inicio) atual = i;
+  tempos.forEach((inicio, i) => {
+    if (segundos >= inicio) atual = i;
   });
   return atual;
 }
@@ -39,6 +42,9 @@ const mmss = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 export function NexoFluxoCompras() {
+  const lingua = useLingua();
+  const nexo = lingua === "en" ? nexoEn : nexoPt;
+  const passos = nexo.fluxo.passos;
   const [ativo, setAtivo] = useState(-1);
   const video = useRef<HTMLVideoElement | null>(null);
   const palco = useRef<HTMLDivElement | null>(null);
@@ -46,7 +52,7 @@ export function NexoFluxoCompras() {
   function irPara(i: number) {
     const v = video.current;
     if (!v) return;
-    v.currentTime = passos[i].inicio;
+    v.currentTime = tempos[i];
     setAtivo(i);
     void v.play().catch(() => {});
     // No celular o vídeo está acima da lista: traz para a tela quem pediu.

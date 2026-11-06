@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { siAnthropic } from "simple-icons";
-import { credenciais, partners } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Partner row.
@@ -62,6 +62,7 @@ export function PartnersRow({
 }: {
   variante?: keyof typeof VARIANTES;
 }) {
+  const { credenciais, partners } = textos();
   const v = VARIANTES[variante];
   const plateClass = v.placa;
 

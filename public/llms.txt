@@ -45,3 +45,7 @@ A IAgentics tem três soluções: Nexo (orquestrador de gestão de gastos), IAge
 
 - [Página inicial](https://iagentics.com.br/): a proposta de valor, o problema (57% das horas de trabalho automatizáveis; 70% do custo em gastos externos com fornecedores), as três soluções e o formulário de contato.
 - [Política de privacidade](https://iagentics.com.br/privacidade): quais dados o site coleta, com quem compartilha e como pedir remoção, conforme a LGPD.
+
+## English
+
+- [IAgentics in English](https://iagentics.com.br/en): the home page, [Nexo](https://iagentics.com.br/en/nexo), [IAgentics Academy](https://iagentics.com.br/en/academy), [IA Spend Lab](https://iagentics.com.br/en/spend-lab) and the [Privacy Policy](https://iagentics.com.br/en/privacy) translated into English. Articles, the online course subscription and campaigns are in Portuguese only.

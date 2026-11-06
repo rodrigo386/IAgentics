@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { Reveal } from "@/components/ui/Reveal";
-import { solutions } from "@/lib/content";
+import { solutions as solutionsPt } from "@/lib/content";
+import { solutions as solutionsEn } from "@/lib/content-en/geral";
+import { useLingua } from "@/lib/lingua-cliente";
 
 /**
  * As 3 soluções em "palco fixo" (2026-10-07, pedido do Rodrigo, pensando em
@@ -26,6 +28,8 @@ import { solutions } from "@/lib/content";
  *    lista, que continua sendo de links.
  */
 export function Solutions() {
+  const lingua = useLingua();
+  const solutions = lingua === "en" ? solutionsEn : solutionsPt;
   const [ativo, setAtivo] = useState(0);
   const itens = useRef<(HTMLLIElement | null)[]>([]);
   const filmes = useRef<(HTMLVideoElement | null)[]>([]);

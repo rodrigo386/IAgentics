@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { OrquestradorGraph } from "@/components/ui/OrquestradorGraph";
 import { PartnersRow } from "@/components/ui/PartnersRow";
-import { nexoPage, cta, partners } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Capa da /nexo com o orquestrador — o mesmo esqueleto da hero da home
@@ -19,6 +19,7 @@ import { nexoPage, cta, partners } from "@/lib/content";
  * que as explica.
  */
 export function NexoCoverOrquestrador() {
+  const { nexoPage, cta, partners } = textos();
   const t = nexoPage.hero;
 
   /* ALTURA: `100dvh - 4rem`, e aqui não é gosto — é conta. Nesta página o

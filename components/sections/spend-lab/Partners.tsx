@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * "Parceiros que fomentam e agregam".
@@ -13,6 +13,7 @@ import { spendLab } from "@/lib/content";
  * originais sobre placa de papel, inclusive no tema escuro.
  */
 export function SpendLabPartners() {
+  const { spendLab } = textos();
   return (
     <section className="border-t border-line py-20 sm:py-24">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

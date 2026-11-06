@@ -115,3 +115,12 @@ describe("normalizarOrigem", () => {
     expect(normalizarOrigem({})).toBe("direto");
   });
 });
+
+describe("normalizarRota na versão em inglês", () => {
+  it("conta cada página em inglês e manda o resto para /outras", () => {
+    expect(normalizarRota("/en")).toBe("/en");
+    expect(normalizarRota("/en/nexo?x=1")).toBe("/en/nexo");
+    expect(normalizarRota("/en/privacy")).toBe("/en/privacy");
+    expect(normalizarRota("/en/cursos")).toBe("/outras");
+  });
+});

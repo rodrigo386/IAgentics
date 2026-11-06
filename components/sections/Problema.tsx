@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { problema } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * "O problema" (pitch Hacktown, slides 3 e 4): dois painéis, um por slide.
@@ -14,6 +14,7 @@ import { problema } from "@/lib/content";
  * (5/7), hairlines, sem cartão.
  */
 export function Problema() {
+  const { problema } = textos();
   /* RESPIRO DE CIMA MENOR QUE O DE BAIXO, e esta é a única seção do site
      assim. Ela vem logo depois de uma hero de tela cheia, que já termina com
      a própria sobra: com `pt-32` os dois respiros somavam ~276px e o vão lia

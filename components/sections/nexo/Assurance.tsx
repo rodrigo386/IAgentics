@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import { Reveal } from "@/components/ui/Reveal";
-import { nexo } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Where the data stays - the first thing after the cover.
@@ -25,6 +25,7 @@ import { nexo } from "@/lib/content";
  * artwork and never get inverted or recoloured.
  */
 export function NexoAssurance() {
+  const { nexo, ui } = textos();
   const dm = nexo.platforms[0];
   const [iso, itil] = nexo.certificacoes.selos;
 
@@ -49,7 +50,7 @@ export function NexoAssurance() {
               </div>
             </div>
             <div className="grid grid-cols-1 items-center gap-4 border-y border-current/20 py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">Certificações</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">{ui.certificacoes}</span>
               {/* 50/50 na largura toda: selos soltos deixavam um buraco à direita,
                   desalinhado com a prancha do DM acima. */}
               <div className="grid grid-cols-2 gap-4">

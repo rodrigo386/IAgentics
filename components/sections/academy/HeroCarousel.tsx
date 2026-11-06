@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
-import { academy } from "@/lib/content";
+import { academy as academyPt } from "@/lib/content";
+import { academy as academyEn } from "@/lib/content-en/academy-spend-lab";
+import { useLingua } from "@/lib/lingua-cliente";
 
 /**
  * O carrossel de três títulos do hero, como no site atual.
@@ -38,6 +40,8 @@ function Titulo({
 }
 
 export function AcademyHeroCarousel() {
+  const lingua = useLingua();
+  const academy = lingua === "en" ? academyEn : academyPt;
   const slides = academy.hero.slides;
   const inicial = Math.max(
     0,

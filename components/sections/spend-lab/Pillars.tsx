@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Os quatro pilares. Vinham dentro de Method.tsx junto com os parceiros e os oito
@@ -13,6 +13,7 @@ import { spendLab } from "@/lib/content";
  * Transformação Digital antes da Diagnose. O número é informação, não decoração.
  */
 export function SpendLabPillars() {
+  const { spendLab } = textos();
   return (
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

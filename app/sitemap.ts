@@ -3,11 +3,12 @@ import { site } from "@/lib/content";
 import { ROTAS_SITEMAP, PRIORIDADE_SITEMAP, PRIORIDADE_ARTIGO } from "@/lib/seo";
 import { todosOsArtigos } from "@/lib/artigos";
 import { dataDoGit } from "@/lib/datas-git";
+import { ROTAS_EN } from "@/lib/i18n";
 
 /* Os arquivos de cada página fixa: a última mudança neles é o `lastmod`. */
 const ARQUIVOS_DA_ROTA: Record<string, string[]> = {
   "/": ["app/page.tsx", "components/sections/Hero.tsx", "components/sections/Problema.tsx", "components/sections/Solutions.tsx", "public/solucoes"],
-  "/nexo": ["app/nexo", "components/sections/nexo", "public/nexo"],
+  "/nexo": ["app/nexo", "components/paginas/Nexo.tsx", "components/sections/nexo", "public/nexo"],
   "/academy": ["app/academy", "components/sections/academy"],
   "/cursos": ["app/cursos", "components/sections/cursos"],
   "/spend-lab": ["app/spend-lab", "components/sections/spend-lab"],
@@ -31,12 +32,29 @@ const ARQUIVOS_DA_ROTA: Record<string, string[]> = {
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const fixas = ROTAS_SITEMAP.map((rota) => ({
-    url: rota === "/" ? site.url : `${site.url}${rota}`,
+  const absoluta = (rota: string) => (rota === "/" ? site.url : `${site.url}${rota}`);
+  /* Página com versão em inglês declara as duas (hreflang), dos dois lados
+     (2026-11-06). A versão em inglês herda o lastmod e a prioridade da
+     portuguesa, um degrau abaixo: o público principal do site é o Brasil. */
+  const idiomas = (rota: string) => {
+    const en = (ROTAS_EN as Record<string, string>)[rota];
+    return en ? { alternates: { languages: { "pt-BR": absoluta(rota), en: absoluta(en) } } } : {};
+  };
+  const portuguesas = ROTAS_SITEMAP.map((rota) => ({
+    url: absoluta(rota),
     lastModified: dataDoGit(...(ARQUIVOS_DA_ROTA[rota] ?? [])),
     changeFrequency: "monthly" as const,
     priority: PRIORIDADE_SITEMAP[rota] ?? 0.5,
+    ...idiomas(rota),
   }));
+  const inglesas = Object.entries(ROTAS_EN).map(([pt, en]) => ({
+    url: absoluta(en),
+    lastModified: dataDoGit(...(ARQUIVOS_DA_ROTA[pt] ?? []), "lib/content-en"),
+    changeFrequency: "monthly" as const,
+    priority: Math.max(0.1, (PRIORIDADE_SITEMAP[pt] ?? 0.5) - 0.2),
+    ...idiomas(pt),
+  }));
+  const fixas = [...portuguesas, ...inglesas];
 
   const artigos = todosOsArtigos();
 

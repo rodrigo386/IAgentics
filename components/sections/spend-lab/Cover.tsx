@@ -1,6 +1,6 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { AutoplayVideo } from "@/components/ui/AutoplayVideo";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Capa do IA Spend Lab, com o vídeo de cabeçalho de vocês ao fundo.
@@ -15,6 +15,7 @@ import { spendLab } from "@/lib/content";
  * passando, e contraste não é loteria.
  */
 export function SpendLabCover() {
+  const { spendLab } = textos();
   const { hero } = spendLab;
 
   return (

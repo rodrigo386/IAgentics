@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { AutoplayVideo } from "@/components/ui/AutoplayVideo";
-import { academy } from "@/lib/content";
+import { academy as academyPt } from "@/lib/content";
+import { academy as academyEn } from "@/lib/content-en/academy-spend-lab";
+import { useLingua } from "@/lib/lingua-cliente";
 
 /**
  * Os quatro formatos como tipografia cinética.
@@ -27,6 +29,8 @@ import { academy } from "@/lib/content";
  * agentes do /nexo.
  */
 export function AcademyFormats() {
+  const lingua = useLingua();
+  const academy = lingua === "en" ? academyEn : academyPt;
   const [ativo, setAtivo] = useState(0);
   const item = academy.formats.items[ativo];
 

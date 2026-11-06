@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { nav, contact, site, footer, privacidade, credenciais } from "@/lib/content";
+import { linguaAtual, textos } from "@/lib/textos";
+import { rotaEm } from "@/lib/i18n";
 
 export function Footer() {
+  const { nav, contact, site, footer, privacidade, credenciais, ui } = textos();
   const year = new Date().getFullYear();
 
   return (
@@ -25,7 +27,7 @@ export function Footer() {
             `prefetch={false}` pela razão do painel admin (armadilha 8): o
             rodapé aparece em TODA página e /cursos é force-dynamic, então
             prefetch aqui viraria consulta ao banco em cada rolagem até o fim. */}
-        <nav aria-label="Rodapé" className="md:col-span-3">
+        <nav aria-label={ui.rodape} className="md:col-span-3">
           <ul className="grid grid-cols-2 gap-y-3">
             {nav.links.map((link) => (
               <li key={link.href}>
@@ -100,7 +102,7 @@ export function Footer() {
           {/* A política precisa ser alcançável de qualquer página — é o lugar
               onde todo mundo procura, e o Google já exibia essa URL. */}
           <Link
-            href="/privacidade"
+            href={rotaEm(linguaAtual(), "/privacidade")}
             prefetch={false}
             className="text-sm text-fg-subtle transition-colors duration-200 hover:text-fg"
           >

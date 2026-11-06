@@ -207,6 +207,50 @@ export const privacidade = {
   },
 } as const;
 
+/** Título e descrição de busca das páginas que têm versão em inglês
+ *  (2026-11-06: estavam escritos em cada page.tsx). A home usa o título
+ *  padrão do layout e a descrição da hero. */
+export const paginas = {
+  nexo: {
+    /* "Nexo" sozinho dava 16 caracteres com o sufixo do template, e o Bing
+       marcou como título curto demais (2026-09-14). */
+    titulo: "Nexo: agentes de IA para Compras e gestão de gastos",
+    og: "Nexo · IAgentics",
+  },
+  spendLab: {
+    titulo: "IA Spend Lab: diagnóstico de maturidade em IA",
+    og: "IA Spend Lab · IAgentics",
+    descricao: "Implemente IA com Mente, Método e Cultura. Diagnóstico de maturidade, consultoria e formação aplicada em 8 semanas.",
+  },
+  academy: {
+    /* Reescrita em 2026-09-14: a anterior tinha 61 caracteres e o Bing marcou
+       como curta. */
+    titulo: "Academy: capacitação em IA para times e lideranças",
+    og: "IAgentics Academy",
+    descricao:
+      "A escola de IA aplicada da IAgentics: trilhas in company, workshops e mentoria executiva para times e lideranças, com projeto aplicado ao fim de cada formação.",
+  },
+} as const;
+
+/** Rótulos de interface que não pertencem a uma seção (2026-11-06, junto da
+ *  versão em inglês: estavam escritos direto nos componentes). */
+export const ui = {
+  inicio: "IAgentics, início",
+  principal: "Principal",
+  pularConteudo: "Ir para o conteúdo",
+  /* Estes três moravam escritos nos componentes (Assurance, Practice, Courses). */
+  certificacoes: "Certificações",
+  duracaoVideoSpendLab: "Vídeo · 2 min 37",
+  turmaAcademy: "Diga qual formação interessa e montamos a turma para a sua equipe.",
+  abrirMenu: "Abrir menu",
+  fecharMenu: "Fechar menu",
+  rodape: "Rodapé",
+  temaClaro: "Ativar tema claro",
+  temaEscuro: "Ativar tema escuro",
+  /** O seletor de idioma: o texto do botão é o idioma de DESTINO. */
+  idioma: { rotulo: "EN", nome: "Read this page in English", lingua: "en" },
+} as const;
+
 export const nav = {
   links: [
     { label: "Soluções", href: "/#solucoes" },

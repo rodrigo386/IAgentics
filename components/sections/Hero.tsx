@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { OrquestradorGraph } from "@/components/ui/OrquestradorGraph";
 import { PartnersRow } from "@/components/ui/PartnersRow";
-import { hero, cta, partners } from "@/lib/content";
+import { linguaAtual, textos } from "@/lib/textos";
 
 /**
  * Hero da home, construída em torno do grafo do orquestrador. Server Component,
@@ -21,12 +21,21 @@ import { hero, cta, partners } from "@/lib/content";
  * parceiro aparece uma vez só.
  */
 export function Hero() {
+  const { hero, cta, partners } = textos();
   /* ALTURA: `100dvh - 4rem`, não `100dvh`. O nav mede 4rem e fica POR CIMA da
      hero, então a tela cheia menos o nav é a medida honesta do que sobra para
      o conteúdo — é a mesma das capas da /academy e do /spend-lab. A regra do
      DESIGN.md (nunca `h-screen`, sempre `min-h` em dvh) continua valendo; o
      que muda é quanto de vazio a seção se obriga a criar depois que o
      conteúdo acabou. */
+  /* As linhas não quebram (whitespace-nowrap) e o tamanho foi medido para o
+     português. "Procurement & Spend Management" é ~12% mais larga que
+     "Compras e Gestão de Gastos" e saía cortada; o inglês desce um degrau
+     (2026-11-06, medido de 390 a 1920 px). */
+  const tamanhoManchete =
+    linguaAtual() === "en"
+      ? "text-[min(4.9vw,1.7rem)] sm:text-[min(4.4vw,2.3rem)] lg:text-[min(3.1vw,2.85rem)]"
+      : "text-[min(5.6vw,1.9rem)] sm:text-[min(5vw,2.6rem)] lg:text-[min(3.5vw,3.2rem)]";
   return (
     <section id="topo" className="relative flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden pb-12 pt-24">
       <div className="flex flex-1 items-center">
@@ -37,7 +46,7 @@ export function Hero() {
                 <Fragment key={line}>
                   <span className="block overflow-hidden pb-[0.08em]">
                     <span
-                      className="hero-line block whitespace-nowrap text-[min(5.6vw,1.9rem)] leading-[1.1] sm:text-[min(5vw,2.6rem)] lg:text-[min(3.5vw,3.2rem)]"
+                      className={`hero-line block whitespace-nowrap leading-[1.1] ${tamanhoManchete}`}
                       style={{ animationDelay: `${60 + i * 80}ms` }}
                     >
                       {line}

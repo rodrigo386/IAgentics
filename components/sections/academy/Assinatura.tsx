@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Faixa da assinatura no fim da /academy (2026-10-29, item 2 da análise de
@@ -9,6 +9,7 @@ import { academy } from "@/lib/content";
  * do botão da capa.
  */
 export function AcademyAssinatura() {
+  const { academy } = textos();
   const t = academy.assinatura;
   return (
     <section aria-labelledby="academy-assinatura" className="border-t border-line py-16 sm:py-20">

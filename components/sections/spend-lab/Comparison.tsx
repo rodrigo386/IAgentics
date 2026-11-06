@@ -8,7 +8,7 @@ import {
   X,
 } from "@phosphor-icons/react/dist/ssr";
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * A tabela comparativa e para quem o programa nasceu.
@@ -44,14 +44,12 @@ import { spendLab } from "@/lib/content";
  * cada um do equivalente na Phosphor. Cofre para Finanças e organograma para
  * Liderança dizem o que "gráfico subindo" e "bússola" não diziam.
  */
-const ICONES = {
-  "Gente & T&D": UsersThree,
-  "TI & TD": Database,
-  "Finanças, Gestão de Gastos & Suprimentos": Vault,
-  "Áreas de Negócios": Buildings,
-  "Liderança & Executivos": TreeStructure,
-} as const;
+/* Pela POSIÇÃO em `audience.items`, que é a mesma nos dois idiomas (desde
+   2026-11-06; antes era pelo nome em português): Gente & T&D, TI & TD,
+   Finanças/Gastos/Suprimentos, Áreas de Negócios, Liderança & Executivos. */
+const ICONES = [UsersThree, Database, Vault, Buildings, TreeStructure] as const;
 export function SpendLabComparison() {
+  const { spendLab } = textos();
   const { comparison, audience } = spendLab;
 
   return (
@@ -136,8 +134,8 @@ export function SpendLabComparison() {
           </Reveal>
 
           <ul className="mt-14">
-            {audience.items.map((item) => {
-              const Icone = ICONES[item as keyof typeof ICONES];
+            {audience.items.map((item, i) => {
+              const Icone = ICONES[i];
               return (
                 <Reveal key={item}>
                   <li className="flex items-center gap-5 border-t border-line-strong py-6">

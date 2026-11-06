@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { nexoPage } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Comparativo contra "SaaS de Compras" (pitch Hacktown, slide 12).
@@ -14,6 +14,7 @@ import { nexoPage } from "@/lib/content";
  * que a comparação lado a lado — o ponto da seção — se perde.
  */
 export function NexoComparativo() {
+  const { nexoPage } = textos();
   const t = nexoPage.comparativo;
   return (
     <section id="comparativo" className="border-t border-line py-24 sm:py-32">

@@ -1,7 +1,7 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Os nove cursos. Kicker, título, lead e etiquetas são os do site de vocês.
@@ -26,6 +26,7 @@ import { academy } from "@/lib/content";
  * oposto de um print de produto, que nunca corto.
  */
 export function AcademyCourses() {
+  const { academy, ui } = textos();
   return (
     <section id="cursos" className="scroll-mt-24 border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
@@ -99,7 +100,7 @@ export function AcademyCourses() {
             />
           </a>
           <p className="mt-4 text-sm text-fg-muted">
-            Diga qual formação interessa e montamos a turma para a sua equipe.
+            {ui.turmaAcademy}
           </p>
         </Reveal>
       </div>

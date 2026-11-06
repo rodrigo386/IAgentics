@@ -1,6 +1,6 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Reveal } from "@/components/ui/Reveal";
-import { spendLab } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * "Como funciona IA Spend Lab?" - os oito passos e o CTA do diagnóstico.
@@ -13,6 +13,7 @@ import { spendLab } from "@/lib/content";
  * monta o comitê de priorização antes do diagnóstico.
  */
 export function SpendLabMethod() {
+  const { spendLab } = textos();
   return (
     <section className="border-t border-line py-24 sm:py-32">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">

@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Marquee } from "@/components/ui/Marquee";
 import { AcademyHeroCarousel } from "@/components/sections/academy/HeroCarousel";
-import { academy } from "@/lib/content";
+import { textos } from "@/lib/textos";
 
 /**
  * Capa do Academy. Título, subtítulo e kicker são os do site de vocês, verbatim.
@@ -27,6 +27,7 @@ import { academy } from "@/lib/content";
  * contra o font-size do próprio nó. Separados, o título quebra no meio das palavras.
  */
 export function AcademyCover() {
+  const { academy } = textos();
   return (
     <section className="academy-cover relative isolate flex min-h-[calc(100dvh-4rem)] flex-col justify-center overflow-hidden border-b border-line py-10 lg:py-14">
       <div className="cover-aurora -z-10" aria-hidden="true" />

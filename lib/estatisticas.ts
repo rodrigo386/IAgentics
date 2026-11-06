@@ -1,3 +1,4 @@
+import { ROTAS_EN } from "@/lib/i18n";
 import { site } from "@/lib/content";
 
 /**
@@ -43,6 +44,13 @@ export function normalizarRota(bruta: unknown, slugsDeArtigo: readonly string[] 
     const slug = partes[2] ?? "";
     if (!slug) return "/artigos";
     return slugsDeArtigo.includes(slug) ? `/artigos/${slug}` : ROTA_OUTRAS;
+  }
+
+  /* A versão em inglês (2026-11-06): cada página vira rota própria, para o
+     painel mostrar se a tradução traz alguém. */
+  if (primeiroSegmento === "/en") {
+    const rota = partes[2] ? `/en/${partes[2]}` : "/en";
+    return (Object.values(ROTAS_EN) as string[]).includes(rota) ? rota : ROTA_OUTRAS;
   }
 
   if ((ROTAS_RASTREADAS as readonly string[]).includes(primeiroSegmento)) return primeiroSegmento;
