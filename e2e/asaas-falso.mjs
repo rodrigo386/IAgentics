@@ -16,6 +16,7 @@ const clientes = [];
 const cobrancas = [];
 const assinaturas = [];
 const cancelamentos = [];
+const reajustes = [];
 
 function json(res, status, corpo) {
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -32,7 +33,7 @@ function lerCorpo(req) {
 
 http
   .createServer(async (req, res) => {
-    if (req.method === "GET" && req.url === "/__estado") return json(res, 200, { clientes, cobrancas, assinaturas, cancelamentos });
+    if (req.method === "GET" && req.url === "/__estado") return json(res, 200, { clientes, cobrancas, assinaturas, cancelamentos, reajustes });
 
     if (!req.headers["access_token"] && req.url !== "/__estado" && !req.url?.startsWith("/fatura/")) {
       return json(res, 401, { errors: [{ code: "sem_chave" }] });
@@ -60,6 +61,12 @@ http
       return json(res, 200, { data: [{ id, invoiceUrl: `http://127.0.0.1:${PORTA}/fatura/${id}`, dueDate: a.nextDueDate }] });
     }
     const cancelar = req.url?.match(/^\/subscriptions\/([^/]+)$/);
+    // Reajuste de valor (fim do preço de fundador, 2026-11-18).
+    if (req.method === "PUT" && cancelar) {
+      const corpo = await lerCorpo(req);
+      reajustes.push({ id: cancelar[1], ...corpo });
+      return json(res, 200, { id: cancelar[1], ...corpo });
+    }
     if (req.method === "DELETE" && cancelar) {
       cancelamentos.push(cancelar[1]);
       return json(res, 200, { deleted: true, id: cancelar[1] });

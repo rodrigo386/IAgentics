@@ -105,10 +105,17 @@ test("o painel e o CSV das bolsas ficam atrás da senha", async ({ request }) =>
   const auth = { Authorization: "Basic " + Buffer.from(`${usuario}:${senha}`).toString("base64") };
   const painel = await request.get("/admin/bolsas", { headers: auth });
   expect(painel.status()).toBe(200);
-  expect(await painel.text()).toContain("Querem o grupo de WhatsApp");
+  const html = await painel.text();
+  expect(html).toContain("Querem o grupo de WhatsApp");
+  /* Com ao menos uma inscrição (o teste da inscrição completa vem antes), a
+     seleção aparece: ranking, resultado por e-mail e a avaliação de cada um. */
+  expect(html).toContain("Aplicar o ranking");
+  expect(html).toContain("Resultado por e-mail");
+  expect(html).toContain("Clareza (0 a 10)");
   const csv = await request.get("/admin/bolsas/inscricoes.csv", { headers: auth });
   expect(csv.headers()["content-type"]).toContain("text/csv");
   const texto = await csv.text();
   expect(texto).toContain("seguiu_academy");
+  expect(texto.split("\n")[0]).toContain("status");
   expect(texto).not.toContain("token");
 });

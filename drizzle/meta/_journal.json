@@ -120,6 +120,20 @@
       "when": 1795022400000,
       "tag": "0016_bolsas_prova_real",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795108800000,
+      "tag": "0017_bolsas_avaliacao",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1795195200000,
+      "tag": "0018_bolsas_voucher",
+      "breakpoints": true
     }
   ]
 }

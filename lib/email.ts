@@ -1,5 +1,5 @@
 import "server-only";
-import { site, diagnose, bolsas } from "@/lib/content";
+import { site, diagnose, bolsas, PRECO_FUNDADOR } from "@/lib/content";
 import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
 /**
@@ -248,6 +248,73 @@ export function emailDiagnose(d: EnvioValido) {
  * que o inscrito corrige um dado.
  */
 export const RESPONDER_BOLSAS = "contato@iagentics.com.br";
+
+/**
+ * Voucher do preço de fundador (2026-11-18). Bolsista recebe quando a bolsa
+ * acaba; não selecionado, até 10/01/2027. O link leva à página do voucher,
+ * que só existe para quem tem o código.
+ */
+export function emailVoucherBolsa(nome: string, d: { url: string; validoAte: string; bolsista: boolean }) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const e = escapeHtml;
+  const abertura = d.bolsista
+    ? "Sua bolsa no Desafio Prova Real terminou. Obrigado por participar!"
+    : "Prometemos, e aqui está: o seu voucher exclusivo do Desafio Prova Real.";
+  const oferta = `Com ele, você assina a plataforma da IAgentics Academy por ${PRECO_FUNDADOR} por mês durante 12 meses, no lugar do preço público. Depois dos 12 meses, vale o preço público da assinatura, com aviso por e-mail antes. Sem fidelidade.`;
+  const validade = `O voucher vale até ${d.validoAte}, para uma assinatura. A assinatura só começa se você usar.`;
+  const duvidas = "Dúvidas? É só responder este e-mail.";
+  const paragrafo = (c: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${c}</p>`;
+  const botao = `<p style="margin:0 0 24px"><a href="${d.url}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">Usar o voucher</a></p>`;
+
+  return {
+    assunto: `Seu voucher: ${PRECO_FUNDADOR} por mês na IAgentics Academy`,
+    texto: [`Olá, ${primeiroNome}.`, abertura, oferta, `Use o voucher: ${d.url}`, validade, duvidas, "IAgentics Academy · iagentics.com.br"].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">Olá, ${e(primeiroNome)}.</p>` +
+        `<p style="margin:0 0 16px;font-size:17px;line-height:1.5;font-weight:bold;color:#131723">${e(abertura)}</p>` +
+        paragrafo(e(oferta)) +
+        botao +
+        paragrafo(e(validade)) +
+        paragrafo(e(duvidas)),
+    ),
+  };
+}
+
+/**
+ * Resultado do Desafio Prova Real (24 de dezembro). Dois textos: quem foi
+ * selecionado e quem não foi. O segundo promete o voucher por e-mail até 10 de
+ * janeiro de 2027, válido por 15 dias, como a página e o regulamento dizem.
+ */
+export function emailResultadoBolsa(nome: string, selecionado: boolean) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const e = escapeHtml;
+  const preco = PRECO_FUNDADOR;
+  const paragrafos = selecionado
+    ? [
+        "Você foi selecionado(a) para o Desafio Prova Real da IAgentics Academy. Parabéns!",
+        "A sua bolsa vai de 2 de janeiro a 2 de fevereiro de 2027: 30 dias gratuitos na plataforma, para usar no problema que você descreveu.",
+        "No dia 2 de janeiro você recebe por e-mail a política e o período de uso e as instruções de cadastro na plataforma. Até lá, não precisa fazer nada.",
+        `Terminada a bolsa, você recebe um voucher para assinar por ${preco} por mês durante 12 meses, se quiser continuar. A assinatura só começa se você usar o voucher.`,
+      ]
+    : [
+        "Obrigado por participar do Desafio Prova Real da IAgentics Academy. Desta vez, você não foi um dos 50 selecionados.",
+        `Como agradecimento, você receberá por e-mail, até 10 de janeiro de 2027, um voucher exclusivo para se cadastrar na plataforma por ${preco} por mês durante 12 meses. O voucher vale por 15 dias.`,
+        "A assinatura só começa se você usar o voucher.",
+      ];
+  const corrigir = "Dúvidas? É só responder este e-mail.";
+  const paragrafo = (c: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${c}</p>`;
+
+  return {
+    assunto: selecionado ? "Você foi selecionado(a): Desafio Prova Real" : "Resultado do Desafio Prova Real",
+    texto: [`Olá, ${primeiroNome}.`, ...paragrafos, corrigir, "IAgentics Academy · iagentics.com.br"].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">Olá, ${e(primeiroNome)}.</p>` +
+        `<p style="margin:0 0 16px;font-size:17px;line-height:1.5;font-weight:bold;color:#131723">${e(paragrafos[0])}</p>` +
+        paragrafos.slice(1).map((p) => paragrafo(e(p))).join("") +
+        paragrafo(e(corrigir)),
+    ),
+  };
+}
 
 export function emailInscricaoBolsa(nome: string, opcoes: { grupo: boolean }) {
   const primeiroNome = nome.trim().split(/\s+/)[0];

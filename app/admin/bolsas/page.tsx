@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { admin } from "@/lib/content-admin";
 import { Cartao } from "@/components/admin/Cartao";
-import { bolsasPorDia, resumoBolsas } from "@/lib/bolsas/inscricoes";
+import { bolsasPorDia, listarInscricoes, resumoBolsas, resumoSelecao, resumoVouchers, STATUS_VALIDOS } from "@/lib/bolsas/inscricoes";
+import { listarPrecoFundador } from "@/lib/assinatura/assinaturas";
+import { hojeSP } from "@/lib/assinatura/regras";
+import { janelaDoVoucher, precisaReajuste, type GrupoVoucher } from "@/lib/bolsas/voucher";
+import { avaliada, elegivel, ordenarPainel, pontuacao, NOTA_MAX, VAGAS } from "@/lib/bolsas/selecao";
+import { agoraBolsas, faseDasInscricoes } from "@/lib/bolsas/regras";
+import { aplicarRankingAdmin, avaliarInscricao, enviarResultados, enviarVouchers, reajustarAssinaturaAdmin } from "./acoes";
 
 const t = admin.bolsas;
 export const metadata: Metadata = { title: t.meta.titulo, robots: { index: false, follow: false } };
@@ -15,8 +21,55 @@ const numero = new Intl.NumberFormat("pt-BR");
  * Basic Auth do middleware, como todo /admin. Mostra os inscritos (meta 400,
  * do mapa da campanha) e exporta o CSV que a equipe preenche na avaliação.
  */
-export default async function PainelBolsas() {
-  const [r, porDia] = await Promise.all([resumoBolsas(), bolsasPorDia()]);
+const dataHora = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
+const campo = "w-full rounded-control border border-line bg-bg px-3 py-2 text-sm text-fg";
+const rotuloCampo = "font-mono text-[10px] uppercase tracking-[0.14em] text-fg-muted";
+
+export default async function PainelBolsas({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string; ranking?: string; resultado?: string; voucher?: string }>;
+}) {
+  const sp = await searchParams;
+  const [r, porDia, sel, todas, vou, fundador] = await Promise.all([
+    resumoBolsas(),
+    bolsasPorDia(),
+    resumoSelecao(),
+    listarInscricoes(),
+    resumoVouchers(),
+    listarPrecoFundador(),
+  ]);
+  const s = t.selecao;
+  const v = t.voucher;
+  const hoje = hojeSP(agoraBolsas());
+  const reajustar = fundador.filter((a) => precisaReajuste(a.precoFundadorAte, hoje));
+  const aEnviar: Record<GrupoVoucher, number> = { nao_selecionado: vou.naoSelecionadosAEnviar, bolsista: vou.bolsistasAEnviar };
+  const busca = (sp.q ?? "").trim().toLowerCase();
+  const statusFiltro = STATUS_VALIDOS.find((x) => x === sp.status);
+  const vagasRestantes = Math.max(0, VAGAS - (sel.porStatus.selecionado ?? 0) - (sel.porStatus.aceitou ?? 0));
+  const encerradas = faseDasInscricoes(agoraBolsas()) === "encerradas";
+  const aviso = (() => {
+    if (sp.ranking) {
+      const [a, b] = sp.ranking.split("-").map(Number);
+      return Number.isFinite(a) && Number.isFinite(b) ? s.ranking.feito(a, b) : null;
+    }
+    if (sp.resultado === "cedo") return s.resultado.cedo;
+    if (sp.voucher === "cedo") return v.bloqueado;
+    if (sp.voucher) {
+      const [a, b] = sp.voucher.split("-").map(Number);
+      return Number.isFinite(a) && Number.isFinite(b) ? v.feito(a, b) : null;
+    }
+    if (sp.resultado) {
+      const [a, b] = sp.resultado.split("-").map(Number);
+      return Number.isFinite(a) && Number.isFinite(b) ? s.resultado.feito(a, b) : null;
+    }
+    return null;
+  })();
+  const linhas = ordenarPainel(todas).filter(
+    (l) =>
+      (!statusFiltro || l.status === statusFiltro) &&
+      (!busca || `${l.nome} ${l.email} ${l.empresa}`.toLowerCase().includes(busca)),
+  );
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-12 px-5 py-12 sm:px-8">
@@ -41,6 +94,239 @@ export default async function PainelBolsas() {
         </a>
         <p className="max-w-[70ch] text-xs text-fg-muted">{t.exportarNota}</p>
       </section>
+
+      {aviso ? (
+        <p role="status" className="border border-accent bg-surface px-4 py-3 text-sm text-fg">
+          {aviso}
+        </p>
+      ) : null}
+
+      {r.inscritos > 0 ? (
+        <section className="flex flex-col gap-6">
+          <div>
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{s.titulo}</h2>
+            <p className="mt-2 max-w-[75ch] text-sm text-fg-muted">{s.lead}</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {STATUS_VALIDOS.filter((x) => x === "selecionado" || x === "nao_selecionado" || x === "espera").map((x) => (
+              <Cartao key={x} rotulo={s.status[x]} valor={numero.format(sel.porStatus[x] ?? 0)} nota={x === "selecionado" ? `Meta: ${VAGAS}` : undefined} />
+            ))}
+            <Cartao rotulo={s.cartoes.naoAvaliadas} valor={numero.format(sel.naoAvaliadas)} alerta={sel.naoAvaliadas > 0} />
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <form action={aplicarRankingAdmin} className="flex flex-col gap-3 border border-line bg-surface p-5">
+              <h3 className="text-base font-medium text-fg">{s.ranking.titulo}</h3>
+              <p className="text-sm text-fg-muted">{s.ranking.texto(vagasRestantes)}</p>
+              <label className="flex items-start gap-2 text-sm text-fg">
+                <input type="checkbox" name="confirmar" required className="mt-1 size-4 accent-[var(--accent)]" />
+                <span>{s.ranking.confirmar}</span>
+              </label>
+              <button type="submit" className="w-fit rounded-control bg-accent px-4 py-2 text-sm font-medium text-accent-on">
+                {s.ranking.botao}
+              </button>
+            </form>
+            <form action={enviarResultados} className="flex flex-col gap-3 border border-line bg-surface p-5">
+              <h3 className="text-base font-medium text-fg">{s.resultado.titulo}</h3>
+              <p className="text-sm text-fg-muted">{s.resultado.texto}</p>
+              <p className="text-sm text-fg">
+                {s.cartoes.pendente}: <strong className="tabular-nums">{numero.format(sel.resultadoPendente)}</strong> · {s.cartoes.enviado}:{" "}
+                <strong className="tabular-nums">{numero.format(sel.resultadoEnviado)}</strong>
+              </p>
+              {sel.resultadoPendente === 0 ? (
+                <p className="text-sm text-fg-muted">{s.resultado.nada}</p>
+              ) : !encerradas ? (
+                <p className="text-sm text-fg-muted">{s.resultado.cedo}</p>
+              ) : (
+                <button type="submit" className="w-fit rounded-control bg-accent px-4 py-2 text-sm font-medium text-accent-on">
+                  {s.resultado.botao(sel.resultadoPendente)}
+                </button>
+              )}
+            </form>
+          </div>
+
+          <div className="flex flex-col gap-4 border border-line bg-surface p-5">
+            <h3 className="text-base font-medium text-fg">{v.titulo}</h3>
+            <p className="max-w-[75ch] text-sm text-fg-muted">{v.texto}</p>
+            <p className="text-sm text-fg">
+              {v.cartoes.enviados}: <strong className="tabular-nums">{numero.format(vou.enviados)}</strong> · {v.cartoes.usados}:{" "}
+              <strong className="tabular-nums">{numero.format(vou.usados)}</strong>
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {(["nao_selecionado", "bolsista"] as const).map((g) => {
+                const janela = janelaDoVoucher(g, hoje);
+                return (
+                  <form key={g} action={enviarVouchers} className="flex flex-col gap-2 border-t border-line pt-3">
+                    <input type="hidden" name="grupo" value={g} />
+                    <p className="text-sm font-medium text-fg">
+                      {v.grupos[g].rotulo} · <span className="font-normal text-fg-muted">{v.aEnviar(aEnviar[g])}</span>
+                    </p>
+                    {janela === "atrasada" && aEnviar[g] > 0 ? <p className="text-sm text-fg">{v.atrasado}</p> : null}
+                    {aEnviar[g] === 0 ? (
+                      <p className="text-sm text-fg-muted">{v.nada}</p>
+                    ) : janela === "cedo" ? (
+                      <p className="text-sm text-fg-muted">{v.cedo[g]}</p>
+                    ) : (
+                      <button type="submit" className="w-fit rounded-control bg-accent px-4 py-2 text-sm font-medium text-accent-on">
+                        {v.grupos[g].botao(aEnviar[g])}
+                      </button>
+                    )}
+                  </form>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 border border-line bg-surface p-5">
+            <h3 className="text-base font-medium text-fg">{t.reajuste.titulo}</h3>
+            <p className="max-w-[75ch] text-sm text-fg-muted">{t.reajuste.texto}</p>
+            {reajustar.length === 0 ? (
+              <p className="text-sm text-fg-muted">{t.reajuste.vazio}</p>
+            ) : (
+              <table className="w-full border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-b border-line-strong text-fg-muted">
+                    <th scope="col" className="py-2 pr-4 font-normal">{t.reajuste.colunas.nome}</th>
+                    <th scope="col" className="py-2 pr-4 font-normal">{t.reajuste.colunas.email}</th>
+                    <th scope="col" className="py-2 pr-4 font-normal">{t.reajuste.colunas.ate}</th>
+                    <th scope="col" className="py-2 font-normal">{t.reajuste.colunas.acao}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reajustar.map((a) => (
+                    <tr key={a.id} className="border-b border-line">
+                      <td className="py-2 pr-4 text-fg">{a.nome}</td>
+                      <td className="py-2 pr-4 text-fg-muted">{a.email}</td>
+                      <td className="py-2 pr-4 tabular-nums text-fg">{(a.precoFundadorAte ?? "").split("-").reverse().join("/")}</td>
+                      <td className="py-2">
+                        {/* Dois cliques: muda a cobrança no Asaas. */}
+                        <details>
+                          <summary className="cursor-pointer text-xs underline">{t.reajuste.botao}</summary>
+                          <form action={reajustarAssinaturaAdmin} className="mt-2">
+                            <input type="hidden" name="id" value={a.id} />
+                            <button type="submit" className="rounded-control border border-line-strong px-3 py-1.5 text-xs text-fg">
+                              {t.reajuste.confirmar}
+                            </button>
+                          </form>
+                        </details>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <form method="get" className="flex flex-wrap items-end gap-3">
+            <label className="flex min-w-[240px] flex-1 flex-col gap-1">
+              <span className={rotuloCampo}>{s.filtros.busca}</span>
+              <input name="q" defaultValue={sp.q ?? ""} className={campo} />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className={rotuloCampo}>{s.filtros.status}</span>
+              <select name="status" defaultValue={statusFiltro ?? ""} className={campo}>
+                <option value="">{s.filtros.todos}</option>
+                {STATUS_VALIDOS.map((x) => (
+                  <option key={x} value={x}>
+                    {s.status[x]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="submit" className="rounded-control border border-line-strong px-4 py-2 text-sm text-fg">
+              {s.filtros.filtrar}
+            </button>
+          </form>
+
+          <p className="text-sm text-fg-muted" aria-live="polite">
+            {numero.format(linhas.length)} de {numero.format(todas.length)}
+          </p>
+
+          <ol className="flex flex-col gap-4">
+            {linhas.map((l) => {
+              const pts = pontuacao(l);
+              const sn = (v: boolean | null) => (v === true ? "sim" : v === false ? "nao" : "");
+              return (
+                <li key={l.id} className="border border-line bg-surface p-5">
+                  <form action={avaliarInscricao} className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+                    <input type="hidden" name="id" value={l.id} />
+                    <div className="flex flex-col gap-2 text-sm">
+                      <p className="text-base font-medium text-fg">
+                        {l.nome} <span className="font-normal text-fg-muted">· {l.empresa}</span>
+                      </p>
+                      <p className="text-fg-muted">
+                        {l.email} · {l.whatsapp} · {dataHora.format(l.criadaEm)}
+                      </p>
+                      <p className="flex flex-wrap gap-x-4 text-fg">
+                        {l.instagram ? (
+                          <a href={l.instagram} target="_blank" rel="noopener noreferrer" className="underline">
+                            Instagram<span className="sr-only"> de {l.nome}. {s.linha.abrirPerfil}</span>
+                          </a>
+                        ) : null}
+                        {l.linkedin ? (
+                          <a href={l.linkedin} target="_blank" rel="noopener noreferrer" className="underline">
+                            LinkedIn<span className="sr-only"> de {l.nome}. {s.linha.abrirPerfil}</span>
+                          </a>
+                        ) : null}
+                      </p>
+                      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{s.linha.problema}</p>
+                      <p className="whitespace-pre-line leading-relaxed text-fg">{l.problema}</p>
+                      <p className="text-xs text-fg-muted">
+                        {pts !== null ? s.linha.pontos(pts) : s.linha.semNota}
+                        {avaliada(l) && !elegivel(l) ? ` · ${s.linha.fora}` : ""}
+                        {l.resultadoEnviadoEm ? ` · ${s.linha.resultadoEm(dataHora.format(l.resultadoEnviadoEm))}` : ""}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 self-start">
+                      <label className="flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.clareza}</span>
+                        <input name="clareza" type="number" min={0} max={NOTA_MAX} step={1} defaultValue={l.clareza ?? ""} className={campo} />
+                      </label>
+                      <label className="flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.solucao}</span>
+                        <input name="solucao" type="number" min={0} max={NOTA_MAX} step={1} defaultValue={l.solucao30Dias ?? ""} className={campo} />
+                      </label>
+                      <label className="flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.seguiu}</span>
+                        <select name="seguiu" defaultValue={sn(l.seguiuAcademy)} className={campo}>
+                          <option value="">{s.campos.naoAvaliado}</option>
+                          <option value="sim">{s.campos.sim}</option>
+                          <option value="nao">{s.campos.nao}</option>
+                        </select>
+                      </label>
+                      <label className="flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.publicou}</span>
+                        <select name="publicou" defaultValue={sn(l.publicouPost)} className={campo}>
+                          <option value="">{s.campos.naoAvaliado}</option>
+                          <option value="sim">{s.campos.sim}</option>
+                          <option value="nao">{s.campos.nao}</option>
+                        </select>
+                      </label>
+                      <label className="col-span-2 flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.status}</span>
+                        <select name="status" defaultValue={l.status} className={campo}>
+                          {STATUS_VALIDOS.map((x) => (
+                            <option key={x} value={x}>
+                              {s.status[x]}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="col-span-2 flex flex-col gap-1">
+                        <span className={rotuloCampo}>{s.campos.observacao}</span>
+                        <input name="observacao" maxLength={1000} defaultValue={l.observacao ?? ""} className={campo} />
+                      </label>
+                      <button type="submit" className="col-span-2 w-fit rounded-control bg-accent px-4 py-2 text-sm font-medium text-accent-on">
+                        {s.campos.salvar}
+                      </button>
+                    </div>
+                  </form>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      ) : null}
 
       {r.inscritos === 0 ? (
         <p className="text-fg-muted">{t.semDados}</p>

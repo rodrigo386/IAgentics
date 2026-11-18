@@ -17,7 +17,7 @@ export function redigirCpfs(texto: string): string {
   return texto.replace(/\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g, "[cpf-redigido]").replace(/\d{11}/g, "[cpf-redigido]");
 }
 
-async function chamar<T>(caminho: string, corpo?: unknown, metodo: "GET" | "POST" | "DELETE" = "POST"): Promise<T> {
+async function chamar<T>(caminho: string, corpo?: unknown, metodo: "GET" | "POST" | "PUT" | "DELETE" = "POST"): Promise<T> {
   const base = process.env.ASAAS_URL_BASE;
   if (!base) throw new Error("ASAAS_URL_BASE ausente");
   const chave = process.env.ASAAS;
@@ -26,7 +26,7 @@ async function chamar<T>(caminho: string, corpo?: unknown, metodo: "GET" | "POST
   const resposta = await fetch(`${base.replace(/\/$/, "")}${caminho}`, {
     method: metodo,
     headers: { "Content-Type": "application/json", access_token: chave },
-    ...(metodo === "POST" ? { body: JSON.stringify(corpo) } : {}),
+    ...(metodo === "POST" || metodo === "PUT" ? { body: JSON.stringify(corpo) } : {}),
     // Um Asaas pendurado não pode prender o checkout de quem está pagando.
     signal: AbortSignal.timeout(15_000),
   });
@@ -119,4 +119,13 @@ export async function primeiraFatura(assinaturaId: string): Promise<{ id: string
 /** Cancela no Asaas: para de gerar cobrança nova. As faturas já pagas ficam. */
 export async function cancelarAssinaturaAsaas(assinaturaId: string): Promise<void> {
   await chamar(`/subscriptions/${encodeURIComponent(assinaturaId)}`, undefined, "DELETE");
+}
+
+/**
+ * Muda o valor da assinatura (fim do preço de fundador, 2026-11-18). Com
+ * `updatePendingPayments`, a fatura que o Asaas já gerou e ainda não foi paga
+ * também passa ao valor novo.
+ */
+export async function reajustarAssinaturaAsaas(assinaturaId: string, valorCentavos: number): Promise<void> {
+  await chamar(`/subscriptions/${encodeURIComponent(assinaturaId)}`, { value: valorCentavos / 100, updatePendingPayments: true }, "PUT");
 }

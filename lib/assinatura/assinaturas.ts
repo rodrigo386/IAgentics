@@ -2,7 +2,7 @@ import "server-only";
 import { and, desc, eq, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { assinaturas } from "@/lib/db/schema";
-import { cancelarAssinaturaAsaas } from "@/lib/asaas/cliente";
+import { cancelarAssinaturaAsaas, reajustarAssinaturaAsaas } from "@/lib/asaas/cliente";
 import { emailBoasVindas, enviarEmail, RESPONDER_ASSINATURA } from "@/lib/email";
 import { EVENTOS_PAGO, pagoAteDaFatura, transicaoAssinatura } from "./regras";
 
@@ -15,7 +15,14 @@ export type Assinatura = typeof assinaturas.$inferSelect;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export async function criarLinha(d: { nome: string; email: string; telefone: string; valorCentavos: number }): Promise<string> {
+export async function criarLinha(d: {
+  nome: string;
+  email: string;
+  telefone: string;
+  valorCentavos: number;
+  precoFundadorAte?: string;
+  bolsaInscricaoId?: string;
+}): Promise<string> {
   const [linha] = await db.insert(assinaturas).values(d).returning({ id: assinaturas.id });
   return linha.id;
 }
@@ -141,4 +148,27 @@ export async function cancelarAssinatura(id: string): Promise<boolean> {
     .where(and(eq(assinaturas.id, id), inArray(assinaturas.status, ["pendente", "ativa", "atrasada", "falhou"])))
     .returning({ id: assinaturas.id });
   return r.length > 0;
+}
+
+/** Assinaturas do preço de fundador ainda vivas, para o /admin avisar do
+ *  reajuste (lib/bolsas/voucher.ts decide quando). */
+export async function listarPrecoFundador(): Promise<Assinatura[]> {
+  return db
+    .select()
+    .from(assinaturas)
+    .where(and(isNotNull(assinaturas.precoFundadorAte), inArray(assinaturas.status, ["pendente", "ativa", "atrasada"])))
+    .orderBy(assinaturas.precoFundadorAte);
+}
+
+/**
+ * Fim do preço de fundador: passa a assinatura ao preço público no Asaas e
+ * aqui. `precoFundadorAte` vira nulo, e a linha sai da lista de reajuste.
+ * O aviso por e-mail antes (promessa do regulamento) é do time.
+ */
+export async function reajustarAssinatura(id: string, valorCentavos: number): Promise<boolean> {
+  const a = await buscarAssinatura(id);
+  if (!a || !a.precoFundadorAte || !a.asaasAssinaturaId) return false;
+  await reajustarAssinaturaAsaas(a.asaasAssinaturaId, valorCentavos);
+  await db.update(assinaturas).set({ valorCentavos, precoFundadorAte: null }).where(eq(assinaturas.id, id));
+  return true;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { diagnose } from "@/lib/content";
-import { emailBoasVindas, emailDiagnose, emailInscricaoBolsa, RESPONDER_ASSINATURA } from "./email";
+import { emailBoasVindas, emailDiagnose, emailInscricaoBolsa, emailResultadoBolsa, emailVoucherBolsa, RESPONDER_ASSINATURA } from "./email";
 
 /* E-mail de boas-vindas de quem pagou a assinatura (2026-10-16). O prazo de
    24 horas úteis é a promessa que o Rodrigo pediu; se mudar, muda aqui, no
@@ -68,5 +68,42 @@ describe("emailInscricaoBolsa", () => {
   });
   it("só fala do grupo de WhatsApp para quem pediu", () => {
     expect(emailInscricaoBolsa("Ana Souza", { grupo: true }).texto).toContain("grupo exclusivo do desafio no WhatsApp");
+  });
+});
+
+describe("emailResultadoBolsa", () => {
+  it("o selecionado recebe as datas da bolsa e o voucher depois dela", () => {
+    const e = emailResultadoBolsa("Ana Souza", true);
+    expect(e.assunto).toContain("selecionado");
+    expect(e.texto).toContain("2 de janeiro a 2 de fevereiro de 2027");
+    expect(e.texto).toContain("R$ 29,90");
+    expect(e.html).toContain("Olá, Ana.");
+  });
+
+  it("o não selecionado recebe a promessa do voucher até 10 de janeiro, válido por 15 dias", () => {
+    const e = emailResultadoBolsa("Ana Souza", false);
+    expect(e.assunto).not.toContain("selecionado");
+    expect(e.texto).toContain("até 10 de janeiro de 2027");
+    expect(e.texto).toContain("15 dias");
+    expect(e.texto).not.toContain("2 de janeiro a 2 de fevereiro");
+  });
+
+  it("escapa o nome no HTML", () => {
+    expect(emailResultadoBolsa("<b>Ana</b> Souza", true).html).not.toContain("<b>Ana</b>");
+  });
+});
+
+describe("emailVoucherBolsa", () => {
+  const url = "https://iagentics.com.br/cursos/voucher/abcdefghijklmnopqrstuv";
+  it("leva o link, o preço de fundador e a validade", () => {
+    const e = emailVoucherBolsa("Ana Souza", { url, validoAte: "25/01/2027", bolsista: false });
+    expect(e.texto).toContain(url);
+    expect(e.html).toContain(url);
+    expect(e.texto).toContain("R$ 29,90 por mês durante 12 meses");
+    expect(e.texto).toContain("25/01/2027");
+  });
+  it("o bolsista ouve que a bolsa terminou; o não selecionado, que é o voucher prometido", () => {
+    expect(emailVoucherBolsa("Ana", { url, validoAte: "x", bolsista: true }).texto).toContain("bolsa no Desafio Prova Real terminou");
+    expect(emailVoucherBolsa("Ana", { url, validoAte: "x", bolsista: false }).texto).toContain("voucher exclusivo");
   });
 });

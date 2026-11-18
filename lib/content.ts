@@ -2594,7 +2594,7 @@ export const bolsas = {
   meta: {
     titulo: "Desafio Prova Real | IAgentics Academy",
     descricao:
-      "50 bolsas de 30 dias na IAgentics Academy, com chancela do Pecege. Conte o problema que quer resolver com IA e dispute uma vaga. Inscrições gratuitas de 23 de novembro a 5 de dezembro de 2026.",
+      "50 bolsas de 30 dias na IAgentics Academy, com chancela do Pecege. Conte o problema que quer resolver com IA. Inscrições gratuitas de 23/11 a 05/12/2026.",
   },
   capa: {
     kicker: "Desafio Prova Real · IAgentics Academy · Pecege",
@@ -2839,6 +2839,33 @@ export const bolsas = {
     titulo: "Regulamento do Desafio Prova Real",
     versao: "Versão de 18 de novembro de 2026",
     voltar: "Voltar para o desafio",
+  },
+  /* Página do voucher (/cursos/voucher/[codigo], 2026-11-18): o link chega por
+     e-mail, a página é noindex e só existe para quem tem o código. */
+  voucher: {
+    meta: { titulo: "Seu voucher | IAgentics Academy" },
+    eyebrow: "Desafio Prova Real · Preço de fundador",
+    ola: (nome: string) => `${nome}, este é o seu voucher.`,
+    preco: PRECO_FUNDADOR,
+    porMes: "por mês, durante 12 meses",
+    deixaDeSer: `no lugar de ${PRECO_MENSAL}`,
+    texto: `Acesso à plataforma Solution, do Pecege, com as formações de IA aplicada da IAgentics. Depois dos 12 meses, vale o preço público da assinatura (hoje ${PRECO_MENSAL} por mês), com aviso por e-mail antes. Sem fidelidade: você cancela quando quiser, pelo WhatsApp ou pelo e-mail contato@iagentics.com.br.`,
+    validoAte: (data: string) => `Válido até ${data}, para uma assinatura.`,
+    formularioTitulo: "Seus dados para a assinatura",
+    consentimento: `Autorizo a cobrança mensal de ${PRECO_FUNDADOR} durante 12 meses e, depois, do preço público da assinatura, até eu pedir o cancelamento.`,
+    botao: "Usar o voucher e ir para o pagamento",
+    erroVoucher: "Este voucher não vale mais: ele já foi usado ou venceu. Recarregue a página para ver.",
+    estados: {
+      usado: {
+        titulo: "Este voucher já foi usado.",
+        texto: "Se foi você, a fatura e o acesso chegam pelo e-mail informado na assinatura. Dúvidas? Escreva para contato@iagentics.com.br.",
+      },
+      expirado: {
+        titulo: "Este voucher venceu.",
+        texto: "O voucher valia por 15 dias depois do envio. Se acha que houve engano, escreva para contato@iagentics.com.br.",
+      },
+    },
+    conhecer: "Conhecer a assinatura",
   },
   regulamento: [
     {

@@ -13,9 +13,29 @@ import { registrarEvento } from "@/lib/eventos-cliente";
  * O erro volta como um `motivo` só (o primeiro campo que falhou); a mensagem
  * aparece junto do botão, num `role="alert"` que o leitor de tela anuncia.
  */
-const t = cursos.assinatura.formulario;
+const padrao = cursos.assinatura.formulario;
 
-export function AssinaturaForm() {
+/**
+ * Desde 2026-11-18 o voucher do Desafio Prova Real usa o mesmo formulário,
+ * com outro endereço (`endereco`), o código junto (`extra`), o texto da
+ * cobrança de R$ 29,90 (`textos`) e sem os eventos do funil da /cursos
+ * (`medir`), que contam só a página de cursos.
+ */
+export function AssinaturaForm({
+  endereco = "/cursos/assinar",
+  extra = {},
+  medir = true,
+  textos = {},
+}: {
+  endereco?: string;
+  extra?: Record<string, string>;
+  medir?: boolean;
+  textos?: { consentimento?: string; botao?: string; erros?: Record<string, string> };
+} = {}) {
+  const t = { ...padrao, ...textos, erros: { ...padrao.erros, ...textos.erros } };
+  const registrar = (e: Parameters<typeof registrarEvento>[0]) => {
+    if (medir) registrarEvento(e);
+  };
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   // Funil por dentro (2026-10-29): "começou o formulário" conta uma vez por visita.
@@ -23,7 +43,7 @@ export function AssinaturaForm() {
   const aoComecar = () => {
     if (comecou.current) return;
     comecou.current = true;
-    registrarEvento("formulario_inicio");
+    registrar("formulario_inicio");
   };
 
   async function enviar(e: FormEvent<HTMLFormElement>) {
@@ -31,9 +51,9 @@ export function AssinaturaForm() {
     const f = new FormData(e.currentTarget);
     setEnviando(true);
     setErro(null);
-    registrarEvento("formulario_envio");
+    registrar("formulario_envio");
     try {
-      const r = await fetch("/cursos/assinar", {
+      const r = await fetch(endereco, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -43,18 +63,19 @@ export function AssinaturaForm() {
           telefone: f.get("telefone"),
           consentimento: f.get("consentimento") === "on",
           compartilhamento: f.get("compartilhamento") === "on",
+          ...extra,
         }),
       });
       const corpo = await r.json().catch(() => ({}));
       if (r.ok && corpo.url) {
-        registrarEvento("formulario_ok");
+        registrar("formulario_ok");
         window.location.href = corpo.url;
         return;
       }
-      registrarEvento("formulario_erro");
+      registrar("formulario_erro");
       setErro(t.erros[corpo.error] ?? t.erros.falha);
     } catch {
-      registrarEvento("formulario_erro");
+      registrar("formulario_erro");
       setErro(t.erros.falha);
     }
     setEnviando(false);

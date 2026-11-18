@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, date, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, date, integer, jsonb, pgTable, primaryKey, smallint, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Schema do site público.
@@ -183,6 +183,11 @@ export const assinaturas = pgTable(
      *  os dois avisos do mesmo pagamento (confirmado e recebido) não mandarem
      *  dois e-mails; desfeito se o envio falhar. */
     boasVindasEm: timestamp("boas_vindas_em", { withTimezone: true }),
+    /** Preço de fundador (migração 0018): até esta data a assinatura custa
+     *  R$ 29,90; depois, o /admin manda reajustar para o preço público.
+     *  `bolsaInscricaoId` é a inscrição cujo voucher gerou a assinatura. */
+    precoFundadorAte: date("preco_fundador_ate"),
+    bolsaInscricaoId: uuid("bolsa_inscricao_id"),
   },
   (t) => [
     check(
@@ -239,9 +244,25 @@ export const bolsasInscricoes = pgTable(
     contatoComercialEm: timestamp("contato_comercial_em", { withTimezone: true }),
     usoImagemEm: timestamp("uso_imagem_em", { withTimezone: true }),
     grupoWhatsappEm: timestamp("grupo_whatsapp_em", { withTimezone: true }),
+    /* Avaliação (migração 0017, 2026-11-18): notas de 0 a 10 pela resposta,
+       sim/não pelo perfil público; nulo é "ainda não avaliado". */
+    clareza: smallint("clareza"),
+    solucao30Dias: smallint("solucao_30_dias"),
+    seguiuAcademy: boolean("seguiu_academy"),
+    publicouPost: boolean("publicou_post"),
+    observacao: text("observacao"),
+    resultadoEnviadoEm: timestamp("resultado_enviado_em", { withTimezone: true }),
+    /* Voucher do preço de fundador (migração 0018): código secreto enviado por
+       e-mail, válido por 15 dias, de uso único. `voucherUsadoEm` é reservado
+       ANTES de falar com o Asaas e devolvido se a assinatura não nasce. */
+    voucherCodigo: text("voucher_codigo"),
+    voucherEnviadoEm: timestamp("voucher_enviado_em", { withTimezone: true }),
+    voucherValidoAte: date("voucher_valido_ate"),
+    voucherUsadoEm: timestamp("voucher_usado_em", { withTimezone: true }),
   },
   (t) => [
     uniqueIndex("bolsas_inscricoes_email_unico").on(sql`lower(${t.email})`),
+    uniqueIndex("bolsas_inscricoes_voucher_unico").on(t.voucherCodigo),
     check(
       "bolsas_inscricoes_status_valido",
       sql`${t.status} in ('inscrito', 'selecionado', 'espera', 'nao_selecionado', 'aceitou', 'perdeu')`,
