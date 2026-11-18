@@ -5,7 +5,7 @@ import Link from "next/link";
 import { bolsas } from "@/lib/content";
 
 /**
- * Formulário do Desafio das 50 Bolsas (2026-11-03). O servidor valida tudo de
+ * Formulário do Desafio Prova Real (2026-11-03; refeito em 2026-11-18). O servidor valida tudo de
  * novo (lib/bolsas/regras.ts); aqui o navegador só ajuda com `required` e o
  * contador do problema. O erro volta como um `motivo` só e aparece junto do
  * botão, num `role="alert"`.
@@ -19,33 +19,6 @@ const caixa = "flex items-start gap-3 text-sm leading-relaxed text-fg-muted";
 const check = "mt-1 size-4 shrink-0 accent-[var(--accent)]";
 /* A caixa do problema não é pílula: com cinco linhas, o raio dos campos a
    transformava numa oval. */
-
-/* Fora do formulário de propósito: definido lá dentro, viraria um componente
-   novo a cada letra digitada no problema, e o React remontaria os selects,
-   apagando a escolha. */
-/* Rótulo ligado por `htmlFor`, não envolvendo o select: dentro do <label>, o
-   nome acessível do select juntava o texto de todas as opções ("ÁreaEscolha
-   ComprasSupply…"). */
-function Selecao({ nome, rotuloTexto, opcoes }: { nome: string; rotuloTexto: string; opcoes: Record<string, string> }) {
-  const id = `bolsa-${nome}`;
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className={rotulo}>
-        {rotuloTexto}
-      </label>
-      <select id={id} name={nome} required defaultValue="" className={campo}>
-        <option value="" disabled>
-          {t.escolha}
-        </option>
-        {Object.entries(opcoes).map(([valor, texto]) => (
-          <option key={valor} value={valor}>
-            {texto}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 export function InscricaoForm() {
   const [enviando, setEnviando] = useState(false);
@@ -67,17 +40,14 @@ export function InscricaoForm() {
           nome: f.get("nome"),
           email: f.get("email"),
           whatsapp: f.get("whatsapp"),
-          cargo: f.get("cargo"),
-          nivel: f.get("nivel"),
           empresa: f.get("empresa"),
-          area: f.get("area"),
-          tamanhoTime: f.get("tamanhoTime"),
           instagram: f.get("instagram"),
           linkedin: f.get("linkedin"),
           problema,
           regulamento: f.get("regulamento") === "on",
           cienciaDados: f.get("cienciaDados") === "on",
           contatoComercial: f.get("contatoComercial") === "on",
+          grupoWhatsapp: f.get("grupoWhatsapp") === "on",
           usoImagem: f.get("usoImagem") === "on",
           site: isca,
         }),
@@ -119,21 +89,10 @@ export function InscricaoForm() {
           <input name="whatsapp" type="tel" required autoComplete="tel" className={campo} />
         </label>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1.5">
-          <span className={rotulo}>{t.cargo}</span>
-          <input name="cargo" required autoComplete="organization-title" className={campo} />
-        </label>
-        <Selecao nome="nivel" rotuloTexto={t.nivel} opcoes={t.niveis} />
-      </div>
       <label className="flex flex-col gap-1.5">
         <span className={rotulo}>{t.empresa}</span>
         <input name="empresa" required autoComplete="organization" className={campo} />
       </label>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Selecao nome="area" rotuloTexto={t.area} opcoes={t.areas} />
-        <Selecao nome="tamanhoTime" rotuloTexto={t.tamanhoTime} opcoes={t.tamanhos} />
-      </div>
       <fieldset className="flex flex-col gap-3">
         <legend className="sr-only">{t.perfisNota}</legend>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -197,6 +156,10 @@ export function InscricaoForm() {
       <label className={caixa}>
         <input name="contatoComercial" type="checkbox" className={check} />
         <span>{t.contatoComercial}</span>
+      </label>
+      <label className={caixa}>
+        <input name="grupoWhatsapp" type="checkbox" className={check} />
+        <span>{t.grupoWhatsapp}</span>
       </label>
       <label className={caixa}>
         <input name="usoImagem" type="checkbox" className={check} />

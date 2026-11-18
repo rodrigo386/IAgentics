@@ -11,9 +11,7 @@ const METRICOOL_HASH = "8acd77f0d981da5af46364590d7cd7b2";
  */
 export function MetricoolPixel() {
   const pathname = usePathname();
-  /* /bolsas/video/[token] também fica de fora (2026-11-03): o token no
-     endereço é a chave da inscrição, e o rastreador registraria a URL inteira. */
-  if (!pathname || /^\/(app|admin)(\/|$)/.test(pathname) || pathname.startsWith("/bolsas/video/")) return null;
+  if (!pathname || /^\/(app|admin)(\/|$)/.test(pathname)) return null;
 
   return (
     // eslint-disable-next-line @next/next/no-img-element

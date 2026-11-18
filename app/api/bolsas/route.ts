@@ -5,9 +5,9 @@ import { emailInscricaoBolsa, enviarEmail, RESPONDER_BOLSAS } from "@/lib/email"
 import { enderecoDe, permitir } from "@/lib/assinatura/limite";
 
 /**
- * Inscrição no Desafio das 50 Bolsas (/bolsas, 2026-11-03).
+ * Inscrição no Desafio Prova Real (/bolsas; refeita em 2026-11-18).
  *
- * - Fora da janela (05/11 a 11/11, horário de SP), recusa com 409: a página
+ * - Fora da janela (23/11 a 05/12, horário de SP), recusa com 409: a página
  *   esconde o formulário, mas a rota é pública e confere de novo.
  * - Campo isca (`site`): preenchido, é robô. Responde ok e não grava.
  * - Limite por endereço (`BOLSAS_LIMITE`, padrão 10 por hora; o e2e sobe com
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const v = validarInscricao(corpo);
   if (!v.ok) return NextResponse.json({ error: v.motivo }, { status: 422 });
 
-  let resultado: { novo: boolean; token: string };
+  let resultado: { novo: boolean };
   try {
     resultado = await inscrever(v.dados);
   } catch (erro) {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   }
 
   if (resultado.novo) {
-    const e = emailInscricaoBolsa(v.dados.nome, resultado.token);
+    const e = emailInscricaoBolsa(v.dados.nome, { grupo: v.dados.grupoWhatsapp });
     const enviado = await enviarEmail({ para: v.dados.email, responderPara: RESPONDER_BOLSAS, ...e });
     if (!enviado.ok) console.error("[bolsas] confirmação não enviada");
   }

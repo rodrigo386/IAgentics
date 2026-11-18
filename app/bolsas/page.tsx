@@ -3,22 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowDown,
+  ArrowUpRight,
   Broadcast,
   CalendarCheck,
   CalendarDots,
   ChartLineUp,
+  InstagramLogo,
   Medal,
+  Megaphone,
   PencilSimpleLine,
   Scales,
   SealPercent,
   Star,
   Tag,
   Target,
-  Ticket,
   UsersThree,
-  VideoCamera,
   WhatsappLogo,
-  Wrench,
 } from "@phosphor-icons/react/dist/ssr";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -44,32 +44,32 @@ export const metadata: Metadata = {
   openGraph: ogDaPagina("/bolsas", t.meta.titulo, t.meta.descricao),
 };
 
-/* Dinâmica porque o formulário e a contagem dependem da hora: abre em 05/11 e
-   fecha às 23h59 de 11/11. Estática, a página ficaria presa na fase do build. */
+/* Dinâmica porque o formulário e a contagem dependem da hora: abre em 23/11 e
+   fecha às 23h59 de 05/12. Estática, a página ficaria presa na fase do build. */
 export const dynamic = "force-dynamic";
 
 /**
- * Desafio das 50 Bolsas (2026-11-03, docs/PLANO-BOLSAS.md).
+ * Desafio Prova Real (/bolsas). Nasceu em 2026-11-03 como Desafio das 50
+ * Bolsas e foi refeito em 2026-11-18 a partir do mapa da campanha.
  *
- * Redesenhada no mesmo dia, a pedido do Rodrigo ("falta um botão grande para
+ * Desenho de 2026-11-03 (pedidos do Rodrigo: "falta um botão grande para
  * cadastro, a página tá muito poluída, precisa ser mais visual e convidativa,
  * use motions"): capa escura com a oferta, o botão grande e a contagem; cada
- * seção com UMA imagem que diz o essencial
- * (linha do tempo, os números da entrega, a régua dos 60 segundos, as barras
- * dos pesos) e o detalhe nas perguntas frequentes e no regulamento. Um botão
- * fixo acompanha a rolagem até o formulário.
+ * seção com UMA imagem que diz o essencial (linha do tempo, os números da
+ * entrega, os critérios, os passos da bolsa) e o detalhe nas perguntas
+ * frequentes e no regulamento. Um botão fixo acompanha a rolagem até o
+ * formulário.
  *
- * Critérios e pesos continuam na página por inteiro: o desafio é processo
- * seletivo por mérito, e régua escondida não é mérito.
+ * Os critérios continuam na página por inteiro: é processo seletivo, e régua
+ * escondida não é seleção.
  */
 const eyebrow = "font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted";
 const h2 = "mt-5 max-w-[20ch] text-4xl font-medium tracking-[-0.03em] text-fg sm:text-5xl lg:text-6xl";
-const ICONES_GANHA = [CalendarCheck, WhatsappLogo, Broadcast, Ticket, Tag];
+const ICONES_GANHA = [CalendarCheck, WhatsappLogo, Tag];
 const ICONES_EXCLUSIVO = [UsersThree, Medal, SealPercent, CalendarDots];
-const CORES_ROTEIRO = ["bg-brand-violet", "bg-brand-indigo", "bg-brand-periwinkle", "bg-brand-blue"];
-const CORES_PESO = ["bg-brand-violet", "bg-brand-indigo", "bg-brand-periwinkle", "bg-brand-blue", "bg-brand-sky"];
-const ICONES_ETAPA = [PencilSimpleLine, VideoCamera, Scales, Broadcast];
-const ICONES_SEMANA = [Target, Wrench, ChartLineUp, VideoCamera];
+const ICONES_ETAPA = [PencilSimpleLine, Scales, Broadcast, CalendarCheck];
+const ICONES_CRITERIO = [Target, ChartLineUp, InstagramLogo, Megaphone];
+const ICONES_PASSO = [CalendarCheck, Target, Star, Tag];
 
 /* A vitrine da /cursos, achatada: as capas da faixa e os números da seção
    "O que a bolsa abre" saem dela, então mudam sozinhos quando ela muda. */
@@ -90,7 +90,6 @@ export default function PaginaBolsas() {
       : fase === "abertas"
         ? { alvo: INSCRICOES_FECHAM.getTime(), rotulo: "fecha" as const }
         : null;
-  const segundos = t.roteiro.partes.map((p) => Number.parseInt(p.tempo, 10));
 
   return (
     <>
@@ -295,7 +294,7 @@ export default function PaginaBolsas() {
                   {t.trocas.numeros.map((n) => (
                     <li key={n.rotulo} className="border-t border-line">
                       <Reveal className="flex items-baseline gap-6 py-5">
-                        <span className="tnum w-[1.2ch] text-7xl font-medium leading-none tracking-[-0.05em] text-accent-text sm:text-8xl">{n.valor}</span>
+                        <span className="tnum min-w-[2.2ch] text-7xl font-medium leading-none tracking-[-0.05em] text-accent-text sm:text-8xl">{n.valor}</span>
                         <span className="text-xl leading-snug text-fg">{n.rotulo}</span>
                       </Reveal>
                     </li>
@@ -329,136 +328,73 @@ export default function PaginaBolsas() {
           </div>
         </section>
 
-        {/* O VÍDEO: um celular gravando, com as barrinhas de Stories do roteiro
-            enchendo com a rolagem. Desenho; o roteiro está escrito ao lado. */}
-        <section aria-labelledby="roteiro" className="border-t border-line py-24 sm:py-32">
-          <div className="mx-auto grid max-w-[1400px] items-center gap-16 px-5 sm:px-8 lg:grid-cols-12 lg:gap-10">
-            <div aria-hidden="true" className="bolsas-celular relative mx-auto w-[280px] lg:col-span-5 sm:w-[310px]">
-              <div className="relative aspect-[9/19] overflow-hidden rounded-[2.6rem] border-[10px] border-brand-ink bg-brand-ink shadow-[0_40px_80px_-30px_rgba(19,23,35,0.6)]">
-                <Image src={t.celular.foto} alt="" fill sizes="310px" className="object-cover object-[50%_center]" />
-                <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/60 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute inset-x-3 top-4 flex gap-1">
-                  {t.roteiro.partes.map((p, i) => (
-                    <div key={p.nome} className="h-1 overflow-hidden rounded-full bg-white/35" style={{ flexGrow: segundos[i], flexBasis: 0 }}>
-                      <div className="bolsas-story h-full bg-white" style={{ animationRange: `cover ${22 + i * 12}% cover ${33 + i * 12}%` }} />
-                    </div>
-                  ))}
-                </div>
-                <p className="absolute top-8 left-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white">
-                  <span className="bolsas-ao-vivo size-2 rounded-full bg-red-500" />
-                  {t.celular.gravando}
-                </p>
-                <p className="absolute inset-x-5 bottom-6 text-lg font-medium leading-snug text-white">{t.roteiro.partes.at(-1)?.texto}</p>
-              </div>
-            </div>
-            <div className="lg:col-span-6 lg:col-start-7">
-              <Reveal>
-                <p className={eyebrow}>{t.roteiro.eyebrow}</p>
-                <h2 id="roteiro" className={h2}>
-                  {t.roteiro.titulo}
-                </h2>
-              </Reveal>
-              <ol aria-label={t.roteiro.regua} className="mt-10 flex flex-col">
-                {t.roteiro.partes.map((p, i) => (
-                  <li key={p.nome} className="border-t border-line">
-                    <Reveal className="flex items-start gap-5 py-5">
-                      <span className={`${CORES_ROTEIRO[i]} tnum shrink-0 px-2.5 py-1 font-mono text-sm font-medium text-brand-paper`}>{p.tempo}</span>
-                      <span>
-                        <span className="block text-xl font-medium text-fg">{p.nome}</span>
-                        <span className="mt-1 block text-fg-muted">{p.texto}</span>
-                      </span>
-                    </Reveal>
-                  </li>
-                ))}
-              </ol>
-              <Reveal className="mt-8 flex flex-col gap-3 border-t border-line pt-6">
-                <p className="max-w-[56ch] leading-relaxed text-fg-muted">{t.roteiro.envio}</p>
-                <p className="max-w-[56ch] font-medium leading-relaxed text-fg">{t.roteiro.cuidado}</p>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* A BANCA: os 100 pontos numa barra só, cada critério com a sua cor. */}
-        <section aria-labelledby="criterios" className="border-t border-line bg-surface py-24 sm:py-32">
-          <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
-            <div className="grid gap-10 lg:grid-cols-12">
-              <Reveal className="lg:col-span-6">
-                <p className={eyebrow}>{t.criterios.eyebrow}</p>
-                <h2 id="criterios" className={h2}>
-                  {t.criterios.titulo}
-                </h2>
-              </Reveal>
-              <Reveal className="lg:col-span-5 lg:col-start-8 lg:self-end">
-                <p className="border-l-2 border-accent pl-5 text-2xl leading-snug tracking-[-0.02em] text-fg">{t.criterios.seguidores}</p>
-              </Reveal>
-            </div>
-            <div className="mt-16">
-              <p className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-fg-muted">
-                <span>{t.pontos.rotulo}</span>
-                <span>{t.pontos.total}</span>
-              </p>
-              <div aria-hidden="true" className="mt-3 overflow-hidden">
-                <div className="bolsas-barra flex h-16 gap-1 sm:h-20">
-                  {t.criterios.itens.map((c, i) => (
-                    <div key={c.nome} className={`${CORES_PESO[i]} flex items-end p-3`} style={{ flexGrow: c.peso, flexBasis: 0 }}>
-                      <span className="tnum text-2xl font-medium text-brand-paper sm:text-3xl">{c.peso}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-5">
-                {t.criterios.itens.map((c, i) => (
-                  <li key={c.nome}>
-                    <Reveal>
-                      <p className="flex items-center gap-2">
-                        <span aria-hidden="true" className={`size-3 shrink-0 ${CORES_PESO[i]}`} />
-                        <span className="tnum font-mono text-sm text-fg-muted">{t.criterios.pesoDe(c.peso)}</span>
-                      </p>
-                      <h3 className="mt-2 text-lg font-medium leading-snug text-fg">{c.nome}</h3>
-                      <p className="mt-1 text-sm text-fg-muted">{c.alta}</p>
-                    </Reveal>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* O MÊS: faixa escura, uma semana por bloco, um ícone por missão. */}
-        <section aria-labelledby="mes" className="bolsas-capa py-24 sm:py-32">
+        {/* OS CRITÉRIOS: quatro blocos, um ícone por critério, e o botão para
+            seguir a Academy logo abaixo. */}
+        <section aria-labelledby="criterios" className="border-t border-line py-24 sm:py-32">
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
             <Reveal>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-paper/65">{t.mes.eyebrow}</p>
-              <h2 id="mes" className="mt-5 max-w-[20ch] text-4xl font-medium tracking-[-0.03em] text-brand-paper sm:text-5xl lg:text-6xl">
-                {t.mes.titulo}
+              <p className={eyebrow}>{t.criterios.eyebrow}</p>
+              <h2 id="criterios" className={h2}>
+                {t.criterios.titulo}
               </h2>
-              <p className="mt-5 text-lg text-brand-paper/70">{t.mes.periodo}</p>
+            </Reveal>
+            <ul className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {t.criterios.itens.map((c, i) => {
+                const Icone = ICONES_CRITERIO[i] ?? Target;
+                return (
+                  <li key={c.nome}>
+                    <Reveal className="flex h-full flex-col gap-4 border border-line bg-surface p-6">
+                      <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-accent text-accent-on">
+                        <Icone size={24} />
+                      </span>
+                      <h3 className="text-xl font-medium leading-snug text-fg">{c.nome}</h3>
+                      <p className="text-fg-muted">{c.texto}</p>
+                      <p className="mt-auto border-t border-line pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">{c.como}</p>
+                    </Reveal>
+                  </li>
+                );
+              })}
+            </ul>
+            <Reveal className="mt-10 flex flex-col gap-6 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-[60ch] leading-relaxed text-fg-muted">{t.criterios.nota}</p>
+              <a
+                href={t.criterios.instagram.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex w-fit shrink-0 items-center gap-2 rounded-control border border-line-strong px-6 py-3 font-medium text-fg transition-colors hover:border-fg"
+              >
+                <InstagramLogo size={20} aria-hidden="true" />
+                {t.criterios.instagram.rotulo}
+                <ArrowUpRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* A BOLSA: faixa escura, um passo por bloco, um ícone por passo. */}
+        <section aria-labelledby="bolsa" className="bolsas-capa py-24 sm:py-32">
+          <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
+            <Reveal>
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-paper/65">{t.bolsa.eyebrow}</p>
+              <h2 id="bolsa" className="mt-5 max-w-[20ch] text-4xl font-medium tracking-[-0.03em] text-brand-paper sm:text-5xl lg:text-6xl">
+                {t.bolsa.titulo}
+              </h2>
+              <p className="mt-5 text-lg text-brand-paper/70">{t.bolsa.periodo}</p>
             </Reveal>
             <ol className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {t.mes.semanas.map((s, i) => {
-                const Icone = ICONES_SEMANA[i] ?? Target;
+              {t.bolsa.passos.map((p, i) => {
+                const Icone = ICONES_PASSO[i] ?? Target;
                 return (
-                  <li key={s.prazo}>
+                  <li key={p.titulo}>
                     <Reveal className="flex h-full flex-col gap-4 border border-white/12 bg-white/[0.04] p-6">
-                      <div className="flex items-center justify-between">
-                        <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-brand-sky/15 text-brand-sky">
+                      <div className="flex items-center justify-between gap-3">
+                        <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-full bg-brand-sky/15 text-brand-sky">
                           <Icone size={24} />
                         </span>
-                        <p className="tnum bg-brand-sky px-2 py-1 font-mono text-sm font-medium text-brand-ink">
-                          <span className="sr-only">{t.mes.colunas.prazo}: </span>
-                          {s.prazo}
-                        </p>
+                        <p className="bg-brand-sky px-2 py-1 text-right font-mono text-sm font-medium text-brand-ink">{p.quando}</p>
                       </div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-paper/60">
-                        {t.mes.colunas.semana} {i + 1}
-                      </p>
-                      <h3 className="text-xl font-medium leading-snug text-brand-paper">{s.missao}</h3>
-                      <p className="mt-auto border-t border-white/12 pt-4 text-brand-paper/70">
-                        <span className="sr-only">{t.mes.colunas.post}: </span>
-                        {s.post}
-                      </p>
+                      <h3 className="text-xl font-medium leading-snug text-brand-paper">{p.titulo}</h3>
+                      <p className="text-brand-paper/70">{p.texto}</p>
                     </Reveal>
                   </li>
                 );

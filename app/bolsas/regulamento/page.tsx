@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: ogDaPagina("/bolsas/regulamento", t.meta.titulo, t.meta.descricao),
 };
 
-/** Regulamento do Desafio das 50 Bolsas (2026-11-03). Texto em content.ts. */
+/** Regulamento do Desafio Prova Real (2026-11-03; refeito em 2026-11-18). Texto em content.ts. */
 export default function PaginaRegulamento() {
   return (
     <>

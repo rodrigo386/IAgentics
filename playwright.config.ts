@@ -29,13 +29,13 @@ export default defineConfig({
         ASAAS: "chave-falsa-do-e2e",
         ASSINATURA_LIMITE: "1000",
         DIAGNOSE_LIMITE: "1000",
-        /* Desafio das 50 Bolsas (2026-11-03): relógio parado dentro da janela
+        /* Desafio Prova Real (2026-11-03; datas novas em 2026-11-18): relógio parado dentro da janela
            de inscrição, e o envio de e-mail desligado de vez. A inscrição
            manda e-mail do SERVIDOR para o endereço digitado, e o e2e não pode
            interceptar isso pelo navegador: com a chave do Resend descomentada
            no .env.local, cada teste mandaria um e-mail de verdade. Variável
            definida aqui vence o .env.local. */
-        BOLSAS_RELOGIO: "2026-11-06T12:00:00-03:00",
+        BOLSAS_RELOGIO: "2026-11-24T12:00:00-03:00",
         BOLSAS_LIMITE: "1000",
         RESEND_API_KEY: "",
       },

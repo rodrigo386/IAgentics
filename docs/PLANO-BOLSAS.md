@@ -1,85 +1,64 @@
-# Desafio das 50 Bolsas: plano de implementação
+# Desafio Prova Real (/bolsas): plano
 
-Fonte: "Desafio das 50 Bolsas: como funciona a seleção" (Vinícius Ferreira, 2026-11-02).
-Decisões do Rodrigo em 2026-11-03:
+Refeito em 2026-11-18. Fonte: o mapa da campanha ("Desafio PROVA REAL", HTML e
+mapa mental) e as respostas do Rodrigo no mesmo dia: o mapa substitui o
+"Desafio das 50 Bolsas" por inteiro; **50 bolsas**; os vídeos da campanha
+(chamada e instruções) ainda serão produzidos; o preço de fundador vale **12
+meses**; o perfil da Academy é **@iagenticsacademy**.
 
-1. Seleção **por mérito**, nas 4 etapas do documento (não os 50 primeiros).
-2. O bolsista **cria a assinatura ao aceitar o termo**, com a primeira cobrança
-   no fim dos 30 dias. A conversão fica automática; o aceite pede CPF (vai
-   direto ao Asaas, como na /cursos).
-3. O preço de fundador, **R$ 29,90 por mês, vale por 12 meses**; depois, o
-   preço público (hoje R$ 49,90). Vale para bolsistas e para os não
-   selecionados que assinarem dentro da janela da oferta.
-4. Endereço: **`/bolsas`** ("Prova Real" era nome de trabalho).
+O plano anterior (Desafio das 50 Bolsas, 2026-11-03, com vídeo de entrada,
+banca de dois avaliadores, cotas 30/10/10 e quatro posts semanais) está no git.
+A URL `/bolsas` ficou, porque já foi divulgada e indexada.
 
 ## Calendário
 
 | Data | Marco |
 |---|---|
-| 05/11 a 11/11 | Inscrições (a página fecha sozinha às 23h59 de 11/11, horário de SP) |
-| 05/11 a 15/11 | Vídeos de entrada, pelo link pessoal |
-| 16 e 17/11 | Banca |
-| 17/11, 19h | Resultado ao vivo e e-mails |
-| 18/11 a 17/12 | Bolsa |
-| 17/12 a 20/12 | Encerramento e oferta final |
+| 23/11 | Início da campanha (WhatsApp, Instagram, LinkedIn) |
+| 23/11 a 05/12 | Inscrições, até 23h59 de 05/12 (a página fecha sozinha; o prazo não se estende, por credibilidade) |
+| 24/12 | Divulgação dos vencedores, por e-mail e post |
+| até 10/01/2027 | E-mail com o voucher exclusivo (R$ 29,90 por mês, 12 meses, válido por 15 dias) para os não selecionados |
+| 02/01 a 02/02/2027 | Cadastro dos vencedores e os 30 dias de bolsa; depois, voucher de assinatura de R$ 29,90 |
 
-## Fase 0: fora do código, antes de abrir
+## Metas do mapa
 
-- Regulamento validado por advogado (o rascunho está em `bolsas.regulamento`, content.ts).
-- Pecege confirma: 50 acessos de cortesia, preço de fundador e uso da marca.
-- Conferir o plano do Resend: ~500 confirmações em uma semana e ~500 resultados na mesma hora.
+400 inscrições; 10% de conversão em assinatura (40); depoimentos reais para as
+redes (@iagenticsacademy e @iagentics); receita das assinaturas reinvestida em
+divulgação (tráfego pago, "Campanha 2").
 
-## Fase 1: página e inscrição (até 05/11)
+## Seleção
 
-- `/bolsas`: capa, o que se ganha e o que se entrega, quem pode, cronograma,
-  critérios e pesos (publicados: é o que sustenta o "processo seletivo"),
-  roteiro do vídeo, formulário, perguntas, link do regulamento.
-- `/bolsas/regulamento`.
-- Formulário: nome, e-mail, WhatsApp, cargo, nível (alimenta as cotas),
-  empresa, área, tamanho do time, Instagram e/ou LinkedIn, o problema (até
-  600 caracteres) e quatro caixas: regulamento e 18 anos (obrigatória),
-  ciência do uso na seleção (obrigatória), contato comercial depois do
-  desafio (opcional), uso de nome e imagem (opcional).
-- Tabela `bolsas_inscricoes` (migração 0015, aditiva). Uma inscrição por
-  e-mail. Sem CPF.
-- `POST /api/bolsas`: isca, limite por endereço, validação no servidor,
-  e-mail de confirmação com o regulamento e o link pessoal do vídeo.
-- `/admin/bolsas`: totais (inscritos, com vídeo, por dia, por área, por
-  nível) e CSV para a banca com as colunas de nota vazias.
+Quatro critérios: clareza do problema e entendimento da solução em 30 dias
+(pela resposta da inscrição), seguir a @iagenticsacademy e publicar o post
+"Eu estou participando do Desafio Prova Real" (pelo perfil público). Os 50 de
+melhor avaliação recebem a bolsa; empate pela data de inscrição (decisão a
+validar com o advogado).
 
-## Fase 2: vídeo (05 a 15/11)
+## Feito (2026-11-18)
 
-- `/bolsas/video/[token]` (noindex): a pessoa cola o link do vídeo (Instagram,
-  LinkedIn, YouTube ou Google Drive) até 23h59 de 15/11. Pode trocar o link
-  até o prazo.
-- Lembrete único em 13/11 para quem ainda não mandou (botão no /admin/bolsas).
+Página `/bolsas`, `/bolsas/regulamento` (rascunho), formulário (nome, empresa,
+e-mail, WhatsApp, Instagram e/ou LinkedIn, problema, cinco caixas),
+`POST /api/bolsas`, e-mail de confirmação, `/admin/bolsas` com CSV para a
+avaliação, migração 0016, datas e textos, testes.
 
-## Fase 3: banca e resultado (16 e 17/11)
+## Falta
 
-- A banca preenche o CSV (notas dos dois avaliadores por critério, frase de retorno).
-- Importação do CSV no /admin/bolsas; o código aplica, com testes: média dos
-  dois, aviso de divergência acima de 20 pontos, cotas 30/10/10, nota mínima
-  60, no máximo 2 por empresa, desempate por clareza e depois data de
-  inscrição, 20 na lista de espera.
-- Botão "enviar resultado" com prévia e envio de teste: selecionados (termo +
-  aceite em 48 h), lista de espera (posição), não selecionados (nota por
-  critério, retorno e link do preço de fundador, válido por 7 dias).
-
-## Fase 4: aceite e preço de fundador (a partir de 17/11)
-
-- `/bolsas/aceite/[token]`: termo de adesão + formulário de assinatura (CPF).
-  Cria a assinatura no Asaas a R$ 29,90 com a primeira cobrança em 18/12.
-  O Pecege libera o acesso da bolsa pelo /admin, como hoje.
-- `/bolsas/fundador/[token]`: mesmo formulário, R$ 29,90 com cobrança
-  imediata, aberto por 7 dias para não selecionados.
-- `assinaturas` ganha `origem` e `preco_fundador_ate`. O valor é decidido no
-  servidor pelo token. Depois da 12ª mensalidade paga, o webhook passa a
-  assinatura para o preço público (`PUT /subscriptions/{id}`), com aviso
-  por e-mail antes.
-- A receita recorrente do /admin/cursos passa a somar o valor de cada
-  assinatura em vez de ativos × R$ 49,90.
-
-## Fase 5: durante a bolsa
-
-Acompanhamento dos posts e perda da vaga (01/12) na planilha do time. A lista
-de espera é chamada pelo /admin/bolsas (gera o aceite para o próximo).
+1. **Fase 0 (fora do código)**: regulamento validado por advogado; Pecege
+   confirma 50 acessos, preço de fundador e uso da marca; plano do Resend para
+   os e-mails de confirmação e do resultado.
+2. **O post editável** (arquivo da arte): preencher `criterios.postEditavel`
+   em content.ts; o e-mail de confirmação passa a levar o link.
+3. **Os dois vídeos** (chamada e instruções) e o **grupo de WhatsApp**.
+4. **Importar a avaliação e enviar o resultado** (até 24/12): CSV preenchido de
+   volta no /admin/bolsas, status `selecionado`/`nao_selecionado`, e-mails do
+   resultado (selecionados e não selecionados).
+5. **Voucher de R$ 29,90**: página `/bolsas/voucher/[token]` com o mesmo
+   formulário da /cursos, valor decidido no servidor pelo token, assinatura
+   criada no Asaas a R$ 29,90 e, depois da 12ª mensalidade, passagem para o
+   preço público (`PUT /subscriptions/{id}`) com aviso antes. `assinaturas`
+   ganha `origem` e `preco_fundador_ate`. A receita recorrente do
+   /admin/cursos passa a somar o valor de cada assinatura. **Prazo real:
+   antes de 24/12**, quando os vouchers saem.
+6. **Pesquisa** com os inscritos (o mapa pede; o que perguntar ainda não foi
+   definido) e a **análise crítica** do fechamento (inscrições, assinaturas,
+   seguidores, depoimentos, faturamento, despesas, respondentes).

@@ -162,7 +162,7 @@ export const admin = {
 
   /** Link do /admin para o painel de cursos. */
   irParaCursos: "Painel da plataforma de cursos →",
-  irParaBolsas: "Desafio das 50 Bolsas →",
+  irParaBolsas: "Desafio Prova Real →",
 
   /** /admin/cursos (2026-10-16, pedido do Rodrigo: "controle mais completo da
    *  plataforma cursos, com dashboard, gráficos e fluxo do cliente"). */
@@ -285,25 +285,20 @@ export const admin = {
   /* Desafio das 50 Bolsas (2026-11-03). Meta de vídeos do documento do
      Vinícius: 200 até 15/11, e reforço se houver menos de 100 em 12/11. */
   bolsas: {
-    meta: { titulo: "Desafio das 50 Bolsas" },
+    meta: { titulo: "Desafio Prova Real" },
     voltar: "← Painel",
-    titulo: "Desafio das 50 Bolsas",
-    lead: "Inscrições de 5 a 11/11, vídeos até 15/11, resultado em 17/11 às 19h.",
+    titulo: "Desafio Prova Real",
+    lead: "Inscrições de 23/11 a 05/12 (23h59), resultado em 24/12, bolsa de 02/01 a 02/02/2027.",
     cartoes: {
       inscritos: "Inscritos",
-      metaInscritos: "Meta: 500",
-      comVideo: "Com vídeo",
-      metaVideo: "Meta: 200 até 15/11 (reforçar se menos de 100 em 12/11)",
-      contato: "Aceitaram contato comercial",
+      metaInscritos: "Meta: 400",
+      grupo: "Querem o grupo de WhatsApp",
+      contato: "Aceitaram comunicações",
       imagem: "Autorizaram nome e imagem",
     },
-    porDia: { titulo: "Por dia", dia: "Dia", inscritos: "Inscrições", videos: "Vídeos" },
-    porArea: "Por área",
-    porNivel: "Por nível",
-    porTamanho: "Por tamanho do time",
-    colunas: { chave: "Grupo", total: "Inscritos", comVideo: "Com vídeo" },
+    porDia: { titulo: "Por dia", dia: "Dia", inscritos: "Inscrições" },
     semDados: "Nenhuma inscrição ainda.",
-    exportar: "Exportar CSV para a banca",
-    exportarNota: "Uma linha por inscrição, com as colunas de nota dos dois avaliadores vazias, nos cinco critérios, e a frase de retorno.",
+    exportar: "Exportar CSV para a avaliação",
+    exportarNota: "Uma linha por inscrição, com as colunas de avaliação vazias: nota de clareza, nota de solução em 30 dias, se seguiu a @iagenticsacademy, se publicou o post e uma observação.",
   },
 } as const;

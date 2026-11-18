@@ -69,9 +69,9 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
             "Name, work email, company, job title, WhatsApp number (if you provide it), your role in the department and the score you give each process. The IAgentics Academy team uses them to prepare your diagnostic and talk to you about it, and they are only sent if you check the authorization box. They reach us by email and are not stored on the website. While you answer, your progress is kept only in your browser, so you can stop and come back later; starting over deletes those answers.",
         },
         {
-          termo: "50 Scholarships Challenge (Desafio das 50 Bolsas)",
+          termo: "Prova Real Challenge (Desafio Prova Real)",
           texto:
-            "Name, email, WhatsApp number, job title, seniority, company, department, team size, the Instagram and LinkedIn profiles you provide, the problem you describe, the video link and the date of each authorization. We use them to evaluate your application and talk to you about it, and they are stored in our database. Sales contact after the challenge and the use of your name and image in promotion only happen if you check the optional authorizations. Videos sent through a private link are used only in the selection.",
+            "Name, email, WhatsApp number, company, the Instagram and LinkedIn profiles you provide, the problem you describe and the date of each authorization. We use them to evaluate your application and talk to you about it, and they are stored in our database. Communications after the challenge, joining the exclusive WhatsApp group and the use of your name and image in promotion only happen if you check the optional authorizations. To check the selection criteria, we look at your public Instagram or LinkedIn profile.",
         },
         {
           termo: "Waiting list and past individual purchases",
@@ -120,7 +120,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
           termo: "Asaas",
           texto: "Issues and processes the monthly subscription charges: it receives your name, email, mobile number and CPF to generate the charges, sends each month's invoice to your email, and receives the payment details you enter there.",
         },
-        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers and the 50 Scholarships Challenge emails." },
+        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers and the Prova Real Challenge emails." },
         { termo: "Google Analytics", texto: "Measures usage of the public pages." },
         { termo: "Metricool", texto: "Measures visits to the public pages and their origin on social media." },
         { termo: "Railway and Cloudflare", texto: "Application hosting and website delivery, with all traffic over HTTPS." },
@@ -129,7 +129,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
     {
       titulo: "How long we keep data",
       paragrafos: [
-        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. 50 Scholarships Challenge applications are kept until the end of the scholarship and the final offer, in December 2026; after that, we keep only those of people who became subscribers or authorized sales contact. Billing records follow the legal deadlines and the payment processor's rules.",
+        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. Prova Real Challenge applications are kept until the end of the scholarship and the voucher offer, in February 2027; after that, we keep only those of people who became subscribers or authorized sales contact. Billing records follow the legal deadlines and the payment processor's rules.",
       ],
       itens: [],
     },

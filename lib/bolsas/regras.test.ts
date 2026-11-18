@@ -4,26 +4,18 @@ import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import {
   faseDasInscricoes,
   descontoFundador,
-  grupoDoNivel,
   VALOR_FUNDADOR_CENTAVOS,
   normalizarInstagram,
   normalizarLinkedin,
   novoToken,
-  tokenValido,
   validarInscricao,
-  validarVideo,
-  videoAberto,
 } from "./regras";
 
 const base = {
   nome: "Ana Souza",
   email: "Ana@Empresa.com",
   whatsapp: "(11) 98888-7777",
-  cargo: "Compradora",
-  nivel: "analista",
   empresa: "Empresa X",
-  area: "compras",
-  tamanhoTime: "4-10",
   instagram: "@ana.compras",
   linkedin: "",
   problema: "Levo 3 horas por semana montando o comparativo de cotações do frete.",
@@ -32,21 +24,18 @@ const base = {
 };
 
 describe("janela das inscrições", () => {
-  it("abre em 05/11 e fecha às 23h59 de 11/11, horário de SP", () => {
-    expect(faseDasInscricoes(new Date("2026-11-04T23:59:00-03:00"))).toBe("antes");
-    expect(faseDasInscricoes(new Date("2026-11-05T00:00:00-03:00"))).toBe("abertas");
-    expect(faseDasInscricoes(new Date("2026-11-11T23:59:00-03:00"))).toBe("abertas");
-    // 00h30 de 12/11 em SP já é 03h30 em UTC: encerrada nos dois relógios.
-    expect(faseDasInscricoes(new Date("2026-11-12T03:30:00Z"))).toBe("encerradas");
-  });
-  it("o vídeo vai até 15/11", () => {
-    expect(videoAberto(new Date("2026-11-15T23:00:00-03:00"))).toBe(true);
-    expect(videoAberto(new Date("2026-11-16T00:01:00-03:00"))).toBe(false);
+  it("abre em 23/11 e fecha às 23h59 de 05/12, horário de SP", () => {
+    expect(faseDasInscricoes(new Date("2026-11-22T23:59:00-03:00"))).toBe("antes");
+    expect(faseDasInscricoes(new Date("2026-11-23T00:00:00-03:00"))).toBe("abertas");
+    expect(faseDasInscricoes(new Date("2026-12-05T23:59:00-03:00"))).toBe("abertas");
+    // 00h30 de 06/12 em SP já é 03h30 em UTC: encerrada nos dois relógios.
+    expect(faseDasInscricoes(new Date("2026-12-06T03:30:00Z"))).toBe("encerradas");
   });
   it("as datas escritas na página batem com as do servidor", () => {
-    expect(bolsas.etapas.itens[0].quando).toBe("5 a 11 de novembro");
-    expect(bolsas.etapas.itens[1].quando).toBe("até 15 de novembro");
-    expect(bolsas.capa.fatos[2].valor).toBe("11/11");
+    expect(bolsas.etapas.itens[0].quando).toBe("23 de novembro a 5 de dezembro");
+    expect(bolsas.capa.fatos[2].valor).toBe("05/12");
+    expect(bolsas.fases.antes).toContain("23 de novembro");
+    expect(bolsas.fases.encerradas).toContain("5 de dezembro");
   });
 });
 
@@ -60,7 +49,12 @@ describe("validarInscricao", () => {
       expect(r.dados.instagram).toBe("https://www.instagram.com/ana.compras");
       expect(r.dados.linkedin).toBeNull();
       expect(r.dados.contatoComercial).toBe(false);
+      expect(r.dados.grupoWhatsapp).toBe(false);
     }
+  });
+  it("guarda as duas autorizações opcionais quando marcadas", () => {
+    const r = validarInscricao({ ...base, contatoComercial: true, grupoWhatsapp: true, usoImagem: true });
+    expect(r.ok && r.dados.contatoComercial && r.dados.grupoWhatsapp && r.dados.usoImagem).toBe(true);
   });
   it("exige pelo menos um perfil, e válido", () => {
     expect(validarInscricao({ ...base, instagram: "" })).toEqual({ ok: false, motivo: "perfis" });
@@ -68,12 +62,11 @@ describe("validarInscricao", () => {
     const so = validarInscricao({ ...base, instagram: "", linkedin: "linkedin.com/in/ana-souza/" });
     expect(so.ok && so.dados.linkedin).toBe("https://www.linkedin.com/in/ana-souza");
   });
-  it("recusa as duas caixas obrigatórias desmarcadas e os campos fora da lista", () => {
+  it("recusa as duas caixas obrigatórias desmarcadas e os campos inválidos", () => {
     expect(validarInscricao({ ...base, regulamento: false })).toEqual({ ok: false, motivo: "regulamento" });
     expect(validarInscricao({ ...base, cienciaDados: "on" })).toEqual({ ok: false, motivo: "cienciaDados" });
-    expect(validarInscricao({ ...base, nivel: "ceo" })).toEqual({ ok: false, motivo: "nivel" });
-    expect(validarInscricao({ ...base, area: "rh" })).toEqual({ ok: false, motivo: "area" });
     expect(validarInscricao({ ...base, nome: "Ana" })).toEqual({ ok: false, motivo: "nome" });
+    expect(validarInscricao({ ...base, empresa: "X" })).toEqual({ ok: false, motivo: "empresa" });
     expect(validarInscricao({ ...base, problema: "curto" })).toEqual({ ok: false, motivo: "problema" });
     expect(validarInscricao({ ...base, problema: "x".repeat(601) })).toEqual({ ok: false, motivo: "problema" });
   });
@@ -91,32 +84,18 @@ describe("perfis", () => {
   });
 });
 
-describe("validarVideo", () => {
-  it("aceita as quatro redes, só em https", () => {
-    expect(validarVideo("https://www.instagram.com/reel/abc123/")).toBeTruthy();
-    expect(validarVideo("https://youtu.be/abc")).toBeTruthy();
-    expect(validarVideo("https://drive.google.com/file/d/1x/view")).toBeTruthy();
-    expect(validarVideo("http://youtu.be/abc")).toBeNull();
-    expect(validarVideo("https://instagram.com.evil.com/x")).toBeNull();
-    expect(validarVideo("javascript:alert(1)")).toBeNull();
-  });
-});
-
-describe("cotas e token", () => {
-  it("nível vira grupo de cota", () => {
-    expect(grupoDoNivel("coordenador")).toBe("praticantes");
-    expect(grupoDoNivel("diretor")).toBe("gestores");
-    expect(grupoDoNivel("voz")).toBe("vozes");
-    expect(grupoDoNivel("outro")).toBe("geral");
-  });
+describe("token e textos", () => {
   it("token tem 43 caracteres base64url e não se repete", () => {
     const a = novoToken();
-    expect(tokenValido(a)).toBe(true);
+    expect(a).toMatch(/^[A-Za-z0-9_-]{43}$/);
     expect(a).not.toBe(novoToken());
-    expect(tokenValido("../x")).toBe(false);
   });
   it("sem travessão nos textos (regra de texto do site)", () => {
     expect(JSON.stringify(bolsas)).not.toMatch(/[—–]/);
+  });
+  it("o perfil da Academy é o do mapa da campanha", () => {
+    expect(bolsas.criterios.instagram.handle).toBe("@iagenticsacademy");
+    expect(bolsas.criterios.instagram.url).toBe("https://www.instagram.com/iagenticsacademy");
   });
 });
 

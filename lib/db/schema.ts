@@ -193,22 +193,24 @@ export const assinaturas = pgTable(
 );
 
 /**
- * INSCRIÇÕES do Desafio das 50 Bolsas (2026-11-03, docs/PLANO-BOLSAS.md).
+ * INSCRIÇÕES do Desafio Prova Real (/bolsas; nasceu como Desafio das 50
+ * Bolsas em 2026-11-03 e foi refeito em 2026-11-18, docs/PLANO-BOLSAS.md).
  *
- * Seleção por mérito: a banca dá nota fora do site (CSV do /admin/bolsas), e
- * o resultado volta para `status`. Uma inscrição por e-mail (único por
- * lower(), como a lista de espera).
+ * Uma inscrição por e-mail (único por lower(), como a lista de espera). A
+ * equipe avalia fora do site (CSV do /admin/bolsas) e o resultado volta para
+ * `status`.
  *
- * `token` é o link pessoal de quem se inscreveu (enviar o vídeo, depois o
- * aceite e o preço de fundador). Aleatório, 32 bytes; quem tem o link fala
- * por aquela inscrição, e nada além disso.
+ * Desde 2026-11-18 o formulário não pede mais cargo, nível, área nem tamanho
+ * do time (migração 0016 tirou o NOT NULL; as linhas antigas, se houver,
+ * guardam o que foi respondido) e não há mais vídeo de entrada (`video_url` e
+ * `video_em` ficam sem uso). `token` continua sendo gerado, sem link que o use.
  *
- * As quatro caixas do formulário viram quatro datas: duas obrigatórias
- * (regulamento, ciência do uso na seleção) e duas opcionais (contato
- * comercial depois do desafio, uso de nome e imagem). Data e não booleano
+ * As caixas do formulário viram datas: duas obrigatórias (regulamento, ciência
+ * do uso na seleção) e três opcionais (contato comercial depois do desafio,
+ * grupo exclusivo de WhatsApp, uso de nome e imagem). Data e não booleano
  * pelo mesmo motivo de `lista_espera.consentimento_em`: é a prova de quando.
  *
- * Sem CPF: só o aceite da bolsa pede, e ele vai direto ao Asaas.
+ * Sem CPF.
  */
 export type StatusBolsa = "inscrito" | "selecionado" | "espera" | "nao_selecionado" | "aceitou" | "perdeu";
 
@@ -221,11 +223,11 @@ export const bolsasInscricoes = pgTable(
     nome: text("nome").notNull(),
     email: text("email").notNull(),
     whatsapp: text("whatsapp").notNull(),
-    cargo: text("cargo").notNull(),
-    nivel: text("nivel").notNull(),
+    cargo: text("cargo"),
+    nivel: text("nivel"),
     empresa: text("empresa").notNull(),
-    area: text("area").notNull(),
-    tamanhoTime: text("tamanho_time").notNull(),
+    area: text("area"),
+    tamanhoTime: text("tamanho_time"),
     instagram: text("instagram"),
     linkedin: text("linkedin"),
     problema: text("problema").notNull(),
@@ -236,6 +238,7 @@ export const bolsasInscricoes = pgTable(
     cienciaDadosEm: timestamp("ciencia_dados_em", { withTimezone: true }).notNull(),
     contatoComercialEm: timestamp("contato_comercial_em", { withTimezone: true }),
     usoImagemEm: timestamp("uso_imagem_em", { withTimezone: true }),
+    grupoWhatsappEm: timestamp("grupo_whatsapp_em", { withTimezone: true }),
   },
   (t) => [
     uniqueIndex("bolsas_inscricoes_email_unico").on(sql`lower(${t.email})`),

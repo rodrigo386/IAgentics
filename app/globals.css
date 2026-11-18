@@ -1838,7 +1838,7 @@ dialog.gaveta.gaveta-centro[open] {
 }
 
 /* ---------------------------------------------------------------------------
-   DESAFIO DAS 50 BOLSAS (/bolsas, 2026-11-03; pedido do Rodrigo: "mais visual
+   DESAFIO PROVA REAL (/bolsas, 2026-11-03; pedido do Rodrigo: "mais visual
    e convidativa, use motions").
 
    A capa é superfície escura nos DOIS temas, como o cartão da hero cinemática:
@@ -1847,9 +1847,8 @@ dialog.gaveta.gaveta-centro[open] {
    Movimento só CSS (DESIGN.md §6), tudo dentro de no-preference:
    - a capa não tem animação própria (pedido do Rodrigo: as 50 vagas animadas
      mostravam dado interno das cotas e saíram);
-   - linha do tempo, barra dos pesos e as barrinhas de Stories do celular
-     andam com a ROLAGEM
-     (animation-timeline: view()). Sem suporte a view(), a regra não se aplica
+   - a linha do tempo anda com a ROLAGEM (animation-timeline: view()).
+     Sem suporte a view(), a regra não se aplica
      e tudo aparece no estado final.
 --------------------------------------------------------------------------- */
 
@@ -1906,19 +1905,6 @@ dialog.gaveta.gaveta-centro[open] {
       animation: bolsas-cresce linear both;
       animation-timeline: view();
       animation-range: entry 10% cover 45%;
-    }
-
-    /* As barrinhas de Stories do celular enchem uma depois da outra conforme
-       o celular atravessa a tela. Cada uma tem a própria faixa de rolagem,
-       passada inline pela página (`animationRange`). */
-    .bolsas-celular {
-      view-timeline-name: --bolsas-celular;
-    }
-
-    .bolsas-story {
-      transform-origin: left center;
-      animation: bolsas-cresce linear both;
-      animation-timeline: --bolsas-celular;
     }
   }
 }

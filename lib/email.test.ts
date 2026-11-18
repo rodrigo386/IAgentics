@@ -54,12 +54,19 @@ describe("emailDiagnose", () => {
 });
 
 describe("emailInscricaoBolsa", () => {
-  it("leva o link pessoal do vídeo, o regulamento e o prazo, com o nome escapado", () => {
-    const e = emailInscricaoBolsa("<b>Ana</b> Souza", "x".repeat(43));
-    expect(e.texto).toContain(`https://iagentics.com.br/bolsas/video/${"x".repeat(43)}`);
+  it("leva os dois passos da seleção, as datas e o regulamento, com o nome escapado", () => {
+    const e = emailInscricaoBolsa("<b>Ana</b> Souza", { grupo: false });
+    expect(e.assunto).toBe("Inscrição confirmada: Desafio Prova Real");
+    expect(e.texto).toContain("@iagenticsacademy");
+    expect(e.texto).toContain("https://www.instagram.com/iagenticsacademy");
+    expect(e.texto).toContain("Eu estou participando do Desafio Prova Real");
+    expect(e.texto).toContain("24 de dezembro");
     expect(e.texto).toContain("https://iagentics.com.br/bolsas/regulamento");
-    expect(e.texto).toContain("15 de novembro");
+    expect(e.texto).not.toContain("grupo exclusivo");
     expect(e.html).not.toContain("<b>Ana</b>");
     expect(e.html).toContain("&lt;b&gt;Ana&lt;/b&gt;");
+  });
+  it("só fala do grupo de WhatsApp para quem pediu", () => {
+    expect(emailInscricaoBolsa("Ana Souza", { grupo: true }).texto).toContain("grupo exclusivo do desafio no WhatsApp");
   });
 });

@@ -102,9 +102,9 @@ export const privacidade = {
             "Nome, e-mail de trabalho, empresa, cargo, WhatsApp (se você informar), seu papel na área e as notas que você dá a cada processo. Servem para a equipe da IAgentics Academy preparar o seu diagnóstico e falar com você sobre ele, e só são enviados com a sua autorização marcada. Chegam até nós por e-mail e não ficam gravados no site. Enquanto você responde, o progresso fica guardado apenas no seu navegador, para você poder parar e voltar depois; começar do zero apaga essas respostas.",
         },
         {
-          termo: "Desafio das 50 Bolsas",
+          termo: "Desafio Prova Real",
           texto:
-            "Nome, e-mail, WhatsApp, cargo, nível, empresa, área, tamanho do time, os perfis no Instagram e no LinkedIn que você informar, o problema que você descreve, o link do vídeo e a data de cada autorização. Servem para avaliar a sua candidatura e falar com você sobre ela, e ficam gravados no nosso banco de dados. Contato comercial depois do desafio e uso do seu nome e imagem na divulgação só acontecem se você marcar as autorizações opcionais. Vídeos enviados por link privado são usados só na seleção.",
+            "Nome, e-mail, WhatsApp, empresa, os perfis no Instagram e no LinkedIn que você informar, o problema que você descreve e a data de cada autorização. Servem para avaliar a sua candidatura e falar com você sobre ela, e ficam gravados no nosso banco de dados. Comunicações depois do desafio, a entrada no grupo exclusivo de WhatsApp e o uso do seu nome e imagem na divulgação só acontecem se você marcar as autorizações opcionais. Para conferir os critérios de seleção, olhamos o seu perfil público no Instagram ou no LinkedIn.",
         },
         {
           termo: "Lista de espera e compras avulsas anteriores",
@@ -153,7 +153,7 @@ export const privacidade = {
           termo: "Asaas",
           texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras e os e-mails do Desafio das 50 Bolsas." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras e os e-mails do Desafio Prova Real." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Metricool", texto: "Medição das visitas às páginas públicas e da origem delas nas redes sociais." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
@@ -162,7 +162,7 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Inscrições no Desafio das 50 Bolsas ficam até o fim da bolsa e da oferta final, em dezembro de 2026; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
@@ -2574,37 +2574,39 @@ export const diagnose = {
 };
 
 /**
- * DESAFIO DAS 50 BOLSAS (/bolsas, 2026-11-03; plano em docs/PLANO-BOLSAS.md).
- * Textos tirados do documento do Vinícius ("Desafio das 50 Bolsas: como
- * funciona a seleção", 2026-11-02) e das decisões do Rodrigo: seleção por
- * mérito, assinatura criada no aceite da bolsa com a primeira cobrança depois
- * dos 30 dias, preço de fundador de R$ 29,90 por 12 meses.
+ * DESAFIO PROVA REAL (/bolsas, 2026-11-18; plano em docs/PLANO-BOLSAS.md).
+ * Nasceu como "Desafio das 50 Bolsas" (2026-11-03) e foi REFEITO em 2026-11-18
+ * a pedido do Rodrigo, a partir do mapa da campanha ("Desafio PROVA REAL"):
+ * inscrições de 23/11 a 05/12, resultado em 24/12, bolsa de 02/01 a
+ * 02/02/2027 (30 dias), 50 bolsas, preço de fundador de R$ 29,90 por 12 meses.
+ * Saíram o vídeo de entrada, os cinco critérios com pesos, as cotas e os
+ * quatro posts semanais; entraram seguir a @iagenticsacademy e publicar o post
+ * do desafio. A URL continua /bolsas (já foi divulgada e indexada).
  *
  * As datas que a página MOSTRA estão aqui; as que o servidor CONFERE estão em
  * lib/bolsas/regras.ts. Mudou uma, mude a outra (o teste confere as duas).
  *
- * O regulamento é RASCUNHO para o advogado validar antes de abrir as
- * inscrições (Fase 0 do plano).
+ * O regulamento é RASCUNHO para o advogado validar.
  */
 export const PRECO_FUNDADOR = "R$ 29,90";
 
 export const bolsas = {
   meta: {
-    titulo: "Desafio das 50 Bolsas | IAgentics Academy",
+    titulo: "Desafio Prova Real | IAgentics Academy",
     descricao:
-      "50 bolsas de 30 dias na IAgentics Academy, com chancela do Pecege, escolhidas por mérito. Inscrições gratuitas de 5 a 11 de novembro de 2026.",
+      "50 bolsas de 30 dias na IAgentics Academy, com chancela do Pecege. Conte o problema que quer resolver com IA e dispute uma vaga. Inscrições gratuitas de 23 de novembro a 5 de dezembro de 2026.",
   },
   capa: {
-    kicker: "IAgentics Academy · Pecege",
-    titulo: "50 bolsas para resolver um problema real do seu trabalho com IA",
-    lead: "30 dias de acesso completo à IAgentics Academy, com chancela do Pecege. Conte o problema, grave 60 segundos e dispute uma das 50 vagas.",
+    kicker: "Desafio Prova Real · IAgentics Academy · Pecege",
+    titulo: "50 bolsas para provar com IA um problema real do seu trabalho",
+    lead: "30 dias de acesso completo à IAgentics Academy, com chancela do Pecege. Conte o problema, siga a Academy, publique o post e dispute uma das 50 vagas.",
     fatos: [
       { valor: "50", rotulo: "bolsas" },
       { valor: "30", rotulo: "dias de acesso" },
-      { valor: "11/11", rotulo: "fim das inscrições" },
+      { valor: "05/12", rotulo: "fim das inscrições" },
     ],
     cta: "Quero minha bolsa",
-    gratis: "Inscrição gratuita, sem compra e sem precisar seguir nenhum perfil.",
+    gratis: "Inscrição gratuita e sem compra.",
   },
   /** A contagem regressiva da capa e do formulário. */
   contagem: {
@@ -2628,10 +2630,10 @@ export const bolsas = {
     porMes: "por mês",
     desconto: (pct: number) => `-${pct}%`,
     descontoLongo: (pct: number) => `${pct}% de desconto`,
-    nota: "Preço de fundador por 12 meses, só para quem participa do desafio. Cancele antes da primeira cobrança e não paga nada.",
+    nota: "Preço de fundador por 12 meses, só para quem participa do desafio. Chega como voucher por e-mail, e a assinatura só começa se você usar.",
     vagasNumero: "50",
     vagasRotulo: "vagas. Nenhuma a mais.",
-    exclusivos: ["Só 50 vagas", "Seleção por mérito, sem sorteio", "Preço de fundador só para inscritos", "Inscrições até 11/11"],
+    exclusivos: ["Só 50 vagas", "Seleção por critérios, sem sorteio", "Preço de fundador só para inscritos", "Inscrições até 05/12"],
     foto: {
       /* Pexels, foto 8297058 de Mikhail Nilov (licença Pexels: uso comercial
          livre, sem atribuição obrigatória). Trocou a foto? Nome novo (-v2),
@@ -2655,18 +2657,11 @@ export const bolsas = {
     faixa: { pausar: "Pausar as capas", continuar: "Continuar as capas", rotulo: "Alguns dos cursos da plataforma" },
     filme: { pausar: "Pausar o filme", continuar: "Continuar o filme" },
   },
-  /** O celular da seção do vídeo: só desenho, o roteiro está escrito ao lado. */
-  celular: {
-    foto: "/academy/academy-convite-poster.jpg",
-    gravando: "Gravando",
-  },
-  /** A barra dos 100 pontos da banca. */
-  pontos: { total: "100 pontos", rotulo: "Como os 100 pontos se dividem" },
   /** O que a página diz fora da janela de inscrição. */
   fases: {
-    antes: "As inscrições abrem em 5 de novembro de 2026.",
+    antes: "As inscrições abrem em 23 de novembro de 2026.",
     encerradas:
-      "As inscrições terminaram em 11 de novembro. Quem se inscreveu pode mandar o vídeo até 15 de novembro, pelo link que chegou por e-mail. O resultado sai ao vivo em 17 de novembro, às 19h.",
+      "As inscrições terminaram em 5 de dezembro. O resultado sai em 24 de dezembro, por e-mail e em post nas redes da IAgentics Academy.",
   },
   trocas: {
     eyebrow: "A troca",
@@ -2675,160 +2670,126 @@ export const bolsas = {
       titulo: "O bolsista ganha",
       itens: [
         "30 dias de acesso completo à plataforma da IAgentics Academy",
-        "Grupo da turma no WhatsApp",
-        "Live de 30 minutos toda quarta, às 19h",
-        "Chance de vaga na Imersão de janeiro",
+        "Grupo exclusivo do desafio no WhatsApp",
         `Preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses, se quiser continuar depois da bolsa`,
       ],
     },
     /** O que se entrega, em números grandes. */
     numeros: [
-      { valor: "1", rotulo: "problema do seu trabalho resolvido com IA" },
-      { valor: "4", rotulo: "posts no mês, um por semana" },
-      { valor: "1", rotulo: "número no final: horas, retrabalho ou custo" },
+      { valor: "1", rotulo: "problema real do seu trabalho, contado na inscrição" },
+      { valor: "30", rotulo: "dias usando a plataforma para resolvê-lo" },
+      { valor: "1", rotulo: "depoimento de como foi, com a sua autorização" },
     ],
     entrega: {
       titulo: "O bolsista entrega",
-      itens: [
-        "Um problema do próprio trabalho resolvido com IA ou com método",
-        "Quatro posts ao longo do mês, um por semana, mostrando o caminho",
-        "Um número no final: horas, retrabalho ou custo",
-      ],
     },
-    naoSelecionado: `Quem se inscreve e não é selecionado também recebe: a nota em cada critério, um retorno sobre o vídeo e o preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses, para assinar em até 7 dias.`,
+    naoSelecionado: `Quem se inscreve e não é selecionado também recebe um voucher exclusivo: ${PRECO_FUNDADOR} por mês durante 12 meses, por e-mail até 10 de janeiro de 2027, válido por 15 dias.`,
   },
   quem: {
     eyebrow: "Quem pode",
     titulo: "Quem pode se inscrever",
-    texto:
-      "Maiores de 18 anos que trabalham em Compras, Supply, Vendas, Fiscal, Finanças ou Inteligência de Mercado, com perfil público no Instagram ou no LinkedIn. Compras e Supply têm prioridade.",
+    texto: "Maiores de 18 anos, com perfil público no Instagram ou no LinkedIn, que queiram resolver um problema do próprio trabalho com IA.",
   },
   etapas: {
     eyebrow: "Como funciona",
-    titulo: "Quatro etapas, de 5 a 17 de novembro",
+    titulo: "Quatro etapas, da inscrição à bolsa",
     itens: [
       {
         nome: "Inscrição",
-        quando: "5 a 11 de novembro",
-        texto: "2 minutos nesta página. Conte o problema que quer resolver, com um número.",
-      },
-      {
-        nome: "Vídeo de entrada",
-        quando: "até 15 de novembro",
-        texto: "60 segundos apresentando o problema. O roteiro chega no seu e-mail.",
+        quando: "23 de novembro a 5 de dezembro",
+        texto: "2 minutos nesta página. Conte o problema que quer resolver, com um número se puder.",
       },
       {
         nome: "Avaliação",
-        quando: "16 e 17 de novembro",
-        texto: "Dois avaliadores dão nota de 0 a 100. Vale a média.",
+        quando: "depois de 5 de dezembro",
+        texto: "Lemos cada resposta e conferimos os perfis nos quatro critérios.",
       },
       {
         nome: "Resultado",
-        quando: "17 de novembro, 19h",
-        texto: "Ao vivo, numa live, e por e-mail para todos no mesmo minuto.",
+        quando: "24 de dezembro",
+        texto: "Por e-mail para todos os inscritos e em post nas redes da IAgentics Academy.",
+      },
+      {
+        nome: "Bolsa",
+        quando: "2 de janeiro a 2 de fevereiro de 2027",
+        texto: "30 dias com a plataforma liberada, no problema que você descreveu.",
       },
     ],
   },
   criterios: {
-    eyebrow: "A nota",
-    titulo: "Os cinco critérios da banca",
-    pesoDe: (n: number) => `peso ${n}`,
-    colunas: { criterio: "Critério", peso: "Peso", alta: "Nota alta quando" },
+    eyebrow: "A seleção",
+    titulo: "Os quatro critérios",
+    colunas: { como: "Como conferimos" },
     itens: [
-      { nome: "Clareza do problema", peso: 30, alta: "O problema é específico e tem número: horas, reais, retrabalho." },
-      { nome: "Potencial de aplicação em 30 dias", peso: 25, alta: "Dá para resolver com IA dentro do mês, sem depender de TI ou de comprar sistema." },
-      { nome: "Comunicação no vídeo", peso: 20, alta: "Explica bem em 60 segundos, com tela ou exemplo concreto." },
-      { nome: "Encaixe no público", peso: 15, alta: "Trabalha em Compras ou Supply (15). Outras áreas de negócio valem 8." },
-      { nome: "Constância de presença", peso: 10, alta: "Postou algo profissional nos últimos 30 dias, em qualquer rede." },
+      {
+        nome: "Clareza do problema",
+        texto: "O problema é específico e tem número: horas, reais, retrabalho.",
+        como: "Lemos a sua resposta na inscrição.",
+      },
+      {
+        nome: "Entendimento da solução em 30 dias",
+        texto: "Dá para resolver com IA ou método dentro do mês, usando a plataforma.",
+        como: "Lemos a sua resposta na inscrição.",
+      },
+      {
+        nome: "Seguir a página da IAgentics Academy",
+        texto: "Siga a @iagenticsacademy no Instagram.",
+        como: "Conferimos no Instagram.",
+      },
+      {
+        nome: "Publicar o post do desafio",
+        texto: "Publique o post “Eu estou participando do Desafio Prova Real”, no Instagram ou no LinkedIn.",
+        como: "Conferimos no seu perfil público.",
+      },
     ],
-    seguidores: "Número de seguidores não entra na nota: um analista com 400 seguidores e um problema claro vale mais que um perfil grande sem história.",
-    cotas:
-      "As vagas são divididas assim: 30 para praticantes (analistas, compradores e coordenadores), 10 para gestores (gerentes e diretores) e 10 para vozes da área (professores, criadores de conteúdo e líderes de comunidade). Grupo sem candidatos com nota 60 ou mais cede a vaga para o próximo da lista geral. No máximo 2 bolsistas por empresa. Empate se resolve pela nota em clareza do problema e depois pela data de inscrição. Os 20 seguintes formam a lista de espera.",
+    instagram: { rotulo: "Seguir @iagenticsacademy", handle: "@iagenticsacademy", url: "https://www.instagram.com/iagenticsacademy" },
+    /** O arquivo editável do post. Vazio até o time entregar a arte: o e-mail de
+     *  confirmação só leva o link quando ele existe. */
+    postEditavel: "",
+    nota: "Como o post traz uma contrapartida, ele leva a identificação de parceria paga da rede (ou #publi no começo da legenda). A IAgentics Academy disponibiliza o post editável.",
   },
-  roteiro: {
-    eyebrow: "O vídeo",
-    titulo: "Roteiro de 60 segundos",
-    regua: "A régua dos 60 segundos",
-    partes: [
-      { tempo: "10 s", nome: "Quem sou", texto: "Nome, cargo e área." },
-      { tempo: "25 s", nome: "O problema", texto: "O que trava e quanto tempo ou dinheiro custa. Se puder, mostre a tela ou a planilha." },
-      { tempo: "15 s", nome: "O que muda", texto: "O que você faria com o tempo de volta." },
-      { tempo: "10 s", nome: "Fechamento", texto: "\"Quero provar isso em 30 dias.\"" },
-    ],
-    cuidado: "Não mostre dado confidencial da empresa, de clientes ou de fornecedores.",
-    envio: "Pode ser um Reels ou post no LinkedIn, com a hashtag da campanha e marcando a IAgentics Academy, ou um link privado do Google Drive ou do YouTube (não listado). Postar não dá ponto extra.",
-  },
-  mes: {
+  bolsa: {
     eyebrow: "A bolsa",
-    titulo: "Os 30 dias: um problema, quatro posts, um número",
-    periodo: "De 18 de novembro a 17 de dezembro de 2026.",
-    semanas: [
-      { missao: "Fazer o Raio-x e as aulas ligadas ao problema", post: "Entrei na turma; este é o problema que vou resolver", prazo: "24/11" },
-      { missao: "Aplicar a primeira solução no trabalho", post: "Bastidor: o antes, com tela ou planilha", prazo: "01/12" },
-      { missao: "Medir o ganho", post: "O número: horas, retrabalho ou custo", prazo: "08/12" },
-      { missao: "Fechar o desafio", post: "Depoimento em vídeo de até 60 segundos", prazo: "15/12" },
+    titulo: "Os 30 dias: do cadastro ao depoimento",
+    periodo: "De 2 de janeiro a 2 de fevereiro de 2027.",
+    passos: [
+      { quando: "2 de janeiro", titulo: "Cadastro", texto: "Os selecionados recebem a política e o período de uso e se cadastram na plataforma." },
+      { quando: "Durante o mês", titulo: "Uso", texto: "30 dias para usar a plataforma no problema que você descreveu. Mandamos e-mails de incentivo pelo caminho." },
+      { quando: "Ao final", titulo: "Depoimento", texto: "Conte como foi. Depoimentos reais vão para as redes da IAgentics Academy e da IAgentics, com a sua autorização." },
+      { quando: "2 de fevereiro", titulo: "Voucher", texto: `Terminada a bolsa, você recebe o voucher de assinatura: ${PRECO_FUNDADOR} por mês durante 12 meses.` },
     ],
-    colunas: { semana: "Semana", missao: "Missão", post: "Post", prazo: "Prazo" },
-    publi: "Todo post leva a identificação de parceria paga da rede (ou #publi no começo da legenda) e marca a IAgentics Academy.",
-    final: "Os 3 maiores ganhos medidos, em percentual do tempo ou do custo inicial, ganham vaga na Imersão de janeiro. Todos que concluírem recebem o certificado de conclusão da turma fundadora.",
   },
   formulario: {
     eyebrow: "Inscrição",
     titulo: "Faça sua inscrição",
-    lead: "Leva 2 minutos. O vídeo vem depois: o roteiro e o link para enviar chegam no seu e-mail.",
+    lead: "Leva 2 minutos. Depois da inscrição, mandamos por e-mail o passo a passo para seguir a Academy e publicar o post.",
     nome: "Nome completo",
     email: "E-mail",
     whatsapp: "WhatsApp, com DDD",
-    cargo: "Cargo",
-    nivel: "Seu nível",
     empresa: "Empresa",
-    area: "Área",
-    tamanhoTime: "Tamanho do time da sua área",
     instagram: "Perfil no Instagram",
     linkedin: "Perfil no LinkedIn",
-    perfisNota: "Informe pelo menos um. O perfil precisa ser público.",
-    problema: "Qual problema do seu trabalho você quer resolver com IA ou métodos em 30 dias?",
+    perfisNota: "Informe pelo menos um perfil público. Conferimos no Instagram se você segue a @iagenticsacademy e no seu perfil se publicou o post.",
+    problema: "Qual problema do seu dia a dia você quer resolver com IA e/ou métodos ensinados na plataforma em 30 dias?",
     problemaNota: "Até 5 linhas, com um número se puder. Exemplo: \"Levo 3 horas por semana montando o comparativo de cotações do frete. Quero baixar para 30 minutos.\"",
-    escolha: "Escolha",
-    niveis: {
-      analista: "Analista ou comprador(a)",
-      coordenador: "Coordenador(a)",
-      gerente: "Gerente",
-      diretor: "Diretor(a) ou C-level",
-      voz: "Professor(a), criador(a) de conteúdo ou líder de comunidade",
-      outro: "Outro",
-    },
-    areas: {
-      compras: "Compras",
-      supply: "Supply",
-      vendas: "Vendas",
-      fiscal: "Fiscal",
-      financas: "Finanças",
-      inteligencia: "Inteligência de Mercado",
-      outra: "Outra",
-    },
-    tamanhos: { "1-3": "1 a 3 pessoas", "4-10": "4 a 10 pessoas", "10+": "Mais de 10 pessoas" },
     regulamento: "Tenho 18 anos ou mais, li e aceito o",
     regulamentoLink: "regulamento",
     cienciaDados: "Estou ciente de que os dados desta inscrição serão usados pela IAgentics Academy para avaliar a minha candidatura, conforme a",
     privacidade: "política de privacidade",
-    contatoComercial: "Aceito receber da IAgentics Academy, depois do desafio, novidades e ofertas por e-mail e WhatsApp. (Opcional)",
-    usoImagem: "Autorizo o uso do meu nome, da minha foto de perfil e do meu vídeo, se ele for público, na divulgação do resultado. (Opcional)",
+    contatoComercial: "Aceito receber comunicações da IAgentics Academy por e-mail e WhatsApp, depois do desafio. (Opcional)",
+    grupoWhatsapp: "Quero participar do grupo exclusivo do desafio no WhatsApp. (Opcional)",
+    usoImagem: "Autorizo o uso do meu nome, da minha foto de perfil e do meu depoimento na divulgação do resultado e nas redes da IAgentics Academy. (Opcional)",
     botao: "Enviar inscrição",
     enviando: "Enviando…",
     ok: {
       titulo: "Inscrição recebida",
-      texto: "Mandamos um e-mail com o regulamento, o roteiro do vídeo e o seu link para enviá-lo até 15 de novembro. Não chegou em alguns minutos? Olhe a caixa de spam.",
+      texto: "Mandamos um e-mail com o regulamento e o passo a passo para seguir a @iagenticsacademy e publicar o post. Não chegou em alguns minutos? Olhe a caixa de spam.",
     },
     erros: {
       nome: "Escreva seu nome completo.",
       email: "Confira o e-mail.",
       whatsapp: "Confira o WhatsApp, com DDD.",
-      cargo: "Escreva o seu cargo.",
-      nivel: "Escolha o seu nível.",
       empresa: "Escreva o nome da empresa.",
-      area: "Escolha a área.",
-      tamanhoTime: "Escolha o tamanho do time.",
       perfis: "Informe o Instagram ou o LinkedIn (um endereço válido).",
       problema: "Descreva o problema em pelo menos 20 caracteres e no máximo 600.",
       regulamento: "Para se inscrever, aceite o regulamento.",
@@ -2842,140 +2803,107 @@ export const bolsas = {
     eyebrow: "Dúvidas",
     titulo: "Perguntas frequentes",
     itens: [
-      { pergunta: "A inscrição é paga?", resposta: "Não. A inscrição é gratuita, não exige compra e não exige seguir nenhum perfil." },
-      { pergunta: "Preciso postar o vídeo nas redes?", resposta: "Não. Post público e link privado valem igual na nota." },
+      { pergunta: "A inscrição é paga?", resposta: "Não. A inscrição é gratuita e não exige compra." },
+      {
+        pergunta: "Preciso seguir a Academy e publicar o post?",
+        resposta: "Sim, os dois entram nos critérios de seleção: seguir a @iagenticsacademy no Instagram e publicar o post “Eu estou participando do Desafio Prova Real”, no Instagram ou no LinkedIn. A IAgentics Academy disponibiliza o post editável.",
+      },
       {
         pergunta: "Vou pagar alguma coisa se for selecionado?",
-        resposta: `Não durante a bolsa. Ao aceitar, você informa seus dados de cobrança e a assinatura fica criada com o preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses. A primeira cobrança só vem depois dos 30 dias da bolsa. Se não quiser continuar, é só cancelar antes pelo WhatsApp ou por e-mail, sem custo.`,
+        resposta: `Não. A bolsa são 30 dias gratuitos. Depois, você recebe um voucher para assinar a plataforma por ${PRECO_FUNDADOR} por mês durante 12 meses, se quiser continuar. A assinatura só começa se você usar o voucher.`,
       },
       {
         pergunta: "E se eu não for selecionado?",
-        resposta: `Você recebe por e-mail a sua nota em cada critério, um retorno sobre o vídeo e o preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses, para assinar em até 7 dias. Os 20 primeiros depois dos selecionados ficam na lista de espera.`,
+        resposta: `Você recebe por e-mail, até 10 de janeiro de 2027, um voucher exclusivo para se cadastrar na plataforma por ${PRECO_FUNDADOR} por mês durante 12 meses. Ele vale por 15 dias.`,
       },
       {
-        pergunta: "E se eu não fizer os posts?",
-        resposta: "Quem não publicar os posts das semanas 1 e 2 até 1º de dezembro perde o acesso, e a vaga vai para a lista de espera. A regra está no termo de adesão.",
+        pergunta: "Quando sai o resultado?",
+        resposta: "Em 24 de dezembro de 2026, por e-mail para todos os inscritos e em post nas redes da IAgentics Academy. O prazo de inscrição, 5 de dezembro às 23h59, não é prorrogado.",
       },
       {
-        pergunta: "Como as 50 vagas são divididas?",
-        resposta:
-          "30 vagas para praticantes (analistas, compradores e coordenadores), 10 para gestores (gerentes e diretores) e 10 para vozes da área (professores, criadores de conteúdo e líderes de comunidade). Grupo sem candidatos com nota 60 ou mais cede a vaga para o próximo da lista geral. No máximo 2 bolsistas por empresa. Empate se resolve pela nota em clareza do problema e depois pela data de inscrição. Os 20 seguintes formam a lista de espera.",
+        pergunta: "Por que o post leva #publi?",
+        resposta: "Como o post traz uma contrapartida, a regra das redes pede a identificação de parceria paga. Use a ferramenta de parceria paga da rede ou escreva #publi no começo da legenda.",
       },
       {
-        pergunta: "Os posts da bolsa precisam ser identificados?",
-        resposta: "Sim. Como o acesso é dado em troca dos posts, todo post leva a identificação de parceria paga da rede (ou #publi no começo da legenda) e marca a IAgentics Academy.",
-      },
-      {
-        pergunta: "O que acontece no fim dos 30 dias?",
-        resposta: "Os 3 maiores ganhos medidos, em percentual do tempo ou do custo inicial, ganham vaga na Imersão de janeiro. Todos que concluírem recebem o certificado de conclusão da turma fundadora.",
+        pergunta: "Quando começa e termina a bolsa?",
+        resposta: "A bolsa dura 30 dias, de 2 de janeiro a 2 de fevereiro de 2027. No começo, você recebe a política e o período de uso e se cadastra na plataforma.",
       },
       { pergunta: "Errei um dado na inscrição. E agora?", resposta: "Responda o e-mail de confirmação contando o que corrigir. Cada e-mail vale uma inscrição." },
     ],
   },
   regulamentoPagina: {
     meta: {
-      titulo: "Regulamento do Desafio das 50 Bolsas | IAgentics Academy",
-      descricao: "As regras do processo seletivo do Desafio das 50 Bolsas da IAgentics Academy: quem pode participar, etapas, critérios, cotas, a bolsa e o uso dos dados.",
+      titulo: "Regulamento do Desafio Prova Real | IAgentics Academy",
+      descricao: "As regras do Desafio Prova Real da IAgentics Academy: quem pode participar, inscrição, critérios de seleção, resultado, a bolsa e o uso dos dados.",
     },
-    titulo: "Regulamento do Desafio das 50 Bolsas",
-    versao: "Versão de 3 de novembro de 2026",
+    titulo: "Regulamento do Desafio Prova Real",
+    versao: "Versão de 18 de novembro de 2026",
     voltar: "Voltar para o desafio",
   },
   regulamento: [
     {
       titulo: "1. O desafio",
       paragrafos: [
-        "O Desafio das 50 Bolsas é um processo seletivo de bolsas de estudo por mérito, organizado pela IAgentics LTDA (CNPJ 56.920.339/0001-60), responsável pela IAgentics Academy. Não há sorteio, compra nem pagamento para participar, e não é exigido seguir nenhum perfil.",
-        "São oferecidas 50 bolsas de 30 dias de acesso à plataforma da IAgentics Academy, de 18 de novembro a 17 de dezembro de 2026.",
+        "O Desafio Prova Real é um processo seletivo de bolsas de estudo organizado pela IAgentics LTDA (CNPJ 56.920.339/0001-60), responsável pela IAgentics Academy. Não há compra nem pagamento para participar, e as bolsas são concedidas pelos critérios da seção 4, sem sorteio.",
+        "São oferecidas 50 bolsas de 30 dias de acesso à plataforma da IAgentics Academy, de 2 de janeiro a 2 de fevereiro de 2027.",
       ],
     },
     {
       titulo: "2. Quem pode participar",
       paragrafos: [
-        "Pessoas com 18 anos ou mais que trabalham em Compras, Supply, Vendas, Fiscal, Finanças ou Inteligência de Mercado, com perfil público no Instagram ou no LinkedIn. Cada pessoa pode se inscrever uma vez, com um e-mail.",
+        "Pessoas com 18 anos ou mais, com perfil público no Instagram ou no LinkedIn. Cada pessoa pode se inscrever uma vez, com um e-mail.",
       ],
     },
     {
       titulo: "3. Inscrição",
       paragrafos: [
-        "De 5 a 11 de novembro de 2026, até 23h59 (horário de Brasília), pelo formulário em iagentics.com.br/bolsas. A inscrição pede nome, e-mail, WhatsApp, cargo, nível, empresa, área, tamanho do time, perfil no Instagram ou no LinkedIn e a descrição do problema que a pessoa quer resolver em 30 dias.",
+        "De 23 de novembro a 5 de dezembro de 2026, até 23h59 (horário de Brasília), pelo formulário em iagentics.com.br/bolsas. A inscrição pede nome, empresa, e-mail, WhatsApp, perfil no Instagram ou no LinkedIn e a resposta à pergunta: qual problema do seu dia a dia você quer resolver com IA e/ou métodos ensinados na plataforma em 30 dias.",
+        "O prazo de inscrição não é prorrogado.",
       ],
     },
     {
-      titulo: "4. Vídeo de entrada",
+      titulo: "4. Critérios de seleção",
       paragrafos: [
-        "Até 15 de novembro de 2026, às 23h59, cada inscrito pode enviar um vídeo de até 60 segundos apresentando o problema, pelo link pessoal recebido por e-mail. Inscrição sem vídeo não é avaliada.",
-        "O vídeo pode ser um post público ou um link privado. As duas formas valem igual na avaliação; postar não dá ponto extra. O vídeo não deve mostrar dado confidencial da empresa, de clientes ou de fornecedores.",
+        "A IAgentics Academy avalia cada inscrição em quatro critérios: (a) clareza do problema; (b) entendimento de como resolvê-lo em 30 dias; (c) seguir a página @iagenticsacademy no Instagram; (d) publicar, no Instagram ou no LinkedIn, o post “Eu estou participando do Desafio Prova Real”, com a identificação de parceria paga da rede ou #publi no começo da legenda, por haver contrapartida.",
+        "Os critérios (a) e (b) são avaliados pela resposta da inscrição; os critérios (c) e (d), pelo perfil público do candidato. Recebem a bolsa os 50 inscritos com melhor avaliação. O empate se resolve pela data de inscrição.",
       ],
     },
     {
-      titulo: "5. Avaliação",
+      titulo: "5. Resultado",
       paragrafos: [
-        "Dois avaliadores da IAgentics Academy dão, cada um por conta própria, uma nota de 0 a 100 nos critérios: clareza do problema (30), potencial de aplicação em 30 dias (25), comunicação no vídeo (20), encaixe no público (15; Compras ou Supply valem 15 e outras áreas de negócio valem 8) e constância de presença (10). Vale a média das duas notas. Diferença de mais de 20 pontos entre os avaliadores leva o caso a uma conversa entre eles. Número de seguidores não entra na nota.",
+        "O resultado sai em 24 de dezembro de 2026, por e-mail para todos os inscritos e em post nas redes da IAgentics Academy. Nome e foto de bolsistas só são divulgados com a autorização marcada na inscrição.",
       ],
     },
     {
-      titulo: "6. Cotas, desempate e lista de espera",
+      titulo: "6. A bolsa",
       paragrafos: [
-        "As vagas são preenchidas primeiro pelas cotas: 30 para praticantes (analistas, compradores e coordenadores), 10 para gestores (gerentes e diretores) e 10 para vozes da área (professores, criadores de conteúdo e líderes de comunidade); depois, pela nota. Grupo sem candidatos com nota mínima de 60 cede a vaga ao próximo da lista geral. No máximo 2 bolsistas por empresa.",
-        "Empate se resolve pela nota em clareza do problema e, depois, pela data de inscrição. Os 20 candidatos seguintes formam a lista de espera.",
+        "A bolsa vai de 2 de janeiro a 2 de fevereiro de 2027. Os selecionados recebem por e-mail a política e o período de uso, informam os dados necessários e se cadastram na plataforma. A IAgentics Academy acompanha o uso da plataforma e envia mensagens de incentivo durante o período.",
       ],
     },
     {
-      titulo: "7. Resultado",
+      titulo: "7. Preço de fundador",
       paragrafos: [
-        "O resultado sai em 17 de novembro de 2026, às 19h, numa live, e no mesmo momento por e-mail para todos os inscritos. Nome e foto de bolsistas só são divulgados com a autorização marcada na inscrição.",
-        "Os selecionados têm 48 horas para aceitar a bolsa e o termo de adesão. Sem aceite no prazo, a vaga vai para a lista de espera.",
+        `Terminada a bolsa, o bolsista recebe um voucher de assinatura da plataforma por ${PRECO_FUNDADOR} por mês durante 12 meses; depois, vale o preço público da assinatura, com aviso por e-mail antes. A assinatura só começa se o bolsista usar o voucher.`,
+        `Os inscritos não selecionados recebem, por e-mail enviado até 10 de janeiro de 2027, um voucher exclusivo com o mesmo preço, ${PRECO_FUNDADOR} por mês durante 12 meses, para se cadastrar na plataforma. O voucher vale por 15 dias.`,
       ],
     },
     {
-      titulo: "8. A bolsa e o preço de fundador",
+      titulo: "8. Depoimentos e uso de imagem",
       paragrafos: [
-        `Ao aceitar a bolsa, o bolsista informa seus dados de cobrança e fica com a assinatura da plataforma criada no preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses; depois, vale o preço público da assinatura, com aviso por e-mail antes. A primeira cobrança vence depois dos 30 dias da bolsa. Quem cancelar antes desse vencimento, pelo WhatsApp ou por e-mail, não paga nada.`,
-        `Os inscritos não selecionados recebem o mesmo preço de fundador, ${PRECO_FUNDADOR} por mês durante 12 meses, para assinar em até 7 dias depois do resultado.`,
+        "Depoimentos reais dos bolsistas podem ser publicados nas redes da IAgentics Academy e da IAgentics. Nome, foto de perfil e depoimento só são usados com a autorização marcada na inscrição.",
       ],
     },
     {
-      titulo: "9. Compromissos do bolsista",
+      titulo: "9. Dados pessoais",
       paragrafos: [
-        "Durante os 30 dias, o bolsista trabalha o problema descrito na inscrição e publica quatro posts, um por semana, nos prazos de 24/11, 01/12, 08/12 e 15/12. Por haver troca entre o acesso e os posts, todo post leva a identificação de parceria paga da rede ou #publi no começo da legenda, e marca a IAgentics Academy.",
-        "Quem não publicar os posts das semanas 1 e 2 até 1º de dezembro perde o acesso, e a vaga vai para a lista de espera, com 30 dias completos a partir da chamada.",
-        "Os 3 maiores ganhos medidos, em percentual do tempo ou do custo inicial, ganham vaga na Imersão de janeiro de 2027. Todos que concluírem recebem certificado de conclusão da turma fundadora.",
+        "Os dados da inscrição são usados para avaliar a candidatura e falar com o candidato sobre ela. Comunicações da IAgentics Academy depois do desafio, a entrada no grupo exclusivo de WhatsApp e o uso de nome e imagem na divulgação dependem de autorizações separadas, opcionais. O tratamento segue a política de privacidade em iagentics.com.br/privacidade.",
       ],
     },
     {
-      titulo: "10. Dados pessoais",
-      paragrafos: [
-        "Os dados da inscrição são usados para avaliar a candidatura e falar com o candidato sobre ela. Contato comercial depois do desafio e uso de nome e imagem na divulgação dependem de autorizações separadas, opcionais. Vídeos enviados por link privado são usados só na seleção. O tratamento segue a política de privacidade em iagentics.com.br/privacidade.",
-      ],
-    },
-    {
-      titulo: "11. Disposições gerais",
+      titulo: "10. Disposições gerais",
       paragrafos: [
         "Dúvidas e casos não previstos são resolvidos pela IAgentics Academy pelo e-mail contato@iagentics.com.br.",
       ],
     },
   ],
-  video: {
-    meta: { titulo: "Envie seu vídeo | Desafio das 50 Bolsas" },
-    titulo: "Envie o seu vídeo de entrada",
-    ola: (nome: string) => `Olá, ${nome}.`,
-    lead: "Cole aqui o link do vídeo de até 60 segundos. Vale post público (Instagram ou LinkedIn) ou link privado (Google Drive ou YouTube não listado). Você pode trocar o link até o prazo.",
-    prazo: "Prazo: 15 de novembro de 2026, às 23h59.",
-    rotulo: "Link do vídeo",
-    atual: "Link enviado:",
-    botao: "Enviar link",
-    trocar: "Trocar link",
-    enviando: "Enviando…",
-    ok: "Recebemos o seu vídeo. O resultado sai em 17 de novembro, às 19h.",
-    encerrado: "O prazo para enviar o vídeo terminou em 15 de novembro.",
-    invalido: "Este link não é válido. Use o link que chegou no e-mail da inscrição.",
-    erros: {
-      url: "Cole um link do Instagram, do LinkedIn, do YouTube ou do Google Drive, começando com https://.",
-      prazo: "O prazo para enviar o vídeo terminou.",
-      token: "Este link não é válido. Use o link que chegou no e-mail da inscrição.",
-      limite: "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.",
-      falha: "Não conseguimos registrar agora. Tente de novo em instantes.",
-    } as Record<string, string>,
-  },
 };
