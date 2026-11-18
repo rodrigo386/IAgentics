@@ -2934,3 +2934,206 @@ export const bolsas = {
     },
   ],
 };
+
+/**
+ * Calculadora de custo real do fornecedor na Reforma Tributária (2026-11-18,
+ * proposta A aprovada pelo Rodrigo). Hoje em /preview/reforma-tributaria-compras,
+ * esperando aprovação e a revisão de um contador. As regras e os números moram
+ * em lib/reforma.ts; os textos que citam número usam as constantes de lá.
+ * Texto meu, nas regras de texto do Rodrigo (sem travessão, sem os termos
+ * proibidos): o teste em lib/reforma.test.ts confere.
+ */
+export const reforma = {
+  meta: {
+    titulo: "Calculadora da Reforma Tributária para Compras | IAgentics",
+    descricao:
+      "Compare cotações de fornecedores do Simples e do regime regular pelo custo líquido de IBS e CBS, de 2027 a 2033. Grátis, com fontes oficiais.",
+  },
+  capa: {
+    kicker: "Reforma Tributária · Compras · IBS e CBS",
+    titulo: "O fornecedor mais barato na nota continua o mais barato depois do crédito?",
+    lead: "A partir de 2027, o crédito de IBS e CBS entra na conta de toda cotação. Compare até quatro fornecedores pelo custo líquido, ano a ano da transição, e veja quanto o fornecedor do Simples precisa cobrar para empatar.",
+    fatos: [
+      { valor: "2027", rotulo: "CBS cheia" },
+      { valor: "4", rotulo: "cotações lado a lado" },
+      { valor: "0", rotulo: "cadastro para calcular" },
+    ],
+    cta: "Comparar cotações",
+  },
+  calculadora: {
+    titulo: "Compare as cotações",
+    instrucao:
+      "Use o valor total da nota de cada fornecedor, o que sai do caixa. A conta considera só IBS e CBS; ICMS, ISS, IPI e Imposto Seletivo ficam de fora.",
+    ano: "Ano da compra",
+    reducao: "Redução de alíquota do item",
+    reducoes: { 0: "Sem redução", 30: "Redução de 30%", 60: "Redução de 60%", 100: "Alíquota zero" },
+    reducaoNota: "Cesta básica, saúde, educação e outros itens têm redução prevista na LC 214. Na dúvida, deixe sem redução.",
+    comprador: "Minha empresa apura IBS e CBS no regime regular e a compra é para a atividade da empresa",
+    compradorNota: "Desmarque se a sua empresa é do Simples ou se a compra é de uso pessoal: nesses casos não há crédito.",
+    comCredito: "Comprador no regime regular, com crédito de IBS e CBS",
+    semCredito: "Comprador sem crédito de IBS e CBS (empresa do Simples ou uso pessoal)",
+    cotacao: "Cotação",
+    nome: "Fornecedor",
+    regime: "Regime do fornecedor",
+    regimes: {
+      regular: "Regime regular (Real ou Presumido)",
+      simples_fora: "Simples, com IBS e CBS por fora do DAS",
+      simples_das: "Simples, com tudo no DAS",
+    },
+    valor: "Total da nota (R$)",
+    percentual: "IBS + CBS do Simples na nota (%)",
+    percentualNota: "Peça ao fornecedor ou veja na nota. Em branco, a conta usa zero.",
+    adicionar: "Adicionar cotação",
+    remover: "Remover",
+    vezes: "Quantas vezes por ano você faz essa compra (opcional)",
+    avancado: "Alíquotas usadas na conta",
+    cbsRef: "CBS de referência (%)",
+    ibsRef: "IBS de referência (%)",
+    avancadoNota:
+      "Os valores vêm preenchidos com o número oficial mais recente. Quando o Senado fixar a CBS ou o Comitê Gestor fixar o IBS, mude aqui.",
+    resultadoTitulo: "Resultado",
+    taxa: "IBS + CBS no ano escolhido",
+    colunas: { fornecedor: "Fornecedor", nota: "Total da nota", credito: "Crédito", liquido: "Custo líquido", diferenca: "Acima da melhor" },
+    melhor: "Melhor custo líquido",
+    empate: "Para empatar com a melhor do regime regular, a nota deste fornecedor teria de ser de até",
+    semPercentual: "Sem o percentual do Simples, o crédito ficou em zero.",
+    anual: "Diferença entre a melhor e a pior no ano",
+    preencha: "Preencha o total da nota de pelo menos uma cotação para ver o resultado.",
+  },
+  lead: {
+    titulo: "Receba o comparativo e o checklist por e-mail",
+    texto:
+      "Mandamos este cenário por e-mail, com o checklist de sete perguntas para fazer ao fornecedor do Simples antes de fechar a próxima compra.",
+    nome: "Nome",
+    email: "E-mail de trabalho",
+    empresa: "Empresa",
+    cargo: "Cargo",
+    opcional: "opcional",
+    consentimento:
+      "Quero receber o comparativo por e-mail e autorizo a IAgentics a falar comigo sobre Compras e Reforma Tributária. Li a",
+    privacidade: "política de privacidade",
+    avisar: "Também quero um aviso quando o Senado fixar a alíquota da CBS e o Comitê Gestor fixar a do IBS",
+    enviar: "Enviar para o meu e-mail",
+    enviando: "Enviando",
+    ok: "Pronto. O comparativo está a caminho do seu e-mail.",
+    okSemEmail: "Recebemos o seu pedido. O e-mail não saiu agora, e a nossa equipe manda em seguida.",
+    erros: {
+      nome: "Escreva o seu nome.",
+      email: "Confira o e-mail.",
+      empresa: "Escreva o nome da empresa.",
+      consentimento: "Marque a autorização para receber o comparativo.",
+      cenario: "Preencha o total da nota de ao menos uma cotação.",
+      limite: "Muitos envios deste endereço. Tente de novo em uma hora.",
+      falha: "Não conseguimos enviar agora. Tente de novo em instantes.",
+    },
+  },
+  checklist: {
+    titulo: "Sete perguntas para o fornecedor do Simples",
+    itens: [
+      "Você vai recolher IBS e CBS dentro do DAS ou por fora, no regime regular? Por fora, o crédito é integral (LC 214, art. 41, § 3º).",
+      "Quanto de IBS e CBS a sua nota vai informar, em percentual? É esse valor que vira crédito para nós (art. 47, § 9º, II).",
+      "O preço que você cotou já considera a mudança de 2027, ou vai mudar em janeiro?",
+      "Se o seu regime mudar no meio do contrato, como fica o preço?",
+      "A nota vai sair com a classificação tributária (cClassTrib) do item preenchida? Sem ela, o crédito pode travar.",
+      "O pagamento vai passar pelo split payment? O crédito depende do tributo pago (art. 47).",
+      "Algum item tem redução de alíquota? Se tiver, qual o fundamento na LC 214?",
+    ],
+  },
+  guia: [
+    {
+      id: "o-que-muda",
+      titulo: "O que muda na cotação",
+      paragrafos: [
+        "Com o IBS e a CBS, a empresa no regime regular recupera como crédito quase todo o imposto que paga nas compras para a atividade dela (LC 214, art. 47). O preço que importa passa a ser o custo líquido: o total da nota menos o crédito.",
+        "Duas cotações com o mesmo preço de nota podem ter custos líquidos diferentes, porque o crédito depende do regime do fornecedor. É aí que o fornecedor do Simples Nacional entra na conta.",
+      ],
+    },
+    {
+      id: "simples",
+      titulo: "Fornecedor do Simples: três situações",
+      paragrafos: [
+        "Fornecedor do Simples que recolhe tudo no DAS passa crédito só do IBS e da CBS que ele mesmo paga no Simples (art. 47, § 9º, II). Esse valor costuma ser bem menor que o do regime regular, então o preço de nota dele precisa ser mais baixo para empatar.",
+        "Fornecedor do Simples que escolhe recolher IBS e CBS pelo regime regular (art. 41, § 3º) passa crédito integral, como uma empresa do Lucro Real ou do Presumido. Para a calculadora, ele entra como regime regular.",
+        "Se a sua empresa também é do Simples, ou se a compra é de uso pessoal (art. 57), não há crédito: compare pelo total da nota.",
+      ],
+    },
+    {
+      id: "calendario",
+      titulo: "Calendário de 2027 a 2033",
+      paragrafos: [
+        "Em 2026 o IBS e a CBS são cobrados em fase de teste (0,1% e 0,9%, arts. 343 e 346), compensados com PIS e Cofins. A conta muda de verdade em 2027, quando a CBS entra cheia, menos 0,1 ponto percentual (art. 347), e o IBS fica em 0,1% (art. 344). De 2029 a 2032 o IBS sobe enquanto o ICMS e o ISS saem; em 2033 os dois tributos novos estão inteiros.",
+      ],
+    },
+    {
+      id: "quando-nao",
+      titulo: "Quando o crédito não vem",
+      paragrafos: [
+        "O crédito depende do tributo pago pelo fornecedor (art. 47), por isso o split payment importa: o imposto é separado no pagamento. Compras de uso ou consumo pessoal não dão crédito (art. 57). E nota sem a classificação tributária certa pode travar o crédito até ser corrigida.",
+      ],
+    },
+  ],
+  tabela: {
+    titulo: "Alíquotas usadas na calculadora",
+    colunas: { ano: "Ano", cbs: "CBS", ibs: "IBS", soma: "Soma" },
+    nota: "Estimativas. De 2029 a 2032, o IBS proporcional à saída do ICMS e do ISS. Os números finais dependem do Senado e do Comitê Gestor do IBS.",
+  },
+  faqTitulo: "Perguntas frequentes",
+  faq: [
+    {
+      pergunta: "Fornecedor do Simples vai ficar mais caro com a Reforma Tributária?",
+      resposta:
+        "O preço de nota não muda por causa da Reforma, mas o crédito que ele passa é menor quando recolhe tudo no DAS. Para quem compra no regime regular, isso aumenta o custo líquido. A calculadora mostra quanto a nota dele precisa baixar para empatar.",
+    },
+    {
+      pergunta: "Qual a alíquota de IBS e CBS?",
+      resposta:
+        "A CBS de referência proposta pelo TCU para 2027 é de 11,3%, e o Senado tem até 15 de dezembro de 2026 para fixá-la. O IBS cheio só vale em 2033; o Comitê Gestor usa 18,7% como estimativa. A calculadora deixa você trocar os dois números.",
+    },
+    {
+      pergunta: "Compra de fornecedor do Simples dá crédito de IBS e CBS?",
+      resposta:
+        "Dá, no valor do IBS e da CBS devidos no Simples (LC 214, art. 47, § 9º, II). Se o fornecedor optar por recolher os dois pelo regime regular, o crédito é integral.",
+    },
+    {
+      pergunta: "A calculadora considera ICMS e ISS?",
+      resposta:
+        "Não. Ela compara só IBS e CBS. Até 2032, ICMS e ISS continuam existindo e têm regras próprias de crédito; para a decisão completa, some esses efeitos ou fale com o seu contador.",
+    },
+    {
+      pergunta: "Os dados que eu digito ficam gravados?",
+      resposta:
+        "A conta roda no seu navegador e nada é enviado enquanto você calcula. Só quando você pede o comparativo por e-mail é que o cenário e o seu contato chegam até nós.",
+    },
+  ],
+  fontes: {
+    titulo: "Fontes",
+    aviso:
+      "Estimativa para apoiar a decisão de compra, sem valor de parecer fiscal. Confira o seu caso com a contabilidade da empresa.",
+    itens: [
+      { rotulo: "Lei Complementar nº 214/2025 (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" },
+      {
+        rotulo: "TCU calcula alíquota de referência de 11,3% para a CBS (28/10/2026)",
+        url: "https://portal.tcu.gov.br/imprensa/noticias/tcu-calcula-aliquota-de-referencia-de-113-para-novo-tributo-sobre-consumo",
+      },
+      {
+        rotulo: "Resolução CGIBS nº 14/2026 (alíquota de referência estimada do IBS)",
+        url: "https://www.cgibs.gov.br/upload/arquivos/202607/31144942-resoluc-ao-cgibs-n-14-de-29-de-julho-de-2026-proposta-percentual-ibs-cgibs-2027.pdf",
+      },
+      { rotulo: "Cronograma da Reforma Tributária (TCU)", url: "https://sites.tcu.gov.br/recursos/reforma-tributaria/Painel%20da%20Reforma%20Tribut%C3%A1ria_Cronograma_v5.pdf" },
+      { rotulo: "Calculadoras da Reforma Tributária da Receita Federal (GitHub)", url: "https://github.com/ReceitaFederal" },
+    ],
+  },
+  nexo: {
+    titulo: "Quer o custo líquido em todo mapa de cotação?",
+    texto: "O Nexo compara as propostas dos fornecedores no mapa de cotação. Fale com a gente para ver o crédito de IBS e CBS entrar nessa conta.",
+    cta: "Conhecer o Nexo",
+  },
+  email: {
+    assunto: "Seu comparativo de cotações na Reforma Tributária",
+    ola: "Olá",
+    intro: "Este é o comparativo que você montou na calculadora da IAgentics.",
+    cenario: "Cenário",
+    voltar: "Refazer a conta",
+    rodape: "Estimativa sem valor de parecer fiscal, com as alíquotas informadas no cenário.",
+  },
+};

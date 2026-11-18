@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
 import Link from "next/link";
+import { listarLeads } from "@/lib/reforma-leads";
+import type { Cenario } from "@/lib/reforma";
 import { Cartao } from "@/components/admin/Cartao";
 import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
 import { cancelarAssinaturaAdmin, liberarAcesso, liberarAcessoAssinatura, revogarAcessoAssinatura } from "./acoes";
@@ -44,7 +46,7 @@ function variacao(atual: number, anterior: number): string {
 export default async function PaginaAdmin({ searchParams }: { searchParams: Promise<{ vendas?: string }> }) {
   const modo = (await searchParams).vendas === "teste" ? "teste" : "real";
 
-  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas, listaAssinaturas] =
+  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas, listaAssinaturas, leads] =
     await Promise.all([
       resumoVisitas(),
       visitasPorDia(30),
@@ -58,6 +60,7 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
       listarVendas(modo),
       resumoVendas(modo),
       listarAssinaturas(),
+      listarLeads(),
     ]);
 
   const pico = Math.max(1, ...porDia.map((d) => d.visitas));
@@ -425,6 +428,62 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
         )}
 
         <p className="max-w-[70ch] text-xs text-fg-muted">{t.vendas.lgpd}</p>
+      </section>
+
+      <section className="flex flex-col gap-5 border-t border-line pt-10">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.reforma.titulo}</h2>
+          {leads.length > 0 ? (
+            <a
+              href="/admin/leads-reforma.csv"
+              className="rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-accent-on transition-colors hover:bg-accent-hover"
+            >
+              {t.reforma.exportar}
+            </a>
+          ) : null}
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Cartao rotulo={t.reforma.total} valor={numero.format(leads.length)} />
+          <Cartao rotulo={t.reforma.avisar} valor={numero.format(leads.filter((l) => l.avisarAliquotasEm).length)} />
+          <Cartao rotulo={t.reforma.semEmail} valor={numero.format(leads.filter((l) => !l.emailEnviadoEm).length)} />
+        </div>
+        {leads.length === 0 ? (
+          <p className="text-fg-muted">{t.reforma.nenhum}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-line text-left text-fg-muted">
+                  <th className="py-2 font-normal">{t.reforma.colunas.nome}</th>
+                  <th className="py-2 font-normal">{t.reforma.colunas.empresa}</th>
+                  <th className="py-2 font-normal">{t.reforma.colunas.email}</th>
+                  <th className="py-2 font-normal">{t.reforma.colunas.cenario}</th>
+                  <th className="w-40 py-2 text-right font-normal">{t.reforma.colunas.data}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((l) => {
+                  const c = l.cenario as Cenario;
+                  return (
+                    <tr key={l.id} className="border-b border-line/60">
+                      <td className="py-2 pr-4 text-fg">
+                        {l.nome}
+                        {l.cargo ? <span className="block text-xs text-fg-muted">{l.cargo}</span> : null}
+                      </td>
+                      <td className="py-2 pr-4 text-fg">{l.empresa}</td>
+                      <td className="py-2 pr-4 text-fg-muted">{l.email}</td>
+                      <td className="py-2 pr-4 text-fg-muted">
+                        {c.ano} · {t.reforma.cotacoes(c.cotacoes.length)}
+                      </td>
+                      <td className="py-2 text-right tabular-nums text-fg-muted">{dataHora.format(l.criadoEm)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="max-w-[70ch] text-xs text-fg-muted">{t.reforma.lgpd}</p>
       </section>
 
       <section className="flex flex-col gap-5 border-t border-line pt-10">

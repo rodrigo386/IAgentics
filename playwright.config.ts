@@ -29,6 +29,7 @@ export default defineConfig({
         ASAAS: "chave-falsa-do-e2e",
         ASSINATURA_LIMITE: "1000",
         DIAGNOSE_LIMITE: "1000",
+        REFORMA_LIMITE: "1000",
         /* Desafio Prova Real (2026-11-03; datas novas em 2026-11-18): relógio parado dentro da janela
            de inscrição, e o envio de e-mail desligado de vez. A inscrição
            manda e-mail do SERVIDOR para o endereço digitado, e o e2e não pode

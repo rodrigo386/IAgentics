@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, date, integer, jsonb, pgTable, primaryKey, smallint, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, date, index, integer, jsonb, pgTable, primaryKey, smallint, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Schema do site público.
@@ -268,4 +268,31 @@ export const bolsasInscricoes = pgTable(
       sql`${t.status} in ('inscrito', 'selecionado', 'espera', 'nao_selecionado', 'aceitou', 'perdeu')`,
     ),
   ],
+);
+
+/**
+ * Contatos da calculadora da Reforma Tributária (2026-11-18, migração 0019).
+ *
+ * Quem pede o comparativo por e-mail. `cenario` guarda o que a pessoa
+ * calculou (sem dado pessoal), porque é o que a equipe usa para puxar a
+ * conversa. Sem índice único no e-mail: a mesma pessoa pode pedir vários
+ * cenários, e cada pedido é um sinal de interesse.
+ * `avisar_aliquotas_em` é o aviso opcional de quando o Senado e o Comitê
+ * Gestor fixarem as alíquotas; `email_enviado_em` diz se o comparativo saiu.
+ */
+export const leadsReforma = pgTable(
+  "leads_reforma",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
+    nome: text("nome").notNull(),
+    email: text("email").notNull(),
+    empresa: text("empresa").notNull(),
+    cargo: text("cargo"),
+    cenario: jsonb("cenario").notNull(),
+    consentimentoEm: timestamp("consentimento_em", { withTimezone: true }).notNull(),
+    avisarAliquotasEm: timestamp("avisar_aliquotas_em", { withTimezone: true }),
+    emailEnviadoEm: timestamp("email_enviado_em", { withTimezone: true }),
+  },
+  (t) => [index("leads_reforma_email").on(sql`lower(${t.email})`)],
 );

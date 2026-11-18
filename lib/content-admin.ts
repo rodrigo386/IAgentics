@@ -132,6 +132,18 @@ export const admin = {
     lgpd: "Dados pessoais coletados com consentimento para compartilhamento com o Pecege. O CPF não fica aqui: está no painel do Asaas.",
   },
 
+  reforma: {
+    titulo: "Calculadora da Reforma Tributária: contatos",
+    total: "Pedidos",
+    avisar: "Querem o aviso das alíquotas",
+    semEmail: "Sem e-mail enviado",
+    nenhum: "Ninguém pediu o comparativo ainda.",
+    exportar: "Exportar CSV",
+    colunas: { nome: "Nome", empresa: "Empresa", email: "E-mail", cenario: "Cenário", data: "Pedido" },
+    cotacoes: (n: number) => (n === 1 ? "1 cotação" : `${n} cotações`),
+    lgpd: "Dados pessoais coletados com consentimento para contato sobre Compras e Reforma Tributária. Trate a exportação com o mesmo cuidado.",
+  },
+
   lista: {
     titulo: "Lista de espera",
     total: "Inscritos",

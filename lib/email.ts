@@ -1,5 +1,6 @@
 import "server-only";
-import { site, diagnose, bolsas, PRECO_FUNDADOR } from "@/lib/content";
+import { site, diagnose, bolsas, reforma, PRECO_FUNDADOR } from "@/lib/content";
+import { calcular, pct, reais, type Cenario } from "@/lib/reforma";
 import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
 /**
@@ -79,11 +80,12 @@ function marcas(): string {
   return `<p style="margin:0 0 28px"><img src="${site.url}/email/marcas.png" width="532" alt="IAgentics, Pecege e Solution" style="display:block;width:100%;max-width:532px;height:auto;border:0"></p>`;
 }
 
-function moldura(conteudo: string): string {
+/** `comMarcas: false` tira a faixa IAgentics + Pecege + Solution (e-mail que não fala da plataforma). */
+function moldura(conteudo: string, comMarcas = true): string {
   return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f5f7;font-family:Arial,Helvetica,sans-serif;color:#131723">
 <div style="max-width:560px;margin:0 auto;padding:32px 20px">
 <div style="background:#ffffff;border-radius:12px;padding:32px 28px">
-${marcas()}
+${comMarcas ? marcas() : `<p style="margin:0 0 24px;font-size:20px;font-weight:bold;letter-spacing:-0.02em;color:#131723">IAgentics</p>`}
 ${conteudo}
 </div>
 <p style="font-size:12px;color:#5a6070;margin:24px 0 0;text-align:center">IAgentics · iagentics.com.br</p>
@@ -358,6 +360,81 @@ export function emailInscricaoBolsa(nome: string, opcoes: { grupo: boolean }) {
         (grupo ? paragrafo(e(grupo)) : "") +
         paragrafo(`Leia também o <a href="${linkRegulamento}" style="color:#7607e8;text-decoration:underline">regulamento</a>.`) +
         paragrafo(e(corrigir)),
+    ),
+  };
+}
+
+/**
+ * Comparativo da calculadora da Reforma Tributária (2026-11-18), enviado a quem
+ * pediu. A conta é refeita aqui com o mesmo código do navegador
+ * (lib/reforma.ts): o e-mail nunca repete um número que o servidor não calculou.
+ */
+export function emailReforma(nome: string, c: Cenario, url: string) {
+  const t = reforma;
+  const e = escapeHtml;
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const { taxa, resultados, diferencaAnual } = calcular(c);
+  const regime = (r: keyof typeof t.calculadora.regimes) => t.calculadora.regimes[r];
+  const cenario = [
+    `${t.calculadora.ano}: ${c.ano}`,
+    `${t.calculadora.taxa}: ${pct(taxa)}`,
+    t.calculadora.reducoes[c.reducao],
+    c.compradorCredita ? t.calculadora.comCredito : t.calculadora.semCredito,
+  ];
+  const linhasTexto = resultados.map(
+    (r) =>
+      `${r.nome} (${regime(r.regime)}): nota ${reais(r.valor)}, crédito ${reais(r.credito)}, custo líquido ${reais(r.liquido)}` +
+      (r.melhor ? ` (${t.calculadora.melhor})` : `, ${reais(r.acimaDaMelhor)} acima da melhor`) +
+      (r.empate !== null && !r.melhor ? `. ${t.calculadora.empate} ${reais(r.empate)}` : ""),
+  );
+  const td = 'style="padding:8px 6px;border-bottom:1px solid #e3e5ea;font-size:14px;vertical-align:top"';
+  const tabela =
+    `<table role="presentation" style="width:100%;border-collapse:collapse;margin:0 0 20px">` +
+    `<tr>${[t.calculadora.colunas.fornecedor, t.calculadora.colunas.nota, t.calculadora.colunas.credito, t.calculadora.colunas.liquido]
+      .map((h) => `<th align="left" style="padding:8px 6px;border-bottom:2px solid #131723;font-size:12px;text-transform:uppercase;color:#5a6070">${e(h)}</th>`)
+      .join("")}</tr>` +
+    resultados
+      .map(
+        (r) =>
+          `<tr><td ${td}><b>${e(r.nome)}</b>${r.melhor ? ` <span style="color:#7607e8">· ${e(t.calculadora.melhor)}</span>` : ""}<br><span style="color:#5a6070;font-size:12px">${e(regime(r.regime))}</span></td>` +
+          `<td ${td}>${reais(r.valor)}</td><td ${td}>${reais(r.credito)}</td><td ${td}><b>${reais(r.liquido)}</b></td></tr>`,
+      )
+      .join("") +
+    `</table>`;
+  const empates = resultados
+    .filter((r) => r.empate !== null && !r.melhor)
+    .map((r) => `${r.nome}: ${t.calculadora.empate.charAt(0).toLowerCase()}${t.calculadora.empate.slice(1)} ${reais(r.empate!)}.`);
+  const anual = diferencaAnual !== null ? `${t.calculadora.anual}: ${reais(diferencaAnual)}.` : null;
+  const p = (s: string) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:#3c4250">${s}</p>`;
+  const lista = `<ol style="margin:0 0 20px;padding-left:20px;font-size:14px;line-height:1.6;color:#3c4250">${t.checklist.itens.map((i) => `<li style="margin:0 0 6px">${e(i)}</li>`).join("")}</ol>`;
+  const botao = `<p style="margin:0 0 24px"><a href="${url}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${e(t.email.voltar)}</a></p>`;
+
+  return {
+    assunto: t.email.assunto,
+    texto: [
+      `${t.email.ola}, ${primeiroNome}.`,
+      t.email.intro,
+      `${t.email.cenario}:\n${cenario.join("\n")}`,
+      linhasTexto.join("\n"),
+      ...(anual ? [anual] : []),
+      `${t.checklist.titulo}:\n${t.checklist.itens.map((i, n) => `${n + 1}. ${i}`).join("\n")}`,
+      `${t.email.voltar}: ${url}`,
+      `${t.nexo.titulo} ${t.nexo.texto} ${site.url}/nexo`,
+      t.email.rodape,
+    ].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">${e(t.email.ola)}, ${e(primeiroNome)}.</p>` +
+        p(e(t.email.intro)) +
+        `<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#5a6070">${cenario.map(e).join("<br>")}</p>` +
+        tabela +
+        empates.map((s) => p(e(s))).join("") +
+        (anual ? p(`<b>${e(anual)}</b>`) : "") +
+        `<p style="margin:8px 0 10px;font-size:17px;font-weight:bold;color:#131723">${e(t.checklist.titulo)}</p>` +
+        lista +
+        botao +
+        p(`${e(t.nexo.titulo)} ${e(t.nexo.texto)} <a href="${site.url}/nexo" style="color:#7607e8">${e(t.nexo.cta)}</a>`) +
+        `<p style="margin:16px 0 0;font-size:12px;line-height:1.5;color:#5a6070">${e(t.email.rodape)}</p>`,
+      false,
     ),
   };
 }
