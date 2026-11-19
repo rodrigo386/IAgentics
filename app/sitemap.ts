@@ -14,6 +14,7 @@ const ARQUIVOS_DA_ROTA: Record<string, string[]> = {
   "/spend-lab": ["app/spend-lab", "components/sections/spend-lab"],
   "/diagnose-compras": ["app/diagnose-compras", "components/sections/diagnose"],
   "/reforma-tributaria-compras": ["app/reforma-tributaria-compras", "components/sections/reforma", "lib/reforma.ts"],
+  "/consulta-ncm-cclasstrib": ["app/consulta-ncm-cclasstrib", "components/sections/reforma/PacoteReforma.tsx", "lib/consulta-ncm.ts", "lib/receita/tabela-ncm.json"],
   "/bolsas": ["app/bolsas", "components/sections/bolsas"],
   "/privacidade": ["app/privacidade"],
 };

@@ -22,7 +22,7 @@ import { site, contact, privacidade } from "@/lib/content";
  * do índice por `robots: noindex` na própria página, e não por bloqueio no
  * robots.txt, senão o LinkedIn pararia de gerar a prévia ao compartilhar.
  */
-export const ROTAS_SITEMAP = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/bolsas", "/privacidade"] as const;
+export const ROTAS_SITEMAP = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/consulta-ncm-cclasstrib", "/bolsas", "/privacidade"] as const;
 
 /** Prioridade relativa dentro do site. A home lidera; /cursos vem logo atrás
  *  por ser a única página com conversão direta (assinatura). */
@@ -37,6 +37,8 @@ export const PRIORIDADE_SITEMAP: Record<string, number> = {
   "/diagnose-compras": 0.7,
   /* Ferramenta de captação (2026-11-19): entrada por busca de Reforma Tributária em Compras. */
   "/reforma-tributaria-compras": 0.7,
+  /* Consulta de NCM (2026-11-19): entrada por busca de "cClassTrib", "NCM redução IBS CBS". */
+  "/consulta-ncm-cclasstrib": 0.7,
   "/bolsas": 0.7,
   /* Baixa de propósito: é página de referência, não de entrada — mas precisa
      estar no índice, porque o Google já exibia essa URL (do site antigo, com

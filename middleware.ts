@@ -119,6 +119,7 @@ export const config = {
     "/spend-lab",
     "/diagnose-compras",
     "/reforma-tributaria-compras",
+    "/consulta-ncm-cclasstrib",
     "/bolsas",
     "/bolsas/regulamento",
     "/privacidade",

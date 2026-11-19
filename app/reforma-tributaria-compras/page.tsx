@@ -4,8 +4,9 @@ import { ArrowDown, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Calculadora } from "@/components/sections/reforma/Calculadora";
+import { PacoteReforma } from "@/components/sections/reforma/PacoteReforma";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { reforma } from "@/lib/content";
+import { consultaNcm, reforma } from "@/lib/content";
 import { artigoPorSlug } from "@/lib/artigos";
 import { ANOS, ROTA_REFORMA, aliquotasDoAno, pct } from "@/lib/reforma";
 import { faqJsonLd, ogDaPagina } from "@/lib/seo";
@@ -33,6 +34,7 @@ export default function Page() {
       <JsonLd dados={faqJsonLd(faq)} />
       <Nav />
       <main id="conteudo" className="pt-16">
+        <PacoteReforma atual="calculadora" />
         <section className="border-b border-line py-20 sm:py-24">
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
             <p className="hero-fade font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted" style={{ animationDelay: "40ms" }}>
@@ -75,6 +77,22 @@ export default function Page() {
         <section id="calculadora" className="scroll-mt-16 border-b border-line py-16 sm:py-24">
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
             <Calculadora />
+          </div>
+        </section>
+
+        <section className="border-b border-line bg-surface py-12 sm:py-14">
+          <div className="mx-auto flex max-w-[1400px] flex-col gap-6 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex max-w-[70ch] flex-col gap-2">
+              <h2 className="text-2xl font-medium tracking-[-0.03em] text-fg sm:text-3xl">{reforma.consulta.titulo}</h2>
+              <p className="leading-relaxed text-fg-muted">{reforma.consulta.texto}</p>
+            </div>
+            <Link
+              href={consultaNcm.rota}
+              className="group inline-flex shrink-0 items-center gap-2 self-start rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-[background-color,transform] duration-200 hover:bg-accent-hover active:scale-[0.98] lg:self-center"
+            >
+              <span className="whitespace-nowrap">{reforma.consulta.cta}</span>
+              <ArrowRight size={17} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </div>
         </section>
 

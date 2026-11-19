@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, CircleNotch, Plus, X } from "@phosphor-icons/react";
-import { reforma } from "@/lib/content";
+import { consultaNcm, reforma } from "@/lib/content";
 import {
   ANOS,
   CBS_REFERENCIA,
@@ -74,6 +74,13 @@ export function Calculadora() {
     };
   }, [ano, reducao, credita, cbsRef, ibsRef, vezes, linhas]);
 
+  /* A consulta de NCM manda a redução do item pelo endereço (?reducao=60).
+     Lida só depois de montar, para o HTML do servidor não divergir. */
+  useEffect(() => {
+    const r = Number(new URLSearchParams(window.location.search).get("reducao"));
+    if ((REDUCOES as readonly number[]).includes(r)) setReducao(r as Reducao);
+  }, []);
+
   const conta = cenario ? calcular(cenario) : null;
   const muda = (i: number, k: keyof Linha, v: string) => setLinhas((ls) => ls.map((q, j) => (j === i ? { ...q, [k]: v } : q)));
 
@@ -108,7 +115,12 @@ export function Calculadora() {
               ))}
             </select>
           </label>
-          <p className="text-sm text-fg-muted sm:col-span-2">{t.reducaoNota}</p>
+          <p className="text-sm text-fg-muted sm:col-span-2">
+            {t.reducaoNota}{" "}
+            <Link href={consultaNcm.rota} className="text-fg underline underline-offset-4">
+              {t.reducaoConsulta}
+            </Link>
+          </p>
         </div>
 
         <label className="flex items-start gap-3 border border-line p-4 text-fg">

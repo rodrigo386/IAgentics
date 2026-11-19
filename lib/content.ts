@@ -2973,6 +2973,7 @@ export const reforma = {
     reducao: "Redução de alíquota do item",
     reducoes: { 0: "Sem redução", 30: "Redução de 30%", 60: "Redução de 60%", 100: "Alíquota zero" },
     reducaoNota: "Cesta básica, saúde, educação e outros itens têm redução prevista na LC 214. Na dúvida, deixe sem redução.",
+    reducaoConsulta: "Consultar a redução pelo NCM do item.",
     comprador: "Minha empresa apura IBS e CBS no regime regular e a compra é para a atividade da empresa",
     compradorNota: "Desmarque se a sua empresa é do Simples ou se a compra é de uso pessoal: nesses casos não há crédito.",
     comCredito: "Comprador no regime regular, com crédito de IBS e CBS",
@@ -3141,6 +3142,11 @@ export const reforma = {
       { rotulo: "Calculadora oficial da Receita Federal para o regime regular (GitHub), usada para conferir a conta", url: "https://github.com/ReceitaFederal/calculadora-rtc-regime-regular" },
     ],
   },
+  consulta: {
+    titulo: "Não sabe se o item tem redução de IBS e CBS?",
+    texto: "Consulte pelo NCM: a tabela da Receita mostra o cClassTrib, a redução e a condição do anexo da LC 214, e volta para cá com a redução marcada.",
+    cta: "Consultar o NCM",
+  },
   nexo: {
     titulo: "Quer o custo líquido em todo mapa de cotação?",
     texto: "O Nexo compara as propostas dos fornecedores no mapa de cotação. Fale com a gente para ver o crédito de IBS e CBS entrar nessa conta.",
@@ -3155,3 +3161,111 @@ export const reforma = {
     rodape: "Estimativa sem valor de parecer fiscal, com as alíquotas informadas no cenário.",
   },
 };
+
+/**
+ * Consulta de NCM na Reforma Tributária (2026-11-19, pedido do Rodrigo: "siga
+ * com a consulta de NCM"). Dados da base da calculadora oficial da Receita
+ * (lib/receita/tabela-ncm.json, conferida em lib/consulta-ncm.test.ts). Texto
+ * meu, nas regras de texto do Rodrigo.
+ */
+export const consultaNcm = {
+  rota: "/consulta-ncm-cclasstrib",
+  meta: {
+    titulo: "Consulta de NCM: cClassTrib e redução de IBS e CBS | IAgentics",
+    descricao:
+      "Digite o NCM ou o nome do produto e veja se ele tem redução de IBS e CBS, o cClassTrib, a condição do anexo da LC 214 e se paga Imposto Seletivo.",
+  },
+  capa: {
+    kicker: "Reforma Tributária · NCM · cClassTrib",
+    titulo: "Consulta de NCM na Reforma Tributária",
+    lead: "Veja se o item tem redução de IBS e CBS, qual cClassTrib a nota pode usar, a condição do anexo da LC 214 e se ele paga Imposto Seletivo. Os dados são da tabela da calculadora oficial da Receita Federal.",
+    rotulo: "NCM ou nome do produto",
+    placeholder: "ex.: 3401.11.90 ou sabão",
+    buscar: "Consultar",
+  },
+  resultados: {
+    titulo: (q: string, total: number) => (total === 1 ? `1 NCM para "${q}"` : `${total.toLocaleString("pt-BR")} NCMs para "${q}"`),
+    mostrando: (n: number) => `Mostrando os ${n} primeiros. Refine a busca com mais uma palavra ou com mais dígitos do código.`,
+    nenhum: "Nenhum NCM vigente encontrado. Tente o código com menos dígitos ou outra palavra.",
+    curta: "Digite pelo menos dois dígitos do código ou uma palavra.",
+  },
+  ncm: {
+    voltar: "Nova consulta",
+    caminho: "Onde fica na NCM",
+    tratamentosTitulo: "Tratamentos especiais previstos para este NCM",
+    tratamentosNota:
+      "Cada tratamento vale quando a condição do anexo é cumprida e a operação se enquadra na classificação. Um NCM pode ter mais de um: confira a condição de cada um.",
+    semTratamento:
+      "A tabela da Receita não liga este NCM a nenhuma redução de IBS e CBS. Em regra, ele tem tributação integral:",
+    reducao: "Redução de IBS e CBS",
+    condicao: "Condição (anexo da LC 214)",
+    anexo: "Anexo",
+    fundamento: "Fundamento",
+    calcular: (r: number) => `Comparar cotações com ${r}% de redução`,
+    seletivoTitulo: "Imposto Seletivo",
+    seletivoSim: "Este NCM está na lista do Imposto Seletivo, que incide além do IBS e da CBS, a partir de 2027. A base do IBS e da CBS inclui o Imposto Seletivo.",
+    seletivoNao: "Este NCM não está na lista do Imposto Seletivo.",
+    naoEncontrado: "Esse NCM não existe na tabela vigente. Confira os oito dígitos ou busque pelo nome do produto.",
+  },
+  comoLer: {
+    titulo: "Como ler o resultado",
+    itens: [
+      "O cClassTrib é o código de seis dígitos que vai em cada item da nota fiscal; os três primeiros repetem o CST.",
+      "A redução vale sobre a alíquota do IBS e da CBS: com 60%, o item paga 40% da alíquota cheia; com 100%, não paga.",
+      "A condição vem do anexo da LC 214. Se o produto não cumpre a condição, vale a tributação integral.",
+      "A consulta não substitui a análise do caso: operações específicas (governo, exportação, regimes diferenciados) têm regras próprias.",
+    ],
+  },
+  faqTitulo: "Perguntas frequentes",
+  faq: [
+    {
+      pergunta: "Como saber se um produto tem redução de IBS e CBS?",
+      resposta:
+        "Pelo NCM. A LC 214/2025 lista nos anexos os produtos com alíquota reduzida em 30%, 60% ou 100%, pelos códigos da NCM. Esta consulta cruza o NCM com a tabela da calculadora oficial da Receita e mostra cada tratamento possível com a condição do anexo.",
+    },
+    {
+      pergunta: "O que fazer quando o NCM tem mais de um tratamento?",
+      resposta:
+        "Confira a condição de cada um. O mesmo arroz pode estar na cesta básica (redução de 100%) ou em outra lista, conforme o produto e a operação. A classificação certa é a que descreve a venda; na dúvida, valide com a contabilidade.",
+    },
+    {
+      pergunta: "Se o NCM não aparece com redução, ele paga a alíquota cheia?",
+      resposta:
+        "Em regra, sim: a classificação é a 000001, de tributação integral. Alguns tratamentos dependem da operação e do comprador, e não do NCM, como vendas ao governo ou exportação, e por isso não aparecem aqui.",
+    },
+    {
+      pergunta: "Os dados são oficiais?",
+      resposta:
+        "Vêm da base da calculadora que a Receita Federal publicou no GitHub, com código aberto. A regra que decide se um NCM pode usar uma classificação foi conferida com a calculadora da Receita em todos os pares da tabela.",
+    },
+  ],
+  fonte: {
+    titulo: "Fonte dos dados",
+    texto: (versao: string, data: string) =>
+      `Tabela da calculadora oficial da Receita Federal (calculadora-rtc-regime-regular, licença MIT, Copyright (c) 2026 Receita Federal do Brasil), versão ${versao} da base, atualizada no site em ${data}. Estimativa para apoiar a decisão de compra, sem valor de parecer fiscal.`,
+    link: "Repositório da Receita Federal no GitHub",
+    url: "https://github.com/ReceitaFederal/calculadora-rtc-regime-regular",
+  },
+  calculadora: {
+    titulo: "Agora compare as cotações pelo custo líquido",
+    texto: "Com a redução do item em mãos, a calculadora mostra quanto cada fornecedor custa depois do crédito de IBS e CBS.",
+    cta: "Abrir a calculadora",
+  },
+  atalho: "Já sabe a redução? Compare as cotações na calculadora",
+};
+
+/**
+ * Pacote "Reforma Tributária para Compras" (2026-11-19, pedido do Rodrigo:
+ * "link as páginas da calculadora e essa, como um pacote de soluções"). A faixa
+ * aparece no topo das duas ferramentas; o guia leva aos artigos do tema.
+ */
+export const pacoteReforma = {
+  nome: "Reforma Tributária para Compras",
+  rotulo: "Ferramentas da IAgentics para Compras na Reforma Tributária",
+  itens: [
+    { id: "calculadora", rota: "/reforma-tributaria-compras", titulo: "Calculadora de custo líquido", texto: "Compare cotações depois do crédito de IBS e CBS." },
+    { id: "consulta", rota: "/consulta-ncm-cclasstrib", titulo: "Consulta de NCM", texto: "cClassTrib, redução e Imposto Seletivo por item." },
+    { id: "guias", rota: "/artigos/fornecedor-do-simples-na-reforma-tributaria", titulo: "Guias", texto: "Fornecedor do Simples, cClassTrib, base de cálculo e split payment." },
+  ],
+  atual: "Você está aqui",
+} as const;

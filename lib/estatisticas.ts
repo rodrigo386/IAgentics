@@ -21,7 +21,7 @@ import { site } from "@/lib/content";
  * com "/artigos/qualquer-coisa" criaria uma linha nova por chute, e o endpoint
  * é público. Slug desconhecido cai em "/outras" como qualquer caminho estranho.
  */
-export const ROTAS_RASTREADAS = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/bolsas", "/artigos", "/privacidade"] as const;
+export const ROTAS_RASTREADAS = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/consulta-ncm-cclasstrib", "/bolsas", "/artigos", "/privacidade"] as const;
 
 export const ROTA_OUTRAS = "/outras";
 

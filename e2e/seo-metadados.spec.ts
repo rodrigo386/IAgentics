@@ -16,6 +16,7 @@ const PAGINAS = [
   "/spend-lab",
   "/diagnose-compras",
   "/reforma-tributaria-compras",
+  "/consulta-ncm-cclasstrib",
   "/bolsas",
   "/artigos",
   "/privacidade",

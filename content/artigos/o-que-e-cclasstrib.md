@@ -82,6 +82,10 @@ Na prática, isso dá três conferências na nota de entrada:
    classificação, conforme o
    [histórico do repositório](https://github.com/ReceitaFederal/calculadora-rtc-regime-regular/tree/main/flyway/sql/manutencao).
 
+Para ver a classificação e a redução de um item, use a
+[consulta de NCM na Reforma Tributária](/consulta-ncm-cclasstrib), feita com a
+tabela da calculadora da Receita.
+
 ## O que pedir ao fornecedor
 
 Na homologação ou na próxima cotação, peça ao fornecedor a classificação de
