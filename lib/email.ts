@@ -417,6 +417,7 @@ export function emailReforma(nome: string, c: Cenario, url: string) {
       `${t.email.cenario}:\n${cenario.join("\n")}`,
       linhasTexto.join("\n"),
       ...(anual ? [anual] : []),
+      ...(c.ano < 2033 ? [t.calculadora.avisoTransicao] : []),
       `${t.checklist.titulo}:\n${t.checklist.itens.map((i, n) => `${n + 1}. ${i}`).join("\n")}`,
       `${t.email.voltar}: ${url}`,
       `${t.nexo.titulo} ${t.nexo.texto} ${site.url}/nexo`,
@@ -429,6 +430,7 @@ export function emailReforma(nome: string, c: Cenario, url: string) {
         tabela +
         empates.map((s) => p(e(s))).join("") +
         (anual ? p(`<b>${e(anual)}</b>`) : "") +
+        (c.ano < 2033 ? p(e(t.calculadora.avisoTransicao)) : "") +
         `<p style="margin:8px 0 10px;font-size:17px;font-weight:bold;color:#131723">${e(t.checklist.titulo)}</p>` +
         lista +
         botao +

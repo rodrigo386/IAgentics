@@ -2999,6 +2999,8 @@ export const reforma = {
     semPercentual: "Sem o percentual do Simples, o crédito ficou em zero.",
     anual: "Diferença entre a melhor e a pior no ano",
     preencha: "Preencha o total da nota de pelo menos uma cotação para ver o resultado.",
+    avisoTransicao:
+      "Até 2032, ICMS e ISS ainda existem e ficam fora desta conta. Em compra de mercadoria, o fornecedor do regime regular também passa crédito de ICMS, e o do Simples passa pouco: nesses anos, a vantagem do regime regular tende a ser maior do que a conta mostra.",
   },
   lead: {
     titulo: "Receba o comparativo e o checklist por e-mail",

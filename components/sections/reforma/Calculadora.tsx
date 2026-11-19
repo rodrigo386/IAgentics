@@ -266,6 +266,7 @@ export function Calculadora() {
                     </li>
                   ))}
                 </ol>
+                {ano < 2033 ? <p className="border-t border-line pt-4 text-sm leading-relaxed text-fg-muted">{t.avisoTransicao}</p> : null}
                 {conta.diferencaAnual !== null ? (
                   <p className="border-t border-line pt-4 text-fg">
                     {t.anual}: <b className="font-mono font-medium">{reais(conta.diferencaAnual)}</b>

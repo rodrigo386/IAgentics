@@ -41,6 +41,17 @@ que ele já tinha e não estava no texto; e **quatro links internos** para os
 outros artigos — é este texto que amarra a coleção, porque a tese dele
 (conciliação versus decisão) é a que explica os demais.
 
+## Reforma Tributária: quatro rascunhos (2026-11-19)
+
+`fornecedor-do-simples-na-reforma-tributaria`, `o-que-e-cclasstrib`,
+`split-payment-para-compras` e `base-de-calculo-ibs-cbs-nota-fiscal`, escritos
+por mim para apoiar a calculadora da Reforma (hoje em prévia) e **publicados em
+2026-11-19 por decisão do Rodrigo**, antes da revisão do contador que a
+calculadora espera. Saíram sem link para a calculadora (o endereço final ainda
+é 404): **ao promovê-la, recolocar o link nos quatro**. Os números
+saem do código da calculadora (`lib/reforma.ts`) ou dos exemplos e do banco da
+calculadora oficial da Receita, sempre com a fonte linkada.
+
 ## Como publicar (ou despublicar)
 
 1. Troque o `status` no frontmatter (`publicado` ↔ `rascunho`).
