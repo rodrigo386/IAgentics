@@ -91,6 +91,8 @@ crédito esperar de cada compra, e o [mapa de cotação](/artigos/o-que-e-mapa-d
 passa a comparar o custo líquido.
 
 Se o fornecedor for do Simples Nacional, a conta do crédito muda: veja
-[como comparar cotações com fornecedor do Simples](/artigos/fornecedor-do-simples-na-reforma-tributaria).
+[como comparar cotações com fornecedor do Simples](/artigos/fornecedor-do-simples-na-reforma-tributaria)
+e faça a conta com as suas cotações na
+[calculadora de custo líquido](/reforma-tributaria-compras).
 
 <!-- faq -->

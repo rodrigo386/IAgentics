@@ -47,8 +47,8 @@ outros artigos — é este texto que amarra a coleção, porque a tese dele
 `split-payment-para-compras` e `base-de-calculo-ibs-cbs-nota-fiscal`, escritos
 por mim para apoiar a calculadora da Reforma (hoje em prévia) e **publicados em
 2026-11-19 por decisão do Rodrigo**, antes da revisão do contador que a
-calculadora espera. Saíram sem link para a calculadora (o endereço final ainda
-é 404): **ao promovê-la, recolocar o link nos quatro**. Os números
+calculadora espera. Saíram sem link para a calculadora, que era prévia; o link
+voltou nos quatro quando ela foi promovida, no mesmo dia. Os números
 saem do código da calculadora (`lib/reforma.ts`) ou dos exemplos e do banco da
 calculadora oficial da Receita, sempre com a fonte linkada.
 

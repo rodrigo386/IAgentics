@@ -4,28 +4,33 @@ import { ArrowDown, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Calculadora } from "@/components/sections/reforma/Calculadora";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { reforma } from "@/lib/content";
-import { ANOS, aliquotasDoAno, pct } from "@/lib/reforma";
+import { artigoPorSlug } from "@/lib/artigos";
+import { ANOS, ROTA_REFORMA, aliquotasDoAno, pct } from "@/lib/reforma";
+import { faqJsonLd, ogDaPagina } from "@/lib/seo";
 
 /**
- * PRÉVIA da calculadora da Reforma Tributária para Compras (2026-11-18,
- * proposta A aprovada pelo Rodrigo). Mesmas travas das outras prévias:
- * noindex, /preview/ no Disallow, fora do sitemap, sem link no site e sem
- * canonical. Aprovada (e revisada por um contador), vira
- * /reforma-tributaria-compras: trocar ROTA_REFORMA, pôr canonical, og,
- * FAQPage, sitemap, ARQUIVOS_DA_ROTA, contador de visitas, llms.txt e a
- * política de privacidade (item da calculadora) juntos.
+ * Calculadora da Reforma Tributária para Compras. Nasceu como prévia em
+ * 2026-11-18 (proposta A aprovada pelo Rodrigo) e foi promovida em 2026-11-19
+ * ("pode deixar o link da calculadora, tá confirmado"). A conta mora em
+ * lib/reforma.ts, conferida com a calculadora oficial da Receita
+ * (lib/reforma-receita.json). FAQPage sai do MESMO `reforma.faq` que a página
+ * mostra.
  */
 export const metadata: Metadata = {
   title: { absolute: reforma.meta.titulo },
   description: reforma.meta.descricao,
-  robots: { index: false, follow: false },
+  alternates: { canonical: ROTA_REFORMA },
+  openGraph: ogDaPagina(ROTA_REFORMA, reforma.meta.titulo, reforma.meta.descricao),
 };
 
 export default function Page() {
-  const { capa, guia, tabela, checklist, faq, fontes, nexo } = reforma;
+  const { capa, guia, tabela, checklist, faq, fontes, nexo, leituras } = reforma;
+  const artigos = leituras.slugs.map((s) => artigoPorSlug(s)).filter((a) => a !== undefined);
   return (
     <>
+      <JsonLd dados={faqJsonLd(faq)} />
       <Nav />
       <main id="conteudo" className="pt-16">
         <section className="border-b border-line py-20 sm:py-24">
@@ -134,6 +139,24 @@ export default function Page() {
             </aside>
           </div>
         </section>
+
+        {artigos.length ? (
+          <section className="border-b border-line py-16 sm:py-24">
+            <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
+              <h2 className="text-3xl font-medium tracking-[-0.03em] text-fg sm:text-4xl">{leituras.titulo}</h2>
+              <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {artigos.map((a) => (
+                  <li key={a.slug}>
+                    <Link href={`/artigos/${a.slug}`} className="group flex h-full flex-col gap-2 border border-line p-6 transition-colors hover:border-fg">
+                      <span className="text-lg font-medium text-fg">{a.titulo}</span>
+                      <span className="text-sm leading-relaxed text-fg-muted">{a.descricao}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ) : null}
 
         <section className="border-b border-line py-16 sm:py-24">
           <div className="mx-auto max-w-[860px] px-5 sm:px-8">

@@ -10,15 +10,17 @@ function env(chave: string): string {
 }
 
 /**
- * Calculadora da Reforma Tributária (prévia, 2026-11-18). A conta roda no
+ * Calculadora da Reforma Tributária (2026-11-18; oficial desde 2026-11-19). A conta roda no
  * navegador; o pedido por e-mail grava o contato (o e2e sobe sem
  * RESEND_API_KEY, então o e-mail não sai e a tela diz isso).
  */
-const ROTA = "/preview/reforma-tributaria-compras";
+const ROTA = "/reforma-tributaria-compras";
 
 test("calcula o custo líquido e o empate do fornecedor do Simples", async ({ page }) => {
   await page.goto(ROTA);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/reforma-tributaria-compras$/);
+  const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
+  expect(ld.some((s) => s.includes('"FAQPage"'))).toBe(true);
   await page.getByLabel("Ano da compra").selectOption("2033");
   const valores = page.getByLabel("Total da nota (R$)");
   await valores.nth(0).fill("1.300,00");

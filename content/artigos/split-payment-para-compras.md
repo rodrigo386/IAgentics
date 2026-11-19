@@ -75,7 +75,7 @@ pode voltar como pedido de antecipação ou de prazo menor na negociação.
    depois.
 4. Revisar, com o Financeiro, os pedidos de antecipação que fornecedores
    pequenos devem trazer.
-5. Comparar as cotações pelo custo líquido, que já desconta o crédito: veja
-   [como fazer a conta com fornecedor do Simples](/artigos/fornecedor-do-simples-na-reforma-tributaria).
+5. Comparar as cotações pelo custo líquido, que já desconta o crédito: faça a
+   conta na [calculadora de custo líquido da Reforma Tributária](/reforma-tributaria-compras).
 
 <!-- faq -->

@@ -118,6 +118,7 @@ export const config = {
     "/cursos",
     "/spend-lab",
     "/diagnose-compras",
+    "/reforma-tributaria-compras",
     "/bolsas",
     "/bolsas/regulamento",
     "/privacidade",

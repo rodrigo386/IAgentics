@@ -88,8 +88,8 @@ R$ 97,44 de CBS e R$ 0,87 de IBS.
   sobre o valor com ICMS, o imposto está a mais, e o crédito da sua empresa
   depende de uma correção.
 
-Para comparar cotações pelo que sobra depois do crédito, veja
-[como comparar cotações com fornecedor do Simples](/artigos/fornecedor-do-simples-na-reforma-tributaria);
+Para comparar cotações pelo que sobra depois do crédito, use a
+[calculadora de custo líquido da Reforma Tributária](/reforma-tributaria-compras);
 para conferir a classificação de cada item, veja
 [o que é cClassTrib](/artigos/o-que-e-cclasstrib).
 

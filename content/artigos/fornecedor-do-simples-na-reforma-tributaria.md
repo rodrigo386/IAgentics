@@ -72,6 +72,9 @@ Para empatar com o C, a nota do B teria de ser de até R$ 7.852,56. Esse número
 é o argumento da renegociação: ele diz ao fornecedor quanto o preço precisa
 cair, ou o convence a recolher IBS e CBS por fora do DAS.
 
+Você pode refazer essa conta com as suas cotações na
+[calculadora de custo líquido da Reforma Tributária](/reforma-tributaria-compras).
+
 ## Atenção aos anos de transição
 
 De 2027 a 2032, os tributos antigos convivem com os novos. Em 2027 e 2028 a

@@ -21,8 +21,8 @@
  *   não há crédito para ninguém.
  */
 
-/** Endereço da página. Na prévia; ao promover, vira "/reforma-tributaria-compras". */
-export const ROTA_REFORMA = "/preview/reforma-tributaria-compras";
+/** Endereço da página (prévia até 2026-11-19, promovida no mesmo dia). */
+export const ROTA_REFORMA = "/reforma-tributaria-compras";
 
 export const ANOS = [2027, 2028, 2029, 2030, 2031, 2032, 2033] as const;
 export type Ano = (typeof ANOS)[number];

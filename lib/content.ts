@@ -68,7 +68,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 3 de novembro de 2026",
+    atualizado: "Atualizada em 19 de novembro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -105,6 +105,11 @@ export const privacidade = {
           termo: "Desafio Prova Real",
           texto:
             "Nome, e-mail, WhatsApp, empresa, os perfis no Instagram e no LinkedIn que você informar, o problema que você descreve e a data de cada autorização. Servem para avaliar a sua candidatura e falar com você sobre ela, e ficam gravados no nosso banco de dados. Comunicações depois do desafio, a entrada no grupo exclusivo de WhatsApp e o uso do seu nome e imagem na divulgação só acontecem se você marcar as autorizações opcionais. Para conferir os critérios de seleção, olhamos o seu perfil público no Instagram ou no LinkedIn.",
+        },
+        {
+          termo: "Calculadora da Reforma Tributária",
+          texto:
+            "Enquanto você calcula, nada sai do seu navegador. Se você pedir o comparativo por e-mail, recebemos seu nome, e-mail de trabalho, empresa, cargo (se informar), o cenário que você calculou e a data da sua autorização, e, se marcar, o pedido de aviso sobre as alíquotas. Servem para enviar o comparativo e para a IAgentics falar com você sobre Compras e Reforma Tributária, e ficam gravados no nosso banco de dados.",
         },
         {
           termo: "Lista de espera e compras avulsas anteriores",
@@ -153,7 +158,7 @@ export const privacidade = {
           termo: "Asaas",
           texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras e os e-mails do Desafio Prova Real." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras, os e-mails do Desafio Prova Real e o comparativo da calculadora da Reforma Tributária." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Metricool", texto: "Medição das visitas às páginas públicas e da origem delas nas redes sociais." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
@@ -162,7 +167,7 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Pedidos do comparativo da calculadora da Reforma Tributária ficam enquanto durar o relacionamento comercial, ou até você pedir para sair. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
@@ -2937,8 +2942,8 @@ export const bolsas = {
 
 /**
  * Calculadora de custo real do fornecedor na Reforma Tributária (2026-11-18,
- * proposta A aprovada pelo Rodrigo). Hoje em /preview/reforma-tributaria-compras,
- * esperando aprovação e a revisão de um contador. As regras e os números moram
+ * proposta A aprovada pelo Rodrigo). Em /reforma-tributaria-compras desde
+ * 2026-11-19 (foi prévia por um dia). As regras e os números moram
  * em lib/reforma.ts; os textos que citam número usam as constantes de lá.
  * Texto meu, nas regras de texto do Rodrigo (sem travessão, sem os termos
  * proibidos): o teste em lib/reforma.test.ts confere.
@@ -3078,6 +3083,10 @@ export const reforma = {
     titulo: "Alíquotas usadas na calculadora",
     colunas: { ano: "Ano", cbs: "CBS", ibs: "IBS", soma: "Soma" },
     nota: "Estimativas. De 2029 a 2032, o IBS proporcional à saída do ICMS e do ISS. Os números finais dependem do Senado e do Comitê Gestor do IBS.",
+  },
+  leituras: {
+    titulo: "Para ler antes de cotar",
+    slugs: ["fornecedor-do-simples-na-reforma-tributaria", "o-que-e-cclasstrib", "base-de-calculo-ibs-cbs-nota-fiscal", "split-payment-para-compras"],
   },
   faqTitulo: "Perguntas frequentes",
   faq: [
