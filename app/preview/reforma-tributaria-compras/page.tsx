@@ -162,6 +162,7 @@ export default function Page() {
                   </li>
                 ))}
               </ul>
+              <p className="max-w-[60ch] text-sm text-fg-muted">{fontes.conferencia}</p>
               <p className="max-w-[60ch] text-sm text-fg-muted">{fontes.aviso}</p>
             </div>
             <div className="flex flex-col gap-4 border border-line bg-surface p-6 sm:p-8 lg:col-span-5 lg:col-start-8">

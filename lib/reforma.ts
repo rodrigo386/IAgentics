@@ -96,14 +96,55 @@ export function taxaEfetiva(c: Pick<Cenario, "ano" | "reducao" | "cbsRef" | "ibs
   return ((cbs + ibs) * (100 - c.reducao)) / 100;
 }
 
+/**
+ * Arredondamento como o da calculadora da Receita (ADR003 dela): a CBS e o IBS
+ * da nota são arredondados ao centavo separadamente, "meio para o par" (HALF_EVEN). Contas em BigInt, com a
+ * alíquota em milionésimos de ponto percentual, para não herdar erro de ponto
+ * flutuante. Conferido em lib/reforma-receita.json (scripts/conferir-receita.ts).
+ */
+const ESCALA = 1_000_000n;
+function centavosDoTributo(baseCentavos: bigint, aliquotaPct: number): bigint {
+  const num = baseCentavos * BigInt(Math.round(aliquotaPct * 1_000_000));
+  const den = 100n * ESCALA;
+  const q = num / den;
+  const resto = num - q * den;
+  if (resto * 2n > den || (resto * 2n === den && q % 2n === 1n)) return q + 1n;
+  return q;
+}
+
+/**
+ * IBS e CBS destacados numa nota cujo TOTAL é `valor` (o comprador digita o
+ * total). Acha a base que, somada aos tributos arredondados um a um, dá o
+ * total; o crédito é a soma desses tributos. O IBS entra como um valor só
+ * (estadual + municipal), que é o total que a Receita devolve (vIBS).
+ */
+function impostoDestacado(valor: number, cbsEf: number, ibsEf: number): number {
+  const total = BigInt(Math.round(valor * 100));
+  const componentes = [cbsEf, ibsEf];
+  const imposto = (b: bigint) => componentes.reduce((s, a) => s + centavosDoTributo(b, a), 0n);
+  const t = (cbsEf + ibsEf) / 100;
+  const chute = BigInt(Math.round(Number(total) / (1 + t)));
+  let melhor = { b: chute, erro: -1n };
+  for (let d = -3n; d <= 3n; d++) {
+    const b = chute + d;
+    if (b < 0n) continue;
+    const erro = total - b - imposto(b);
+    const abs = erro < 0n ? -erro : erro;
+    if (melhor.erro < 0n || abs < melhor.erro) melhor = { b, erro: abs };
+    if (abs === 0n) break;
+  }
+  return Number(imposto(melhor.b)) / 100;
+}
+
 export function calcular(c: Cenario): { taxa: number; resultados: Resultado[]; diferencaAnual: number | null } {
   const taxa = taxaEfetiva(c);
-  const t = taxa / 100;
+  const { cbs, ibs } = aliquotasDoAno(c.ano, c.cbsRef, c.ibsRef);
+  const fator = (100 - c.reducao) / 100;
   const base = c.cotacoes.map((q) => {
     let credito = 0;
     if (c.compradorCredita) {
       if (q.regime === "simples_das") credito = (q.valor * (q.percentualSimples ?? 0)) / 100;
-      else credito = (q.valor * t) / (1 + t);
+      else credito = impostoDestacado(q.valor, cbs * fator, ibs * fator);
     }
     credito = arred(credito);
     return { q, credito, liquido: arred(q.valor - credito) };

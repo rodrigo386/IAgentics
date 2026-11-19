@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { aliquotasDoAno, calcular, lerCenario, taxaEfetiva, validarPedido, type Cenario } from "./reforma";
+import {
+  ANOS,
+  CBS_REFERENCIA,
+  IBS_REFERENCIA,
+  REDUCOES,
+  aliquotasDoAno,
+  calcular,
+  lerCenario,
+  taxaEfetiva,
+  validarPedido,
+  type Ano,
+  type Cenario,
+  type Reducao,
+} from "./reforma";
 
 const base: Omit<Cenario, "cotacoes"> = { ano: 2033, reducao: 0, compradorCredita: true, cbsRef: 11.3, ibsRef: 18.7, vezesPorAno: null };
 
@@ -103,5 +116,38 @@ describe("textos da página (regras de texto do Rodrigo)", async () => {
     const f = reforma.faq.map((x) => x.resposta).join(" ");
     expect(f).toContain(`${String(CBS_REFERENCIA).replace(".", ",")}%`);
     expect(f).toContain(`${String(IBS_REFERENCIA).replace(".", ",")}%`);
+  });
+});
+
+/**
+ * Conferência contra a calculadora OFICIAL da Receita (scripts/conferir-receita.ts
+ * gera lib/reforma-receita.json com a API da Receita rodando na máquina).
+ * Para cada ano e redução: a nota do fornecedor no regime regular é a base mais
+ * o IBS e a CBS que a Receita calculou; o nosso crédito tem de ser exatamente
+ * esse imposto, e o custo líquido, a base.
+ */
+describe("conferência com a calculadora da Receita Federal", async () => {
+  const { casos } = (await import("./reforma-receita.json")).default as {
+    casos: { ano: Ano; reducao: Reducao; base: number; cbs: number; ibs: number; vCBS: number; vIBS: number }[];
+  };
+  it("cobre todos os anos e reduções da calculadora", () => {
+    expect(new Set(casos.map((c) => c.ano)).size).toBe(ANOS.length);
+    expect(new Set(casos.map((c) => c.reducao)).size).toBe(REDUCOES.length);
+  });
+  it.each(casos)("$ano, redução $reducao%, base $base: crédito igual ao IBS + CBS da Receita", (c) => {
+    // As alíquotas mandadas à Receita são as da nossa tabela; mudou a tabela, gere o arquivo de novo.
+    expect(aliquotasDoAno(c.ano)).toEqual({ cbs: c.cbs, ibs: c.ibs });
+    const imposto = Math.round((c.vCBS + c.vIBS) * 100) / 100;
+    const { resultados } = calcular({
+      ano: c.ano,
+      reducao: c.reducao,
+      compradorCredita: true,
+      cbsRef: CBS_REFERENCIA,
+      ibsRef: IBS_REFERENCIA,
+      vezesPorAno: null,
+      cotacoes: [{ nome: "R", regime: "regular", valor: Math.round((c.base + imposto) * 100) / 100, percentualSimples: null }],
+    });
+    expect(resultados[0].credito).toBe(imposto);
+    expect(resultados[0].liquido).toBe(c.base);
   });
 });

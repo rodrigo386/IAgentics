@@ -3095,6 +3095,11 @@ export const reforma = {
         "Dá, no valor do IBS e da CBS devidos no Simples (LC 214, art. 47, § 9º, II). Se o fornecedor optar por recolher os dois pelo regime regular, o crédito é integral.",
     },
     {
+      pergunta: "A conta é a mesma da Receita Federal?",
+      resposta:
+        "A mecânica, sim: conferimos o crédito de IBS e CBS com a calculadora oficial que a Receita publicou no GitHub, em todos os anos de 2027 a 2033 e em todas as reduções de alíquota, e os valores batem ao centavo. As alíquotas futuras ainda são estimativas, porque o Senado e o Comitê Gestor não as fixaram.",
+    },
+    {
       pergunta: "A calculadora considera ICMS e ISS?",
       resposta:
         "Não. Ela compara só IBS e CBS. Até 2032, ICMS e ISS continuam existindo e têm regras próprias de crédito; para a decisão completa, some esses efeitos ou fale com o seu contador.",
@@ -3109,6 +3114,8 @@ export const reforma = {
     titulo: "Fontes",
     aviso:
       "Estimativa para apoiar a decisão de compra, sem valor de parecer fiscal. Confira o seu caso com a contabilidade da empresa.",
+    conferencia:
+      "A mecânica da conta (base, redução de alíquota e arredondamento ao centavo) foi conferida com a calculadora oficial da Receita Federal em todos os anos e reduções desta página. As alíquotas de 2027 em diante são as estimativas acima, porque a Receita ainda não publicou as definitivas.",
     itens: [
       { rotulo: "Lei Complementar nº 214/2025 (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" },
       {
@@ -3120,7 +3127,7 @@ export const reforma = {
         url: "https://www.cgibs.gov.br/upload/arquivos/202607/31144942-resoluc-ao-cgibs-n-14-de-29-de-julho-de-2026-proposta-percentual-ibs-cgibs-2027.pdf",
       },
       { rotulo: "Cronograma da Reforma Tributária (TCU)", url: "https://sites.tcu.gov.br/recursos/reforma-tributaria/Painel%20da%20Reforma%20Tribut%C3%A1ria_Cronograma_v5.pdf" },
-      { rotulo: "Calculadoras da Reforma Tributária da Receita Federal (GitHub)", url: "https://github.com/ReceitaFederal" },
+      { rotulo: "Calculadora oficial da Receita Federal para o regime regular (GitHub), usada para conferir a conta", url: "https://github.com/ReceitaFederal/calculadora-rtc-regime-regular" },
     ],
   },
   nexo: {
