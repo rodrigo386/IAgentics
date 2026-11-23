@@ -34,6 +34,7 @@ export function BarraBolsas() {
 
   return (
     <div
+      id="barra-bolsas"
       inert={!visivel}
       className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/90 px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur transition-[translate,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none sm:inset-x-auto sm:right-6 sm:bottom-6 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none ${
         visivel ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0 sm:translate-y-4"

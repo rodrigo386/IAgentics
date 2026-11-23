@@ -8,6 +8,9 @@ import { hojeSP } from "@/lib/assinatura/regras";
 import { janelaDoVoucher, precisaReajuste, type GrupoVoucher } from "@/lib/bolsas/voucher";
 import { avaliada, elegivel, ordenarPainel, pontuacao, NOTA_MAX, VAGAS } from "@/lib/bolsas/selecao";
 import { agoraBolsas, faseDasInscricoes } from "@/lib/bolsas/regras";
+import { funilInterno } from "@/lib/admin/cursos";
+import { CAMPOS_BOLSAS, EVENTOS_BOLSAS, MOTIVOS_BOLSAS } from "@/lib/eventos";
+import { bolsas as textosBolsas } from "@/lib/content";
 import { aplicarRankingAdmin, avaliarInscricao, enviarResultados, enviarVouchers, reajustarAssinaturaAdmin } from "./acoes";
 
 const t = admin.bolsas;
@@ -15,6 +18,7 @@ export const metadata: Metadata = { title: t.meta.titulo, robots: { index: false
 export const dynamic = "force-dynamic";
 
 const numero = new Intl.NumberFormat("pt-BR");
+const porcento = (v: number, base: number) => (base > 0 ? ((v / base) * 100).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) : "0");
 
 /**
  * Painel do Desafio Prova Real (2026-11-03; refeito em 2026-11-18). Atrás do
@@ -31,13 +35,14 @@ export default async function PainelBolsas({
   searchParams: Promise<{ q?: string; status?: string; ranking?: string; resultado?: string; voucher?: string }>;
 }) {
   const sp = await searchParams;
-  const [r, porDia, sel, todas, vou, fundador] = await Promise.all([
+  const [r, porDia, sel, todas, vou, fundador, dentro] = await Promise.all([
     resumoBolsas(),
     bolsasPorDia(),
     resumoSelecao(),
     listarInscricoes(),
     resumoVouchers(),
     listarPrecoFundador(),
+    funilInterno({ de: "2026-11-23", ate: hojeSP() }, "/bolsas", EVENTOS_BOLSAS),
   ]);
   const s = t.selecao;
   const v = t.voucher;
@@ -93,6 +98,64 @@ export default async function PainelBolsas({
           {t.exportar}
         </a>
         <p className="max-w-[70ch] text-xs text-fg-muted">{t.exportarNota}</p>
+      </section>
+
+      {/* Funil por dentro da /bolsas (2026-11-23) */}
+      <section className="flex flex-col gap-4">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-muted">{t.dentro.titulo}</h2>
+        {dentro.inicio === null ? (
+          <p className="text-sm text-fg-muted">{t.dentro.semDados}</p>
+        ) : (
+          <>
+            <ol className="flex flex-col gap-3">
+              {t.dentro.etapas.map((e, i) => {
+                const valor = i === 0 ? dentro.visitas : e.eventos.reduce((soma, ev) => soma + (dentro.totais[ev] ?? 0), 0);
+                return (
+                  <li key={e.rotulo} className="grid grid-cols-[180px_1fr] items-center gap-4 sm:grid-cols-[300px_1fr]">
+                    <span className="text-sm text-fg">{e.rotulo}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="h-6 bg-accent/60" style={{ width: `${Math.max(1.5, Math.min(100, (valor / Math.max(1, dentro.visitas)) * 100))}%` }} />
+                      <span className="shrink-0 text-sm tabular-nums text-fg">
+                        <strong className="font-medium">{numero.format(valor)}</strong>
+                        {i > 0 ? <span className="ml-2 text-fg-muted">{t.dentro.dasVisitas(porcento(valor, dentro.visitas))}</span> : null}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="text-sm text-fg-muted">{t.dentro.desde(dentro.inicio.split("-").reverse().join("/"))}</p>
+            <div className="grid gap-8 md:grid-cols-2">
+              {(
+                [
+                  [t.dentro.bloqueios.titulo, t.dentro.bloqueios.nota, CAMPOS_BOLSAS.map((c) => [t.dentro.bloqueios.campos[c] ?? c, dentro.totais[`bolsas_bloqueio_${c}`] ?? 0] as const)],
+                  [t.dentro.erros.titulo, t.dentro.erros.nota, MOTIVOS_BOLSAS.map((m) => [textosBolsas.formulario.erros[m] ?? m, dentro.totais[`bolsas_erro_${m}`] ?? 0] as const)],
+                ] as const
+              ).map(([titulo, nota, itens]) => {
+                const com = itens.filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+                return (
+                  <div key={titulo} className="flex flex-col gap-2">
+                    <h3 className="text-sm font-medium text-fg">{titulo}</h3>
+                    {com.length === 0 ? (
+                      <p className="text-sm text-fg-muted">{t.dentro.nenhum}</p>
+                    ) : (
+                      <ul className="flex flex-col gap-1 text-sm">
+                        {com.map(([rotulo, n]) => (
+                          <li key={rotulo} className="flex justify-between gap-4 border-b border-line py-1">
+                            <span className="text-fg">{rotulo}</span>
+                            <span className="tabular-nums text-fg">{numero.format(n)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <p className="text-xs text-fg-muted">{nota}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+        <p className="max-w-[80ch] text-xs text-fg-muted">{t.dentro.nota}</p>
       </section>
 
       {aviso ? (

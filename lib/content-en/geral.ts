@@ -35,7 +35,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
   hero: {
     eyebrow: "Privacy",
     titulo: "Privacy Policy",
-    atualizado: "Last updated November 19, 2026",
+    atualizado: "Last updated November 23, 2026",
     lead: "This is a translation; the Portuguese version prevails. This page explains which data IAgentics collects, why, who we share it with, and how you can ask us to delete it. It is written in plain language, without unnecessary legalese.",
   },
   secoes: [
@@ -94,9 +94,9 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
             "On the first page of each visit, we record the TYPE of site that brought you here: search, social network, AI assistant, a link from another site, or none. Your browser sends us only the referring domain (for example, google.com), never the full address or the term you searched for, and that domain is turned into a category before it is stored. The category is kept; the domain is not.",
         },
         {
-          termo: "What happens on the courses page",
+          termo: "What happens on the courses and Challenge pages",
           texto:
-            "On the courses page, we count a few actions to learn where the page needs improvement: how many times someone scrolls halfway or to the end, clicks subscribe, starts or submits the subscription form, or is taken to the invoice. Each action only adds one to the day's total: we do not keep who did it, what was typed, or anything that identifies you or your browser.",
+            "On the courses and Prova Real Challenge pages, we count a few actions to learn where the page needs improvement: how many times someone scrolls halfway or to the end, clicks subscribe or join, starts or submits the form, is taken to the invoice or completes the sign-up. On the Challenge form, we also count which required field stopped the submission and why a sign-up was refused (for example, an invalid e-mail). Each action only adds one to the day's total: we do not keep who did it, what was typed, or anything that identifies you or your browser.",
         },
         {
           termo: "Google Analytics",

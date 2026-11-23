@@ -1,6 +1,7 @@
 import "server-only";
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
+import { EVENTOS_CURSOS } from "@/lib/eventos";
 
 /**
  * Consultas do painel de cursos, /admin/cursos (2026-10-16): a venda da
@@ -108,16 +109,19 @@ export type FunilInterno = {
 
 /** O funil dentro da página (2026-10-29): os totais de cada evento de
  *  lib/eventos.ts no período, e as visitas contadas só desde que a medição
- *  começou, para as porcentagens compararem a mesma janela. */
-export async function funilInterno(i: Intervalo): Promise<FunilInterno> {
+ *  começou, para as porcentagens compararem a mesma janela. Serve à /cursos
+ *  e, desde 2026-11-23, à /bolsas: `daPagina` diz quais eventos são da página (a
+ *  tabela é a mesma), `rota` de onde vêm as visitas. */
+export async function funilInterno(i: Intervalo, rota = "/cursos", daPagina: readonly string[] = EVENTOS_CURSOS): Promise<FunilInterno> {
+  const lista = sql.join(daPagina.map((e) => sql`${e}`), sql`, `);
   const eventos = linhas(
     await db.execute<{ evento: string; total: number }>(sql`
       select evento, sum(total)::int as total from eventos_cursos
-      where dia between ${DE(i)} and ${ATE(i)} group by evento`),
+      where dia between ${DE(i)} and ${ATE(i)} and evento in (${lista}) group by evento`),
   );
   const [r] = linhas(
     await db.execute<{ inicio: string | null }>(sql`
-      select min(dia)::text as inicio from eventos_cursos where dia between ${DE(i)} and ${ATE(i)}`),
+      select min(dia)::text as inicio from eventos_cursos where dia between ${DE(i)} and ${ATE(i)} and evento in (${lista})`),
   );
   const inicio = r?.inicio ?? null;
   let visitas = 0;
@@ -125,7 +129,7 @@ export async function funilInterno(i: Intervalo): Promise<FunilInterno> {
     const [v] = linhas(
       await db.execute<{ visitas: number }>(sql`
         select coalesce(sum(visitas), 0)::int as visitas from page_views
-        where rota = '/cursos' and dia between ${inicio}::date and ${ATE(i)}`),
+        where rota = ${rota} and dia between ${inicio}::date and ${ATE(i)}`),
     );
     visitas = v?.visitas ?? 0;
   }

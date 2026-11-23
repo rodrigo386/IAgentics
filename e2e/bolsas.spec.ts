@@ -87,6 +87,30 @@ test("a rota confere tudo de novo: caixa obrigatória, isca, repetição e a rot
   expect((await request.get(`/bolsas/video/${"x".repeat(43)}`)).status()).toBe(404);
 });
 
+/* Medição dentro da /bolsas (2026-11-23). O sendBeacon manda Blob, que o
+   Playwright não expõe: o teste troca o sendBeacon por um gravador. */
+test("a página mede o começo do formulário e o campo em que o navegador barrou o envio", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as unknown as { eventos: string[] }).eventos = [];
+    navigator.sendBeacon = (_url, dados) => {
+      // O contador de visitas usa o mesmo sendBeacon, sem `evento`: fica de fora.
+      void (dados as Blob).text().then((t) => {
+        const e = JSON.parse(t).evento;
+        if (typeof e === "string") (window as unknown as { eventos: string[] }).eventos.push(e);
+      });
+      return true;
+    };
+  });
+  await page.goto("/bolsas");
+  await page.getByLabel("Nome completo").fill("Ana Teste Souza");
+  await page.getByRole("button", { name: "Enviar inscrição" }).click();
+  const eventos = () => page.evaluate(() => (window as unknown as { eventos: string[] }).eventos);
+  await expect.poll(async () => (await eventos()).includes("bolsas_formulario_inicio")).toBe(true);
+  await expect.poll(async () => (await eventos()).filter((e) => e.startsWith("bolsas_bloqueio_")).length).toBe(1);
+  // Barrado no navegador, nada foi ao servidor.
+  expect(await eventos()).not.toContain("bolsas_formulario_envio");
+});
+
 test("o regulamento abre e volta para o desafio", async ({ page }) => {
   await page.goto("/bolsas/regulamento");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Regulamento do Desafio Prova Real");

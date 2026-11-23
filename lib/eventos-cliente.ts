@@ -1,12 +1,12 @@
 import { naoContarEsteNavegador } from "@/lib/nao-contar";
-import type { EventoCursos } from "@/lib/eventos";
+import type { Evento } from "@/lib/eventos";
 
 /**
- * Registra um evento da /cursos (lib/eventos.ts). Mesmo jeito do contador de
+ * Registra um evento da /cursos ou da /bolsas (lib/eventos.ts). Mesmo jeito do contador de
  * visitas (components/site/Beacon.tsx): sendBeacon, nada além do nome do
  * evento, e quem marcou "não contar" no /admin fica de fora.
  */
-export function registrarEvento(evento: EventoCursos): void {
+export function registrarEvento(evento: Evento): void {
   if (typeof window === "undefined" || naoContarEsteNavegador()) return;
   const dados = JSON.stringify({ evento });
   try {

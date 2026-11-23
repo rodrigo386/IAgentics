@@ -68,7 +68,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 19 de novembro de 2026",
+    atualizado: "Atualizada em 23 de novembro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -127,9 +127,9 @@ export const privacidade = {
             "Na primeira página de cada visita, registramos o TIPO de site que trouxe você — busca, rede social, assistente de IA, indicação de outro site, ou nenhum. Seu navegador nos envia apenas o domínio de quem indicou (por exemplo, google.com), nunca o endereço completo nem o termo que você pesquisou, e esse domínio vira categoria antes de ser gravado. É a categoria que fica; o domínio, não.",
         },
         {
-          termo: "O que acontece na página de cursos",
+          termo: "O que acontece nas páginas de cursos e do Desafio",
           texto:
-            "Na página de cursos, contamos algumas ações para saber onde a página precisa melhorar: quantas vezes alguém rola até a metade ou até o fim, clica em assinar, começa ou envia o formulário de assinatura, ou é levado à fatura. Cada ação vira só mais um no total do dia: não guardamos quem fez, o que foi digitado, nem nada que identifique você ou o seu navegador.",
+            "Nas páginas de cursos e do Desafio Prova Real, contamos algumas ações para saber onde a página precisa melhorar: quantas vezes alguém rola até a metade ou até o fim, clica em assinar ou em participar, começa ou envia o formulário, é levado à fatura ou conclui a inscrição. No formulário do Desafio, contamos também qual campo obrigatório impediu o envio e o motivo de uma inscrição recusada (por exemplo, e-mail inválido). Cada ação vira só mais um no total do dia: não guardamos quem fez, o que foi digitado, nem nada que identifique você ou o seu navegador.",
         },
         {
           termo: "Google Analytics",
@@ -2591,7 +2591,7 @@ export const diagnose = {
  * As datas que a página MOSTRA estão aqui; as que o servidor CONFERE estão em
  * lib/bolsas/regras.ts. Mudou uma, mude a outra (o teste confere as duas).
  *
- * O regulamento é RASCUNHO para o advogado validar.
+ * Regulamento confirmado pelo Rodrigo em 2026-11-23, como está no ar.
  */
 export const PRECO_FUNDADOR = "R$ 29,90";
 
@@ -2964,6 +2964,40 @@ export const reforma = {
       { valor: "0", rotulo: "cadastro para calcular" },
     ],
     cta: "Comparar cotações",
+  },
+  /**
+   * O filme para Instagram e LinkedIn (2026-11-19, pedido do Rodrigo: "vídeo
+   * em motion explicando as duas soluções e discurso para o comprador"),
+   * remotion/social/Reforma.tsx. Mudo, ~30 s, 9:16 e 4:5. Os números do
+   * exemplo são calculados por lib/reforma.ts e lib/consulta-ncm.ts na hora do
+   * render: os textos aqui só levam o que não é conta.
+   */
+  filme: {
+    kicker: "Reforma Tributária · Compras",
+    gancho: ["Duas cotações.", "Qual sai mais barata?"],
+    passo1: { numero: "01", titulo: "Calculadora de custo líquido" },
+    fornecedorA: "Fornecedor A",
+    fornecedorB: "Fornecedor B",
+    regimeA: "Regime regular",
+    regimeB: "Simples, tudo no DAS",
+    naNota: "Na nota, o B é mais barato.",
+    depois: "Depois do crédito de IBS e CBS, o A custa menos.",
+    nota: "Total da nota",
+    liquido: "Custo líquido",
+    melhor: "Melhor custo líquido",
+    noAno: "Comprando todo mês, a diferença no ano é de",
+    exemplo: "Exemplo ilustrativo, compra em 2033, Simples com 4% de IBS e CBS no DAS.",
+    ponte: ["E se o item tiver redução?", "O NCM responde."],
+    passo2: { numero: "02", titulo: "Consulta de NCM" },
+    busca: "sabões de toucador",
+    reducao: "de redução no IBS e na CBS",
+    levar: "Levar a redução para a calculadora",
+    discurso: [
+      "Antes de fechar a próxima compra,",
+      "compare pelo custo líquido.",
+    ],
+    provas: ["Grátis e sem cadastro", "Conferida com a calculadora oficial da Receita Federal", "De 2027 a 2033, ano a ano"],
+    endereco: "iagentics.com.br/reforma-tributaria-compras",
   },
   calculadora: {
     titulo: "Compare as cotações",

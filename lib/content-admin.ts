@@ -310,6 +310,44 @@ export const admin = {
     },
     porDia: { titulo: "Por dia", dia: "Dia", inscritos: "Inscrições" },
     semDados: "Nenhuma inscrição ainda.",
+    /* Funil por dentro da /bolsas (2026-11-23, dia do lançamento: 41 visitas e
+       nenhuma inscrição até as 10h). Eventos em lib/eventos.ts. */
+    dentro: {
+      titulo: "Dentro da página, desde o lançamento",
+      etapas: [
+        { rotulo: "Visitas na /bolsas", eventos: [] as string[] },
+        { rotulo: "Rolaram até a metade", eventos: ["bolsas_rolagem_50"] },
+        { rotulo: "Rolaram até o fim", eventos: ["bolsas_rolagem_100"] },
+        { rotulo: "Cliques em \"Quero participar\" (capa + botão fixo)", eventos: ["bolsas_cta_topo", "bolsas_cta_fixo"] },
+        { rotulo: "Começaram o formulário", eventos: ["bolsas_formulario_inicio"] },
+        { rotulo: "Enviaram ao servidor", eventos: ["bolsas_formulario_envio"] },
+        { rotulo: "Inscreveram-se", eventos: ["bolsas_formulario_ok"] },
+      ],
+      dasVisitas: (p: string) => `${p}% das visitas`,
+      desde: (dia: string) => `Medindo desde ${dia}.`,
+      semDados: "Nenhum evento medido ainda. A medição começou em 23/11/2026, depois das primeiras visitas do lançamento.",
+      bloqueios: {
+        titulo: "Onde o navegador barrou o envio",
+        nota: "O campo obrigatório vazio ou inválido que impediu o envio, contado uma vez por tentativa. Quem é barrado aqui nunca chega ao servidor.",
+        campos: {
+          nome: "Nome",
+          empresa: "Empresa",
+          email: "E-mail",
+          whatsapp: "WhatsApp",
+          instagram: "Instagram",
+          linkedin: "LinkedIn",
+          problema: "O problema",
+          regulamento: "Aceite do regulamento",
+          cienciaDados: "Ciência do uso dos dados",
+        } as Record<string, string>,
+      },
+      erros: {
+        titulo: "Por que o servidor recusou",
+        nota: "O motivo da recusa, com o mesmo texto que a pessoa leu embaixo do botão.",
+      },
+      nenhum: "Nenhum.",
+      nota: "Cada etapa é contada sobre as visitas, não sobre a anterior. São ações, não pessoas: quem tenta duas vezes conta duas. Quem marcou \"não contar\" no painel fica de fora.",
+    },
     selecao: {
       titulo: "Seleção",
       lead: "Avalie cada inscrição, aplique o ranking e envie o resultado. A régua é a do regulamento: nota de 0 a 10 para a clareza do problema e para o entendimento da solução em 30 dias; seguir a @iagenticsacademy e publicar o post, em sim ou não, pelo perfil público. Só concorre quem cumpriu os dois últimos. Desempate pela inscrição mais antiga.",

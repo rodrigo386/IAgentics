@@ -31,6 +31,7 @@ import { SecaoFaq } from "@/components/sections/Faq";
 import { BarraBolsas } from "@/components/sections/bolsas/BarraBolsas";
 import { Contagem } from "@/components/sections/bolsas/Contagem";
 import { InscricaoForm } from "@/components/sections/bolsas/InscricaoForm";
+import { MEDICAO_BOLSAS, MedidorPagina } from "@/components/site/MedidorPagina";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { bolsas as t, cursos, PRECO_FUNDADOR, PRECO_MENSAL } from "@/lib/content";
 import { agoraBolsas, descontoFundador, faseDasInscricoes, INSCRICOES_ABREM, INSCRICOES_FECHAM } from "@/lib/bolsas/regras";
@@ -454,6 +455,7 @@ export default function PaginaBolsas() {
         <SecaoFaq eyebrow={t.faq.eyebrow} titulo={t.faq.titulo} itens={t.faq.itens} />
       </main>
       {fase !== "encerradas" ? <BarraBolsas /> : null}
+      <MedidorPagina medicao={MEDICAO_BOLSAS} />
       <Footer />
     </>
   );

@@ -14,6 +14,7 @@ import { ConceitoRotina } from "./hero-cursos/ConceitoRotina";
 import { ConceitoMisto, DURACAO_MISTO } from "./hero-cursos/ConceitoMisto";
 import { DURACAO_LANCAMENTO, Lancamento } from "./social/Lancamento";
 import { DURACAO_DENTRO, Dentro } from "./social/Dentro";
+import { DURACAO_REFORMA, Reforma } from "./social/Reforma";
 import { Miniatura, type PropsMiniatura } from "./social/Miniatura";
 import { Depoimento, duracaoDepoimento, type PropsDepoimento } from "./social/Depoimento";
 import { DURACAO as DURACAO_HERO, FPS as FPS_HERO, H as H_HERO, W as W_HERO } from "./hero-cursos/base";
@@ -115,6 +116,9 @@ export function RemotionRoot() {
       <Composition id="social-lancamento-feed" component={Lancamento} durationInFrames={DURACAO_LANCAMENTO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
       <Composition id="social-dentro-vertical" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
       <Composition id="social-dentro-feed" component={Dentro} durationInFrames={DURACAO_DENTRO * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
+      {/* Reforma Tributária para Compras (2026-11-19): calculadora e consulta de NCM. */}
+      <Composition id="social-reforma-vertical" component={Reforma} durationInFrames={DURACAO_REFORMA * FPS_HERO} fps={FPS_HERO} width={1080} height={1920} />
+      <Composition id="social-reforma-feed" component={Reforma} durationInFrames={DURACAO_REFORMA * FPS_HERO} fps={FPS_HERO} width={1080} height={1350} />
       {/* Depoimentos do Vinícius (2026-10-15), conceito B "moldura da marca",
           em 9:16 e 4:5. O id leva a hora da gravação com hífens (o Remotion
           não aceita ponto em id). Precisam do bundle com --public-dir

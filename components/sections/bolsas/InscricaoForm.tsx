@@ -1,14 +1,22 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { bolsas } from "@/lib/content";
+import { CAMPOS_BOLSAS, MOTIVOS_BOLSAS } from "@/lib/eventos";
+import { registrarEvento } from "@/lib/eventos-cliente";
 
 /**
  * Formulário do Desafio Prova Real (2026-11-03; refeito em 2026-11-18). O servidor valida tudo de
  * novo (lib/bolsas/regras.ts); aqui o navegador só ajuda com `required` e o
  * contador do problema. O erro volta como um `motivo` só e aparece junto do
  * botão, num `role="alert"`.
+ *
+ * Medição (2026-11-23, lançamento com visitas e nenhuma inscrição): o
+ * primeiro toque num campo, o campo em que o NAVEGADOR barra o envio (só o
+ * primeiro de cada tentativa, que é o que a pessoa vê), o envio, o motivo da
+ * recusa do servidor e a inscrição feita. Só o nome do evento sai daqui,
+ * nunca o que foi digitado (lib/eventos.ts).
  */
 const t = bolsas.formulario;
 const MAX = 600;
@@ -26,12 +34,35 @@ export function InscricaoForm() {
   const [ok, setOk] = useState(false);
   const [problema, setProblema] = useState("");
   const [isca, setIsca] = useState("");
+  const comecou = useRef(false);
+  const ultimoBloqueio = useRef(0);
+
+  function aoFocar() {
+    if (comecou.current) return;
+    comecou.current = true;
+    registrarEvento("bolsas_formulario_inicio");
+  }
+
+  /** O navegador dispara `invalid` em cada campo barrado, de uma vez: conta o primeiro. */
+  function aoBarrar(e: FormEvent<HTMLFormElement>) {
+    const agora = Date.now();
+    if (agora - ultimoBloqueio.current < 1000) return;
+    ultimoBloqueio.current = agora;
+    const nome = (e.target as HTMLInputElement).name;
+    if ((CAMPOS_BOLSAS as readonly string[]).includes(nome)) registrarEvento(`bolsas_bloqueio_${nome as (typeof CAMPOS_BOLSAS)[number]}`);
+  }
+
+  function recusa(motivo: unknown) {
+    const m = (MOTIVOS_BOLSAS as readonly unknown[]).includes(motivo) ? (motivo as (typeof MOTIVOS_BOLSAS)[number]) : "falha";
+    registrarEvento(`bolsas_erro_${m}`);
+  }
 
   async function enviar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setEnviando(true);
     setErro(null);
+    registrarEvento("bolsas_formulario_envio");
     try {
       const r = await fetch("/api/bolsas", {
         method: "POST",
@@ -54,11 +85,14 @@ export function InscricaoForm() {
       });
       const corpo = await r.json().catch(() => ({}));
       if (r.ok) {
+        registrarEvento("bolsas_formulario_ok");
         setOk(true);
         return;
       }
+      recusa(corpo.error);
       setErro(t.erros[corpo.error] ?? t.erros.falha);
     } catch {
+      recusa("falha");
       setErro(t.erros.falha);
     }
     setEnviando(false);
@@ -74,7 +108,7 @@ export function InscricaoForm() {
   }
 
   return (
-    <form onSubmit={enviar} className="flex flex-col gap-4">
+    <form onSubmit={enviar} onFocus={aoFocar} onInvalidCapture={aoBarrar} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5">
         <span className={rotulo}>{t.nome}</span>
         <input name="nome" required autoComplete="name" className={campo} />
