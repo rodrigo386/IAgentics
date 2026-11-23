@@ -66,7 +66,8 @@ describe("validarInscricao", () => {
     expect(validarInscricao({ ...base, regulamento: false })).toEqual({ ok: false, motivo: "regulamento" });
     expect(validarInscricao({ ...base, cienciaDados: "on" })).toEqual({ ok: false, motivo: "cienciaDados" });
     expect(validarInscricao({ ...base, nome: "Ana" })).toEqual({ ok: false, motivo: "nome" });
-    expect(validarInscricao({ ...base, empresa: "X" })).toEqual({ ok: false, motivo: "empresa" });
+    const semEmpresa = validarInscricao({ ...base, empresa: "" });
+    expect(semEmpresa.ok && semEmpresa.dados.empresa).toBe("");
     expect(validarInscricao({ ...base, problema: "curto" })).toEqual({ ok: false, motivo: "problema" });
     expect(validarInscricao({ ...base, problema: "x".repeat(601) })).toEqual({ ok: false, motivo: "problema" });
   });

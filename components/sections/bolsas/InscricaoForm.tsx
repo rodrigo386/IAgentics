@@ -60,6 +60,14 @@ export function InscricaoForm() {
   async function enviar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
+    /* Instagram e LinkedIn vazios: avisa aqui, sem ir ao servidor (no
+       lançamento, a primeira inscrição só descobriu a regra pela recusa). */
+    if (!String(f.get("instagram") ?? "").trim() && !String(f.get("linkedin") ?? "").trim()) {
+      registrarEvento("bolsas_bloqueio_instagram");
+      setErro(t.erros.perfis);
+      (e.currentTarget.elements.namedItem("instagram") as HTMLInputElement | null)?.focus();
+      return;
+    }
     setEnviando(true);
     setErro(null);
     registrarEvento("bolsas_formulario_envio");
@@ -125,10 +133,10 @@ export function InscricaoForm() {
       </div>
       <label className="flex flex-col gap-1.5">
         <span className={rotulo}>{t.empresa}</span>
-        <input name="empresa" required autoComplete="organization" className={campo} />
+        <input name="empresa" autoComplete="organization" className={campo} />
       </label>
       <fieldset className="flex flex-col gap-3">
-        <legend className="sr-only">{t.perfisNota}</legend>
+        <legend className="text-base font-medium text-fg">{t.perfisTitulo}</legend>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5">
             <span className={rotulo}>{t.instagram}</span>
@@ -139,7 +147,7 @@ export function InscricaoForm() {
             <input name="linkedin" placeholder="linkedin.com/in/seuperfil" autoComplete="off" className={campo} />
           </label>
         </div>
-        <p className="text-xs text-fg-muted" aria-hidden="true">
+        <p className="text-xs text-fg-muted">
           {t.perfisNota}
         </p>
       </fieldset>

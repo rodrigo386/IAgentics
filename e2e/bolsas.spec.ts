@@ -21,7 +21,7 @@ async function preencher(page: Page, email: string) {
   await page.getByLabel("Nome completo").fill("Ana Teste Souza");
   await page.getByLabel("E-mail", { exact: true }).fill(email);
   await page.getByLabel("WhatsApp, com DDD").fill("(11) 98888-7777");
-  await page.getByLabel("Empresa", { exact: true }).fill("Empresa Teste");
+  await page.getByLabel("Empresa onde trabalha (opcional)").fill("Empresa Teste");
   await page.getByLabel("Perfil no Instagram").fill("@ana.teste");
   await page.getByLabel(/Qual problema do seu dia a dia/).fill("Levo 3 horas por semana montando o comparativo de cotações do frete.");
   await page.getByRole("checkbox", { name: /li e aceito o/ }).check();
@@ -109,6 +109,22 @@ test("a página mede o começo do formulário e o campo em que o navegador barro
   await expect.poll(async () => (await eventos()).filter((e) => e.startsWith("bolsas_bloqueio_")).length).toBe(1);
   // Barrado no navegador, nada foi ao servidor.
   expect(await eventos()).not.toContain("bolsas_formulario_envio");
+});
+
+/* 2026-11-23: a primeira inscrição do lançamento travou na empresa (não
+   estava trabalhando) e só soube da regra dos perfis pela recusa. */
+test("empresa é opcional e a falta de Instagram e LinkedIn é avisada antes de enviar", async ({ page }) => {
+  await page.goto("/bolsas");
+  await preencher(page, `perfis-${Date.now()}@exemplo-teste.com`);
+  await page.getByLabel("Empresa onde trabalha (opcional)").fill("");
+  await page.getByLabel("Perfil no Instagram").fill("");
+  await expect(page.getByText("Instagram ou LinkedIn: preencha pelo menos um")).toBeVisible();
+  let foi = false;
+  await page.route("**/api/bolsas", (r) => { foi = true; return r.abort(); });
+  await page.getByRole("button", { name: "Enviar inscrição" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Informe o Instagram ou o LinkedIn" })).toBeVisible();
+  await expect(page.getByLabel("Perfil no Instagram")).toBeFocused();
+  expect(foi).toBe(false);
 });
 
 test("o regulamento abre e volta para o desafio", async ({ page }) => {

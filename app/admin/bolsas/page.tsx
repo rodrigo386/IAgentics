@@ -315,7 +315,7 @@ export default async function PainelBolsas({
                     <input type="hidden" name="id" value={l.id} />
                     <div className="flex flex-col gap-2 text-sm">
                       <p className="text-base font-medium text-fg">
-                        {l.nome} <span className="font-normal text-fg-muted">· {l.empresa}</span>
+                        {l.nome} {l.empresa && <span className="font-normal text-fg-muted">· {l.empresa}</span>}
                       </p>
                       <p className="text-fg-muted">
                         {l.email} · {l.whatsapp} · {dataHora.format(l.criadaEm)}

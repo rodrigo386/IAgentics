@@ -46,7 +46,7 @@ export type InscricaoValida = {
   usoImagem: boolean;
 };
 
-export type Motivo = "nome" | "email" | "whatsapp" | "empresa" | "perfis" | "problema" | "regulamento" | "cienciaDados";
+export type Motivo = "nome" | "email" | "whatsapp" | "perfis" | "problema" | "regulamento" | "cienciaDados";
 
 const texto = (v: unknown, max = 160) => (typeof v === "string" ? v.trim().replace(/\s+/g, " ").slice(0, max) : "");
 
@@ -79,8 +79,9 @@ export function validarInscricao(corpo: unknown): { ok: true; dados: InscricaoVa
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return { ok: false, motivo: "email" };
   const whatsapp = texto(c.whatsapp, 40).replace(/\D/g, "");
   if (whatsapp.length < 10 || whatsapp.length > 13) return { ok: false, motivo: "whatsapp" };
+  /* Opcional desde 2026-11-23: a primeira inscrição do lançamento travou no
+     campo de quem não está trabalhando. Vazio é gravado como "". */
   const empresa = texto(c.empresa, 120);
-  if (empresa.length < 2) return { ok: false, motivo: "empresa" };
 
   /* Os dois campos vazios, ou algum preenchido com algo que não é perfil:
      melhor avisar agora do que a equipe achar um link quebrado. */

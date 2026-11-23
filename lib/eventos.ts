@@ -23,7 +23,7 @@ export const EVENTOS_CURSOS = [
 /** Campos do formulário da /bolsas que o NAVEGADOR pode barrar (required, type=email…). */
 export const CAMPOS_BOLSAS = ["nome", "empresa", "email", "whatsapp", "instagram", "linkedin", "problema", "regulamento", "cienciaDados"] as const;
 /** Motivos com que o SERVIDOR recusa a inscrição (as chaves de bolsas.formulario.erros). */
-export const MOTIVOS_BOLSAS = ["nome", "email", "whatsapp", "empresa", "perfis", "problema", "regulamento", "cienciaDados", "fechadas", "limite", "falha"] as const;
+export const MOTIVOS_BOLSAS = ["nome", "email", "whatsapp", "perfis", "problema", "regulamento", "cienciaDados", "fechadas", "limite", "falha"] as const;
 
 export const EVENTOS_BOLSAS = [
   "bolsas_rolagem_50",
