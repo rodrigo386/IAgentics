@@ -447,7 +447,7 @@ export function emailSorteio(nome: string, numero: string) {
   const { ok, redes } = sorteio;
   const linkPlataforma = `${site.url}${ok.plataformaHref}`;
   const linkRegulamento = `${site.url}/sorteio/regulamento`;
-  const participa = "Você está participando do sorteio da caneca-moletom IAgentics no Case 2026.";
+  const participa = "Você está participando do sorteio do porta-lata moletom IAgentics no Case 2026.";
   const quando = "O sorteio é no encerramento do Case 2026, em 26 de novembro. Se o seu número sair, avisamos por este e-mail e pelo WhatsApp do cadastro.";
   const e = escapeHtml;
   const paragrafo = (conteudo: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;

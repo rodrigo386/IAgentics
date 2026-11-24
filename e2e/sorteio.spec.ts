@@ -13,8 +13,8 @@ async function preencher(page: Page, email: string) {
 
 test("a página do QR code mostra o prêmio, o formulário e as redes, e fica fora do Google", async ({ page }) => {
   await page.goto("/sorteio");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Concorra a uma caneca-moletom IAgentics.");
-  await expect(page.getByRole("img", { name: /Caneca azul em forma de moletom/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Concorra a um porta-lata moletom IAgentics.");
+  await expect(page.getByRole("img", { name: /Porta-lata azul em forma de moletom/ })).toBeVisible();
   await expect(page.getByText("Imagem ilustrativa", { exact: false })).toBeVisible();
   await expect(page.getByRole("link", { name: "IAgentics no LinkedIn" })).toHaveAttribute("href", /linkedin\.com\/company\/iagentics/);
   await expect(page.getByRole("link", { name: "@iagentics no Instagram" })).toHaveAttribute("href", /instagram\.com\/iagentics/);

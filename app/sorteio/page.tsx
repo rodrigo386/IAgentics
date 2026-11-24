@@ -41,7 +41,7 @@ export default function PaginaSorteio() {
             <figure className="flex flex-col gap-2">
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface lg:aspect-[4/5]">
                 <Image
-                  src="/sorteio/caneca-moletom-v1.jpg"
+                  src="/sorteio/porta-lata-moletom-v1.jpg"
                   alt={t.premio.alt}
                   fill
                   priority

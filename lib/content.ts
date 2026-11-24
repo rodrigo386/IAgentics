@@ -3314,7 +3314,7 @@ export const pacoteReforma = {
  * sorteio ... através de um QR code fazer a pessoa se cadastrar para termos
  * leads, após o cadastro ela ganha um número da sorte e acessa o site da nossa
  * plataforma de treinamentos, link para LinkedIn e Instagram visíveis").
- * Decisões dele: 1 caneca-moletom IAgentics, sorteio no fim do evento (26/11),
+ * Decisões dele: 1 porta-lata moletom IAgentics, sorteio no fim do evento (26/11),
  * feito por fora com o CSV do /admin/sorteio, ganhador avisado por e-mail e
  * WhatsApp, número na tela e por e-mail, botão para a /cursos.
  * As datas que o servidor confere moram em lib/sorteio/regras.ts; o teste
@@ -3323,14 +3323,14 @@ export const pacoteReforma = {
 export const sorteio = {
   meta: {
     titulo: "Sorteio IAgentics no Case 2026",
-    descricao: "Cadastre-se, receba seu número da sorte e concorra a uma caneca-moletom IAgentics no Case 2026.",
+    descricao: "Cadastre-se, receba seu número da sorte e concorra a um porta-lata moletom IAgentics no Case 2026.",
   },
   eyebrow: "Case 2026 · Sorteio IAgentics",
-  titulo: "Concorra a uma caneca-moletom IAgentics.",
+  titulo: "Concorra a um porta-lata moletom IAgentics.",
   lead: "Cadastre-se em 30 segundos e receba seu número da sorte na hora. O sorteio é no encerramento do Case 2026, em 26 de novembro.",
   premio: {
-    alt: "Caneca azul em forma de moletom com capuz, zíper e o logo da IAgentics em relevo",
-    legenda: "1 caneca-moletom IAgentics. Imagem ilustrativa.",
+    alt: "Porta-lata azul em forma de moletom com capuz, zíper e o logo da IAgentics em relevo",
+    legenda: "1 porta-lata moletom IAgentics. Imagem ilustrativa.",
   },
   passos: [
     { titulo: "Cadastre-se", texto: "Nome, e-mail, WhatsApp e sua área." },
@@ -3394,7 +3394,7 @@ export const sorteio = {
   },
   encerrado: {
     titulo: "Cadastros encerrados",
-    texto: "O sorteio da caneca-moletom IAgentics no Case 2026 já aconteceu. Obrigado a todos que participaram.",
+    texto: "O sorteio do porta-lata moletom IAgentics no Case 2026 já aconteceu. Obrigado a todos que participaram.",
   },
   regulamentoPagina: {
     meta: { titulo: "Regulamento do sorteio no Case 2026 | IAgentics" },
@@ -3426,7 +3426,7 @@ export const sorteio = {
     {
       titulo: "4. O prêmio",
       paragrafos: [
-        "Uma (1) caneca-moletom IAgentics. A imagem da página é ilustrativa. O prêmio não pode ser trocado por dinheiro nem por outro produto.",
+        "Um (1) porta-lata moletom IAgentics. A imagem da página é ilustrativa. O prêmio não pode ser trocado por dinheiro nem por outro produto.",
       ],
     },
     {
