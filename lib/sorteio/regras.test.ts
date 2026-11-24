@@ -7,6 +7,7 @@ const base = {
   email: " Ana@Empresa.com ",
   whatsapp: "(11) 98888-7777",
   area: "Compras e Suprimentos",
+  seguindo: true,
   regulamento: true,
 };
 
@@ -23,9 +24,10 @@ describe("cadastro do sorteio", () => {
     expect(validarCadastro({ ...base, whatsapp: "1234" })).toEqual({ ok: false, motivo: "whatsapp" });
     expect(validarCadastro({ ...base, area: "Inventada" })).toEqual({ ok: false, motivo: "area" });
     expect(validarCadastro({ ...base, regulamento: "on" })).toEqual({ ok: false, motivo: "regulamento" });
+    expect(validarCadastro({ ...base, seguindo: false })).toEqual({ ok: false, motivo: "seguindo" });
   });
   it("todo motivo de recusa tem mensagem na página", () => {
-    for (const m of ["nome", "email", "whatsapp", "area", "regulamento", "fechado", "limite", "falha"]) {
+    for (const m of ["nome", "email", "whatsapp", "area", "seguindo", "regulamento", "fechado", "limite", "falha"]) {
       expect(sorteio.formulario.erros[m]).toBeTruthy();
     }
   });

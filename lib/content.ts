@@ -109,7 +109,7 @@ export const privacidade = {
         {
           termo: "Sorteio no Case 2026",
           texto:
-            "Nome, e-mail, WhatsApp, área de atuação, empresa e cargo (se você informar), o seu número da sorte e a data do aceite do regulamento. Servem para o sorteio, para enviar o seu número por e-mail e para avisar quem ganhar, e ficam gravados no nosso banco de dados. Conteúdos e novidades da IAgentics só chegam a quem marcou essa opção no cadastro.",
+            "Nome, e-mail, WhatsApp, área de atuação, empresa e cargo (se você informar), o seu número da sorte, a sua declaração de que segue a IAgentics no Instagram ou no LinkedIn e a data do aceite do regulamento. Servem para o sorteio, para enviar o seu número por e-mail e para avisar quem ganhar, e ficam gravados no nosso banco de dados. Conteúdos e novidades da IAgentics só chegam a quem marcou essa opção no cadastro.",
         },
         {
           termo: "Calculadora da Reforma Tributária",
@@ -3333,7 +3333,7 @@ export const sorteio = {
     legenda: "1 porta-lata moletom IAgentics. Imagem ilustrativa.",
   },
   passos: [
-    { titulo: "Cadastre-se", texto: "Nome, e-mail, WhatsApp e sua área." },
+    { titulo: "Cadastre-se", texto: "Siga a IAgentics e preencha nome, e-mail, WhatsApp e área." },
     { titulo: "Receba seu número", texto: "Na tela e no seu e-mail." },
     { titulo: "Sorteio em 26/11", texto: "Avisamos quem ganhar por e-mail e WhatsApp." },
   ],
@@ -3357,6 +3357,10 @@ export const sorteio = {
       "Estudante",
       "Outra",
     ],
+    seguindo: "Estou seguindo a IAgentics no",
+    seguindoInstagram: "Instagram",
+    seguindoE: "e/ou no",
+    seguindoLinkedin: "LinkedIn",
     regulamento: "Tenho 18 anos ou mais, li e aceito o",
     regulamentoLink: "regulamento do sorteio",
     dados: "e estou ciente de que os meus dados serão usados para o sorteio e para o aviso ao ganhador, conforme a",
@@ -3369,6 +3373,7 @@ export const sorteio = {
       email: "Confira o e-mail.",
       whatsapp: "Confira o WhatsApp, com DDD.",
       area: "Escolha a sua área de atuação.",
+      seguindo: "Para participar, siga a IAgentics no Instagram ou no LinkedIn e marque a caixa.",
       regulamento: "Para participar, aceite o regulamento.",
       fechado: "Os cadastros para este sorteio estão encerrados.",
       limite: "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.",
@@ -3420,6 +3425,7 @@ export const sorteio = {
       titulo: "3. Como participar",
       paragrafos: [
         "Cadastre-se pela página iagentics.com.br/sorteio (o QR code no estande leva até ela), com nome, e-mail, WhatsApp e área de atuação, até as 18h de 26 de novembro de 2026, horário de Brasília.",
+        "Para participar, é preciso seguir a IAgentics no Instagram (@iagentics) e/ou no LinkedIn (linkedin.com/company/iagentics) e declarar isso no cadastro. Antes de entregar o prêmio, a IAgentics pode pedir ao ganhador que mostre que segue a página.",
         "Cada cadastro recebe um número da sorte, mostrado na tela e enviado por e-mail. Vale um cadastro por e-mail: cadastrar o mesmo e-mail de novo não gera outro número.",
       ],
     },

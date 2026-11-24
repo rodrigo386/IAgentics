@@ -34,7 +34,7 @@ export type CadastroValido = {
   comunicacoes: boolean;
 };
 
-export type Motivo = "nome" | "email" | "whatsapp" | "area" | "regulamento";
+export type Motivo = "nome" | "email" | "whatsapp" | "area" | "seguindo" | "regulamento";
 
 const texto = (v: unknown, max = 160) => (typeof v === "string" ? v.trim().replace(/\s+/g, " ").slice(0, max) : "");
 
@@ -48,6 +48,9 @@ export function validarCadastro(corpo: unknown): { ok: true; dados: CadastroVali
   if (whatsapp.length < 10 || whatsapp.length > 13) return { ok: false, motivo: "whatsapp" };
   const area = texto(c.area, 80);
   if (!AREAS.includes(area)) return { ok: false, motivo: "area" };
+  /* Seguir a IAgentics no Instagram e/ou no LinkedIn é condição para participar
+     (pedido do Rodrigo, 2026-11-23). É declaração: o site não confere. */
+  if (c.seguindo !== true) return { ok: false, motivo: "seguindo" };
   if (c.regulamento !== true) return { ok: false, motivo: "regulamento" };
   return {
     ok: true,

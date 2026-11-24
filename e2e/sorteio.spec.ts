@@ -8,6 +8,7 @@ async function preencher(page: Page, email: string) {
   await page.getByLabel("E-mail", { exact: true }).fill(email);
   await page.getByLabel("WhatsApp, com DDD").fill("(11) 98888-7777");
   await page.getByLabel("Área de atuação").selectOption("Compras e Suprimentos");
+  await page.getByRole("checkbox", { name: /Estou seguindo a IAgentics/ }).check();
   await page.getByRole("checkbox", { name: /li e aceito o/ }).check();
 }
 
@@ -40,7 +41,7 @@ test("o cadastro dá o número da sorte, leva à plataforma e não repete númer
 
 test("o servidor recusa cadastro sem área e o regulamento abre", async ({ page, request }) => {
   const r = await request.post("/api/sorteio", {
-    data: { nome: "Ana Souza", email: `x-${Date.now()}@exemplo-teste.com`, whatsapp: "11988887777", area: "", regulamento: true },
+    data: { nome: "Ana Souza", email: `x-${Date.now()}@exemplo-teste.com`, whatsapp: "11988887777", area: "", seguindo: true, regulamento: true },
   });
   expect(r.status()).toBe(422);
   expect((await r.json()).error).toBe("area");

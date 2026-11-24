@@ -23,6 +23,7 @@ export async function cadastrar(d: CadastroValido): Promise<{ novo: true; id: st
       cargo: d.cargo,
       area: d.area,
       regulamentoEm: agora,
+      seguindoEm: agora,
       comunicacoesEm: d.comunicacoes ? agora : null,
     })
     .onConflictDoNothing()

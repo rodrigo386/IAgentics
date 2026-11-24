@@ -318,6 +318,8 @@ export const sorteioCadastros = pgTable(
     cargo: text("cargo").notNull(),
     area: text("area").notNull(),
     regulamentoEm: timestamp("regulamento_em", { withTimezone: true }).notNull(),
+    /** Declarou seguir a IAgentics no Instagram e/ou no LinkedIn (migração 0021). */
+    seguindoEm: timestamp("seguindo_em", { withTimezone: true }),
     comunicacoesEm: timestamp("comunicacoes_em", { withTimezone: true }),
     emailEnviadoEm: timestamp("email_enviado_em", { withTimezone: true }),
   },

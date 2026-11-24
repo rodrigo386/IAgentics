@@ -76,7 +76,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
         {
           termo: "Case 2026 prize draw (Sorteio no Case 2026)",
           texto:
-            "Name, email, WhatsApp, field of work, company and job title (if you provide them), your lucky number and the date you accepted the rules. We use them to run the draw, to email you your number and to notify the winner, and they are stored in our database. IAgentics content and news only go to people who checked that option when signing up.",
+            "Name, email, WhatsApp, field of work, company and job title (if you provide them), your lucky number, your statement that you follow IAgentics on Instagram or LinkedIn and the date you accepted the rules. We use them to run the draw, to email you your number and to notify the winner, and they are stored in our database. IAgentics content and news only go to people who checked that option when signing up.",
         },
         {
           termo: "Tax Reform calculator (Calculadora da Reforma Tributária)",

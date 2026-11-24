@@ -13,6 +13,8 @@ import { sorteio } from "@/lib/content";
  */
 const t = sorteio.formulario;
 const ok = sorteio.ok;
+const instagram = sorteio.redes.itens.find((r) => r.rede === "Instagram")!;
+const linkedin = sorteio.redes.itens.find((r) => r.rede === "LinkedIn")!;
 
 const campo = "w-full rounded-control border border-line bg-bg px-4 py-3 text-base text-fg outline-none focus-visible:border-fg";
 const rotulo = "font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted";
@@ -42,6 +44,7 @@ export function SorteioForm() {
           empresa: f.get("empresa"),
           cargo: f.get("cargo"),
           area: f.get("area"),
+          seguindo: f.get("seguindo") === "on",
           regulamento: f.get("regulamento") === "on",
           comunicacoes: f.get("comunicacoes") === "on",
           site: isca,
@@ -140,6 +143,20 @@ export function SorteioForm() {
           <input name="site" tabIndex={-1} autoComplete="off" value={isca} onChange={(e) => setIsca(e.target.value)} />
         </label>
       </div>
+      <label className={caixa}>
+        <input name="seguindo" type="checkbox" required className={check} />
+        <span>
+          {t.seguindo}{" "}
+          <a href={instagram.href} target="_blank" rel="noopener noreferrer" className="text-fg underline">
+            {t.seguindoInstagram}
+          </a>{" "}
+          {t.seguindoE}{" "}
+          <a href={linkedin.href} target="_blank" rel="noopener noreferrer" className="text-fg underline">
+            {t.seguindoLinkedin}
+          </a>
+          .
+        </span>
+      </label>
       <label className={caixa}>
         <input name="regulamento" type="checkbox" required className={check} />
         <span>
