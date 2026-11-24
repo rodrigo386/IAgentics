@@ -58,6 +58,7 @@ test("home e páginas de solução levam aos artigos e à /artigos", async ({ pa
     await page.goto(rota);
     const bloco = page.locator("section", { has: page.locator("#artigos-relacionados") });
     await expect(bloco.getByRole("link", { name: "Ver todos os artigos" })).toHaveAttribute("href", "/artigos");
-    await expect(bloco.locator('a[href^="/artigos/"]')).toHaveCount(3);
+    /* A home mostra seis desde 2026-11-24 (auditoria de SEO); as demais, três. */
+    await expect(bloco.locator('a[href^="/artigos/"]')).toHaveCount(rota === "/" ? 6 : 3);
   }
 });
