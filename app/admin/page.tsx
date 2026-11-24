@@ -78,6 +78,9 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
         </Link>{" "}
         <Link href="/admin/bolsas" className="mt-4 ml-2 inline-block rounded-control border border-line px-4 py-2 text-sm font-medium text-fg">
           {t.irParaBolsas}
+        </Link>{" "}
+        <Link href="/admin/sorteio" className="mt-4 ml-2 inline-block rounded-control border border-line px-4 py-2 text-sm font-medium text-fg">
+          {t.irParaSorteio}
         </Link>
       </header>
 

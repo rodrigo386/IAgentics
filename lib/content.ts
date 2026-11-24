@@ -107,6 +107,11 @@ export const privacidade = {
             "Nome, e-mail, WhatsApp, empresa, os perfis no Instagram e no LinkedIn que você informar, o problema que você descreve e a data de cada autorização. Servem para avaliar a sua candidatura e falar com você sobre ela, e ficam gravados no nosso banco de dados. Comunicações depois do desafio, a entrada no grupo exclusivo de WhatsApp e o uso do seu nome e imagem na divulgação só acontecem se você marcar as autorizações opcionais. Para conferir os critérios de seleção, olhamos o seu perfil público no Instagram ou no LinkedIn.",
         },
         {
+          termo: "Sorteio no Case 2026",
+          texto:
+            "Nome, e-mail, WhatsApp, área de atuação, empresa e cargo (se você informar), o seu número da sorte e a data do aceite do regulamento. Servem para o sorteio, para enviar o seu número por e-mail e para avisar quem ganhar, e ficam gravados no nosso banco de dados. Conteúdos e novidades da IAgentics só chegam a quem marcou essa opção no cadastro.",
+        },
+        {
           termo: "Calculadora da Reforma Tributária",
           texto:
             "Enquanto você calcula, nada sai do seu navegador. Se você pedir o comparativo por e-mail, recebemos seu nome, e-mail de trabalho, empresa, cargo (se informar), o cenário que você calculou e a data da sua autorização, e, se marcar, o pedido de aviso sobre as alíquotas. Servem para enviar o comparativo e para a IAgentics falar com você sobre Compras e Reforma Tributária, e ficam gravados no nosso banco de dados.",
@@ -158,7 +163,7 @@ export const privacidade = {
           termo: "Asaas",
           texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras, os e-mails do Desafio Prova Real e o comparativo da calculadora da Reforma Tributária." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras, os e-mails do Desafio Prova Real, o número da sorte do sorteio no Case 2026 e o comparativo da calculadora da Reforma Tributária." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Metricool", texto: "Medição das visitas às páginas públicas e da origem delas nas redes sociais." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
@@ -167,7 +172,7 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Pedidos do comparativo da calculadora da Reforma Tributária ficam enquanto durar o relacionamento comercial, ou até você pedir para sair. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Pedidos do comparativo da calculadora da Reforma Tributária ficam enquanto durar o relacionamento comercial, ou até você pedir para sair. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Cadastros do sorteio no Case 2026 ficam até a entrega do prêmio; depois, ficam só os de quem aceitou conteúdos e novidades da IAgentics. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
@@ -3302,4 +3307,152 @@ export const pacoteReforma = {
     { id: "guias", rota: "/artigos/fornecedor-do-simples-na-reforma-tributaria", titulo: "Guias", texto: "Fornecedor do Simples, cClassTrib, base de cálculo e split payment." },
   ],
   atual: "Você está aqui",
+} as const;
+
+/**
+ * Sorteio no Case 2026 (/sorteio, 2026-11-23, pedido do Rodrigo: "página de
+ * sorteio ... através de um QR code fazer a pessoa se cadastrar para termos
+ * leads, após o cadastro ela ganha um número da sorte e acessa o site da nossa
+ * plataforma de treinamentos, link para LinkedIn e Instagram visíveis").
+ * Decisões dele: 1 caneca-moletom IAgentics, sorteio no fim do evento (26/11),
+ * feito por fora com o CSV do /admin/sorteio, ganhador avisado por e-mail e
+ * WhatsApp, número na tela e por e-mail, botão para a /cursos.
+ * As datas que o servidor confere moram em lib/sorteio/regras.ts; o teste
+ * confere que o texto daqui bate com elas.
+ */
+export const sorteio = {
+  meta: {
+    titulo: "Sorteio IAgentics no Case 2026",
+    descricao: "Cadastre-se, receba seu número da sorte e concorra a uma caneca-moletom IAgentics no Case 2026.",
+  },
+  eyebrow: "Case 2026 · Sorteio IAgentics",
+  titulo: "Concorra a uma caneca-moletom IAgentics.",
+  lead: "Cadastre-se em 30 segundos e receba seu número da sorte na hora. O sorteio é no encerramento do Case 2026, em 26 de novembro.",
+  premio: {
+    alt: "Caneca azul em forma de moletom com capuz, zíper e o logo da IAgentics em relevo",
+    legenda: "1 caneca-moletom IAgentics. Imagem ilustrativa.",
+  },
+  passos: [
+    { titulo: "Cadastre-se", texto: "Nome, e-mail, WhatsApp e sua área." },
+    { titulo: "Receba seu número", texto: "Na tela e no seu e-mail." },
+    { titulo: "Sorteio em 26/11", texto: "Avisamos quem ganhar por e-mail e WhatsApp." },
+  ],
+  formulario: {
+    titulo: "Seu cadastro",
+    nome: "Nome completo",
+    email: "E-mail",
+    whatsapp: "WhatsApp, com DDD",
+    empresa: "Empresa (opcional)",
+    cargo: "Cargo (opcional)",
+    area: "Área de atuação",
+    escolha: "Escolha",
+    areas: [
+      "Compras e Suprimentos",
+      "Financeiro e Controladoria",
+      "Operações e Logística",
+      "Tecnologia e Dados",
+      "Comercial e Marketing",
+      "Pessoas e RH",
+      "Gestão e Diretoria",
+      "Estudante",
+      "Outra",
+    ],
+    regulamento: "Tenho 18 anos ou mais, li e aceito o",
+    regulamentoLink: "regulamento do sorteio",
+    dados: "e estou ciente de que os meus dados serão usados para o sorteio e para o aviso ao ganhador, conforme a",
+    privacidade: "política de privacidade",
+    comunicacoes: "Quero receber conteúdos e novidades da IAgentics por e-mail e WhatsApp. (Opcional)",
+    botao: "Quero meu número da sorte",
+    enviando: "Gerando seu número…",
+    erros: {
+      nome: "Escreva seu nome e sobrenome.",
+      email: "Confira o e-mail.",
+      whatsapp: "Confira o WhatsApp, com DDD.",
+      area: "Escolha a sua área de atuação.",
+      regulamento: "Para participar, aceite o regulamento.",
+      fechado: "Os cadastros para este sorteio estão encerrados.",
+      limite: "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.",
+      falha: "Não conseguimos registrar agora. Tente de novo em instantes.",
+    } as Record<string, string>,
+  },
+  ok: {
+    eyebrow: "Você está participando",
+    titulo: "Seu número da sorte",
+    texto: "Guarde este número: ele também foi para o seu e-mail. O sorteio é no encerramento do Case 2026, em 26 de novembro, e avisamos quem ganhar por e-mail e WhatsApp.",
+    repetido: "Este e-mail já está participando do sorteio. O seu número da sorte está no e-mail que enviamos no cadastro.",
+    plataformaTitulo: "Enquanto isso, conheça a nossa plataforma de cursos",
+    plataformaTexto: "Formações de IA aplicada aos negócios na plataforma Solution, do Pecege.",
+    plataformaBotao: "Conhecer a plataforma",
+    plataformaHref: "/cursos",
+  },
+  redes: {
+    titulo: "Siga a IAgentics",
+    itens: [
+      { rede: "LinkedIn", rotulo: "IAgentics no LinkedIn", href: "https://www.linkedin.com/company/iagentics/" },
+      { rede: "Instagram", rotulo: "@iagentics no Instagram", href: "https://www.instagram.com/iagentics/" },
+    ],
+  },
+  encerrado: {
+    titulo: "Cadastros encerrados",
+    texto: "O sorteio da caneca-moletom IAgentics no Case 2026 já aconteceu. Obrigado a todos que participaram.",
+  },
+  regulamentoPagina: {
+    meta: { titulo: "Regulamento do sorteio no Case 2026 | IAgentics" },
+    titulo: "Regulamento do sorteio no Case 2026",
+    versao: "Versão de 23 de novembro de 2026",
+    voltar: "Voltar para o sorteio",
+  },
+  regulamento: [
+    {
+      titulo: "1. Quem promove",
+      paragrafos: [
+        "O sorteio é promovido pela IAgentics LTDA, CNPJ 56.920.339/0001-60, durante o Case 2026.",
+      ],
+    },
+    {
+      titulo: "2. Quem pode participar",
+      paragrafos: [
+        "Pessoas com 18 anos ou mais. A participação é gratuita e não depende de compra de nenhum produto ou serviço.",
+        "Sócios, funcionários e prestadores de serviço da IAgentics não participam.",
+      ],
+    },
+    {
+      titulo: "3. Como participar",
+      paragrafos: [
+        "Cadastre-se pela página iagentics.com.br/sorteio (o QR code no estande leva até ela), com nome, e-mail, WhatsApp e área de atuação, até as 18h de 26 de novembro de 2026, horário de Brasília.",
+        "Cada cadastro recebe um número da sorte, mostrado na tela e enviado por e-mail. Vale um cadastro por e-mail: cadastrar o mesmo e-mail de novo não gera outro número.",
+      ],
+    },
+    {
+      titulo: "4. O prêmio",
+      paragrafos: [
+        "Uma (1) caneca-moletom IAgentics. A imagem da página é ilustrativa. O prêmio não pode ser trocado por dinheiro nem por outro produto.",
+      ],
+    },
+    {
+      titulo: "5. O sorteio",
+      paragrafos: [
+        "O sorteio acontece no encerramento do Case 2026, em 26 de novembro de 2026, entre os números da sorte cadastrados até as 18h. É feito em sorteador on-line, à vista de quem estiver no estande da IAgentics.",
+        "Não é preciso estar presente para ganhar.",
+      ],
+    },
+    {
+      titulo: "6. Aviso ao ganhador e entrega",
+      paragrafos: [
+        "A IAgentics avisa o ganhador pelo e-mail e pelo WhatsApp do cadastro em até 2 dias úteis depois do sorteio. O ganhador tem 5 dias corridos, a partir do aviso, para responder e combinar a retirada ou o envio, sem custo para ele.",
+        "Sem resposta nesse prazo, ou com dados do cadastro que não sejam da pessoa, um novo número é sorteado.",
+      ],
+    },
+    {
+      titulo: "7. Uso dos dados",
+      paragrafos: [
+        "Os dados do cadastro servem para o sorteio e para avisar o ganhador, e ficam gravados no banco de dados da IAgentics, como descreve a política de privacidade em iagentics.com.br/privacidade.",
+        "Conteúdos e novidades da IAgentics por e-mail e WhatsApp só são enviados a quem marcou essa opção no cadastro. Você pode pedir a remoção dos seus dados a qualquer momento pelo e-mail contato@iagentics.com.br.",
+      ],
+    },
+    {
+      titulo: "8. Dúvidas",
+      paragrafos: ["Escreva para contato@iagentics.com.br."],
+    },
+  ],
 } as const;

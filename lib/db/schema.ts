@@ -296,3 +296,30 @@ export const leadsReforma = pgTable(
   },
   (t) => [index("leads_reforma_email").on(sql`lower(${t.email})`)],
 );
+
+/**
+ * Cadastros do sorteio no Case 2026 (/sorteio, migração 0020, 2026-11-23).
+ * `numero` é o número da sorte: sequência única na tabela inteira, para a
+ * página servir a outros eventos (`evento`) sem repetir número. Um cadastro
+ * por e-mail em cada evento. `comunicacoes_em` é a autorização OPCIONAL de
+ * conteúdos e novidades; sem ela, o dado só serve ao sorteio.
+ */
+export const sorteioCadastros = pgTable(
+  "sorteio_cadastros",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    numero: integer("numero").notNull().unique().default(sql`nextval('sorteio_numero')`),
+    evento: text("evento").notNull(),
+    criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
+    nome: text("nome").notNull(),
+    email: text("email").notNull(),
+    whatsapp: text("whatsapp").notNull(),
+    empresa: text("empresa").notNull(),
+    cargo: text("cargo").notNull(),
+    area: text("area").notNull(),
+    regulamentoEm: timestamp("regulamento_em", { withTimezone: true }).notNull(),
+    comunicacoesEm: timestamp("comunicacoes_em", { withTimezone: true }),
+    emailEnviadoEm: timestamp("email_enviado_em", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("sorteio_evento_email").on(t.evento, t.email)],
+);

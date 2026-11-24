@@ -74,6 +74,11 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
             "Name, email, WhatsApp number, company, the Instagram and LinkedIn profiles you provide, the problem you describe and the date of each authorization. We use them to evaluate your application and talk to you about it, and they are stored in our database. Communications after the challenge, joining the exclusive WhatsApp group and the use of your name and image in promotion only happen if you check the optional authorizations. To check the selection criteria, we look at your public Instagram or LinkedIn profile.",
         },
         {
+          termo: "Case 2026 prize draw (Sorteio no Case 2026)",
+          texto:
+            "Name, email, WhatsApp, field of work, company and job title (if you provide them), your lucky number and the date you accepted the rules. We use them to run the draw, to email you your number and to notify the winner, and they are stored in our database. IAgentics content and news only go to people who checked that option when signing up.",
+        },
+        {
           termo: "Tax Reform calculator (Calculadora da Reforma Tributária)",
           texto:
             "While you calculate, nothing leaves your browser. If you ask for the comparison by email, we receive your name, work email, company, job title (if you provide it), the scenario you calculated and the date of your authorization, and, if you check it, your request for a notice about the tax rates. We use them to send the comparison and so that IAgentics can talk to you about Procurement and the Tax Reform, and they are stored in our database.",
@@ -125,7 +130,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
           termo: "Asaas",
           texto: "Issues and processes the monthly subscription charges: it receives your name, email, mobile number and CPF to generate the charges, sends each month's invoice to your email, and receives the payment details you enter there.",
         },
-        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers, the Prova Real Challenge emails and the Tax Reform calculator comparison." },
+        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers, the Prova Real Challenge emails, the Case 2026 lucky numbers and the Tax Reform calculator comparison." },
         { termo: "Google Analytics", texto: "Measures usage of the public pages." },
         { termo: "Metricool", texto: "Measures visits to the public pages and their origin on social media." },
         { termo: "Railway and Cloudflare", texto: "Application hosting and website delivery, with all traffic over HTTPS." },
@@ -134,7 +139,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
     {
       titulo: "How long we keep data",
       paragrafos: [
-        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. Tax Reform calculator requests are kept while the business relationship lasts, or until you ask to be removed. Prova Real Challenge applications are kept until the end of the scholarship and the voucher offer, in February 2027; after that, we keep only those of people who became subscribers or authorized sales contact. Billing records follow the legal deadlines and the payment processor's rules.",
+        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. Tax Reform calculator requests are kept while the business relationship lasts, or until you ask to be removed. Prova Real Challenge applications are kept until the end of the scholarship and the voucher offer, in February 2027; after that, we keep only those of people who became subscribers or authorized sales contact. Case 2026 prize draw sign-ups are kept until the prize is delivered and, after that, only those of people who accepted IAgentics content and news. Billing records follow the legal deadlines and the payment processor's rules.",
       ],
       itens: [],
     },

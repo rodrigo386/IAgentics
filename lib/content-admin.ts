@@ -175,6 +175,22 @@ export const admin = {
   /** Link do /admin para o painel de cursos. */
   irParaCursos: "Painel da plataforma de cursos →",
   irParaBolsas: "Desafio Prova Real →",
+  irParaSorteio: "Sorteio Case 2026 →",
+
+  /** /admin/sorteio (2026-11-23): cadastros do sorteio no Case 2026. O sorteio é
+   *  feito por fora, com o CSV. */
+  sorteio: {
+    meta: { titulo: "Sorteio Case 2026 | Admin" },
+    titulo: "Sorteio no Case 2026",
+    lead: "Cadastros pelo QR code do estande. O sorteio é feito por fora: exporte o CSV e sorteie um número da coluna numero. Cadastros do time não participam (regulamento): confira o nome do número sorteado antes de anunciar.",
+    voltar: "← Painel",
+    exportar: "Exportar CSV",
+    cartoes: { cadastros: "Cadastros", comunicacoes: "Aceitaram comunicações", emails: "Número enviado por e-mail" },
+    fecha: "Cadastros até 26/11, às 18h.",
+    colunas: { numero: "Número", nome: "Nome", contato: "Contato", area: "Área", empresa: "Empresa · cargo", quando: "Cadastro", comunicacoes: "Comunicações" },
+    vazio: "Nenhum cadastro ainda.",
+    lgpd: "Dados pessoais: uso para o sorteio e o aviso ao ganhador. Conteúdos e novidades só para quem aceitou comunicações.",
+  },
 
   /** /admin/cursos (2026-10-16, pedido do Rodrigo: "controle mais completo da
    *  plataforma cursos, com dashboard, gráficos e fluxo do cliente"). */

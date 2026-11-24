@@ -37,6 +37,9 @@ export default defineConfig({
            no .env.local, cada teste mandaria um e-mail de verdade. Variável
            definida aqui vence o .env.local. */
         BOLSAS_RELOGIO: "2026-11-24T12:00:00-03:00",
+        /* O sorteio fecha às 18h de 26/11: relógio parado antes, como nas bolsas. */
+        SORTEIO_RELOGIO: "2026-11-25T12:00:00-03:00",
+        SORTEIO_LIMITE: "1000",
         BOLSAS_LIMITE: "1000",
         RESEND_API_KEY: "",
       },

@@ -1,5 +1,5 @@
 import "server-only";
-import { site, diagnose, bolsas, reforma, PRECO_FUNDADOR } from "@/lib/content";
+import { site, diagnose, bolsas, reforma, sorteio, PRECO_FUNDADOR } from "@/lib/content";
 import { calcular, pct, reais, type Cenario } from "@/lib/reforma";
 import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
@@ -436,6 +436,44 @@ export function emailReforma(nome: string, c: Cenario, url: string) {
         botao +
         p(`${e(t.nexo.titulo)} ${e(t.nexo.texto)} <a href="${site.url}/nexo" style="color:#7607e8">${e(t.nexo.cta)}</a>`) +
         `<p style="margin:16px 0 0;font-size:12px;line-height:1.5;color:#5a6070">${e(t.email.rodape)}</p>`,
+      false,
+    ),
+  };
+}
+
+/** Número da sorte do sorteio no Case 2026 (/sorteio, 2026-11-23). Ao próprio cadastrado. */
+export function emailSorteio(nome: string, numero: string) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const { ok, redes } = sorteio;
+  const linkPlataforma = `${site.url}${ok.plataformaHref}`;
+  const linkRegulamento = `${site.url}/sorteio/regulamento`;
+  const participa = "Você está participando do sorteio da caneca-moletom IAgentics no Case 2026.";
+  const quando = "O sorteio é no encerramento do Case 2026, em 26 de novembro. Se o seu número sair, avisamos por este e-mail e pelo WhatsApp do cadastro.";
+  const e = escapeHtml;
+  const paragrafo = (conteudo: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+  const link = (href: string, texto: string) => `<a href="${href}" style="color:#7607e8;text-decoration:underline">${e(texto)}</a>`;
+  return {
+    assunto: `Seu número da sorte: ${numero}`,
+    texto: [
+      `Olá, ${primeiroNome}.`,
+      participa,
+      `Seu número da sorte: ${numero}`,
+      quando,
+      `${ok.plataformaTitulo}: ${linkPlataforma}`,
+      ...redes.itens.map((r) => `${r.rotulo}: ${r.href}`),
+      `Regulamento: ${linkRegulamento}`,
+      "IAgentics · iagentics.com.br",
+    ].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">Olá, ${e(primeiroNome)}.</p>` +
+        paragrafo(e(participa)) +
+        `<p style="margin:0 0 8px;font-size:13px;color:#5a6070;text-transform:uppercase;letter-spacing:0.12em">Seu número da sorte</p>` +
+        `<p style="margin:0 0 24px;font-size:44px;font-weight:bold;letter-spacing:0.06em;color:#131723">${e(numero)}</p>` +
+        paragrafo(e(quando)) +
+        paragrafo(e(`${ok.plataformaTitulo}. ${ok.plataformaTexto}`)) +
+        `<p style="margin:0 0 24px"><a href="${linkPlataforma}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${e(ok.plataformaBotao)}</a></p>` +
+        paragrafo(redes.itens.map((r) => link(r.href, r.rotulo)).join(" · ")) +
+        paragrafo(link(linkRegulamento, "Regulamento do sorteio")),
       false,
     ),
   };
