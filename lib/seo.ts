@@ -267,6 +267,28 @@ export function websiteJsonLd() {
   };
 }
 
+/** As três soluções como serviços da IAgentics, na home (2026-11-24): nome,
+ *  promessa e endereço do MESMO `solutions.items` que o palco da home mostra. */
+export function solucoesJsonLd(itens: ReadonlyArray<{ name: string; promise: string; href: string }>, lingua: Lingua) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: lingua === "en" ? "IAgentics solutions" : "Soluções da IAgentics",
+    itemListElement: itens.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Service",
+        name: s.name,
+        description: s.promise,
+        url: absoluta(s.href),
+        provider: { "@type": "Organization", "@id": ORGANIZACAO_ID, name: site.name, url: site.url },
+        areaServed: { "@type": "Country", name: "Brasil" },
+      },
+    })),
+  };
+}
+
 /** O Nexo como serviço da IAgentics, na /nexo (2026-11-24). Nome, descrição e
  *  título são os da própria página; sem preço, porque a página não mostra um
  *  (o Nexo é vendido por proposta). */

@@ -76,7 +76,14 @@ async function blocosJsonLd(request: APIRequestContext, rota: string) {
 
 test("home com Organization e WebSite; páginas do menu com trilha; /cursos com a oferta mensal", async ({ request }) => {
   const tipos = async (rota: string) => (await blocosJsonLd(request, rota)).map((b) => b["@type"]);
-  expect(await tipos("/")).toEqual(expect.arrayContaining(["Organization", "WebSite"]));
+  expect(await tipos("/")).toEqual(expect.arrayContaining(["Organization", "WebSite", "FAQPage", "ItemList"]));
+  /* As três soluções como Service, e o FAQPage com as MESMAS perguntas visíveis. */
+  const home = await blocosJsonLd(request, "/");
+  const solucoes = home.find((b) => b["@type"] === "ItemList");
+  expect(solucoes.itemListElement.map((i: { item: { "@type": string; name: string } }) => [i.item["@type"], i.item.name])).toEqual([
+    ["Service", "Nexo"], ["Service", "Academy"], ["Service", "IA Spend Lab"],
+  ]);
+  expect(await tipos("/en")).toEqual(expect.arrayContaining(["FAQPage", "ItemList"]));
   for (const rota of ["/nexo", "/academy", "/spend-lab", "/cursos", "/en/nexo"]) {
     const trilha = (await blocosJsonLd(request, rota)).find((b) => b["@type"] === "BreadcrumbList");
     expect(trilha?.itemListElement, rota).toHaveLength(2);

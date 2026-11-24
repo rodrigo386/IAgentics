@@ -264,6 +264,10 @@ export const solutions: Traducao<typeof pt.solutions> = {
   },
   eyebrow: "Business models",
   headline: "The 3 IAgentics solutions",
+  faq: {
+    eyebrow: "Frequently asked questions",
+    titulo: "What people ask before the first conversation",
+  },
   items: [
     {
       id: "nexo",

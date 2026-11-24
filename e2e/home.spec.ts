@@ -114,3 +114,33 @@ test("a home leva às ferramentas gratuitas e a seis artigos; a versão em ingl�
   await page.goto("/en");
   await expect(page.locator('main a[href="/consulta-ncm-cclasstrib"]')).toHaveCount(0);
 });
+
+/* A FAQ da home (2026-11-24): perguntas das páginas de solução, visíveis, e o
+   FAQPage da página com as mesmas. Se uma FAQ mudar de ordem, este teste avisa
+   (PERGUNTAS_DA_HOME em components/paginas/Home.tsx). */
+test("a home mostra a FAQ e o FAQPage traz as mesmas perguntas, nos dois idiomas", async ({ page }) => {
+  const esperado = {
+    "/": [
+      "O Nexo é mais um sistema para o time de Compras aprender?",
+      "A IA aprova a compra sozinha?",
+      "Qual IA está por trás do Nexo?",
+      "Por onde começa um projeto do IA Spend Lab?",
+      "Para quem é a IAgentics Academy?",
+      "Dá para estudar sem contratar uma trilha para a empresa?",
+    ],
+    "/en": [
+      "Is Nexo one more system for the Procurement team to learn?",
+      "Does the AI approve purchases on its own?",
+      "Which AI powers Nexo?",
+      "Where does an IA Spend Lab project start?",
+      "Who is IAgentics Academy for?",
+      "Can I study without hiring a learning path for my company?",
+    ],
+  };
+  for (const [rota, perguntas] of Object.entries(esperado)) {
+    await page.goto(rota);
+    await expect(page.locator("main dl dt")).toHaveText(perguntas);
+    const faq = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((j) => JSON.parse(j)).find((b) => b["@type"] === "FAQPage");
+    expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual(perguntas);
+  }
+});

@@ -405,6 +405,14 @@ export const solutions = {
   },
   eyebrow: "Modelos de negócio",
   headline: "As 3 soluções da IAgentics",
+  /** A FAQ da home (2026-11-24, auditoria de SEO: FAQPage só vale com a FAQ
+   *  visível). As perguntas NÃO são novas: são as das páginas de solução,
+   *  escolhidas em components/paginas/Home.tsx (PERGUNTAS_DA_HOME). Aqui só
+   *  a moldura. */
+  faq: {
+    eyebrow: "Perguntas frequentes",
+    titulo: "O que perguntam antes da primeira conversa",
+  },
   items: [
     {
       id: "nexo",
