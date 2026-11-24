@@ -5,6 +5,7 @@ import { Problema } from "@/components/sections/Problema";
 import { Solutions } from "@/components/sections/Solutions";
 import { Contact } from "@/components/sections/Contact";
 import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
+import { FerramentasHome } from "@/components/sections/FerramentasHome";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { alternatesDe, organizacaoJsonLd, ogDaPagina, websiteJsonLd } from "@/lib/seo";
@@ -37,7 +38,9 @@ export function PaginaHome({ lingua }: { lingua: Lingua }) {
         <Problema />
         <Solutions />
         {/* Os artigos são em português: o bloco fica só na versão em português. */}
-        {lingua === "pt" ? <ArtigosRelacionados pagina="home" /> : null}
+        {/* As ferramentas e os artigos são em português: só na versão em português. */}
+        {lingua === "pt" ? <FerramentasHome /> : null}
+        {lingua === "pt" ? <ArtigosRelacionados pagina="home" limite={6} /> : null}
         <Contact />
       </main>
       <Footer />

@@ -3302,6 +3302,23 @@ export const consultaNcm = {
  * "link as páginas da calculadora e essa, como um pacote de soluções"). A faixa
  * aparece no topo das duas ferramentas; o guia leva aos artigos do tema.
  */
+/**
+ * As ferramentas gratuitas na home (2026-11-24, auditoria de SEO: "a home tem
+ * 18 links internos; linkar as ferramentas, que são ativo de tráfego
+ * orgânico"). Só em português: as três páginas não têm versão em inglês.
+ * Títulos e textos são os das próprias ferramentas (pacoteReforma e diagnose).
+ */
+export const ferramentasHome = {
+  eyebrow: "Ferramentas gratuitas",
+  titulo: "Para usar hoje na sua área de Compras",
+  itens: [
+    { rota: "/reforma-tributaria-compras", etiqueta: "Reforma Tributária", titulo: "Calculadora de custo líquido", texto: "Compare cotações depois do crédito de IBS e CBS, de 2027 a 2033." },
+    { rota: "/consulta-ncm-cclasstrib", etiqueta: "Reforma Tributária", titulo: "Consulta de NCM", texto: "cClassTrib, redução e Imposto Seletivo por item, com a base da Receita." },
+    { rota: "/diagnose-compras", etiqueta: "IAgentics Academy", titulo: "Diagnose de Compras", texto: "A maturidade da sua área em 7 pilares e 38 processos, com o radar no final." },
+  ],
+  abrir: "Abrir",
+} as const;
+
 export const pacoteReforma = {
   nome: "Reforma Tributária para Compras",
   rotulo: "Ferramentas da IAgentics para Compras na Reforma Tributária",

@@ -101,3 +101,16 @@ test("o Vamos conversar do menu leva a uma seção de contato em toda página", 
     await expect(page.locator(destino.hash), `${rota} → ${href}`).toHaveCount(1);
   }
 });
+
+/* Auditoria de SEO de 2026-11-24: a home tinha 18 links internos e só 3
+   artigos. Agora aponta as três ferramentas gratuitas e seis artigos. */
+test("a home leva às ferramentas gratuitas e a seis artigos; a versão em inglês não", async ({ page }) => {
+  await page.goto("/");
+  const ferramentas = page.getByRole("region", { name: "Para usar hoje na sua área de Compras" });
+  for (const rota of ["/reforma-tributaria-compras", "/consulta-ncm-cclasstrib", "/diagnose-compras"]) {
+    await expect(ferramentas.locator(`a[href="${rota}"]`)).toHaveCount(1);
+  }
+  await expect(page.getByRole("region", { name: "Para ler antes da conversa" }).locator('a[href^="/artigos/"]')).toHaveCount(6);
+  await page.goto("/en");
+  await expect(page.locator('main a[href="/consulta-ncm-cclasstrib"]')).toHaveCount(0);
+});

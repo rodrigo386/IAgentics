@@ -8,8 +8,10 @@ import { artigos as t } from "@/lib/content";
  * das páginas mais fortes do site são o que leva o Google aos artigos e à
  * /artigos; o critério de escolha está em `artigosRelacionados`.
  */
-export function ArtigosRelacionados({ pagina }: { pagina: keyof typeof t.relacionados.titulos }) {
-  const lista = artigosRelacionados(pagina === "home" ? undefined : pagina);
+/* A home mostra seis (2026-11-24, auditoria de SEO: mais links da página mais
+   forte para os artigos); as páginas de solução, três. */
+export function ArtigosRelacionados({ pagina, limite = 3 }: { pagina: keyof typeof t.relacionados.titulos; limite?: number }) {
+  const lista = artigosRelacionados(pagina === "home" ? undefined : pagina, limite);
   if (lista.length === 0) return null;
   return (
     <section aria-labelledby="artigos-relacionados" className="border-t border-line py-20 sm:py-24">
