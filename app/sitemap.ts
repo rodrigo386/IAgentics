@@ -1,27 +1,36 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
-import { ROTAS_SITEMAP, PRIORIDADE_SITEMAP, PRIORIDADE_ARTIGO } from "@/lib/seo";
+import { ROTAS_SITEMAP } from "@/lib/seo";
 import { todosOsArtigos } from "@/lib/artigos";
 import { dataDoGit } from "@/lib/datas-git";
 import { ROTAS_EN } from "@/lib/i18n";
 
+/* As páginas em português moram em app/(pt)/ desde 2026-11-24 (dois layouts
+   raiz). `pt()` dá o caminho novo E o antigo: a história anterior à mudança
+   continua valendo, e a mudança em si (só renomeação) não conta como
+   alteração (ver dataDoGit). */
+const pt = (caminho: string) => [`app/(pt)/${caminho}`, `app/${caminho}`];
+
 /* Os arquivos de cada página fixa: a última mudança neles é o `lastmod`. */
 const ARQUIVOS_DA_ROTA: Record<string, string[]> = {
-  "/": ["app/page.tsx", "components/sections/Hero.tsx", "components/sections/Problema.tsx", "components/sections/Solutions.tsx", "public/solucoes"],
-  "/nexo": ["app/nexo", "components/paginas/Nexo.tsx", "components/sections/nexo", "public/nexo"],
-  "/academy": ["app/academy", "components/sections/academy"],
-  "/cursos": ["app/cursos", "components/sections/cursos"],
-  "/spend-lab": ["app/spend-lab", "components/sections/spend-lab"],
-  "/diagnose-compras": ["app/diagnose-compras", "components/sections/diagnose"],
-  "/reforma-tributaria-compras": ["app/reforma-tributaria-compras", "components/sections/reforma", "lib/reforma.ts"],
-  "/consulta-ncm-cclasstrib": ["app/consulta-ncm-cclasstrib", "components/sections/reforma/PacoteReforma.tsx", "lib/consulta-ncm.ts", "lib/receita/tabela-ncm.json"],
-  "/bolsas": ["app/bolsas", "components/sections/bolsas"],
-  "/privacidade": ["app/privacidade"],
+  "/": [...pt("page.tsx"), "components/paginas/Home.tsx", "components/sections/Hero.tsx", "components/sections/Problema.tsx", "components/sections/Solutions.tsx", "public/solucoes"],
+  "/nexo": [...pt("nexo"), "components/paginas/Nexo.tsx", "components/sections/nexo", "public/nexo"],
+  "/academy": [...pt("academy"), "components/paginas/Academy.tsx", "components/sections/academy"],
+  "/cursos": [...pt("cursos"), "components/sections/cursos"],
+  "/spend-lab": [...pt("spend-lab"), "components/paginas/SpendLab.tsx", "components/sections/spend-lab"],
+  "/diagnose-compras": [...pt("diagnose-compras"), "components/sections/diagnose"],
+  "/reforma-tributaria-compras": [...pt("reforma-tributaria-compras"), "components/sections/reforma", "lib/reforma.ts"],
+  "/consulta-ncm-cclasstrib": [...pt("consulta-ncm-cclasstrib"), "components/sections/reforma/PacoteReforma.tsx", "lib/consulta-ncm.ts", "lib/receita/tabela-ncm.json"],
+  "/bolsas": [...pt("bolsas"), "components/sections/bolsas"],
+  "/privacidade": [...pt("privacidade"), "components/paginas/Privacidade.tsx"],
 };
 
 /**
  * O sitemap: as páginas públicas, e só elas. /admin, /api e /preview ficam de
  * fora. (/app e /certificados não existem desde 2026-08-28.)
+ *
+ * Só `url`, `lastmod` e os idiomas: `changefreq` e `priority` saíram em
+ * 2026-11-24 (auditoria de SEO), o Google ignora os dois.
  *
  * `lastmod` em TODA URL (2026-10-09, Prompt 1 de SEO): páginas fixas pela data
  * do último commit nos arquivos delas; artigos pelo último commit no .md
@@ -45,16 +54,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const portuguesas = ROTAS_SITEMAP.map((rota) => ({
     url: absoluta(rota),
     lastModified: dataDoGit(...(ARQUIVOS_DA_ROTA[rota] ?? [])),
-    changeFrequency: "monthly" as const,
-    priority: PRIORIDADE_SITEMAP[rota] ?? 0.5,
     ...idiomas(rota),
   }));
-  const inglesas = Object.entries(ROTAS_EN).map(([pt, en]) => ({
+  const inglesas = Object.entries(ROTAS_EN).map(([rotaPt, en]) => ({
     url: absoluta(en),
-    lastModified: dataDoGit(...(ARQUIVOS_DA_ROTA[pt] ?? []), "lib/content-en"),
-    changeFrequency: "monthly" as const,
-    priority: Math.max(0.1, (PRIORIDADE_SITEMAP[pt] ?? 0.5) - 0.2),
-    ...idiomas(pt),
+    lastModified: dataDoGit(...(ARQUIVOS_DA_ROTA[rotaPt] ?? []), "lib/content-en"),
+    ...idiomas(rotaPt),
   }));
   const fixas = [...portuguesas, ...inglesas];
 
@@ -70,11 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${site.url}/artigos`,
       /* A listagem muda quando um artigo muda: a data mais recente entre eles. */
-      lastModified: [dataDoGit("app/artigos/page.tsx"), ...artigos.map((a) => a.atualizado)].sort().at(-1),
-      /* Semanal, não mensal: é a única página do site cujo conteúdo muda a
-         cada publicação. */
-      changeFrequency: "weekly" as const,
-      priority: PRIORIDADE_SITEMAP["/artigos"] ?? 0.7,
+      lastModified: [dataDoGit(...pt("artigos/page.tsx")), ...artigos.map((a) => a.atualizado)].sort().at(-1),
     },
     ...artigos.map((artigo) => ({
       url: `${site.url}/artigos/${artigo.slug}`,
@@ -82,8 +83,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
          build faria todo artigo parecer atualizado a cada deploy - sinal
          falso, que o Google aprende a ignorar. */
       lastModified: artigo.atualizado,
-      changeFrequency: "yearly" as const,
-      priority: PRIORIDADE_ARTIGO,
     })),
   ];
 }

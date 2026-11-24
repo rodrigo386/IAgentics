@@ -12,7 +12,7 @@ import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { academyJsonLd, alternatesDe, ogDaPagina, faqJsonLd, cursosJsonLd } from "@/lib/seo";
+import { academyJsonLd, alternatesDe, ogDaPagina, faqJsonLd, cursosJsonLd, trilhaDaPagina } from "@/lib/seo";
 import { definirLingua, textosEm } from "@/lib/textos";
 import { rotaEm, type Lingua } from "@/lib/i18n";
 
@@ -29,9 +29,10 @@ export function metadataAcademy(lingua: Lingua): Metadata {
 
 export function PaginaAcademy({ lingua }: { lingua: Lingua }) {
   definirLingua(lingua);
-  const { academy } = textosEm(lingua);
+  const { academy, nav } = textosEm(lingua);
   return (
     <>
+      <JsonLd dados={trilhaDaPagina(nav.links, rotaEm(lingua, "/academy"), lingua)} />
       {/* O EducationalOrganization sai do português (lib/seo.ts); só na versão principal. */}
       {lingua === "pt" ? <JsonLd dados={academyJsonLd()} /> : null}
       {/* Os cursos que a página mostra em "Cursos em destaque" (2026-10-09). */}

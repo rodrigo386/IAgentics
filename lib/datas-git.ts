@@ -9,6 +9,11 @@ import { execFileSync } from "node:child_process";
  * parecer modificado a cada deploy — sinal falso que o Google aprende a
  * ignorar. O commit diz quando aquele conteúdo mudou de verdade.
  *
+ * Renomeação não conta (`-M --diff-filter=ACDMT`): mudar a página de pasta
+ * (app/ para app/(pt)/, 2026-11-24) não muda o conteúdo, e contar o commit
+ * carimbaria a mesma data em todo o site. Para o git reconhecer a renomeação,
+ * o caminho antigo e o novo vão juntos (ver `pt()` em app/sitemap.ts).
+ *
  * O build roda na máquina (scripts/deploy-railway.sh), onde o git existe. Se
  * um dia não existir, cai na data do build, como o Prompt 1 do Rodrigo prevê.
  */
@@ -21,7 +26,7 @@ export function dataDoGit(...caminhos: string[]): string {
   if (guardada) return guardada;
   let data = BUILD;
   try {
-    const saida = execFileSync("git", ["log", "-1", "--format=%cs", "--", ...caminhos], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    const saida = execFileSync("git", ["log", "-1", "--format=%cs", "-M", "--diff-filter=ACDMT", "--", ...caminhos], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
     if (/^\d{4}-\d{2}-\d{2}$/.test(saida)) data = saida;
   } catch {
     /* sem git: fica a data do build */

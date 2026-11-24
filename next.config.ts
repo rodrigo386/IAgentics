@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /* Dois layouts raiz desde 2026-11-24 (app/(pt) e app/en, cada um com o seu
+     <html lang>). Com mais de um raiz, o app/not-found.tsx não alcança URL
+     que não casa com rota nenhuma: quem responde é app/global-not-found.tsx. */
+  experimental: { globalNotFound: true },
   images: {
     // Every image is a local asset in /public, so no remote patterns are needed.
     formats: ["image/avif", "image/webp"],

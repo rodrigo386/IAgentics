@@ -21,6 +21,10 @@ export const site = {
   domain: "iagentics.com.br",
   url: "https://iagentics.com.br",
   tagline: "Automações Inteligentes para Compras e Gestão de Gastos",
+  /** O título da home na busca (2026-11-24, auditoria de SEO). "IAgentics ·
+   *  tagline" dava 67 caracteres e era cortado perto dos 60 que o Google
+   *  mostra; a tagline continua na manchete e no og. */
+  titulo: "IAgentics · Agentes de IA para Compras e Gestão de Gastos",
   description:
     "A IAgentics coloca agentes de IA para rodar dentro da plataforma que sua empresa já usa, em Compras e Gestão de Gastos. Seus dados permanecem no servidor da sua empresa.",
 } as const;

@@ -3,10 +3,10 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { naoEncontrada } from "@/lib/content";
 
-/** 404 global com a marca: sem ele o Next renderiza a página crua em inglês.
- *  Também é o destino de códigos de certificado inválidos (notFound() em
- *  app/certificados/[codigo]), então o texto cobre os dois casos. */
-export default function NaoEncontrada() {
+/** 404 com a marca: sem ele o Next renderiza a página crua em inglês. Usado
+ *  por app/(pt)/not-found.tsx (notFound() nas páginas) e por
+ *  app/global-not-found.tsx (URL que não casa com rota nenhuma). */
+export function NaoEncontrada() {
   return (
     <>
       <Nav />

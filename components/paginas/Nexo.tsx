@@ -13,7 +13,7 @@ import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { alternatesDe, ogDaPagina, faqJsonLd } from "@/lib/seo";
+import { alternatesDe, ogDaPagina, faqJsonLd, nexoServicoJsonLd, trilhaDaPagina } from "@/lib/seo";
 import { definirLingua, textosEm } from "@/lib/textos";
 import { rotaEm, type Lingua } from "@/lib/i18n";
 
@@ -30,9 +30,11 @@ export function metadataNexo(lingua: Lingua): Metadata {
 
 export function PaginaNexo({ lingua }: { lingua: Lingua }) {
   definirLingua(lingua);
-  const { nexoPage } = textosEm(lingua);
+  const { nexoPage, paginas, nav } = textosEm(lingua);
   return (
     <>
+      <JsonLd dados={nexoServicoJsonLd({ titulo: paginas.nexo.titulo, descricao: nexoPage.hero.subtext }, lingua)} />
+      <JsonLd dados={trilhaDaPagina(nav.links, rotaEm(lingua, "/nexo"), lingua)} />
       <JsonLd dados={faqJsonLd(nexoPage.faq.itens)} />
       <Nav contato="#contato" />
       <main id="conteudo" className="pt-16">

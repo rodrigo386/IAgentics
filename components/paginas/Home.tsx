@@ -7,7 +7,7 @@ import { Contact } from "@/components/sections/Contact";
 import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { alternatesDe, organizacaoJsonLd, ogDaPagina } from "@/lib/seo";
+import { alternatesDe, organizacaoJsonLd, ogDaPagina, websiteJsonLd } from "@/lib/seo";
 import { definirLingua, textosEm } from "@/lib/textos";
 import type { Lingua } from "@/lib/i18n";
 
@@ -16,10 +16,11 @@ import type { Lingua } from "@/lib/i18n";
 export function metadataHome(lingua: Lingua): Metadata {
   const { site, hero } = textosEm(lingua);
   return {
-    ...(lingua === "en" ? { title: { absolute: `${site.name} · ${site.tagline}` } } : {}),
+    /* Até 60 caracteres (site.titulo): "nome · tagline" dava 67 e era cortado. */
+    title: { absolute: site.titulo },
     description: hero.descricao,
     alternates: alternatesDe("/", lingua),
-    openGraph: ogDaPagina(lingua === "en" ? "/en" : "/", `${site.name} · ${site.tagline}`, hero.descricao, lingua),
+    openGraph: ogDaPagina(lingua === "en" ? "/en" : "/", site.titulo, hero.descricao, lingua),
   };
 }
 
@@ -29,6 +30,7 @@ export function PaginaHome({ lingua }: { lingua: Lingua }) {
     <>
       {/* O Organization sai do português (lib/seo.ts); só na versão principal. */}
       {lingua === "pt" ? <JsonLd dados={organizacaoJsonLd()} /> : null}
+      {lingua === "pt" ? <JsonLd dados={websiteJsonLd()} /> : null}
       <Nav contato="#contato" />
       <main id="conteudo">
         <Hero />

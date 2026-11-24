@@ -10,6 +10,7 @@ export const site: Traducao<typeof pt.site> = {
   domain: "iagentics.com.br",
   url: "https://iagentics.com.br",
   tagline: "Intelligent Automation for Procurement and Spend Management",
+  titulo: "IAgentics · AI Agents for Procurement and Spend Management",
   description:
     "IAgentics runs AI agents inside the platform your company already uses, across Procurement and Spend Management. Your data stays on your company's servers.",
 };

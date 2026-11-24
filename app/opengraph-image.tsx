@@ -5,8 +5,10 @@ import { site } from "@/lib/content";
 
 /**
  * A imagem que aparece quando um link do site é colado no WhatsApp, LinkedIn
- * ou Slack. Fica na raiz do app, então vale para TODA rota que não declare a
- * sua (o certificado declara a dele).
+ * ou Slack, servida em /opengraph-image. Com dois layouts raiz (2026-11-24) o
+ * Next não a liga mais sozinho às páginas: ela é declarada no `ogDaPagina` e
+ * no metadata raiz (lib/seo.ts, IMAGEM_OG). Dentro de app/(pt)/ o endereço
+ * ganharia um sufixo, e os artigos apontam para este.
  *
  * Segue docs/DESIGN.md: fundo ink, texto paper, violeta só como preenchimento
  * (nunca como texto - reprova contraste), cantos retos e Space Grotesk. As

@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { site } from "@/lib/content";
-import { ROTAS_SITEMAP, PRIORIDADE_SITEMAP, organizacaoJsonLd, academyJsonLd, faqJsonLd } from "@/lib/seo";
+import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, faqJsonLd, websiteJsonLd, trilhaDaPagina, nexoServicoJsonLd, assinaturaJsonLd, ORGANIZACAO_ID } from "@/lib/seo";
+import { nav, cursos, PRECO_MENSAL } from "@/lib/content";
+import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import { nexoPage, academy, spendLab } from "@/lib/content";
 
 describe("endereço canônico", () => {
@@ -14,10 +16,6 @@ describe("endereço canônico", () => {
 describe("rotas do sitemap", () => {
   it("lista as páginas públicas", () => {
     expect([...ROTAS_SITEMAP]).toEqual(["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/consulta-ncm-cclasstrib", "/bolsas", "/privacidade"]);
-  });
-
-  it("toda rota do sitemap tem prioridade declarada", () => {
-    for (const rota of ROTAS_SITEMAP) expect(PRIORIDADE_SITEMAP[rota]).toBeGreaterThan(0);
   });
 
   it("não inclui área logada, admin nem certificados", () => {
@@ -35,6 +33,40 @@ describe("JSON-LD da organização", () => {
     expect(dados.logo.startsWith("https://iagentics.com.br/")).toBe(true);
     expect(dados.sameAs.length).toBeGreaterThan(0);
     for (const perfil of dados.sameAs) expect(perfil.startsWith("https://")).toBe(true);
+  });
+});
+
+describe("JSON-LD do site, das trilhas, do Nexo e da assinatura (2026-11-24)", () => {
+  it("o WebSite aponta para a organização e não promete busca", () => {
+    const dados = websiteJsonLd();
+    expect(dados.publisher["@id"]).toBe(ORGANIZACAO_ID);
+    expect(organizacaoJsonLd()["@id"]).toBe(ORGANIZACAO_ID);
+    expect(dados).not.toHaveProperty("potentialAction");
+  });
+
+  it("a trilha começa na home e usa o rótulo do menu", () => {
+    const dados = trilhaDaPagina(nav.links, "/nexo", "pt");
+    expect(dados.itemListElement.map((i) => [i.position, i.name, i.item])).toEqual([
+      [1, "Início", "https://iagentics.com.br"],
+      [2, "Nexo", "https://iagentics.com.br/nexo"],
+    ]);
+    expect(() => trilhaDaPagina(nav.links, "/sorteio", "pt")).toThrow();
+  });
+
+  it("o Nexo é um serviço da IAgentics, sem preço inventado", () => {
+    const dados = nexoServicoJsonLd({ titulo: "t", descricao: "d" }, "en");
+    expect(dados.url).toBe("https://iagentics.com.br/en/nexo");
+    expect(dados.provider["@id"]).toBe(ORGANIZACAO_ID);
+    expect(dados).not.toHaveProperty("offers");
+  });
+
+  it("a oferta da assinatura é o valor que o checkout cobra, por mês", () => {
+    const dados = assinaturaJsonLd({ nome: "n", descricao: "d", centavos: VALOR_ASSINATURA_CENTAVOS, imagem: cursos.filmeHero.poster });
+    expect(dados.offers.price).toBe("49.90");
+    expect(PRECO_MENSAL).toBe(`R$ ${dados.offers.price.replace(".", ",")}`);
+    expect(dados.offers.priceCurrency).toBe("BRL");
+    expect(dados.offers.priceSpecification.referenceQuantity.unitCode).toBe("MON");
+    expect(dados.image.startsWith("https://iagentics.com.br/")).toBe(true);
   });
 });
 

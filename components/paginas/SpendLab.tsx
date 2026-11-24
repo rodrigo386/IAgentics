@@ -12,7 +12,7 @@ import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { Footer } from "@/components/Footer";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { alternatesDe, ogDaPagina, faqJsonLd } from "@/lib/seo";
+import { alternatesDe, ogDaPagina, faqJsonLd, trilhaDaPagina } from "@/lib/seo";
 import { definirLingua, textosEm } from "@/lib/textos";
 import { rotaEm, type Lingua } from "@/lib/i18n";
 
@@ -29,9 +29,10 @@ export function metadataSpendLab(lingua: Lingua): Metadata {
 
 export function PaginaSpendLab({ lingua }: { lingua: Lingua }) {
   definirLingua(lingua);
-  const { spendLab } = textosEm(lingua);
+  const { spendLab, nav } = textosEm(lingua);
   return (
     <>
+      <JsonLd dados={trilhaDaPagina(nav.links, rotaEm(lingua, "/spend-lab"), lingua)} />
       <JsonLd dados={faqJsonLd(spendLab.faq.itens)} />
       <Nav contato="#contato" />
       <main id="conteudo" className="pt-16">

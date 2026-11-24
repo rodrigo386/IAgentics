@@ -10,8 +10,8 @@ import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
 import { MEDICAO_CURSOS, MedidorPagina } from "@/components/site/MedidorPagina";
 import { SecaoFaq } from "@/components/sections/Faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { cursos as t } from "@/lib/content";
-import { cursosJsonLd, faqJsonLd, ogDaPagina } from "@/lib/seo";
+import { cursos as t, nav } from "@/lib/content";
+import { assinaturaJsonLd, cursosJsonLd, faqJsonLd, ogDaPagina, trilhaDaPagina } from "@/lib/seo";
 import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 
 export const metadata: Metadata = {
@@ -58,6 +58,17 @@ export default function PaginaCursos() {
           })}
         />
       ) : null}
+      {/* A assinatura com a oferta mensal (2026-11-24): o preço é o que o
+          checkout cobra, a descrição é a da página. */}
+      <JsonLd
+        dados={assinaturaJsonLd({
+          nome: t.meta.titulo.replace(/ \| IAgentics$/, ""),
+          descricao: t.meta.descricao,
+          centavos: VALOR_ASSINATURA_CENTAVOS,
+          imagem: t.filmeHero.poster,
+        })}
+      />
+      <JsonLd dados={trilhaDaPagina(nav.links, "/cursos", "pt")} />
       <JsonLd dados={faqJsonLd(t.assinatura.faq.itens)} />
       <Nav />
       <main id="conteudo" className="pt-16">

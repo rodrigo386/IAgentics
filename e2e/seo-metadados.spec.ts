@@ -52,6 +52,42 @@ test("toda página indexada tem título e descrição com tamanho útil", async 
   }
 });
 
+/* Auditoria de SEO de 2026-11-24: "IAgentics · tagline" tinha 67 caracteres
+   e o Google corta perto de 60. */
+test("o título da home cabe no resultado da busca, nos dois idiomas", async ({ request }) => {
+  for (const rota of ["/", "/en"]) {
+    const { titulo } = await cabeca(request, rota);
+    expect(titulo.length, `${rota}: "${titulo}"`).toBeLessThanOrEqual(60);
+    expect(titulo).toMatch(/^IAgentics · /);
+  }
+});
+
+test("o sitemap só leva url, lastmod e idiomas (o Google ignora priority e changefreq)", async ({ request }) => {
+  const xml = await (await request.get("/sitemap.xml")).text();
+  expect(xml).toContain("<lastmod>");
+  expect(xml).not.toContain("<priority>");
+  expect(xml).not.toContain("<changefreq>");
+});
+
+async function blocosJsonLd(request: APIRequestContext, rota: string) {
+  const html = await (await request.get(rota)).text();
+  return [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map((m) => JSON.parse(m[1]));
+}
+
+test("home com Organization e WebSite; páginas do menu com trilha; /cursos com a oferta mensal", async ({ request }) => {
+  const tipos = async (rota: string) => (await blocosJsonLd(request, rota)).map((b) => b["@type"]);
+  expect(await tipos("/")).toEqual(expect.arrayContaining(["Organization", "WebSite"]));
+  for (const rota of ["/nexo", "/academy", "/spend-lab", "/cursos", "/en/nexo"]) {
+    const trilha = (await blocosJsonLd(request, rota)).find((b) => b["@type"] === "BreadcrumbList");
+    expect(trilha?.itemListElement, rota).toHaveLength(2);
+    expect(trilha.itemListElement[1].item.endsWith(rota)).toBe(true);
+  }
+  expect(await tipos("/nexo")).toContain("Service");
+  const produto = (await blocosJsonLd(request, "/cursos")).find((b) => b["@type"] === "Product");
+  expect(produto.offers.price).toBe("49.90");
+  expect(produto.offers.priceCurrency).toBe("BRL");
+});
+
 test("toda página indexada tem exatamente um H1", async ({ page }) => {
   for (const rota of PAGINAS) {
     await page.goto(rota);

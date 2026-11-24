@@ -24,35 +24,9 @@ import { site, contact, privacidade } from "@/lib/content";
  */
 export const ROTAS_SITEMAP = ["/", "/nexo", "/academy", "/cursos", "/spend-lab", "/diagnose-compras", "/reforma-tributaria-compras", "/consulta-ncm-cclasstrib", "/bolsas", "/privacidade"] as const;
 
-/** Prioridade relativa dentro do site. A home lidera; /cursos vem logo atrás
- *  por ser a única página com conversão direta (assinatura). */
-export const PRIORIDADE_SITEMAP: Record<string, number> = {
-  "/": 1,
-  "/cursos": 0.9,
-  "/nexo": 0.8,
-  "/academy": 0.8,
-  "/spend-lab": 0.8,
-  /* Ferramenta de captação da Academy (2026-10-31): entrada por busca de
-     "maturidade em compras", abaixo das páginas de produto. */
-  "/diagnose-compras": 0.7,
-  /* Ferramenta de captação (2026-11-19): entrada por busca de Reforma Tributária em Compras. */
-  "/reforma-tributaria-compras": 0.7,
-  /* Consulta de NCM (2026-11-19): entrada por busca de "cClassTrib", "NCM redução IBS CBS". */
-  "/consulta-ncm-cclasstrib": 0.7,
-  "/bolsas": 0.7,
-  /* Baixa de propósito: é página de referência, não de entrada — mas precisa
-     estar no índice, porque o Google já exibia essa URL (do site antigo, com
-     404) e alguém procurando "iagentics privacidade" tem que achar a certa. */
-  "/privacidade": 0.3,
-  /* O índice de artigos NÃO está em ROTAS_SITEMAP: ele só entra no sitemap
-     quando existe pelo menos um artigo publicado (ver app/sitemap.ts).
-     Anunciar uma listagem vazia ao Google é pedir para ser rastreado à toa. */
-  "/artigos": 0.7,
-};
-
-/** Prioridade de um artigo. Abaixo do índice e das páginas de produto: artigo
- *  atrai visita nova, mas a conversão mora nas páginas de sempre. */
-export const PRIORIDADE_ARTIGO = 0.6;
+/* `priority` e `changefreq` saíram do sitemap em 2026-11-24 (auditoria de
+   SEO): o Google ignora os dois, e a conta de prioridade do inglês ainda
+   gerava 0.6000000000000001. Fica só o `lastmod`, que ele usa. */
 
 function absoluta(caminho: string): string {
   return caminho === "/" ? site.url : `${site.url}${caminho}`;
@@ -88,6 +62,9 @@ export function ogDaPagina(caminho: string, title: string, description: string, 
     siteName: site.name,
     locale: lingua === "en" ? "en_US" : "pt_BR",
     type: "website" as const,
+    /* Declarada aqui (2026-11-24): o openGraph da página substitui o do
+       layout inteiro, e só a home ganhava a imagem pela convenção de arquivo. */
+    images: [IMAGEM_OG_COMPLETA],
   };
 }
 
@@ -102,6 +79,7 @@ export function ogDaPagina(caminho: string, title: string, description: string, 
  *  artigos não tinham og:image (2026-10-09): o openGraph declarado na página
  *  não herdava a do layout. */
 export const IMAGEM_OG = `${site.url}/opengraph-image`;
+export const IMAGEM_OG_COMPLETA = { url: IMAGEM_OG, width: 1200, height: 630, alt: `${site.name} · ${site.tagline}` };
 
 export function ogDoArtigo(caminho: string, title: string, description: string, dataISO: string, modificadoISO?: string) {
   return {
@@ -163,17 +141,36 @@ export function artigoJsonLd(artigo: {
   };
 }
 
-/** A trilha Início > Artigos > título, em todo artigo (2026-10-09). */
-export function trilhaArtigoJsonLd(artigo: { slug: string; titulo: string }) {
+/** Uma trilha de navegação (BreadcrumbList) a partir da home. Os nomes são os
+ *  do menu ou o título da página, os mesmos que a pessoa vê. */
+export function trilhaJsonLd(passos: ReadonlyArray<{ nome: string; caminho: string }>, lingua: Lingua = "pt") {
+  const inicio = { nome: lingua === "en" ? "Home" : "Início", caminho: lingua === "en" ? "/en" : "/" };
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Início", item: site.url },
-      { "@type": "ListItem", position: 2, name: "Artigos", item: absoluta("/artigos") },
-      { "@type": "ListItem", position: 3, name: artigo.titulo, item: absoluta(`/artigos/${artigo.slug}`) },
-    ],
+    itemListElement: [inicio, ...passos].map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.nome,
+      item: absoluta(p.caminho),
+    })),
   };
+}
+
+/** A trilha Início > página das páginas do menu (2026-11-24, auditoria de
+ *  SEO): o nome é o rótulo do próprio menu (`nav.links`) no idioma da página. */
+export function trilhaDaPagina(links: ReadonlyArray<{ label: string; href: string }>, caminho: string, lingua: Lingua) {
+  const item = links.find((l) => l.href === caminho);
+  if (!item) throw new Error(`Rota fora do menu: ${caminho}`);
+  return trilhaJsonLd([{ nome: item.label, caminho }], lingua);
+}
+
+/** A trilha Início > Artigos > título, em todo artigo (2026-10-09). */
+export function trilhaArtigoJsonLd(artigo: { slug: string; titulo: string }) {
+  return trilhaJsonLd([
+    { nome: "Artigos", caminho: "/artigos" },
+    { nome: artigo.titulo, caminho: `/artigos/${artigo.slug}` },
+  ]);
 }
 
 /**
@@ -251,12 +248,84 @@ export function colecaoArtigosJsonLd(meta: { titulo: string; descricao: string }
   };
 }
 
+/** O identificador da empresa no grafo: as outras entidades (WebSite, o
+ *  serviço do Nexo, a assinatura) apontam para ele em vez de repetir tudo. */
+export const ORGANIZACAO_ID = `${site.url}/#organizacao`;
+
+/** O site, na home (2026-11-24, auditoria de SEO). Sem SearchAction: o site
+ *  não tem busca própria, e anunciar uma seria prometer o que não existe. */
+export function websiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#site`,
+    name: site.name,
+    url: site.url,
+    description: site.description,
+    inLanguage: ["pt-BR", "en"],
+    publisher: { "@id": ORGANIZACAO_ID },
+  };
+}
+
+/** O Nexo como serviço da IAgentics, na /nexo (2026-11-24). Nome, descrição e
+ *  título são os da própria página; sem preço, porque a página não mostra um
+ *  (o Nexo é vendido por proposta). */
+export function nexoServicoJsonLd(t: { titulo: string; descricao: string }, lingua: Lingua) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Nexo",
+    alternateName: t.titulo,
+    description: t.descricao,
+    url: absoluta(lingua === "en" ? ROTAS_EN["/nexo"] : "/nexo"),
+    serviceType: lingua === "en" ? "AI agents for procurement and spend management" : "Agentes de IA para Compras e gestão de gastos",
+    provider: { "@type": "Organization", "@id": ORGANIZACAO_ID, name: site.name, url: site.url },
+    areaServed: { "@type": "Country", name: "Brasil" },
+    inLanguage: lingua === "en" ? "en" : "pt-BR",
+  };
+}
+
+/**
+ * A assinatura da plataforma Solution, na /cursos (2026-11-24): Product com a
+ * Offer mensal. O preço sai do MESMO valor que o checkout cobra
+ * (VALOR_ASSINATURA_CENTAVOS), passado pela página; o nome e a descrição, do
+ * título e da descrição da página.
+ */
+export function assinaturaJsonLd(t: { nome: string; descricao: string; centavos: number; imagem: string }) {
+  const preco = (t.centavos / 100).toFixed(2);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: t.nome,
+    description: t.descricao,
+    image: absoluta(t.imagem),
+    url: absoluta("/cursos"),
+    brand: { "@type": "Brand", name: site.name },
+    offers: {
+      "@type": "Offer",
+      url: absoluta("/cursos#assinar"),
+      price: preco,
+      priceCurrency: "BRL",
+      availability: "https://schema.org/InStock",
+      seller: { "@type": "Organization", "@id": ORGANIZACAO_ID, name: site.name },
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: preco,
+        priceCurrency: "BRL",
+        /* Cobrança mensal, sem fidelidade. */
+        referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" },
+      },
+    },
+  };
+}
+
 /** A empresa, para o Knowledge Graph. `sameAs` são os perfis oficiais já
  *  publicados no rodapé - é o que amarra o site às contas sociais. */
 export function organizacaoJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": ORGANIZACAO_ID,
     name: site.name,
     url: site.url,
     logo: `${site.url}/iagentics-lockup.png`,

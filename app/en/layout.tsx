@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
+import { Documento, metadataRaiz, viewportRaiz } from "@/components/site/Documento";
 
 /**
- * A versão em inglês (2026-11-06). O <html lang="pt-BR"> é do layout raiz e
- * vale para o site todo; aqui o conteúdo declara o próprio idioma, que é o
- * que leitor de tela e tradutor automático respeitam. O idioma dos textos é
- * escolhido em cada página (`definirLingua`, lib/textos.ts).
+ * A versão em inglês (2026-11-06). Desde 2026-11-24 é um layout RAIZ próprio,
+ * com `<html lang="en">`: antes o documento inteiro dizia pt-BR e só um <div
+ * lang="en"> corrigia o conteúdo (auditoria de SEO). O idioma dos textos
+ * continua escolhido em cada página (`definirLingua`, lib/textos.ts).
  */
+export const metadata = metadataRaiz("en");
+export const viewport = viewportRaiz;
+
 export default function LayoutIngles({ children }: { children: ReactNode }) {
-  return <div lang="en">{children}</div>;
+  return <Documento lingua="en">{children}</Documento>;
 }
