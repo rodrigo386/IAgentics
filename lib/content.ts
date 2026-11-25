@@ -2230,6 +2230,79 @@ export const cursos = {
       { valor: "Certificado", rotulo: "do Pecege ao concluir" },
     ],
   },
+  /** Uma página por trilha (2026-11-25, plano de SEO da /cursos do Rodrigo:
+   *  "hoje todas as buscas disputam uma única URL"). Nasce como PRÉVIA em
+   *  /preview/cursos/<slug>; aprovada, vira /cursos/<slug>. Uma entrada por
+   *  linha da vitrine, pelo título dela (o teste confere). A lista de cursos,
+   *  os professores e o "em breve" vêm da vitrine; aqui só o que é da página.
+   *  O texto fala dos TEMAS pelo nome dos cursos, nunca de ementa. */
+  paginasTrilha: {
+    migalha: "Cursos",
+    publicados: (n: number) => (n === 1 ? "1 curso publicado" : `${n} cursos publicados`),
+    emBreve: (n: number) => (n === 1 ? "1 em breve" : `${n} em breve`),
+    listaTitulo: "Os cursos da trilha",
+    outrasTitulo: "Outras trilhas na mesma assinatura",
+    faqTitulo: "Antes de assinar",
+    /* Descrição de busca montada com o número de cursos da vitrine. */
+    descricao: (tema: string, total: number) =>
+      `${total} cursos de ${tema} na plataforma Solution, do Pecege, com certificado. R$ 49,90 por mês, sem fidelidade. Cartão, Pix ou boleto.`,
+    itens: [
+      {
+        linha: "IA, Dados & Tecnologia",
+        slug: "ia-dados-e-tecnologia",
+        titulo: "Cursos de IA, Dados e Tecnologia",
+        tema: "IA, dados e tecnologia",
+        metaTitulo: "Cursos de IA, Dados e Tecnologia | Solution Pecege",
+        intro:
+          "Para usar IA e dados no trabalho: dos fundamentos de IA aplicada aos negócios ao Power BI, à visualização de dados, à transformação digital e à LGPD. Inclui as formações da IAgentics, como Fundamentos de IA para Negócios e Marketing com IA.",
+      },
+      {
+        linha: "Estratégia, Inovação & Projetos",
+        slug: "estrategia-inovacao-e-projetos",
+        titulo: "Cursos de Estratégia, Inovação e Projetos",
+        tema: "estratégia, inovação e projetos",
+        metaTitulo: "Cursos de Estratégia, Inovação e Projetos | Solution Pecege",
+        intro:
+          "Para planejar, inovar e entregar: Design Thinking, OKR, inteligência de mercado, pesquisa de marketing, métodos ágeis e gestão de projetos com IA.",
+      },
+      {
+        linha: "Comunicação & Comportamento",
+        slug: "comunicacao-e-comportamento",
+        titulo: "Cursos de Comunicação e Comportamento",
+        tema: "comunicação e comportamento",
+        metaTitulo: "Cursos de Comunicação e Oratória | Solution Pecege",
+        intro:
+          "Para falar, apresentar e se relacionar melhor no trabalho: comunicação e oratória, comunicação não-violenta, inteligência emocional, pitch de vendas, técnicas de apresentação e storytelling.",
+      },
+      {
+        linha: "Negociação & Relacionamento",
+        slug: "negociacao-e-relacionamento",
+        titulo: "Cursos de Negociação e Relacionamento",
+        tema: "negociação e relacionamento",
+        metaTitulo: "Cursos de Negociação e Relacionamento | Solution Pecege",
+        intro:
+          "Para negociar e conduzir conversas difíceis: estratégias de negociação, feedback e comunicação, e gestão de conflitos.",
+      },
+      {
+        linha: "Liderança & Gestão",
+        slug: "lideranca-e-gestao",
+        titulo: "Cursos de Liderança e Gestão",
+        tema: "liderança e gestão",
+        metaTitulo: "Cursos de Liderança e Gestão | Solution Pecege",
+        intro:
+          "Para quem lidera pessoas e decide os rumos da área: pensamento estratégico, Balanced Scorecard, comportamento organizacional e liderança com o papel de líder coach.",
+      },
+      {
+        linha: "Compras, Vendas & Supply 4.0",
+        slug: "compras-vendas-e-supply",
+        titulo: "Cursos de Compras, Vendas e Supply Chain",
+        tema: "compras, vendas e supply chain",
+        metaTitulo: "Cursos de Compras, Vendas e Supply Chain | Solution Pecege",
+        intro:
+          "A trilha de Compras, Vendas e Supply 4.0 está em produção: os cursos abaixo já estão anunciados e entram na mesma assinatura, sem custo a mais, quando forem lançados. Para começar agora, Estratégias de Negociação e Fundamentos de IA para Negócios já estão publicados.",
+      },
+    ],
+  },
   /** "Para quem é" (2026-11-25, plano de SEO e conversão da /cursos): quatro
    *  áreas, cada uma com os cursos da vitrine que falam com ela, pelo NOME
    *  exato (o teste confere que cada nome existe na vitrine). Nada de ementa:
