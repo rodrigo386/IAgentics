@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { describe, it, expect } from "vitest";
-import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown, artigosRelacionados } from "@/lib/artigos";
+import { todosOsArtigos, artigoPorSlug, dataPorExtenso, renderizarMarkdown, artigosRelacionados, ARTIGOS_FIXOS } from "@/lib/artigos";
 import { IDS_EXPLICADORES, MARCADOR_EXPLICADOR } from "@/lib/explicadores";
 import { artigos as textosArtigos } from "@/lib/content";
 
@@ -69,12 +69,15 @@ describe("frontmatter de todos os artigos (inclusive rascunhos)", () => {
     expect(content).not.toContain("[VALIDAR]");
   });
 
-  /* Título de busca (2026-10-09): até 60 caracteres, terminando na marca. */
+  /* Título de busca (2026-10-09): até 60 caracteres. Terminava sempre na marca
+     até 2026-11-25, quando o Rodrigo pediu para o saving "Saving em Compras: o
+     que é e como calcular (com exemplo)": a marca é opcional, e quando vem,
+     vem no fim. */
   it.each(arquivos)("%s tem tituloSeo válido, se tiver", (arquivo) => {
     const t = frontmatter(arquivo).tituloSeo;
     if (t === undefined) return;
     expect(String(t).length).toBeLessThanOrEqual(60);
-    expect(String(t)).toMatch(/\| IAgentics$/);
+    if (String(t).includes("IAgentics")) expect(String(t)).toMatch(/\| IAgentics$/);
   });
 
   /* FAQ e marcador andam juntos: FAQ sem `<!-- faq -->` não aparece na página
@@ -219,5 +222,18 @@ describe("artigosRelacionados", () => {
       lista.slice(0, Math.min(3, daSolucao)).forEach((a) => expect(a.produto).toBe(produto));
     }
     expect(artigosRelacionados().map((a) => a.slug)).toEqual(todos.slice(0, 3).map((a) => a.slug));
+  });
+
+  it("os fixos vêm primeiro, sem repetir, e slug inexistente é ignorado", () => {
+    const fixo = "saving-em-compras-para-o-cfo";
+    for (const produto of ["nexo", "spend-lab", undefined]) {
+      const lista = artigosRelacionados(produto, 3, [fixo, "nao-existe"]);
+      expect(lista[0].slug).toBe(fixo);
+      expect(lista.length).toBe(3);
+      expect(new Set(lista.map((a) => a.slug)).size).toBe(3);
+    }
+    for (const slugs of Object.values(ARTIGOS_FIXOS)) {
+      slugs.forEach((s) => expect(todosOsArtigos().some((a) => a.slug === s), s).toBe(true));
+    }
   });
 });

@@ -175,7 +175,9 @@ diretoria três oportunidades: consolidar EPI, criar catálogo para os itens de
 manutenção mais recorrentes e revisar o gasto sem pedido de uma das plantas.
 
 Nenhuma economia foi prometida nessa reunião. O que a diretoria recebeu foi um
-número em que todos confiavam e três frentes priorizadas para o trimestre.
+número em que todos confiavam e três frentes priorizadas para o trimestre. O saving de cada frente seria medido
+depois, contra um baseline combinado com a controladoria; o passo a passo está
+no guia de [como calcular saving](/artigos/saving-em-compras-para-o-cfo).
 
 ## Os erros que derrubam o primeiro ciclo
 

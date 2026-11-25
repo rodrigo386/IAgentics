@@ -76,7 +76,9 @@ O custo aparece em quatro lugares:
 **1. Preço.** A compra fora do contrato paga o preço de balcão, e o desconto
 negociado para a categoria fica sem uso. O volume que deveria sustentar o
 contrato vai para outro fornecedor, e na renegociação seguinte a empresa chega
-com menos poder de barganha.
+com menos poder de barganha. Na conta de
+[como calcular saving](/artigos/saving-em-compras-para-o-cfo), esse volume desviado
+é a diferença entre o saving negociado e o realizado.
 
 **2. Custo de processar.** Nota sem pedido gera retrabalho: alguém precisa
 descobrir quem comprou, buscar aprovação depois do fato, emitir um pedido

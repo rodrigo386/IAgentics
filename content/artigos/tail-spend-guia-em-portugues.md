@@ -183,7 +183,8 @@ o resultado de forma durável não é a renegociação — é **reduzir o atrito
 caminho certo** até que ele seja o caminho mais fácil.
 
 Isso é menos glamouroso que um projeto de savings. É também o que ainda está de
-pé três anos depois.
+pé três anos depois. Quando a cauda passa a ter contrato e catálogo, o ganho
+pode ser medido, e o método está no guia de [como calcular saving](/artigos/saving-em-compras-para-o-cfo).
 
 
 <!-- faq -->

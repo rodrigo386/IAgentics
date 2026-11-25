@@ -1,7 +1,7 @@
 ---
-titulo: "Saving em Compras: como calcular e apresentar para o CFO reconhecer no resultado"
-tituloSeo: "O que é saving em compras e como calcular | IAgentics"
-descricao: "O que é saving em compras, como calcular a partir do baseline, a diferença para custo evitado (cost avoidance) e o saving realizado que o CFO aceita. Com exemplo."
+titulo: "Saving em Compras: o que é, como calcular e como apresentar ao CFO"
+tituloSeo: "Saving em Compras: o que é e como calcular (com exemplo)"
+descricao: "Saving em compras: o que é, a fórmula de cálculo, a diferença entre saving realizado e custo evitado e como apresentar o resultado ao CFO. Com exemplo."
 slug: "saving-em-compras-para-o-cfo"
 data: 2026-10-14
 autor: "Rodrigo Costa"
@@ -17,7 +17,22 @@ faq:
     resposta: "O mais aceito pela controladoria é o último preço pago por item, com volume real. Para item novo, a média das cotações válidas do processo é uma alternativa, desde que a regra seja definida antes da negociação e aplicada a todas as categorias."
   - pergunta: "Por que o CFO não enxerga o saving de Compras no resultado?"
     resposta: "Porque o número reportado costuma ser o saving negociado, anualizado sobre volume previsto, enquanto o resultado registra o volume real, com compras feitas fora do contrato e aumentos em outras linhas. Reportar o saving realizado, conciliado com a controladoria, fecha essa diferença."
+  - pergunta: "Como calcular o saving de uma negociação?"
+    resposta: "Multiplique a diferença entre o preço de referência e o preço negociado pelo volume comprado no contrato novo. Exemplo: referência de R$ 10,00, preço negociado de R$ 9,20 e 72 mil unidades compradas dão R$ 0,80 × 72.000 = R$ 57.600 de saving realizado."
+  - pergunta: "O que é hard saving e soft saving?"
+    resposta: "Hard saving reduz o gasto em relação ao que a empresa já pagava e aparece como custo menor no resultado. Soft saving é um ganho que tem valor, mas não muda o orçamento do período, como custo evitado, prazo de pagamento maior ou horas do time liberadas."
+  - pergunta: "Saving é o mesmo que economia?"
+    resposta: "Toda economia em compras pode virar saving, mas só entra no relatório como saving quando é medida contra um baseline definido antes da negociação e aprovada pelo financeiro. Sem baseline combinado, o número é uma estimativa de economia e a controladoria não o reconhece."
+  - pergunta: "Como validar o saving com o financeiro?"
+    resposta: "Em três passos: acordar o baseline de cada tipo de compra antes do ano começar, comparar o preço do contrato com os pedidos e notas realmente emitidos no período e conferir o efeito na linha de custo do orçamento. O saving que passa pelos três é o saving validado."
+  - pergunta: "Qual a diferença entre saving e redução de custo?"
+    resposta: "Redução de custo é qualquer queda no gasto, inclusive a que vem de volume menor ou de mudança no mercado. Saving é a parte dessa queda atribuída a uma ação de Compras, medida contra o baseline com o mesmo volume. Uma fábrica que produz menos gasta menos sem ter gerado saving."
 ---
+
+**Saving em compras é a redução de custo obtida em relação a uma referência
+(baseline), como o último preço pago.** Fórmula básica: saving = (preço de
+referência − preço negociado) × quantidade. Só é saving realizado quando o
+desconto aparece no resultado financeiro.
 
 Compras fecha o ano com um número de saving que ocupa um slide inteiro. O CFO
 olha o resultado, compara com o custo do ano anterior e não encontra esse
@@ -48,6 +63,25 @@ referência? Qual volume entra, o previsto ou o real? E em que período o efeito
 é contado? Quem responde essas três perguntas de forma explícita, e igual para
 todas as categorias, já resolveu boa parte do problema.
 
+## Fórmula de saving: cálculo passo a passo
+
+A conta tem três passos, sempre na mesma ordem. Primeiro, a diferença por
+unidade entre o preço de referência e o preço negociado. Depois, o volume que de
+fato passou pelo contrato novo no período, conferido nos pedidos e nas notas.
+Por fim, a multiplicação dos dois. Com os números da caixa de papelão do
+exemplo mais abaixo:
+
+| Passo | Conta | Resultado |
+|---|---|---|
+| 1. Diferença de preço por unidade | R$ 10,00 − R$ 9,20 | R$ 0,80 |
+| 2. Volume comprado pelo contrato no semestre | pedidos e notas do período | 72.000 unidades |
+| 3. Saving realizado | R$ 0,80 × 72.000 | **R$ 57.600** |
+
+Se o passo 2 usar o volume previsto no lugar do comprado, o resultado é saving
+negociado, uma estimativa. Quando o preço novo fica acima do de referência, a
+mesma conta dá um número negativo: é aumento de custo, e entra no relatório com
+esse nome.
+
 ## Como escolher o baseline
 
 O baseline é o preço contra o qual o saving é medido. As opções mais comuns:
@@ -58,8 +92,8 @@ O baseline é o preço contra o qual o saving é medido. As opções mais comuns
 - **Média de preço do período anterior:** suaviza compras pontuais fora da
   curva. Exige definir o período e ponderar pelo volume.
 - **Média das cotações recebidas:** usada para item novo, sem histórico. É a
-  mais frágil, porque uma cotação alta convidada só para compor o mapa infla o
-  saving.
+  mais frágil, porque uma cotação alta convidada só para compor o
+  [mapa de cotação](/artigos/o-que-e-mapa-de-cotacao) infla o saving.
 - **Orçamento (budget):** comum em projetos e serviços. Mede a diferença contra o
   planejado, e o CFO tende a ler isso como acerto de previsão.
 
@@ -76,9 +110,20 @@ efeito de mercado: se a commodity caiu e o preço caiu junto, parte do saving ve
 do mercado. Muitas empresas reportam essa parte em separado, e essa transparência
 costuma aumentar a confiança no resto do número.
 
-## Saving e cost avoidance: por que separar
+## Tipos de saving: hard saving, soft saving e custo evitado
 
-**Saving** reduz o custo em relação ao que já se pagava. **Cost avoidance** evita
+Os relatórios de Compras costumam usar três nomes, e cada um ocupa uma linha
+diferente:
+
+- **Hard saving:** reduz o gasto em relação ao que a empresa já pagava e
+  aparece como custo menor no resultado. É o saving da fórmula acima.
+- **Soft saving:** um ganho que tem valor, mas não muda o orçamento do
+  período, como prazo de pagamento maior ou horas do time liberadas.
+- **Custo evitado (cost avoidance):** um aumento que deixou de acontecer,
+  inteiro ou em parte. Muitas empresas o tratam como um tipo de soft saving.
+
+A separação que mais pesa na conversa com o CFO é entre o hard saving e o custo
+evitado. **Saving** reduz o custo em relação ao que já se pagava. **Cost avoidance** evita
 um aumento que ainda não tinha acontecido.
 
 Um exemplo de cost avoidance: o fornecedor pede reajuste de 12% e Compras fecha
@@ -99,9 +144,9 @@ costumam ser classificadas como cost avoidance:
 Separar mostra duas contribuições diferentes com o nome certo, e o CFO consegue
 reconhecer as duas.
 
-## Saving negociado e saving realizado
+## Saving negociado × saving realizado × saving validado
 
-A segunda separação é no tempo. O **saving negociado** é calculado no fechamento
+A segunda separação é no tempo: o mesmo saving passa por três estágios. O **saving negociado** é calculado no fechamento
 do contrato, com o volume previsto, normalmente anualizado. O **saving
 realizado** é calculado depois, com o volume que de fato passou pelo contrato no
 período.
@@ -111,15 +156,21 @@ Entre um e outro, três coisas comem o número:
 1. **Volume menor que o previsto.** A demanda caiu, a linha de produção parou, o
    projeto atrasou.
 2. **Compra fora do contrato.** Parte da demanda continua indo para o fornecedor
-   antigo, ao preço antigo. É o leakage, primo do maverick buying. A consultoria
+   antigo, ao preço antigo. É o leakage, primo do
+   [maverick buying](/artigos/maverick-buying-o-que-e-como-reduzir). A consultoria
    Efficio afirma que [não é incomum perder mais da metade do saving](https://www.efficioconsulting.com/en-us/resources/insight/what-happened-those-procurement-savings-you-promis/)
    por falta de compliance com o contrato.
 3. **Prazo de vigência.** Um contrato fechado em setembro tem só três meses de
    efeito no ano fiscal, e o saving anualizado aparece inteiro no slide de
    dezembro.
 
+O **saving validado** é o realizado depois da conferência da controladoria: o
+baseline combinado, a mesma base de pedidos e notas e a aprovação de quem fecha
+o resultado. É o único dos três que entra no relatório de resultado sem
+ressalva.
+
 O CFO enxerga o saving realizado, porque é o que o resultado registra. Reportar o
-negociado como pipeline e o realizado como resultado resolve a maior parte da
+negociado como pipeline e o validado como resultado resolve a maior parte da
 divergência.
 
 ## Exemplo prático: uma indústria fictícia
@@ -176,6 +227,39 @@ número é menor e é o que a controladoria assina. A linha de perda ainda apont
 próxima ação: comunicar o contrato à filial e bloquear o fornecedor antigo
 para aquele item.
 
+## Como o saving entra no orçamento e no resultado (P&L)
+
+Saving realizado aparece no resultado como custo menor na linha em que o item é
+contabilizado. Matéria-prima e embalagem entram no custo do produto vendido;
+serviços e materiais indiretos, nas despesas da área que compra. Quando o item
+vai para estoque, o efeito chega ao resultado só quando o estoque é consumido ou
+vendido, e um saving fechado em novembro pode aparecer no ano seguinte.
+
+No orçamento, a pergunta é qual preço ele já previa. Se a área orçou com o preço
+antigo, o saving aparece como diferença favorável contra o orçado, e o
+financeiro pode decidir recolher esse valor. Se o orçamento já contava com o
+preço negociado, o saving existe contra o ano anterior, mas não sobra verba
+nova. Combinar isso antes do ano começar evita a discussão sobre o dinheiro que
+"sumiu".
+
+## Erros comuns ao calcular saving
+
+Quase toda divergência entre Compras e a controladoria vem de um destes erros:
+
+- Escolher o baseline depois da negociação, item a item.
+- Usar o volume previsto no lugar do volume comprado.
+- Contar o ano inteiro de um contrato que vigorou três meses.
+- Somar custo evitado e soft saving ao hard saving numa linha só.
+- Comparar preços de itens com especificação diferente, ou atribuir a Compras
+  uma queda que veio do mercado.
+- Ignorar a compra fora do contrato, que reduz o saving sem aparecer no
+  relatório.
+- Levar o número à reunião sem conciliar com a controladoria.
+
+Cada item da lista tem a correção descrita nas seções acima, e o
+exemplo prático mostra quatro deles
+no mesmo semestre.
+
 ## Como apresentar saving para o CFO
 
 Com o cálculo resolvido, a apresentação segue algumas regras simples.
@@ -208,15 +292,26 @@ livre e fornecedor com três CNPJs diferentes no sistema fazem o leakage
 desaparecer do relatório, porque a compra fora do contrato não é reconhecida como
 o mesmo item.
 
+No [tail spend](/artigos/tail-spend-guia-em-portugues), a cauda de compras
+pequenas e pulverizadas, o problema cresce: são muitos itens sem contrato e sem
+histórico confiável, e medir saving ali exige organizar o cadastro primeiro.
+
 É aqui que muitos projetos de IA em Compras começam: padronizar descrições,
-categorizar o spend e encontrar compras do mesmo item em fornecedores
-diferentes. E é aqui que a pergunta do CFO volta, agora sobre o próprio projeto.
+categorizar o spend numa
+[análise de gastos (spend analysis)](/artigos/spend-analysis-em-30-dias) e
+encontrar compras do mesmo item em fornecedores diferentes. E é aqui que a pergunta do CFO volta, agora sobre o próprio projeto.
 O módulo de métricas, ROI e governança contínua do
 [IA Spend Lab](/spend-lab) trata exatamente de definir esses indicadores antes da
 implantação, para que o resultado seja medido com uma régua combinada desde o
 primeiro dia.
 
 <!-- faq -->
+
+Antes de fechar a régua, vale saber em que ponto a sua área está:
+[avalie a maturidade da sua área de Compras](/diagnose-compras) com a Diagnose
+gratuita, em sete pilares. E se a dificuldade é registrar cotação, contrato e
+pedido no mesmo lugar, o módulo de Compras do [Nexo](/nexo) cobre requisição,
+cotação, contratos, homologação e análise de gastos.
 
 Se você precisa fechar a régua de saving com a sua controladoria, ou montar o
 relatório do próximo fechamento, a IAgentics pode ajudar a desenhar o método e os

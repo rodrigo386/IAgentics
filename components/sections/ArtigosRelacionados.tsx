@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
-import { artigosRelacionados } from "@/lib/artigos";
+import { ARTIGOS_FIXOS, artigosRelacionados } from "@/lib/artigos";
 import { artigos as t } from "@/lib/content";
 
 /**
@@ -11,7 +11,7 @@ import { artigos as t } from "@/lib/content";
 /* A home mostra seis (2026-11-24, auditoria de SEO: mais links da página mais
    forte para os artigos); as páginas de solução, três. */
 export function ArtigosRelacionados({ pagina, limite = 3 }: { pagina: keyof typeof t.relacionados.titulos; limite?: number }) {
-  const lista = artigosRelacionados(pagina === "home" ? undefined : pagina, limite);
+  const lista = artigosRelacionados(pagina === "home" ? undefined : pagina, limite, ARTIGOS_FIXOS[pagina]);
   if (lista.length === 0) return null;
   return (
     <section aria-labelledby="artigos-relacionados" className="border-t border-line py-20 sm:py-24">

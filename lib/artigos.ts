@@ -144,11 +144,23 @@ export function todosOsArtigos(): Artigo[] {
  * (`produto`), do mais recente para o mais antigo, completando com os outros
  * se faltar. Sem `produto` (a home), os mais recentes.
  */
-export function artigosRelacionados(produto?: string, limite = 3): Artigo[] {
+export function artigosRelacionados(produto?: string, limite = 3, fixos: string[] = []): Artigo[] {
   const todos = todosOsArtigos();
-  const daSolucao = produto ? todos.filter((a) => a.produto === produto) : [];
-  return [...daSolucao, ...todos.filter((a) => !daSolucao.includes(a))].slice(0, limite);
+  const primeiros = fixos.map((s) => todos.find((a) => a.slug === s)).filter((a): a is Artigo => !!a);
+  const daSolucao = produto ? todos.filter((a) => a.produto === produto && !primeiros.includes(a)) : [];
+  const resto = todos.filter((a) => !primeiros.includes(a) && !daSolucao.includes(a));
+  return [...primeiros, ...daSolucao, ...resto].slice(0, limite);
 }
+
+/** Artigos que abrem a lista de relacionados de uma página, antes do critério
+ *  por solução (2026-11-25, pedido do Rodrigo: o guia de saving recebia só 3
+ *  links internos e é o que responde às buscas de "cálculo de saving").
+ *  Rascunho ou slug que não existe é ignorado. */
+export const ARTIGOS_FIXOS: Record<string, string[]> = {
+  home: ["saving-em-compras-para-o-cfo"],
+  nexo: ["saving-em-compras-para-o-cfo"],
+  "spend-lab": ["saving-em-compras-para-o-cfo"],
+};
 
 /**
  * O corpo do artigo em MARKDOWN, como foi escrito — sem frontmatter e sem
