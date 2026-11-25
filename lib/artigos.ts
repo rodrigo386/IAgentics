@@ -160,6 +160,9 @@ export const ARTIGOS_FIXOS: Record<string, string[]> = {
   home: ["saving-em-compras-para-o-cfo"],
   nexo: ["saving-em-compras-para-o-cfo"],
   "spend-lab": ["saving-em-compras-para-o-cfo"],
+  /* /cursos é a página de receita: o guia de saving leva o leitor ao curso
+     (auditoria de SEO, 2026-11-25). */
+  cursos: ["saving-em-compras-para-o-cfo"],
 };
 
 /**

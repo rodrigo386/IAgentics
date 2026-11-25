@@ -1369,6 +1369,7 @@ export const artigos = {
       nexo: "Para entender o processo de compras com IA",
       "spend-lab": "Para entender os gastos da sua área",
       academy: "Para começar a usar IA em Compras",
+      cursos: "Para aplicar IA em Compras no dia a dia",
     },
     todos: "Ver todos os artigos",
   },

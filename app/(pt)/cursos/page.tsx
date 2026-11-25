@@ -10,6 +10,7 @@ import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/
 import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
 import { MEDICAO_CURSOS, MedidorPagina } from "@/components/site/MedidorPagina";
 import { SecaoFaq } from "@/components/sections/Faq";
+import { ArtigosRelacionados } from "@/components/sections/ArtigosRelacionados";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { cursos as t, nav } from "@/lib/content";
 import { assinaturaJsonLd, cursosJsonLd, faqJsonLd, ogDaPagina, trilhaDaPagina } from "@/lib/seo";
@@ -86,6 +87,9 @@ export default function PaginaCursos() {
         <CursosComoFunciona />
         <CursosAssinar />
         <SecaoFaq eyebrow={t.assinatura.faq.eyebrow} titulo={t.assinatura.faq.titulo} itens={t.assinatura.faq.itens} />
+        {/* Artigos no pé da página de receita; o de saving vem primeiro
+            (auditoria de SEO, 2026-11-25). */}
+        <ArtigosRelacionados pagina="cursos" />
       </main>
       <BarraAssinar />
       <MedidorPagina medicao={MEDICAO_CURSOS} />
