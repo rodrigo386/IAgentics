@@ -3,12 +3,12 @@ titulo: "Homologação de fornecedores: checklist do cadastro à revisão perió
 tituloSeo: "Homologação de fornecedores: checklist completo | IAgentics"
 descricao: "Checklist de homologação de fornecedores: o que verificar, em que ordem e como manter a homologação válida depois da aprovação, com exemplo prático."
 slug: "homologacao-de-fornecedores-checklist"
-data: 2026-10-09
+data: 2026-11-25
+ordem: 3
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "agendado"
-publicarEm: 2026-10-13
+status: "publicado"
 faq:
   - pergunta: "O que é homologação de fornecedores?"
     resposta: "É o processo em que Compras verifica se um fornecedor tem condições documentais, fiscais, financeiras, técnicas e de conformidade para atender a empresa antes de receber o primeiro pedido. O resultado é uma decisão registrada: aprovado, aprovado com ressalva ou reprovado, com validade definida."

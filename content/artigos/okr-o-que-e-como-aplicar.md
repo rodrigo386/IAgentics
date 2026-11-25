@@ -4,10 +4,11 @@ tituloSeo: "OKR: o que é e como aplicar (com exemplo) | IAgentics"
 descricao: "OKR: o que é, de onde vem, como escrever objetivos e resultados-chave, um exemplo para a área de Compras, os erros comuns e o curso da Solution sobre o tema."
 slug: "okr-o-que-e-como-aplicar"
 data: 2026-11-25
+ordem: 8
 autor: "Rodrigo Costa"
 categoria: "ROI e business case"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "O que significa OKR?"
     resposta: "OKR é a sigla em inglês para Objectives and Key Results, ou objetivos e resultados-chave. O objetivo diz o que se quer alcançar; os resultados-chave dizem, com números e prazo, como se saberá que foi alcançado."

@@ -4,10 +4,11 @@ tituloSeo: "Curso de IA para Compras: por onde começar | IAgentics"
 descricao: "Curso de IA para Compras: o que o comprador precisa aprender primeiro, como treinar com tarefas reais do dia a dia e quais cursos da Solution tratam do tema."
 slug: "curso-de-ia-para-compras"
 data: 2026-11-25
+ordem: 1
 autor: "Rodrigo Costa"
 categoria: "IA e agentes em Compras"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "Preciso saber programar para fazer um curso de IA para Compras?"
     resposta: "Não. As tarefas em que a IA mais ajuda o comprador no começo, como resumir propostas, montar a primeira versão de um mapa de cotação ou redigir e-mails a fornecedores, são feitas em ferramentas de conversa, escrevendo em português. Programar ajuda quem vai automatizar fluxos depois, mas não é o ponto de partida."

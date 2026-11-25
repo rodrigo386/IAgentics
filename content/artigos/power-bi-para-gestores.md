@@ -4,10 +4,11 @@ tituloSeo: "Power BI para Gestores: o que aprender primeiro | IAgentics"
 descricao: "Power BI para gestores e áreas de negócio: o que aprender primeiro, como montar um painel útil para a sua área e quais cursos da Solution tratam do tema."
 slug: "power-bi-para-gestores"
 data: 2026-11-25
+ordem: 6
 autor: "Rodrigo Costa"
 categoria: "Spend e tail spend"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "Gestor precisa aprender Power BI?"
     resposta: "Precisa saber o suficiente para ler um painel, desconfiar de um número estranho e pedir o indicador certo ao time. Quem quer montar os próprios painéis vai além e aprende a preparar dados no Power Query e a criar medidas em DAX."

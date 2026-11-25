@@ -3,12 +3,12 @@ titulo: "TCO em compras: como calcular o custo total de propriedade"
 tituloSeo: "TCO em compras: como calcular, com exemplo | IAgentics"
 descricao: "TCO em compras: o que entra no custo total de propriedade, a fórmula e um cálculo passo a passo comparando dois fornecedores."
 slug: "tco-em-compras-como-calcular"
-data: 2026-10-09
+data: 2026-11-25
+ordem: 2
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "agendado"
-publicarEm: 2026-10-12
+status: "publicado"
 faq:
   - pergunta: "O que é TCO em compras?"
     resposta: "TCO (Total Cost of Ownership, ou custo total de propriedade) é a soma de tudo o que a empresa gasta com um item durante o tempo em que o usa: o preço de compra, o frete, a instalação, a operação, a manutenção, as falhas e o descarte, menos o que ela recupera no fim. Em Compras, serve para comparar fornecedores pelo custo real da escolha, além do preço da proposta."

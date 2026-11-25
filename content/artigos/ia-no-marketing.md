@@ -4,10 +4,11 @@ tituloSeo: "IA no Marketing: usos práticos e como começar | IAgentics"
 descricao: "IA no marketing: onde ela ajuda no conteúdo, na pesquisa e na análise de campanhas, os cuidados com dados de clientes e os cursos para aprender na prática."
 slug: "ia-no-marketing"
 data: 2026-11-25
+ordem: 9
 autor: "Rodrigo Costa"
 categoria: "IA e agentes em Compras"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "Como usar IA no marketing?"
     resposta: "Comece pelas tarefas com muito texto e muita repetição: variações de anúncio, roteiros, resumos de pesquisa e leitura de comentários de clientes. Dê à ferramenta o contexto da marca e do público, peça um formato definido e revise tudo antes de publicar."

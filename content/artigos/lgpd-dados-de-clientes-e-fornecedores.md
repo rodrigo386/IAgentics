@@ -4,10 +4,11 @@ tituloSeo: "LGPD na prática: clientes e fornecedores | IAgentics"
 descricao: "LGPD na prática para quem lida com dados de clientes e fornecedores: o que é dado pessoal, bases legais, direitos do titular, IA e o curso da Solution."
 slug: "lgpd-dados-de-clientes-e-fornecedores"
 data: 2026-11-25
+ordem: 7
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "Dados de fornecedores entram na LGPD?"
     resposta: "Os dados das pessoas entram: nome, e-mail, telefone e CPF do vendedor, do representante ou do sócio são dados pessoais, porque a lei define dado pessoal como informação relacionada a pessoa natural identificada ou identificável. Os dados da empresa em si, como razão social e CNPJ, ficam fora dessa definição, com atenção aos casos em que empresa e pessoa se confundem, como o MEI."

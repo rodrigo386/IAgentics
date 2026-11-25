@@ -3,12 +3,12 @@ titulo: "Lead time de fornecedores: o que compõe, como medir e como reduzir a p
 tituloSeo: "Lead time em compras: como medir e reduzir | IAgentics"
 descricao: "Lead time em compras soma o tempo interno da requisição e o prazo do fornecedor. Veja como medir cada parte, o efeito no estoque e onde dá para cortar."
 slug: "lead-time-de-fornecedores"
-data: 2026-10-09
+data: 2026-11-25
+ordem: 5
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "agendado"
-publicarEm: 2026-10-15
+status: "publicado"
 faq:
   - pergunta: "O que é lead time em compras?"
     resposta: "É o tempo entre o momento em que a necessidade de um item aparece e o momento em que ele está disponível para uso. Inclui a parte interna (requisição, aprovação, cotação e emissão do pedido) e a parte externa (confirmação, produção ou separação, transporte e recebimento)."

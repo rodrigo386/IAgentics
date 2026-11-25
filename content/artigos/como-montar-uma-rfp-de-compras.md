@@ -3,12 +3,12 @@ titulo: "Como montar uma RFP de Compras que gera propostas comparáveis"
 tituloSeo: "RFP de Compras: como montar, critérios e prazos | IAgentics"
 descricao: "Como montar uma RFP de Compras: estrutura do documento, o que o fornecedor informa, critérios de avaliação com peso, prazos e erros que impedem comparar."
 slug: "como-montar-uma-rfp-de-compras"
-data: 2026-10-09
+data: 2026-11-25
+ordem: 4
 autor: "Rodrigo Costa"
 categoria: "Sourcing e cotação"
 produto: "nexo"
-status: "agendado"
-publicarEm: 2026-10-14
+status: "publicado"
 faq:
   - pergunta: "Qual a diferença entre RFI, RFP e RFQ?"
     resposta: "A RFI pede informação para conhecer o mercado e os fornecedores. A RFP pede uma proposta completa, com solução técnica, preço e condições, quando o escopo admite mais de um jeito de ser atendido. A RFQ pede preço e prazo para um item já especificado. Muitos processos usam as três em sequência."

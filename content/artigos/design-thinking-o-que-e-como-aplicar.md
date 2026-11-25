@@ -4,10 +4,11 @@ tituloSeo: "Design Thinking: o que é e como aplicar | IAgentics"
 descricao: "Design Thinking: o que é, as etapas do método, como aplicar em um processo interno, um exemplo com a requisição de compras e o curso da Solution sobre o tema."
 slug: "design-thinking-o-que-e-como-aplicar"
 data: 2026-11-25
+ordem: 10
 autor: "Rodrigo Costa"
 categoria: "IA e agentes em Compras"
 produto: "academy"
-status: "rascunho"
+status: "publicado"
 faq:
   - pergunta: "O que é Design Thinking?"
     resposta: "É uma abordagem para resolver problemas centrada nas pessoas para quem a solução é criada. Em vez de partir da ideia pronta, o time entende a necessidade real, gera alternativas, faz protótipos simples e testa com os usuários antes de investir na solução final."
