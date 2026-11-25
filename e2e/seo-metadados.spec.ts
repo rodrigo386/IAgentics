@@ -62,6 +62,15 @@ test("o título da home cabe no resultado da busca, nos dois idiomas", async ({ 
   }
 });
 
+/* 2026-11-25, pedido do Rodrigo: o preço no título da /cursos, que é o que
+   separa a oferta das outras páginas da Solution no resultado da busca. */
+test("o título da /cursos leva o preço e cabe no resultado da busca", async ({ request }) => {
+  const { titulo, descricao } = await cabeca(request, "/cursos");
+  expect(titulo.length, `"${titulo}"`).toBeLessThanOrEqual(60);
+  expect(titulo).toContain("R$ 49,90/mês");
+  expect(descricao).toContain("R$ 49,90 por mês");
+});
+
 test("o sitemap só leva url, lastmod e idiomas (o Google ignora priority e changefreq)", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
   expect(xml).toContain("<lastmod>");

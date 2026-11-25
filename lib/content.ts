@@ -1801,9 +1801,14 @@ export const cursos = {
     /* Reescrito em 2026-11-04 pelo Search Console: a página aparecia para
        "plataforma solution pecege" (posição 6) e o título antigo, com 66
        caracteres, era cortado antes do que se buscava. */
-    titulo: "Plataforma Solution Pecege: cursos de IA | IAgentics",
+    /* Desde 2026-11-25 o preço está no título (pedido do Rodrigo): o "|
+       IAgentics" saiu para caber em 60 caracteres. Mudou o preço? Mude aqui
+       também (o e2e confere). */
+    titulo: "Plataforma Solution Pecege: cursos de IA por R$ 49,90/mês",
     descricao:
-      "Cursos de IA aplicada aos negócios na plataforma Solution do Pecege, com as formações da IAgentics. Mais de 300 horas de aula por R$ 49,90 por mês, sem fidelidade.",
+      "Mais de 300 horas de cursos de IA aplicada aos negócios na plataforma Solution, do Pecege. R$ 49,90 por mês, sem fidelidade. Cartão, Pix ou boleto.",
+    /** Nome do produto no JSON-LD (Product + Offer): sem o preço, que já vai na oferta. */
+    produto: "Plataforma Solution Pecege: cursos de IA",
   },
   /** A vitrine dos cursos da plataforma Solution, no estilo streaming
    *  (2026-10-14, pedido do Rodrigo, aba "Estrutura Plataforma" do cursos.xlsx

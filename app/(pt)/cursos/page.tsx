@@ -62,7 +62,7 @@ export default function PaginaCursos() {
           checkout cobra, a descrição é a da página. */}
       <JsonLd
         dados={assinaturaJsonLd({
-          nome: t.meta.titulo.replace(/ \| IAgentics$/, ""),
+          nome: t.meta.produto,
           descricao: t.meta.descricao,
           centavos: VALOR_ASSINATURA_CENTAVOS,
           imagem: t.filmeHero.poster,
