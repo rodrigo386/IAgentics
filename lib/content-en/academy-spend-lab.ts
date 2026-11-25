@@ -11,7 +11,7 @@ export const academy: Traducao<typeof pt.academy> = {
   assinatura: {
     titulo: "Prefer to learn at your own pace?",
     texto:
-      `IAgentics Academy programs are also available on Solution, the online learning platform of Pecege, an institute born at USP/Esalq. ${PRECO_MENSAL} per month, no commitment (courses in Portuguese).`,
+      `IAgentics Academy programs are also available on Solution, the online learning platform of Pecege. ${PRECO_MENSAL} per month, no commitment (courses in Portuguese).`,
     cta: "See the courses (in Portuguese)",
   },
   hero: {

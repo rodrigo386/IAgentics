@@ -15,7 +15,7 @@ test("a prévia de trilha mostra os cursos e não é indexada", async ({ page })
   await expect(lista.getByRole("listitem").last()).toContainText("Em breve");
   await expect(page.getByRole("link", { name: "Assinar por R$ 49,90/mês" })).toHaveAttribute("href", "/cursos#assinar");
   await expect(page.getByRole("region", { name: "Outras trilhas na mesma assinatura" }).getByRole("link")).toHaveCount(5);
-  await expect(page.locator("dt", { hasText: "Os cursos são da USP?" })).toBeVisible();
+  await expect(page.locator("dt", { hasText: "Quem emite o certificado?" })).toBeVisible();
 });
 
 test("as seis trilhas respondem, trilha inexistente é 404 e nenhuma entra no sitemap", async ({ page, request }) => {

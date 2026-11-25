@@ -587,7 +587,7 @@ export const academy = {
    *  inteira da Academy, que vende in company, e prefere estudar sozinho. */
   assinatura: {
     titulo: "Prefere estudar no seu ritmo?",
-    texto: `As formações da IAgentics Academy também estão na Solution, a plataforma online do Pecege, instituto que nasceu na Esalq/USP. ${PRECO_MENSAL} por mês, sem fidelidade.`,
+    texto: `As formações da IAgentics Academy também estão na Solution, a plataforma online do Pecege. ${PRECO_MENSAL} por mês, sem fidelidade.`,
     cta: "Ver as trilhas e assinar",
   },
   /**
@@ -2087,10 +2087,10 @@ export const cursos = {
            assinar. Certificado confirmado pelo Rodrigo no mesmo dia; os
            números de cursos são conferidos contra a vitrine pelo teste. */
         { pergunta: "Os cursos têm certificado?", resposta: "Sim. Os cursos da Solution dão certificado digital emitido pelo Pecege, gerado ao fim do curso para quem assiste a pelo menos 75% do conteúdo e faz a prova final." },
-        /* Redação a partir do FAQ da própria Solution e do site do MBA
-           USP/Esalq (pesquisa de 2026-11-25): a USP certifica os MBAs, não
-           os cursos livres da Solution. */
-        { pergunta: "Os cursos são da USP?", resposta: "Não. Os cursos são da Solution, a plataforma online do Pecege, e o certificado é emitido pelo Pecege. O Pecege nasceu em 2003 na Esalq/USP e opera os MBAs USP/Esalq, que são outro produto, com certificado da USP." },
+        /* Redação a partir do FAQ da própria Solution (pesquisa de
+           2026-11-25). Sem citar instituições além do Pecege (pedido do
+           Pecege). */
+        { pergunta: "Quem emite o certificado?", resposta: "O Pecege. Os cursos são da Solution, a plataforma online do Pecege, e o certificado digital é emitido pelo Pecege ao fim do curso." },
         { pergunta: "Quantas horas de aula tem a assinatura?", resposta: "Mais de 300 horas de aula, em 28 cursos publicados. Outros 18 já estão anunciados e entram na mesma assinatura, sem custo a mais, quando forem lançados." },
         { pergunta: "Como pago a mensalidade?", resposta: "Por cartão, Pix ou boleto. Todo mês o Asaas, que processa os pagamentos, envia a fatura para o seu e-mail, e você escolhe a forma de pagar." },
         { pergunta: "Quando recebo o acesso?", resposta: "Em até 24 horas úteis depois que o pagamento é confirmado. Você recebe um e-mail de boas-vindas assim que o pagamento é confirmado e outro com os dados de entrada quando o acesso à Solution é liberado." },
@@ -2202,11 +2202,9 @@ export const cursos = {
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
     /* Opção 1 escolhida pelo Rodrigo (2026-10-14): o benefício no título, a
-       parceria e a USP/Esalq no texto de apoio.
-       Corrigido em 2026-11-25: "do Pecege, da USP/Esalq" dava a entender que
-       a Solution é da USP. Não é: os cursos são do Pecege, com certificado do
-       Pecege; a USP certifica só os MBAs USP/Esalq, que o Pecege opera
-       (plataformasolution.com.br, FAQ; mbauspesalq.com/sobre e /faq). */
+       parceria no texto de apoio.
+       Corrigido em 2026-11-25: o texto de apoio não cita instituições além do
+       Pecege (pedido do Pecege); os cursos e o certificado são do Pecege. */
     headline: "Aprenda IA aplicada aos negócios por R$ 49,90 por mês",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
@@ -2218,7 +2216,7 @@ export const cursos = {
     subtextAntes: "As formações da IAgentics e mais de 300 horas de aula estão na ",
     subtextLink: "Solution",
     subtextDepois:
-      ", a plataforma online do Pecege, instituto que nasceu na Esalq/USP.",
+      ", a plataforma online do Pecege.",
     urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Cartão, Pix ou boleto. Garantia de 7 dias e cancelamento quando quiser.",
     /** Os números da assinatura embaixo do botão (2026-11-25). Os cursos são

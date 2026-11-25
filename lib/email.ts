@@ -103,7 +103,7 @@ export function emailListaEspera(nome: string) {
      chegar na plataforma. */
   const agradecimento = "Obrigado pelo seu interesse. Sua inscrição na pré-venda está confirmada.";
   const ondeAntes = "As formações online da IAgentics serão disponibilizadas na ";
-  const ondeDepois = ", a plataforma de educação online do Pecege, a mesma organização por trás dos MBAs USP/Esalq.";
+  const ondeDepois = ", a plataforma de educação online do Pecege.";
   const promessa =
     "Você será avisado em primeiro lugar quando elas entrarem no ar, com os 10% de desconto de lançamento garantidos.";
 
@@ -145,7 +145,7 @@ export function emailBoasVindas(nome: string) {
   const URL_SOLUTION = "https://plataformasolution.com.br/";
 
   const confirmado = "Seu pagamento foi confirmado e a sua assinatura está ativa. Boas-vindas!";
-  const prazo = "Em até 24 horas úteis vamos liberar o seu acesso pela Plataforma Solution, a plataforma online do Pecege, instituto que nasceu na Esalq/USP. Você vai receber um e-mail com os dados de entrada assim que o acesso estiver liberado.";
+  const prazo = "Em até 24 horas úteis vamos liberar o seu acesso pela Plataforma Solution, a plataforma online do Pecege. Você vai receber um e-mail com os dados de entrada assim que o acesso estiver liberado.";
   const inclui = "A assinatura dá acesso às formações de IA aplicada da IAgentics Academy e às trilhas de cursos da Solution, no seu ritmo.";
   const cobranca = "A mensalidade é de R$ 49,90, e a fatura de cada mês chega por e-mail. Você tem 7 dias de garantia: se desistir nesse prazo, devolvemos 100% do valor. Depois disso, para cancelar é só falar com a gente pelo WhatsApp ou por este e-mail; o acesso continua até o fim do mês pago.";
   const duvidas = "Ficou alguma dúvida? Responda este e-mail.";

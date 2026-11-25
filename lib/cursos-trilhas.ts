@@ -13,7 +13,7 @@ export const PERGUNTAS_DA_TRILHA = [
   "O que a assinatura inclui?",
   "Os cursos têm certificado?",
   "Quantas horas de aula tem a assinatura?",
-  "Os cursos são da USP?",
+  "Quem emite o certificado?",
   "E se eu não gostar?",
 ];
 
