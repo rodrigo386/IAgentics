@@ -164,12 +164,13 @@ test("a /cursos mostra a vitrine da Solution em trilhas", async ({ page }) => {
   ]);
   await expect(sec.getByRole("listitem")).toHaveCount(46);
   await expect(sec.locator("img")).toHaveCount(46);
-  await expect(sec.getByRole("img", { name: /, em breve$/ })).toHaveCount(18);
+  /* Desde 2026-11-25 o nome e o professor de cada capa são TEXTO embaixo
+     dela, e a capa ficou decorativa (alt vazio, sem repetir a legenda). */
+  await expect(sec.getByRole("listitem").filter({ hasText: /Em breve$/ })).toHaveCount(18);
   // O Marketing com IA fecha os publicados da trilha de IA (a "AI First" foi juntada a ela em 2026-10-19).
-  await expect(page.getByRole("list", { name: "IA, Dados & Tecnologia" }).getByRole("img").nth(7)).toHaveAccessibleName("Marketing com IA, Prof. Carol Cavalcante");
-  // O nome e o professor de cada capa chegam como texto pelo alt.
-  await expect(sec.getByRole("img", { name: "Fundamentos de IA para Negócios, Prof. Vinícius Ferreira" })).toBeVisible();
-  await expect(sec.getByRole("img", { name: "Inovação, Prof. Léo Recondo" })).toBeAttached();
+  await expect(page.getByRole("list", { name: "IA, Dados & Tecnologia" }).getByRole("listitem").nth(7)).toHaveText("Marketing com IAProf. Carol Cavalcante");
+  await expect(sec.getByRole("listitem").filter({ hasText: "Fundamentos de IA para Negócios" }).first()).toContainText("Prof. Vinícius Ferreira");
+  await expect(sec.getByRole("listitem").filter({ hasText: "Inovação" }).first()).toContainText("Prof. Léo Recondo");
   await expect(sec).not.toContainText("Excel");
   const src = await sec.locator("img").first().getAttribute("src");
   expect(src).toContain("vitrine");

@@ -1,4 +1,4 @@
-import { ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+import { ShieldCheck, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { cursos } from "@/lib/content";
 import { AssinaturaForm } from "./AssinaturaForm";
 
@@ -42,11 +42,21 @@ export function CursosAssinar() {
             <span className="tnum text-6xl font-medium tracking-[-0.04em] text-fg">{t.preco}</span>{" "}
             <span className="text-lg text-fg-muted">{t.porMes}</span>
           </p>
+          <p className="mt-2 text-base text-fg-muted">{t.porDia}</p>
           <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-fg-muted">{t.resumo}</p>
           <p className="mt-5 flex max-w-[44ch] items-start gap-2 text-base font-medium text-fg">
             <ShieldCheck size={22} weight="regular" aria-hidden="true" className="mt-0.5 shrink-0 text-accent-text" />
             {t.garantia}
           </p>
+          <a
+            href={t.whatsapp.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 text-base font-medium text-accent-text underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-current"
+          >
+            <WhatsappLogo size={22} weight="regular" aria-hidden="true" className="shrink-0" />
+            {t.whatsapp.texto}
+          </a>
         </div>
         <div className="border border-line bg-surface p-6 sm:p-8 lg:col-span-6 lg:col-start-7">
           <AssinaturaForm />

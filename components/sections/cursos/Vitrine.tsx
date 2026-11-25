@@ -36,15 +36,21 @@ export function CursosVitrine() {
             >
               {linha.cursos.map((c) => (
                 <li key={c.nome} className="w-[132px] shrink-0 snap-start sm:w-[160px] lg:w-[184px]">
+                  {/* Nome e professor como TEXTO embaixo da capa (2026-11-25):
+                      o que a capa desenha o buscador não lê. Com a legenda,
+                      a capa vira decorativa (alt vazio), senão o leitor de
+                      tela diria tudo duas vezes. */}
                   <div className="relative aspect-[306/466] overflow-hidden rounded-[10px] bg-brand-ink">
                     <Image
                       src={c.capa}
-                      alt={"emBreve" in c ? `${c.nome}, ${t.emBreve.toLowerCase()}` : `${c.nome}, ${c.professor}`}
+                      alt=""
                       fill
                       sizes="(min-width: 1024px) 184px, (min-width: 640px) 160px, 132px"
                       className="object-cover"
                     />
                   </div>
+                  <p className="mt-3 text-sm font-medium leading-snug text-fg">{c.nome}</p>
+                  <p className="mt-1 text-xs text-fg-muted">{"emBreve" in c ? t.emBreve : c.professor}</p>
                 </li>
               ))}
             </LinhaVitrine>

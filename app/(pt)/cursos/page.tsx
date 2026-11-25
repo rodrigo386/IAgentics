@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { CursosEstante } from "@/components/sections/cursos/Estante";
 import { CursosFormacoes } from "@/components/sections/cursos/Formacoes";
 import { CursosVitrine } from "@/components/sections/cursos/Vitrine";
+import { CursosParaQuem } from "@/components/sections/cursos/ParaQuem";
 import { DepoimentoAluna } from "@/components/sections/cursos/DepoimentoAluna";
 import { CursosAssinar, CursosComoFunciona } from "@/components/sections/cursos/Assinatura";
 import { BarraAssinar } from "@/components/sections/cursos/BarraAssinar";
@@ -73,6 +74,8 @@ export default function PaginaCursos() {
       <Nav />
       <main id="conteudo" className="pt-16">
         <CursosEstante />
+        {/* O que a pessoa leva, por área, logo depois da capa (2026-11-25). */}
+        <CursosParaQuem />
         {/* As formações da IAgentics vêm antes dos cursos do Pecege (pedido do
             Rodrigo, 2026-10-14). */}
         <CursosFormacoes />

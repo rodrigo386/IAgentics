@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
 import { LogoSolution } from "@/components/ui/LogoSolution";
-import { cursos as t } from "@/lib/content";
+import { credenciais, cursos as t } from "@/lib/content";
 import { FilmeHero } from "./FilmeHero";
 
 /**
@@ -79,6 +79,35 @@ export function CursosEstante() {
             className="mt-8 inline-block rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-colors hover:bg-accent-hover active:translate-y-px"
           >
             {t.assinatura.cta}
+          </a>
+          <p className="mt-3 text-sm text-fg-muted">{t.assinatura.porDia}</p>
+          {/* Os números e a credencial perto do botão (2026-11-25): o que a
+              pessoa leva e quem está por trás, antes de rolar a página. */}
+          <dl className="mt-8 grid max-w-[46ch] grid-cols-2 gap-x-6 gap-y-4 border-t border-line pt-6">
+            {t.hero.numeros.map((n) => (
+              <div key={n.rotulo}>
+                <dt className="sr-only">{n.rotulo}</dt>
+                <dd>
+                  <span className="block text-xl font-medium tracking-[-0.02em] text-fg">{n.valor}</span>
+                  <span className="text-sm text-fg-muted">{n.rotulo}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <a
+            href={credenciais.claudePartner.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-3 text-sm text-fg-muted transition-colors hover:text-fg"
+          >
+            <Image
+              src={credenciais.claudePartner.src}
+              alt={credenciais.claudePartner.alt}
+              width={40}
+              height={40}
+              className="h-10 w-10"
+            />
+            <span className="max-w-[34ch]">{credenciais.claudePartner.legenda}</span>
           </a>
         </div>
 

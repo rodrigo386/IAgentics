@@ -587,7 +587,7 @@ export const academy = {
    *  inteira da Academy, que vende in company, e prefere estudar sozinho. */
   assinatura: {
     titulo: "Prefere estudar no seu ritmo?",
-    texto: `As formações da IAgentics Academy também estão na Solution, a plataforma online do Pecege, da USP/Esalq. ${PRECO_MENSAL} por mês, sem fidelidade.`,
+    texto: `As formações da IAgentics Academy também estão na Solution, a plataforma online do Pecege, instituto que nasceu na Esalq/USP. ${PRECO_MENSAL} por mês, sem fidelidade.`,
     cta: "Ver as trilhas e assinar",
   },
   /**
@@ -1804,7 +1804,10 @@ export const cursos = {
     /* Desde 2026-11-25 o preço está no título (pedido do Rodrigo): o "|
        IAgentics" saiu para caber em 60 caracteres. Mudou o preço? Mude aqui
        também (o e2e confere). */
-    titulo: "Plataforma Solution Pecege: cursos de IA por R$ 49,90/mês",
+    /* 2026-11-25, segunda rodada no mesmo dia (plano de SEO da /cursos do
+       Rodrigo): "cursos de IA para negócios" na frente, sem perder
+       "Solution" e "Pecege", que são as buscas que já trazem impressão. */
+    titulo: "Cursos de IA para Negócios na Solution Pecege: R$ 49,90/mês",
     descricao:
       "Mais de 300 horas de cursos de IA aplicada aos negócios na plataforma Solution, do Pecege. R$ 49,90 por mês, sem fidelidade. Cartão, Pix ou boleto.",
     /** Nome do produto no JSON-LD (Product + Offer): sem o preço, que já vai na oferta. */
@@ -2025,6 +2028,16 @@ export const cursos = {
      *  tirar o medo de assinar. Devolver = estornar no Asaas E cancelar no
      *  /admin (o estorno sozinho não para as próximas cobranças). */
     garantia: "Garantia de 7 dias: se desistir nesse prazo, devolvemos 100% do valor.",
+    /** Âncora de preço (2026-11-25). R$ 49,90 × 12 ÷ 365 = R$ 1,64: "em média"
+     *  porque num fevereiro de 28 dias passa de R$ 1,70. O teste confere a
+     *  conta contra VALOR_ASSINATURA_CENTAVOS. */
+    porDia: "Em média, menos de R$ 1,70 por dia.",
+    /** Para quem tem dúvida antes de assinar (2026-11-25): o mesmo número do
+     *  rodapé, com a mensagem pronta sobre a assinatura. */
+    whatsapp: {
+      texto: "Ficou com dúvida? Fale com a gente no WhatsApp",
+      href: "https://wa.me/5515998714091?text=Ol%C3%A1%21%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20assinatura%20da%20Solution.",
+    },
     resumo: "Acesso à plataforma Solution inteira, com as formações de IA da IAgentics. Cartão, Pix ou boleto. Cancele quando quiser.",
     comoFunciona: {
       titulo: "Como funciona",
@@ -2070,6 +2083,15 @@ export const cursos = {
       titulo: "Sobre a assinatura",
       itens: [
         { pergunta: "O que a assinatura inclui?", resposta: "Acesso à plataforma Solution, do Pecege, com as formações de IA aplicada da IAgentics, enquanto a assinatura estiver ativa." },
+        /* As três seguintes (2026-11-25) respondem ao que se busca antes de
+           assinar. Certificado confirmado pelo Rodrigo no mesmo dia; os
+           números de cursos são conferidos contra a vitrine pelo teste. */
+        { pergunta: "Os cursos têm certificado?", resposta: "Sim. Os cursos da Solution dão certificado digital emitido pelo Pecege, gerado ao fim do curso para quem assiste a pelo menos 75% do conteúdo e faz a prova final." },
+        /* Redação a partir do FAQ da própria Solution e do site do MBA
+           USP/Esalq (pesquisa de 2026-11-25): a USP certifica os MBAs, não
+           os cursos livres da Solution. */
+        { pergunta: "Os cursos são da USP?", resposta: "Não. Os cursos são da Solution, a plataforma online do Pecege, e o certificado é emitido pelo Pecege. O Pecege nasceu em 2003 na Esalq/USP e opera os MBAs USP/Esalq, que são outro produto, com certificado da USP." },
+        { pergunta: "Quantas horas de aula tem a assinatura?", resposta: "Mais de 300 horas de aula, em 28 cursos publicados. Outros 18 já estão anunciados e entram na mesma assinatura, sem custo a mais, quando forem lançados." },
         { pergunta: "Como pago a mensalidade?", resposta: "Por cartão, Pix ou boleto. Todo mês o Asaas, que processa os pagamentos, envia a fatura para o seu e-mail, e você escolhe a forma de pagar." },
         { pergunta: "Quando recebo o acesso?", resposta: "Em até 24 horas úteis depois que o pagamento é confirmado. Você recebe um e-mail de boas-vindas assim que o pagamento é confirmado e outro com os dados de entrada quando o acesso à Solution é liberado." },
         { pergunta: "E se eu não gostar?", resposta: "Você tem 7 dias, contados do pagamento, para desistir e receber 100% do valor de volta. É só pedir pelo WhatsApp ou pelo e-mail contato@iagentics.com.br. Depois desse prazo, a assinatura pode ser cancelada quando você quiser, sem multa, e o acesso vale até o fim do mês pago." },
@@ -2180,7 +2202,11 @@ export const cursos = {
        "e" em texto, não "+": o símbolo vira ruído em leitor de tela. */
     eyebrow: "IAgentics e Pecege",
     /* Opção 1 escolhida pelo Rodrigo (2026-10-14): o benefício no título, a
-       parceria e a USP/Esalq no texto de apoio. */
+       parceria e a USP/Esalq no texto de apoio.
+       Corrigido em 2026-11-25: "do Pecege, da USP/Esalq" dava a entender que
+       a Solution é da USP. Não é: os cursos são do Pecege, com certificado do
+       Pecege; a USP certifica só os MBAs USP/Esalq, que o Pecege opera
+       (plataformasolution.com.br, FAQ; mbauspesalq.com/sobre e /faq). */
     headline: "Aprenda IA aplicada aos negócios por R$ 49,90 por mês",
     /* Texto do Rodrigo (2026-08-29), verbatim. Vem em dois parágrafos: o
        primeiro informa, o segundo posiciona. */
@@ -2192,9 +2218,48 @@ export const cursos = {
     subtextAntes: "As formações da IAgentics e mais de 300 horas de aula estão na ",
     subtextLink: "Solution",
     subtextDepois:
-      ", a plataforma online do Pecege, da USP/Esalq.",
+      ", a plataforma online do Pecege, instituto que nasceu na Esalq/USP.",
     urlSolution: "https://plataformasolution.com.br/",
     subtextDois: "Cartão, Pix ou boleto. Garantia de 7 dias e cancelamento quando quiser.",
+    /** Os números da assinatura embaixo do botão (2026-11-25). Os cursos são
+     *  contados da vitrine pelo teste; certificado confirmado pelo Rodrigo. */
+    numeros: [
+      { valor: "+300 h", rotulo: "de aula" },
+      { valor: "28", rotulo: "cursos publicados" },
+      { valor: "18", rotulo: "em breve, no mesmo preço" },
+      { valor: "Certificado", rotulo: "do Pecege ao concluir" },
+    ],
+  },
+  /** "Para quem é" (2026-11-25, plano de SEO e conversão da /cursos): quatro
+   *  áreas, cada uma com os cursos da vitrine que falam com ela, pelo NOME
+   *  exato (o teste confere que cada nome existe na vitrine). Nada de ementa:
+   *  o que se diz de cada curso é o título. */
+  paraQuem: {
+    eyebrow: "Para quem é",
+    titulo: "Escolha pela sua área e comece pelo curso que resolve o seu dia",
+    emBreve: "em breve",
+    areas: [
+      {
+        nome: "Compras e Supply",
+        texto: "Para quem negocia com fornecedores, cota e acompanha contratos e quer trazer IA para a rotina de Compras.",
+        cursos: ["Estratégias de Negociação", "Gestão de Compras e Fornecedores com IA", "Strategic Sourcing 4.0", "Fundamentos de Compras"],
+      },
+      {
+        nome: "Marketing e Vendas",
+        texto: "Para quem cria campanhas, estuda o mercado e vende, e quer usar IA para produzir e decidir mais rápido.",
+        cursos: ["Marketing com IA", "Pesquisa de Marketing", "Inteligência de Mercado", "Pitch de Vendas"],
+      },
+      {
+        nome: "Dados e Tecnologia",
+        texto: "Para quem monta relatórios e painéis, cuida de dados de clientes e quer começar com IA aplicada aos negócios.",
+        cursos: ["Fundamentos de IA para Negócios", "Power BI na Prática", "Data Visualization", "LGPD: Lei Geral de Proteção de Dados"],
+      },
+      {
+        nome: "Liderança e Gestão",
+        texto: "Para quem lidera time, define metas e conduz projetos e mudanças na empresa.",
+        cursos: ["OKR: Direcionando seu Negócio para Resultados", "Pensamento Estratégico", "Gestão de Projetos & IA", "Liderança & Líder Coach"],
+      },
+    ],
   },
   /* Lista de espera (2026-08-29). O desconto de 10% no lançamento foi acertado
      com o Pecege — decisão do Rodrigo na mesma data.
