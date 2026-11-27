@@ -108,10 +108,10 @@ describe("Nexo Demo: o processo do começo ao fim", () => {
 });
 
 describe("Nexo Demo: cadastro", () => {
-  const ok = { email: " Ana@Empresa.com.br ", empresa: "Empresa Teste", celular: "(11) 98888-7777", linkedin: "ana-souza", ciencia: true };
+  const ok = { nome: " Ana  Souza ", email: " Ana@Empresa.com.br ", empresa: "Empresa Teste", celular: "(11) 98888-7777", linkedin: "ana-souza", ciencia: true };
 
-  it("aceita os quatro campos e normaliza", () => {
-    expect(validarCadastro(ok)).toEqual({ ok: true, dados: { email: "ana@empresa.com.br", empresa: "Empresa Teste", celular: "11988887777", linkedin: "https://www.linkedin.com/in/ana-souza" } });
+  it("aceita os cinco campos e normaliza", () => {
+    expect(validarCadastro(ok)).toEqual({ ok: true, dados: { nome: "Ana Souza", email: "ana@empresa.com.br", empresa: "Empresa Teste", celular: "11988887777", linkedin: "https://www.linkedin.com/in/ana-souza" } });
   });
 
   it("aponta o campo que falhou, na ordem do formulário", () => {
@@ -119,6 +119,7 @@ describe("Nexo Demo: cadastro", () => {
       const v = validarCadastro({ ...ok, ...c });
       return v.ok ? null : v.motivo;
     };
+    expect(motivo({ nome: "A" })).toBe("nome");
     expect(motivo({ email: "ana@" })).toBe("email");
     expect(motivo({ empresa: " " })).toBe("empresa");
     expect(motivo({ celular: "9999" })).toBe("celular");
@@ -129,7 +130,7 @@ describe("Nexo Demo: cadastro", () => {
   });
 
   it("todo motivo de recusa tem mensagem no formulário", () => {
-    for (const m of ["email", "empresa", "celular", "linkedin", "ciencia", "limite", "falha"]) expect(nexoDemo.formulario.erros[m]).toBeTruthy();
+    for (const m of ["nome", "email", "empresa", "celular", "linkedin", "ciencia", "limite", "falha"]) expect(nexoDemo.formulario.erros[m]).toBeTruthy();
   });
 
   it("token e passo só valem no formato certo", () => {

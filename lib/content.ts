@@ -118,7 +118,7 @@ export const privacidade = {
         {
           termo: "Nexo Demo",
           texto:
-            "E-mail, empresa, celular e o perfil no LinkedIn que você informa para entrar na demonstração do Nexo, a data da sua ciência e o passo mais distante que você alcançou nela (por exemplo, se abriu a requisição ou chegou à ordem de compra). Servem para liberar o acesso, enviar o link de volta por e-mail e para o contato comercial da IAgentics, e ficam gravados no nosso banco de dados. O que você digita e clica dentro da demonstração fica só no seu navegador: os dados dela são fictícios.",
+            "Nome, e-mail, empresa, celular e o perfil no LinkedIn que você informa para entrar na demonstração do Nexo, a data da sua ciência e o passo mais distante que você alcançou nela (por exemplo, se abriu a requisição ou chegou à ordem de compra). Servem para liberar o acesso, enviar o link de volta por e-mail e para o contato comercial da IAgentics, e ficam gravados no nosso banco de dados. O que você digita e clica dentro da demonstração fica só no seu navegador: os dados dela são fictícios.",
         },
         {
           termo: "Calculadora da Reforma Tributária",

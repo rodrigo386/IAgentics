@@ -341,6 +341,8 @@ export const nexoDemoLeads = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     token: text("token").notNull().unique(),
     criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
+    /** Entrou em 2026-11-27, no mesmo dia (migração 0023): o Rodrigo aprovou pedir o nome. */
+    nome: text("nome").notNull().default(""),
     email: text("email").notNull(),
     empresa: text("empresa").notNull(),
     celular: text("celular").notNull(),

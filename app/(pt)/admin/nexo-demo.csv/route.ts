@@ -8,12 +8,13 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const linhas = await listarLeads(10_000);
   const fmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
-  const cabecalho = ["cadastro", "empresa", "email", "celular", "linkedin", "passo", "ate_onde_foi", "ultimo_avanco", "concluiu", "email_enviado"];
+  const cabecalho = ["cadastro", "nome", "empresa", "email", "celular", "linkedin", "passo", "ate_onde_foi", "ultimo_avanco", "concluiu", "email_enviado"];
   const csv = [
     cabecalho.join(";"),
     ...linhas.map((l) =>
       [
         fmt.format(l.criadoEm),
+        l.nome,
         l.empresa,
         l.email,
         l.celular,

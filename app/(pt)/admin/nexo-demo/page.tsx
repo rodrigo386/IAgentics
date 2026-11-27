@@ -53,6 +53,7 @@ export default async function AdminNexoDemo() {
                 {linhas.map((l) => (
                   <tr key={l.id} className="border-t border-line align-top">
                     <td className="px-4 py-3 text-fg-muted">{dataHora.format(l.criadoEm)}</td>
+                    <td className="px-4 py-3 text-fg">{l.nome || "—"}</td>
                     <td className="px-4 py-3 text-fg">{l.empresa}</td>
                     <td className="px-4 py-3 text-fg-muted">
                       {l.email}

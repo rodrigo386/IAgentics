@@ -4,7 +4,7 @@ import { cadastrar, marcarEmailEnviado } from "@/lib/nexo-demo/leads";
 import { emailAvisoNexoDemo, emailNexoDemo, enviarEmail } from "@/lib/email";
 import { enderecoDe, permitir } from "@/lib/assinatura/limite";
 import { site } from "@/lib/content";
-import { ROTA_NEXO_DEMO } from "@/lib/nexo-demo/rota";
+import { AVISO_PADRAO, ROTA_NEXO_DEMO } from "@/lib/nexo-demo/rota";
 
 /**
  * Cadastro do Nexo Demo (2026-11-27). A pessoa entra NA HORA (decisão do
@@ -14,7 +14,7 @@ import { ROTA_NEXO_DEMO } from "@/lib/nexo-demo/rota";
  * - Grava ANTES de mandar e-mail: o contato é o que a página existe para
  *   captar. Falha de envio não derruba o cadastro.
  * - Dois e-mails: o acesso, a quem se cadastrou, e o aviso ao comercial
- *   (`NEXO_DEMO_PARA`, padrão contato@iagentics.com.br).
+ *   (`NEXO_DEMO_PARA`, padrão em lib/nexo-demo/rota.ts).
  * - Campo isca (`site`) e limite por endereço (`NEXO_DEMO_LIMITE`, padrão 10
  *   por hora; o e2e sobe com 1000). Log sem dado pessoal.
  */
@@ -44,10 +44,10 @@ export async function POST(request: Request) {
 
   const url = `${site.url}${ROTA_NEXO_DEMO}?acesso=${lead.token}`;
   const [acesso] = await Promise.all([
-    enviarEmail({ para: v.dados.email, responderPara: "contato@iagentics.com.br", ...emailNexoDemo(url) }),
-    enviarEmail({ para: process.env.NEXO_DEMO_PARA ?? "contato@iagentics.com.br", responderPara: v.dados.email, ...emailAvisoNexoDemo(v.dados, "entrou") }),
+    enviarEmail({ para: v.dados.email, responderPara: "contato@iagentics.com.br", ...emailNexoDemo(v.dados.nome, url) }),
+    enviarEmail({ para: process.env.NEXO_DEMO_PARA ?? AVISO_PADRAO, responderPara: v.dados.email, ...emailAvisoNexoDemo(v.dados, "entrou") }),
   ]);
   if (acesso.ok) await marcarEmailEnviado(lead.id).catch(() => undefined);
 
-  return NextResponse.json({ token: lead.token, empresa: v.dados.empresa });
+  return NextResponse.json({ token: lead.token, nome: v.dados.nome, empresa: v.dados.empresa });
 }

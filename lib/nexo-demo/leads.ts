@@ -10,7 +10,7 @@ import type { CadastroValido } from "./cadastro";
 export async function cadastrar(d: CadastroValido): Promise<{ id: string; token: string }> {
   const [linha] = await db
     .insert(nexoDemoLeads)
-    .values({ token: novoToken(), email: d.email, empresa: d.empresa, celular: d.celular, linkedin: d.linkedin, cienciaEm: new Date() })
+    .values({ token: novoToken(), nome: d.nome, email: d.email, empresa: d.empresa, celular: d.celular, linkedin: d.linkedin, cienciaEm: new Date() })
     .returning({ id: nexoDemoLeads.id, token: nexoDemoLeads.token });
   return linha;
 }
@@ -20,8 +20,8 @@ export async function marcarEmailEnviado(id: string): Promise<void> {
 }
 
 /** Quem volta pelo link do e-mail: a empresa (para a saudação) e o passo em que parou. */
-export async function acessoPorToken(token: string): Promise<{ empresa: string; passo: number } | null> {
-  const [linha] = await db.select({ empresa: nexoDemoLeads.empresa, passo: nexoDemoLeads.passo }).from(nexoDemoLeads).where(eq(nexoDemoLeads.token, token)).limit(1);
+export async function acessoPorToken(token: string): Promise<{ nome: string; empresa: string; passo: number } | null> {
+  const [linha] = await db.select({ nome: nexoDemoLeads.nome, empresa: nexoDemoLeads.empresa, passo: nexoDemoLeads.passo }).from(nexoDemoLeads).where(eq(nexoDemoLeads.token, token)).limit(1);
   return linha ?? null;
 }
 
@@ -30,7 +30,7 @@ export async function acessoPorToken(token: string): Promise<{ empresa: string; 
  * contando como quem chegou ao fim). Devolve o lead só quando ESTA chamada
  * foi a que concluiu, para o aviso ao comercial sair uma vez.
  */
-export async function registrarPasso(token: string, passo: number): Promise<{ concluiuAgora: false } | { concluiuAgora: true; email: string; empresa: string; celular: string; linkedin: string }> {
+export async function registrarPasso(token: string, passo: number): Promise<{ concluiuAgora: false } | { concluiuAgora: true; nome: string; email: string; empresa: string; celular: string; linkedin: string }> {
   const agora = new Date();
   await db
     .update(nexoDemoLeads)
@@ -41,7 +41,7 @@ export async function registrarPasso(token: string, passo: number): Promise<{ co
     .update(nexoDemoLeads)
     .set({ concluiuEm: agora })
     .where(sql`${nexoDemoLeads.token} = ${token} and ${nexoDemoLeads.concluiuEm} is null`)
-    .returning({ email: nexoDemoLeads.email, empresa: nexoDemoLeads.empresa, celular: nexoDemoLeads.celular, linkedin: nexoDemoLeads.linkedin });
+    .returning({ nome: nexoDemoLeads.nome, email: nexoDemoLeads.email, empresa: nexoDemoLeads.empresa, celular: nexoDemoLeads.celular, linkedin: nexoDemoLeads.linkedin });
   return linha ? { concluiuAgora: true, ...linha } : { concluiuAgora: false };
 }
 

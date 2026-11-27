@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowsClockwise, ChatCircleDots, SignOut } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
 import { CHAVE_LOCAL, ESTADO_INICIAL, FASES, estadoGuardado, faseDe, reduzir, type Acao, type Estado } from "@/lib/nexo-demo/regras";
-import { botao, botaoLinha, campo, type Tela } from "./pecas";
+import { botao, botaoLinha, type Tela } from "./pecas";
 import { TelaAbrirRc, TelaAprovacoes, TelaMia, TelaMinhas, TelaRequisicoes } from "./TelasRequisicao";
 import { TelaCotacoes } from "./TelaCotacoes";
 import { TelaFecho } from "./TelaFecho";
@@ -23,13 +23,13 @@ import { TelaFecho } from "./TelaFecho";
  * - `?acesso=<token>` é o link do e-mail: troca o token pela empresa e some
  *   do endereço.
  */
-type Acesso = { token: string; empresa: string };
+type Acesso = { token: string; nome: string; empresa: string };
 type Guardado = { acesso: Acesso; estado: Estado };
 
 function ler(): Guardado | null {
   try {
     const g = JSON.parse(localStorage.getItem(CHAVE_LOCAL) ?? "null") as Guardado | null;
-    return g && typeof g.acesso?.token === "string" && typeof g.acesso?.empresa === "string" ? { acesso: g.acesso, estado: estadoGuardado(g.estado) } : null;
+    return g && typeof g.acesso?.token === "string" && typeof g.acesso?.empresa === "string" ? { acesso: { ...g.acesso, nome: typeof g.acesso.nome === "string" ? g.acesso.nome : "" }, estado: estadoGuardado(g.estado) } : null;
   } catch {
     return null;
   }
@@ -68,7 +68,7 @@ export function NexoDemo({ nav, rodape }: { nav: ReactNode; rodape: ReactNode })
     fetch("/api/nexo-demo/entrar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) })
       .then(async (r) => {
         const corpo = await r.json().catch(() => ({}));
-        if (r.ok && typeof corpo.empresa === "string") setAcesso({ token, empresa: corpo.empresa });
+        if (r.ok && typeof corpo.empresa === "string") setAcesso({ token, nome: typeof corpo.nome === "string" ? corpo.nome : "", empresa: corpo.empresa });
         else setAvisoAcesso(true);
       })
       .catch(() => setAvisoAcesso(true));
@@ -114,12 +114,12 @@ function Entrada({ aviso, entrar }: { aviso: boolean; entrar: (a: Acesso) => voi
       const r = await fetch("/api/nexo-demo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: d.get("email"), empresa: d.get("empresa"), celular: d.get("celular"), linkedin: d.get("linkedin"), ciencia: d.get("ciencia") === "on", site: isca }),
+        body: JSON.stringify({ nome: d.get("nome"), email: d.get("email"), empresa: d.get("empresa"), celular: d.get("celular"), linkedin: d.get("linkedin"), ciencia: d.get("ciencia") === "on", site: isca }),
       });
       const corpo = await r.json().catch(() => ({}));
       if (r.ok && typeof corpo.token === "string") {
         window.scrollTo(0, 0);
-        entrar({ token: corpo.token, empresa: corpo.empresa });
+        entrar({ token: corpo.token, nome: typeof corpo.nome === "string" ? corpo.nome : "", empresa: corpo.empresa });
         return;
       }
       setErro(f.erros[corpo.error] ?? f.erros.falha);
@@ -159,6 +159,10 @@ function Entrada({ aviso, entrar }: { aviso: boolean; entrar: (a: Acesso) => voi
               {f.acessoInvalido}
             </p>
           ) : null}
+          <label className="flex flex-col gap-1.5">
+            <span className={rotuloCampo}>{f.nome}</span>
+            <input name="nome" required minLength={2} autoComplete="name" className={campoSite} />
+          </label>
           <label className="flex flex-col gap-1.5">
             <span className={rotuloCampo}>{f.email}</span>
             <input name="email" type="email" required autoComplete="email" inputMode="email" className={campoSite} />
@@ -242,7 +246,7 @@ function Aplicativo({ acesso, inicial, sair }: { acesso: Acesso; inicial: Estado
   };
 
   const g = t.guia.fases[fase];
-  const props = { e, despachar, ir, empresa: acesso.empresa };
+  const props = { e, despachar, ir, empresa: acesso.empresa, nome: acesso.nome.trim().split(/\s+/)[0] || acesso.empresa };
   const itens: { id: string; rotulo: string }[] = t.app.menu.flatMap((m) => [...m.itens]);
   return (
     <div className="nexo-demo flex min-h-dvh flex-col">
@@ -253,8 +257,8 @@ function Aplicativo({ acesso, inicial, sair }: { acesso: Acesso; inicial: Estado
         <span className="ml-2 hidden text-xs text-fg-muted md:inline">{t.app.faixa}</span>
         <div className="ml-auto flex items-center gap-2">
           <div className="hidden text-right leading-tight sm:block">
-            <p className="max-w-[22ch] truncate text-sm font-medium text-fg">{acesso.empresa}</p>
-            <p className="text-[11px] text-fg-muted">{t.app.perfil}</p>
+            <p className="max-w-[22ch] truncate text-sm font-medium text-fg">{acesso.nome || acesso.empresa}</p>
+            <p className="max-w-[28ch] truncate text-[11px] text-fg-muted">{acesso.nome ? acesso.empresa : t.app.perfil}</p>
           </div>
           <a href={t.fecho.whatsappHref} target="_blank" rel="noopener noreferrer" className={`${botao} !px-3 !py-2`}>
             <ChatCircleDots size={16} aria-hidden="true" />

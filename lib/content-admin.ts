@@ -201,7 +201,7 @@ export const admin = {
     voltar: "← Painel",
     exportar: "Exportar CSV",
     cartoes: { cadastros: "Cadastros", abriramRc: "Abriram a requisição", concluiram: "Chegaram à ordem de compra" },
-    colunas: { quando: "Cadastro", empresa: "Empresa", contato: "Contato", linkedin: "LinkedIn", passo: "Até onde foi", ultimo: "Último avanço" },
+    colunas: { quando: "Cadastro", nome: "Nome", empresa: "Empresa", contato: "Contato", linkedin: "LinkedIn", passo: "Até onde foi", ultimo: "Último avanço" },
     concluiu: "concluiu",
     vazio: "Nenhum cadastro ainda.",
     lgpd: "Dados pessoais: uso para liberar o acesso à demonstração e para contato comercial, como diz a política de privacidade. Quem pedir para sair deve ser removido.",

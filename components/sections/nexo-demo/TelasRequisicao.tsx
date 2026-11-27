@@ -34,7 +34,7 @@ function ResumoDaRc({ rc }: { rc: Requisicao }) {
   );
 }
 
-export function TelaMia({ e, ir, empresa }: PropsTela) {
+export function TelaMia({ e, ir, nome }: PropsTela) {
   const m = t.mia;
   const [resposta, setResposta] = useState<"grafico" | "listar" | null>(null);
   const maior = Math.max(...m.gasto.map((g) => g.centavos));
@@ -45,7 +45,7 @@ export function TelaMia({ e, ir, empresa }: PropsTela) {
           <Sparkle size={22} weight="fill" aria-hidden="true" />
         </span>
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.01em] text-fg">{m.ola(empresa)}</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.01em] text-fg">{m.ola(nome)}</h1>
           <p className="text-sm text-fg-muted">{m.sub}</p>
         </div>
       </header>

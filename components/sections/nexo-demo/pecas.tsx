@@ -3,7 +3,7 @@ import type { Acao, Estado } from "@/lib/nexo-demo/regras";
 
 /** Peças comuns das telas do Nexo Demo (2026-11-27). As cores vêm dos tokens redefinidos em `.nexo-demo` (globals.css). */
 export type Tela = "mia" | "abrir" | "minhas" | "aprovacoes" | "requisicoes" | "cotacoes" | "fecho";
-export type PropsTela = { e: Estado; despachar: (a: Acao) => void; ir: (t: Tela) => void; empresa: string };
+export type PropsTela = { e: Estado; despachar: (a: Acao) => void; ir: (t: Tela) => void; empresa: string; nome: string };
 
 export const cartao = "rounded-xl border border-line bg-surface p-5 shadow-[0_1px_2px_rgb(19_23_35/0.05)]";
 export const botao =

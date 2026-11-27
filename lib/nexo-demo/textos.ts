@@ -49,6 +49,7 @@ export const nexoDemo = {
 
   formulario: {
     titulo: "Entrar no Nexo Demo",
+    nome: "Nome",
     email: "E-mail corporativo",
     empresa: "Empresa",
     celular: "Celular, com DDD",
@@ -59,6 +60,7 @@ export const nexoDemo = {
     botao: "Entrar no Nexo Demo",
     enviando: "Entrando...",
     erros: {
+      nome: "Informe o seu nome.",
       email: "Confira o e-mail.",
       empresa: "Informe a empresa.",
       celular: "Confira o celular, com DDD.",
@@ -125,7 +127,7 @@ export const nexoDemo = {
   },
 
   mia: {
-    ola: (empresa: string) => `Olá, time da ${empresa}. Eu sou a MIA.`,
+    ola: (nome: string) => `Olá, ${nome}. Eu sou a MIA.`,
     sub: "Sua assistente de IA de compras: gráficos, listas, status de RCs e cotações, spend e abertura de requisições.",
     fala: "Oi! Sou a MIA, a IA do Nexo. Posso listar RCs e cotações, mostrar o status de uma RC, montar gráficos de spend, abrir e preencher uma requisição e te levar para qualquer tela. Eu só leio os dados: nada é enviado sem você.",
     atalhos: { abrir: "Quero abrir uma requisição de compra", grafico: "Gráfico do gasto por categoria", listar: "Liste minhas RCs em aprovação" },
@@ -395,7 +397,7 @@ export const nexoDemo = {
 
   email: {
     assunto: "Seu acesso ao Nexo Demo",
-    ola: "Olá.",
+    ola: (nome: string) => `Olá, ${nome}.`,
     texto: "O seu acesso ao Nexo Demo está liberado. É um ambiente de demonstração com dados fictícios: você abre uma requisição de compra e leva o processo até a ordem de compra.",
     botao: "Abrir o Nexo Demo",
     volta: "Guarde este e-mail: o botão leva você de volta à demonstração quando quiser.",

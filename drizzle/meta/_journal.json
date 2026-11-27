@@ -162,6 +162,13 @@
       "when": 1795540800000,
       "tag": "0022_nexo_demo",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795627200000,
+      "tag": "0023_nexo_demo_nome",
+      "breakpoints": true
     }
   ]
 }

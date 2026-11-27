@@ -19,6 +19,7 @@ const cred = (() => {
 
 async function entrar(page: Page, empresa: string) {
   await page.goto(ROTA);
+  await page.getByLabel("Nome", { exact: true }).fill("Ana Teste Souza");
   await page.getByLabel("E-mail corporativo").fill(`demo-${Date.now()}@exemplo-teste.com`);
   await page.getByLabel("Empresa").fill(empresa);
   await page.getByLabel("Celular, com DDD").fill("(11) 98888-7777");
@@ -30,18 +31,18 @@ async function entrar(page: Page, empresa: string) {
 
 const guia = (page: Page) => page.locator("[data-guia]");
 
-test("a entrada mostra o cadastro de quatro campos e fica fora do Google", async ({ page }) => {
+test("a entrada mostra o cadastro de cinco campos e fica fora do Google", async ({ page }) => {
   await page.goto(ROTA);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Teste o Nexo com as suas mãos.");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-  await expect(page.getByRole("textbox")).toHaveCount(4);
+  await expect(page.getByRole("textbox")).toHaveCount(5);
   await expect(page.getByRole("link", { name: "Política de Privacidade" }).first()).toHaveAttribute("href", "/privacidade");
 });
 
 test("o processo vai da requisição à ordem de compra, lembra onde parou e aparece no painel", async ({ page, browser }) => {
   const empresa = `Empresa Demo ${Date.now()}`;
   await entrar(page, empresa);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(`Olá, time da ${empresa}`);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Olá, Ana. Eu sou a MIA.");
 
   /* Solicitante: a MIA preenche e a RC nasce. */
   await guia(page).click();
@@ -125,10 +126,11 @@ test("sair da demo volta ao cadastro, e o celular mostra o menu em faixa", async
 });
 
 test("o servidor valida o cadastro, o link de acesso e protege o painel", async ({ request }) => {
-  const dados = { email: `x-${Date.now()}@exemplo-teste.com`, empresa: "Empresa", celular: "11988887777", linkedin: "ana-souza", ciencia: true };
+  const dados = { nome: "Ana Souza", email: `x-${Date.now()}@exemplo-teste.com`, empresa: "Empresa", celular: "11988887777", linkedin: "ana-souza", ciencia: true };
   const semLinkedin = await request.post("/api/nexo-demo", { data: { ...dados, linkedin: "" } });
   expect(semLinkedin.status()).toBe(422);
   expect((await semLinkedin.json()).error).toBe("linkedin");
+  expect((await (await request.post("/api/nexo-demo", { data: { ...dados, nome: "" } })).json()).error).toBe("nome");
   expect((await request.post("/api/nexo-demo", { data: { ...dados, ciencia: false } })).status()).toBe(422);
 
   const { token } = await (await request.post("/api/nexo-demo", { data: dados })).json();
@@ -136,7 +138,7 @@ test("o servidor valida o cadastro, o link de acesso e protege o painel", async 
   expect((await request.post("/api/nexo-demo/passo", { data: { token, passo: 3 } })).status()).toBe(204);
   expect((await request.post("/api/nexo-demo/passo", { data: { token, passo: 1 } })).status()).toBe(204);
   const volta = await request.post("/api/nexo-demo/entrar", { data: { token } });
-  expect(await volta.json()).toEqual({ empresa: "Empresa", passo: 3 });
+  expect(await volta.json()).toEqual({ nome: "Ana Souza", empresa: "Empresa", passo: 3 });
   expect((await request.post("/api/nexo-demo/entrar", { data: { token: "a".repeat(43) } })).status()).toBe(404);
 
   expect((await request.get("/admin/nexo-demo")).status()).toBe(401);
@@ -146,10 +148,10 @@ test("o servidor valida o cadastro, o link de acesso e protege o painel", async 
 });
 
 test("o link do e-mail leva de volta para dentro da demo e some do endereço", async ({ page, request }) => {
-  const r = await request.post("/api/nexo-demo", { data: { email: `link-${Date.now()}@exemplo-teste.com`, empresa: "Empresa do Link", celular: "11988887777", linkedin: "ana-souza", ciencia: true } });
+  const r = await request.post("/api/nexo-demo", { data: { nome: "Bruno Lima", email: `link-${Date.now()}@exemplo-teste.com`, empresa: "Empresa do Link", celular: "11988887777", linkedin: "ana-souza", ciencia: true } });
   const { token } = await r.json();
   await page.goto(`${ROTA}?acesso=${token}`);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Olá, time da Empresa do Link");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Olá, Bruno. Eu sou a MIA.");
   expect(new URL(page.url()).search).toBe("");
   await page.context().clearCookies();
   await page.evaluate(() => localStorage.clear());

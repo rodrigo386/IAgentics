@@ -82,7 +82,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
         {
           termo: "Nexo Demo",
           texto:
-            "Email, company, mobile number and the LinkedIn profile you provide to enter the Nexo demonstration, the date of your acknowledgment and the furthest step you reached in it (for example, whether you opened the requisition or got to the purchase order). We use them to grant access, to email you the link back and for IAgentics sales contact, and they are stored in our database. What you type and click inside the demonstration stays in your browser only: its data is fictitious.",
+            "Name, email, company, mobile number and the LinkedIn profile you provide to enter the Nexo demonstration, the date of your acknowledgment and the furthest step you reached in it (for example, whether you opened the requisition or got to the purchase order). We use them to grant access, to email you the link back and for IAgentics sales contact, and they are stored in our database. What you type and click inside the demonstration stays in your browser only: its data is fictitious.",
         },
         {
           termo: "Tax Reform calculator (Calculadora da Reforma Tributária)",

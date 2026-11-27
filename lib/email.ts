@@ -480,16 +480,17 @@ export function emailSorteio(nome: string, numero: string) {
 }
 
 /** Acesso ao Nexo Demo (2026-11-27), ao próprio cadastrado: o link traz o token, para voltar quando quiser. */
-export function emailNexoDemo(url: string) {
+export function emailNexoDemo(nome: string, url: string) {
+  const ola = nexoDemoTextos.email.ola(nome.trim().split(/\s+/)[0]);
   const t = nexoDemoTextos.email;
   const f = nexoDemoTextos.fecho;
   const e = escapeHtml;
   const paragrafo = (conteudo: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
   return {
     assunto: t.assunto,
-    texto: [t.ola, t.texto, `${t.botao}: ${url}`, t.volta, `${t.conversa} ${f.whatsappHref}`, "IAgentics · iagentics.com.br"].join("\n\n"),
+    texto: [ola, t.texto, `${t.botao}: ${url}`, t.volta, `${t.conversa} ${f.whatsappHref}`, "IAgentics · iagentics.com.br"].join("\n\n"),
     html: moldura(
-      `<p style="margin:0 0 16px;font-size:16px">${e(t.ola)}</p>` +
+      `<p style="margin:0 0 16px;font-size:16px">${e(ola)}</p>` +
         paragrafo(e(t.texto)) +
         `<p style="margin:0 0 24px"><a href="${e(url)}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${e(t.botao)}</a></p>` +
         paragrafo(e(t.volta)) +
@@ -500,10 +501,11 @@ export function emailNexoDemo(url: string) {
 }
 
 /** Aviso ao comercial (2026-11-27): alguém entrou no Nexo Demo, ou chegou ao fim dele. Interno, sem moldura de marca. */
-export function emailAvisoNexoDemo(lead: { email: string; empresa: string; celular: string; linkedin: string }, momento: "entrou" | "concluiu") {
+export function emailAvisoNexoDemo(lead: { nome: string; email: string; empresa: string; celular: string; linkedin: string }, momento: "entrou" | "concluiu") {
   const e = escapeHtml;
   const titulo = momento === "entrou" ? "Novo cadastro no Nexo Demo" : "Concluiu o Nexo Demo";
   const linhas: [string, string][] = [
+    ["Nome", lead.nome],
     ["Empresa", lead.empresa],
     ["E-mail", lead.email],
     ["Celular", lead.celular],
@@ -511,7 +513,7 @@ export function emailAvisoNexoDemo(lead: { email: string; empresa: string; celul
   ];
   const nota = momento === "entrou" ? "Acabou de entrar na demonstração." : "Levou o processo até a ordem de compra. Bom momento para o contato.";
   return {
-    assunto: `${titulo}: ${lead.empresa}`,
+    assunto: `${titulo}: ${lead.nome}, ${lead.empresa}`,
     texto: [titulo, ...linhas.map(([k, v]) => `${k}: ${v}`), nota, `Painel: ${site.url}/admin/nexo-demo`].join("\n"),
     html: moldura(
       `<p style="margin:0 0 16px;font-size:16px;font-weight:bold">${e(titulo)}</p>` +

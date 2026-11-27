@@ -2,6 +2,7 @@ import { passoValido, tokenValido } from "@/lib/nexo-demo/cadastro";
 import { registrarPasso } from "@/lib/nexo-demo/leads";
 import { emailAvisoNexoDemo, enviarEmail } from "@/lib/email";
 import { enderecoDe, permitir } from "@/lib/assinatura/limite";
+import { AVISO_PADRAO } from "@/lib/nexo-demo/rota";
 
 /**
  * Passo alcançado no Nexo Demo (2026-11-27), ligado ao cadastro (decisão do
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     const r = await registrarPasso(corpo.token, corpo.passo);
     if (r.concluiuAgora) {
       const { concluiuAgora: _, ...lead } = r;
-      await enviarEmail({ para: process.env.NEXO_DEMO_PARA ?? "contato@iagentics.com.br", responderPara: lead.email, ...emailAvisoNexoDemo(lead, "concluiu") });
+      await enviarEmail({ para: process.env.NEXO_DEMO_PARA ?? AVISO_PADRAO, responderPara: lead.email, ...emailAvisoNexoDemo(lead, "concluiu") });
     }
   } catch {
     console.error("[nexo-demo] falha ao gravar o passo");
