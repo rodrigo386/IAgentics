@@ -176,6 +176,7 @@ export const admin = {
   irParaCursos: "Painel da plataforma de cursos →",
   irParaBolsas: "Desafio Prova Real →",
   irParaSorteio: "Sorteio Case 2026 →",
+  irParaNexoDemo: "Nexo Demo →",
 
   /** /admin/sorteio (2026-11-23): cadastros do sorteio no Case 2026. O sorteio é
    *  feito por fora, com o CSV. */
@@ -190,6 +191,20 @@ export const admin = {
     colunas: { numero: "Número", nome: "Nome", contato: "Contato", area: "Área", empresa: "Empresa · cargo", quando: "Cadastro", comunicacoes: "Comunicações" },
     vazio: "Nenhum cadastro ainda.",
     lgpd: "Dados pessoais: uso para o sorteio e o aviso ao ganhador. Conteúdos e novidades só para quem aceitou comunicações.",
+  },
+
+  /** /admin/nexo-demo (2026-11-27): quem pediu acesso à demonstração do Nexo e até onde foi. */
+  nexoDemo: {
+    meta: { titulo: "Nexo Demo | Admin" },
+    titulo: "Nexo Demo",
+    lead: "Quem se cadastrou para testar o Nexo e o passo mais distante que alcançou na demonstração. O e-mail não é conferido no cadastro (a pessoa entra na hora). Cadastro repetido aparece como linha nova.",
+    voltar: "← Painel",
+    exportar: "Exportar CSV",
+    cartoes: { cadastros: "Cadastros", abriramRc: "Abriram a requisição", concluiram: "Chegaram à ordem de compra" },
+    colunas: { quando: "Cadastro", empresa: "Empresa", contato: "Contato", linkedin: "LinkedIn", passo: "Até onde foi", ultimo: "Último avanço" },
+    concluiu: "concluiu",
+    vazio: "Nenhum cadastro ainda.",
+    lgpd: "Dados pessoais: uso para liberar o acesso à demonstração e para contato comercial, como diz a política de privacidade. Quem pedir para sair deve ser removido.",
   },
 
   /** /admin/cursos (2026-10-16, pedido do Rodrigo: "controle mais completo da

@@ -36,7 +36,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
   hero: {
     eyebrow: "Privacy",
     titulo: "Privacy Policy",
-    atualizado: "Last updated November 23, 2026",
+    atualizado: "Last updated November 27, 2026",
     lead: "This is a translation; the Portuguese version prevails. This page explains which data IAgentics collects, why, who we share it with, and how you can ask us to delete it. It is written in plain language, without unnecessary legalese.",
   },
   secoes: [
@@ -78,6 +78,11 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
           termo: "Case 2026 prize draw (Sorteio no Case 2026)",
           texto:
             "Name, email, WhatsApp, field of work, company and job title (if you provide them), your lucky number, your statement that you follow IAgentics on Instagram or LinkedIn and the date you accepted the rules. We use them to run the draw, to email you your number and to notify the winner, and they are stored in our database. IAgentics content and news only go to people who checked that option when signing up.",
+        },
+        {
+          termo: "Nexo Demo",
+          texto:
+            "Email, company, mobile number and the LinkedIn profile you provide to enter the Nexo demonstration, the date of your acknowledgment and the furthest step you reached in it (for example, whether you opened the requisition or got to the purchase order). We use them to grant access, to email you the link back and for IAgentics sales contact, and they are stored in our database. What you type and click inside the demonstration stays in your browser only: its data is fictitious.",
         },
         {
           termo: "Tax Reform calculator (Calculadora da Reforma Tributária)",
@@ -131,7 +136,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
           termo: "Asaas",
           texto: "Issues and processes the monthly subscription charges: it receives your name, email, mobile number and CPF to generate the charges, sends each month's invoice to your email, and receives the payment details you enter there.",
         },
-        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers, the Prova Real Challenge emails, the Case 2026 lucky numbers and the Tax Reform calculator comparison." },
+        { termo: "Resend", texto: "Sends the website's emails: contact form messages, Procurement Diagnostic answers, the Prova Real Challenge emails, the Case 2026 lucky numbers, the Nexo Demo access link and the Tax Reform calculator comparison." },
         { termo: "Google Analytics", texto: "Measures usage of the public pages." },
         { termo: "Metricool", texto: "Measures visits to the public pages and their origin on social media." },
         { termo: "Railway and Cloudflare", texto: "Application hosting and website delivery, with all traffic over HTTPS." },
@@ -140,7 +145,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
     {
       titulo: "How long we keep data",
       paragrafos: [
-        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. Tax Reform calculator requests are kept while the business relationship lasts, or until you ask to be removed. Prova Real Challenge applications are kept until the end of the scholarship and the voucher offer, in February 2027; after that, we keep only those of people who became subscribers or authorized sales contact. Case 2026 prize draw sign-ups are kept until the prize is delivered and, after that, only those of people who accepted IAgentics content and news. Billing records follow the legal deadlines and the payment processor's rules.",
+        "Subscription data is kept while the subscription exists and, after cancellation, for the period the law requires for billing records. Contact form messages and Procurement Diagnostic answers stay in our mailbox for as long as the support, the diagnostic and the business relationship last. Tax Reform calculator requests are kept while the business relationship lasts, or until you ask to be removed. Nexo Demo sign-ups are kept for the same period: while the business relationship lasts, or until you ask to be removed. Prova Real Challenge applications are kept until the end of the scholarship and the voucher offer, in February 2027; after that, we keep only those of people who became subscribers or authorized sales contact. Case 2026 prize draw sign-ups are kept until the prize is delivered and, after that, only those of people who accepted IAgentics content and news. Billing records follow the legal deadlines and the payment processor's rules.",
       ],
       itens: [],
     },

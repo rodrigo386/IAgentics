@@ -1908,3 +1908,42 @@ dialog.gaveta.gaveta-centro[open] {
     }
   }
 }
+
+/* Nexo Demo (/preview/nexo-demo, 2026-11-27): a demonstração tem a pele do
+   PRODUTO (claro, cartões arredondados, azul nos botões), igual nos dois
+   temas do site. Em vez de classes próprias, o bloco redefine os tokens do
+   site: `text-fg`, `bg-surface`, `border-line` e `bg-accent` passam a valer
+   as cores do Nexo aqui dentro. O canto arredondado é exceção deliberada à
+   trava de superfície reta: é a interface do produto, não a do site. */
+.nexo-demo {
+  --bg: #eceefb;
+  --surface: #ffffff;
+  --fg: #131723;
+  --fg-muted: #5a6070;
+  --fg-subtle: #767c8c;
+  --line: rgb(19 23 35 / 0.12);
+  --line-strong: rgb(19 23 35 / 0.3);
+  --accent: #1238f5;
+  --accent-hover: #0b2bd0;
+  --accent-on: #ffffff;
+  --accent-text: #5b21e6;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+/* A proposta que "chega": entra de baixo, uma depois da outra. Sem animação,
+   o estado é o completo (fill backwards). */
+@keyframes nexo-demo-chega {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.nexo-demo-chega {
+  animation: nexo-demo-chega 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nexo-demo-chega {
+    animation: none;
+  }
+}

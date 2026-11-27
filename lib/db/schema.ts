@@ -325,3 +325,31 @@ export const sorteioCadastros = pgTable(
   },
   (t) => [uniqueIndex("sorteio_evento_email").on(t.evento, t.email)],
 );
+
+/**
+ * Cadastros do Nexo Demo (/preview/nexo-demo, migração 0022, 2026-11-27):
+ * quem pediu acesso à demonstração do Nexo e até onde foi. `token` é o
+ * acesso (vai no link do e-mail, para a pessoa voltar); `passo` é o índice do
+ * passo mais distante alcançado (lib/nexo-demo/regras.ts, `PASSOS`) e nunca
+ * diminui. Sem índice único no e-mail, de propósito: cadastro repetido vira
+ * linha nova, porque devolver o acesso antigo a quem digita um e-mail alheio
+ * entregaria o cadastro de outra pessoa.
+ */
+export const nexoDemoLeads = pgTable(
+  "nexo_demo_leads",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    token: text("token").notNull().unique(),
+    criadoEm: timestamp("criado_em", { withTimezone: true }).notNull().defaultNow(),
+    email: text("email").notNull(),
+    empresa: text("empresa").notNull(),
+    celular: text("celular").notNull(),
+    linkedin: text("linkedin").notNull(),
+    cienciaEm: timestamp("ciencia_em", { withTimezone: true }).notNull(),
+    passo: smallint("passo").notNull().default(0),
+    passoEm: timestamp("passo_em", { withTimezone: true }),
+    concluiuEm: timestamp("concluiu_em", { withTimezone: true }),
+    emailEnviadoEm: timestamp("email_enviado_em", { withTimezone: true }),
+  },
+  (t) => [index("nexo_demo_leads_email").on(sql`lower(${t.email})`)],
+);

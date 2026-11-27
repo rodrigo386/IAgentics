@@ -72,7 +72,7 @@ export const privacidade = {
   hero: {
     eyebrow: "Privacidade",
     titulo: "Política de Privacidade",
-    atualizado: "Atualizada em 23 de novembro de 2026",
+    atualizado: "Atualizada em 27 de novembro de 2026",
     lead: "Esta página explica quais dados a IAgentics coleta, por que coleta, com quem compartilha e como você pede para removê-los. Está escrita em português direto, sem juridiquês desnecessário.",
   },
   secoes: [
@@ -114,6 +114,11 @@ export const privacidade = {
           termo: "Sorteio no Case 2026",
           texto:
             "Nome, e-mail, WhatsApp, área de atuação, empresa e cargo (se você informar), o seu número da sorte, a sua declaração de que segue a IAgentics no Instagram ou no LinkedIn e a data do aceite do regulamento. Servem para o sorteio, para enviar o seu número por e-mail e para avisar quem ganhar, e ficam gravados no nosso banco de dados. Conteúdos e novidades da IAgentics só chegam a quem marcou essa opção no cadastro.",
+        },
+        {
+          termo: "Nexo Demo",
+          texto:
+            "E-mail, empresa, celular e o perfil no LinkedIn que você informa para entrar na demonstração do Nexo, a data da sua ciência e o passo mais distante que você alcançou nela (por exemplo, se abriu a requisição ou chegou à ordem de compra). Servem para liberar o acesso, enviar o link de volta por e-mail e para o contato comercial da IAgentics, e ficam gravados no nosso banco de dados. O que você digita e clica dentro da demonstração fica só no seu navegador: os dados dela são fictícios.",
         },
         {
           termo: "Calculadora da Reforma Tributária",
@@ -167,7 +172,7 @@ export const privacidade = {
           termo: "Asaas",
           texto: "Emissão e processamento das cobranças mensais da assinatura: recebe nome, e-mail, celular e CPF para gerar as cobranças, envia a fatura de cada mês para o seu e-mail e recebe os dados de pagamento que você informa nela.",
         },
-        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras, os e-mails do Desafio Prova Real, o número da sorte do sorteio no Case 2026 e o comparativo da calculadora da Reforma Tributária." },
+        { termo: "Resend", texto: "Envio dos e-mails do site: a mensagem do formulário de contato, as respostas da Diagnose de Compras, os e-mails do Desafio Prova Real, o número da sorte do sorteio no Case 2026, o acesso ao Nexo Demo e o comparativo da calculadora da Reforma Tributária." },
         { termo: "Google Analytics", texto: "Medição de uso das páginas públicas." },
         { termo: "Metricool", texto: "Medição das visitas às páginas públicas e da origem delas nas redes sociais." },
         { termo: "Railway e Cloudflare", texto: "Hospedagem da aplicação e entrega do site, com tráfego sempre em HTTPS." },
@@ -176,7 +181,7 @@ export const privacidade = {
     {
       titulo: "Por quanto tempo guardamos",
       paragrafos: [
-        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Pedidos do comparativo da calculadora da Reforma Tributária ficam enquanto durar o relacionamento comercial, ou até você pedir para sair. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Cadastros do sorteio no Case 2026 ficam até a entrega do prêmio; depois, ficam só os de quem aceitou conteúdos e novidades da IAgentics. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
+        "Dados da assinatura ficam enquanto ela existir e, depois do cancelamento, pelo prazo que a lei exige para registros de cobrança. Mensagens do formulário de contato e respostas da Diagnose de Compras ficam na nossa caixa de e-mail pelo tempo do atendimento, do diagnóstico e do relacionamento comercial. Pedidos do comparativo da calculadora da Reforma Tributária ficam enquanto durar o relacionamento comercial, ou até você pedir para sair. Cadastros do Nexo Demo ficam pelo mesmo prazo: enquanto durar o relacionamento comercial, ou até você pedir para sair. Inscrições no Desafio Prova Real ficam até o fim da bolsa e da oferta do voucher, em fevereiro de 2027; depois, ficam só as de quem virou assinante ou autorizou contato comercial. Cadastros do sorteio no Case 2026 ficam até a entrega do prêmio; depois, ficam só os de quem aceitou conteúdos e novidades da IAgentics. Registros de cobrança seguem os prazos legais e as regras do processador de pagamentos.",
       ],
       itens: [],
     },
@@ -3644,3 +3649,6 @@ export const sorteio = {
     },
   ],
 } as const;
+
+/** Nexo Demo (2026-11-27): textos e dados fictícios em arquivo à parte, pelo tamanho. */
+export { nexoDemo } from "./nexo-demo/textos";

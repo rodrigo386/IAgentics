@@ -1,5 +1,5 @@
 import "server-only";
-import { site, diagnose, bolsas, reforma, sorteio, PRECO_FUNDADOR } from "@/lib/content";
+import { site, diagnose, bolsas, reforma, sorteio, PRECO_FUNDADOR, nexoDemo as nexoDemoTextos } from "@/lib/content";
 import { calcular, pct, reais, type Cenario } from "@/lib/reforma";
 import { chave, decimal, maiorSalto, nivel, resumir, type EnvioValido } from "@/lib/diagnose";
 
@@ -474,6 +474,50 @@ export function emailSorteio(nome: string, numero: string) {
         `<p style="margin:0 0 24px"><a href="${linkPlataforma}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${e(ok.plataformaBotao)}</a></p>` +
         paragrafo(redes.itens.map((r) => link(r.href, r.rotulo)).join(" · ")) +
         paragrafo(link(linkRegulamento, "Regulamento do sorteio")),
+      false,
+    ),
+  };
+}
+
+/** Acesso ao Nexo Demo (2026-11-27), ao próprio cadastrado: o link traz o token, para voltar quando quiser. */
+export function emailNexoDemo(url: string) {
+  const t = nexoDemoTextos.email;
+  const f = nexoDemoTextos.fecho;
+  const e = escapeHtml;
+  const paragrafo = (conteudo: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3c4250">${conteudo}</p>`;
+  return {
+    assunto: t.assunto,
+    texto: [t.ola, t.texto, `${t.botao}: ${url}`, t.volta, `${t.conversa} ${f.whatsappHref}`, "IAgentics · iagentics.com.br"].join("\n\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px">${e(t.ola)}</p>` +
+        paragrafo(e(t.texto)) +
+        `<p style="margin:0 0 24px"><a href="${e(url)}" style="display:inline-block;background:#7607e8;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${e(t.botao)}</a></p>` +
+        paragrafo(e(t.volta)) +
+        paragrafo(`${e(t.conversa)} <a href="${e(f.whatsappHref)}" style="color:#7607e8;text-decoration:underline">${e(f.whatsapp)}</a>`),
+      false,
+    ),
+  };
+}
+
+/** Aviso ao comercial (2026-11-27): alguém entrou no Nexo Demo, ou chegou ao fim dele. Interno, sem moldura de marca. */
+export function emailAvisoNexoDemo(lead: { email: string; empresa: string; celular: string; linkedin: string }, momento: "entrou" | "concluiu") {
+  const e = escapeHtml;
+  const titulo = momento === "entrou" ? "Novo cadastro no Nexo Demo" : "Concluiu o Nexo Demo";
+  const linhas: [string, string][] = [
+    ["Empresa", lead.empresa],
+    ["E-mail", lead.email],
+    ["Celular", lead.celular],
+    ["LinkedIn", lead.linkedin],
+  ];
+  const nota = momento === "entrou" ? "Acabou de entrar na demonstração." : "Levou o processo até a ordem de compra. Bom momento para o contato.";
+  return {
+    assunto: `${titulo}: ${lead.empresa}`,
+    texto: [titulo, ...linhas.map(([k, v]) => `${k}: ${v}`), nota, `Painel: ${site.url}/admin/nexo-demo`].join("\n"),
+    html: moldura(
+      `<p style="margin:0 0 16px;font-size:16px;font-weight:bold">${e(titulo)}</p>` +
+        `<table style="border-collapse:collapse;font-size:14px;margin:0 0 16px">${linhas.map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#5a6070">${e(k)}</td><td style="padding:4px 0">${e(v)}</td></tr>`).join("")}</table>` +
+        `<p style="margin:0 0 16px;font-size:14px;color:#3c4250">${e(nota)}</p>` +
+        `<p style="margin:0;font-size:14px"><a href="${site.url}/admin/nexo-demo" style="color:#7607e8">Abrir o painel</a></p>`,
       false,
     ),
   };
