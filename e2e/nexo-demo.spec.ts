@@ -158,3 +158,26 @@ test("o link do e-mail leva de volta para dentro da demo e some do endereço", a
   await page.goto(`${ROTA}?acesso=${"b".repeat(43)}`);
   await expect(page.getByText("Este link de acesso não vale mais.")).toBeVisible();
 });
+
+test("quem já tem cadastro pede o link pelo e-mail, e a tela não diz quem está na base", async ({ page, request }) => {
+  await page.goto(ROTA);
+  await page.getByRole("button", { name: "Entrar com o seu e-mail" }).click();
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Já tenho cadastro");
+  await expect(page.getByRole("textbox")).toHaveCount(1);
+  const email = `ninguem-${Date.now()}@exemplo-teste.com`;
+  await page.getByLabel("E-mail do cadastro").fill(email);
+  await page.getByRole("button", { name: "Enviar o link de acesso" }).click();
+  await expect(page.getByRole("status")).toContainText(`Se ${email} tem cadastro no Nexo Demo`);
+  await page.getByRole("button", { name: "Usar outro e-mail" }).click();
+  await page.getByRole("button", { name: "Cadastre-se para entrar" }).click();
+  await expect(page.getByRole("textbox")).toHaveCount(5);
+
+  /* Mesma resposta para e-mail com e sem cadastro; e-mail inválido é recusado. */
+  const cadastrado = `tem-${Date.now()}@exemplo-teste.com`;
+  await request.post("/api/nexo-demo", { data: { nome: "Ana Souza", email: cadastrado, empresa: "Empresa", celular: "11988887777", linkedin: "ana-souza", ciencia: true } });
+  const com = await request.post("/api/nexo-demo/login", { data: { email: cadastrado } });
+  const sem = await request.post("/api/nexo-demo/login", { data: { email } });
+  expect(await com.json()).toEqual(await sem.json());
+  expect(com.status()).toBe(200);
+  expect((await request.post("/api/nexo-demo/login", { data: { email: "ana@" } })).status()).toBe(422);
+});

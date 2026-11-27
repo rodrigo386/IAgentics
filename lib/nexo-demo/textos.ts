@@ -69,7 +69,23 @@ export const nexoDemo = {
       limite: "Muitas tentativas a partir deste endereço. Tente de novo em uma hora.",
       falha: "Não foi possível entrar agora. Tente de novo em instantes.",
     } as Record<string, string>,
-    acessoInvalido: "Este link de acesso não vale mais. Faça o cadastro para entrar.",
+    acessoInvalido: "Este link de acesso não vale mais. Faça o cadastro ou peça um link novo.",
+    jaTenho: "Já tem cadastro?",
+    jaTenhoLink: "Entrar com o seu e-mail",
+  },
+
+  /** Login de quem já se cadastrou: sem senha, o link de acesso vai para o e-mail. */
+  login: {
+    titulo: "Já tenho cadastro",
+    texto: "Digite o e-mail do seu cadastro. Enviamos para ele o link que abre o Nexo Demo onde você parou.",
+    email: "E-mail do cadastro",
+    botao: "Enviar o link de acesso",
+    enviando: "Enviando...",
+    enviadoTitulo: "Confira o seu e-mail",
+    enviado: (email: string) => `Se ${email} tem cadastro no Nexo Demo, o link de acesso acabou de ser enviado. Ele chega em instantes; confira também o spam.`,
+    outro: "Usar outro e-mail",
+    semCadastro: "Ainda não tem cadastro?",
+    semCadastroLink: "Cadastre-se para entrar",
   },
 
   /** Moldura do aplicativo. */

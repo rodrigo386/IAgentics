@@ -61,3 +61,14 @@ export async function resumoLeads(): Promise<{ cadastros: number; abriramRc: num
     .from(nexoDemoLeads);
   return r;
 }
+
+/** Login por e-mail (2026-11-27): o acesso do cadastro MAIS RECENTE daquele e-mail, para mandar o link a ele. */
+export async function acessoMaisRecentePorEmail(email: string): Promise<{ nome: string; token: string } | null> {
+  const [linha] = await db
+    .select({ nome: nexoDemoLeads.nome, token: nexoDemoLeads.token })
+    .from(nexoDemoLeads)
+    .where(sql`lower(${nexoDemoLeads.email}) = ${email.toLowerCase()}`)
+    .orderBy(desc(nexoDemoLeads.criadoEm))
+    .limit(1);
+  return linha ?? null;
+}
