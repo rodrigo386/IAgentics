@@ -42,7 +42,7 @@ test("pede o comparativo por e-mail e o contato aparece no /admin", async ({ pag
   const email = `reforma.${Date.now()}@teste.com.br`;
   await page.getByLabel("Nome", { exact: true }).fill("Carla Compras");
   await page.getByLabel("E-mail de trabalho").fill(email);
-  await page.getByLabel("Empresa", { exact: true }).fill("Indústria Teste");
+  await page.getByLabel(/^Empresa/).fill("Indústria Teste");
   await page.getByRole("checkbox", { name: /Quero receber o comparativo/ }).check();
   await page.getByRole("button", { name: "Enviar para o meu e-mail" }).click();
   await expect(page.getByRole("status")).toContainText("Recebemos o seu pedido");

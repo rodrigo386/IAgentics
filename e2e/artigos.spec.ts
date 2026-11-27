@@ -21,7 +21,7 @@ test("a listagem abre, está no menu e leva ao artigo", async ({ page }) => {
   const categorias = page.locator("main").getByRole("heading", { level: 2 });
   await expect(categorias).toHaveText(["Sourcing e cotação", "Spend e tail spend", "IA e agentes em Compras", "ROI e business case"]);
   const titulos = page.getByRole("heading", { level: 3 });
-  await expect(titulos.first()).toContainText("TCO");
+  await expect(titulos.first()).toContainText("Negociação com fornecedores");
 
   const primeiro = page.getByRole("link", { name: /ROI de IA em Compras/ });
   await primeiro.click();

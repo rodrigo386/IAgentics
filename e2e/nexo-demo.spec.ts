@@ -45,7 +45,7 @@ async function abrirRcPelaMia(page: Page) {
   await guia(page).click();
   await page.getByRole("button", { name: "Preencher com a MIA" }).click();
   await page.getByRole("button", { name: "Abrir chamado" }).click();
-  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Gestor da área aprova a requisição" })).toBeVisible();
 }
 
 test("o processo vai da requisição às ordens de compra, lembra onde parou e aparece no painel", async ({ page, browser }) => {
@@ -72,29 +72,25 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await expect(page.locator(".nexo-demo-proximo:visible")).toHaveText("Abrir chamado");
   await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeFocused();
   await page.getByRole("button", { name: "Abrir chamado" }).click();
-  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
-  await expect(page.getByText("Passo 2 de 8")).toBeVisible();
-  await expect(trilha.locator('[aria-current="step"]:visible')).toContainText("Análise da MIA (você está aqui)");
-  await expect(trilha.locator("li:visible").first()).toHaveText("Requisição (feito)");
-
-  /* Comprador: a análise da MIA abre em janela sobre a fila. */
-  await guia(page).click();
-  await expect(page.locator(".nexo-demo-proximo:visible")).toHaveAccessibleName("Ver análise: RC-0142");
-  await page.getByRole("button", { name: "Ver análise: RC-0142" }).click();
-  await expect(janela(page)).toContainText("Relatório de classificação");
-  await expect(janela(page)).toContainText("será aprovada por: Gerente de Compras");
-  await janela(page).getByRole("button", { name: "Fechar" }).click();
-
-  /* Gestor: aprova a RC, que vira cotação. */
-  await guia(page).click();
-  await page.getByRole("button", { name: "Aprovar", exact: true }).click();
+  /* Aberta a RC, a aprovação do gestor acontece sozinha e a animação já toca
+     (2026-11-27): análise e aprovação não pedem clique. */
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Minhas aprovações");
   await expect(page.getByText("Passo 4 de 8")).toBeVisible();
-  /* A aprovação vista de fora: o gestor recebe o pedido, aprova e a RC vira cotação. */
+  await expect(trilha.locator("li:visible").first()).toHaveText("Requisição (feito)");
   const filmeRc = page.getByRole("region", { name: "Gestor da área aprova a requisição" });
   await expect(filmeRc.getByText("RC-0142 aguarda a sua aprovação")).toBeVisible();
   await expect(filmeRc.getByText("por Ana, Gestor da área, hoje às", { exact: false })).toBeVisible();
+  /* No fim da animação a cotação abre sozinha: é o passo seguinte do comprador. */
   await expect(filmeRc.getByText("RC-0142 virou a cotação RFQ-0142.")).toBeVisible({ timeout: 8000 });
-  await filmeRc.getByRole("button", { name: "Fechar a animação" }).click();
+  await expect(janela(page).getByRole("heading", { name: "RFQ-0142" })).toBeVisible({ timeout: 8000 });
+
+  /* A análise da MIA continua na fila de requisições, para quem quiser ver. */
+  await janela(page).getByRole("button", { name: "Fechar" }).click();
+  await page.getByRole("button", { name: "Requisições (RCs)" }).click();
+  await page.getByRole("button", { name: "Ver análise: RC-0142" }).click();
+  await expect(janela(page)).toContainText("Relatório de classificação");
+  await janela(page).getByRole("button", { name: "Fechar" }).click();
+  await page.getByRole("button", { name: "Minhas aprovações" }).click();
   await expect(page.getByRole("button", { name: "Rever a aprovação do gestor" })).toBeVisible();
 
   /* Comprador: o guia abre a cotação em janela. Busca com IA, convites, portal do fornecedor. */
@@ -245,8 +241,8 @@ test("a MIA devolve a requisição vaga, e o rascunho volta para corrigir", asyn
   await page.getByLabel("Qtd 2").fill("12");
   await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 4.918,00");
   await page.getByRole("button", { name: "Abrir chamado" }).click();
-  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
-  await expect(page.getByText("Passo 2 de 8")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Gestor da área aprova a requisição" })).toBeVisible();
+  await expect(page.getByText("Passo 4 de 8")).toBeVisible();
 });
 
 test("a operação já existe: lista, Kanban, filtros, cotação de exemplo só para ler e os painéis", async ({ page }) => {

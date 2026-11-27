@@ -132,7 +132,7 @@ export const nexoDemo = {
    */
   guia: {
     rotulo: (n: number, total: number) => `Passo ${n} de ${total}`,
-    ir: "Ir para a tela",
+    ir: "Próximo passo",
     trilha: "Os passos da demonstração",
     feito: "feito",
     aqui: "você está aqui",

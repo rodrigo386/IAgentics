@@ -87,7 +87,24 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
     ir("cotacoes");
     setRfqAberta(NUMERO);
   };
+  /** A animação do gestor aprovando, tocada sozinha logo depois de abrir a RC (ver `despachar`). */
+  const [filmeRc, setFilmeRc] = useState(false);
   const despachar = (a: Acao) => {
+    /* RC aberta: a aprovação do gestor acontece sozinha e a tela de aprovações
+       já mostra a animação (2026-11-27, pedido do Rodrigo: "após a criação da
+       RC, iniciar automaticamente a animação da aprovação, os passos
+       anteriores não são relevantes mostrar"). Sem animação (reduced motion),
+       vai direto à cotação. */
+    if (a.tipo === "abrirRc" && !e.rc && reduzir(e, a).rc) {
+      despacharBase(a);
+      despacharBase({ tipo: "aprovarRc" });
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) abrirMinhaRfq();
+      else {
+        setFilmeRc(true);
+        ir("aprovacoes");
+      }
+      return;
+    }
     despacharBase(a);
     if (a.tipo === "reiniciar") {
       setMensagens([]);
@@ -176,7 +193,7 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
               {tela === "mia" ? <TelaMia nome={primeiroNome} {...mia} /> : null}
               {tela === "abrir" ? <TelaAbrirRc key={prefill.chave} {...props} prefill={prefill.valor} consumirPrefill={consumirPrefill} /> : null}
               {tela === "minhas" ? <TelaMinhas {...props} /> : null}
-              {tela === "aprovacoes" ? <TelaAprovacoes {...props} abrirRfq={abrirMinhaRfq} /> : null}
+              {tela === "aprovacoes" ? <TelaAprovacoes {...props} abrirRfq={abrirMinhaRfq} filmeRc={filmeRc} consumirFilmeRc={() => setFilmeRc(false)} /> : null}
               {tela === "requisicoes" ? <TelaRequisicoes {...props} /> : null}
               {tela === "cotacoes" ? <TelaCotacoes {...props} aberta={rfqAberta} abrir={setRfqAberta} /> : null}
               {tela === "spend" ? <TelaSpend /> : null}

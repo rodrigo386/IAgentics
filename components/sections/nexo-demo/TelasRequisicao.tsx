@@ -168,8 +168,8 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill, consumirPrefill }
     if (faltas.length > 0) return;
     const valida = form.linhas.every((l) => "item" in classificar(l.texto));
     despachar({ tipo: "abrirRc", form });
-    if (valida) ir("minhas");
-    else {
+    /* Válida, a moldura leva à aprovação do gestor (Aplicativo, `despachar`). */
+    if (!valida) {
       setCorrigindo(false);
       window.scrollTo(0, 0);
     }
@@ -656,11 +656,31 @@ function Relatorio({ r, e, hoje, fechar }: { r: NaFila; e: Estado; hoje: Date; f
 
 /* ---------- Minhas aprovações ---------- */
 
-export function TelaAprovacoes({ e, despachar, ir, abrirRfq, nome, hoje }: PropsTela & { abrirRfq: () => void }) {
+export function TelaAprovacoes({
+  e,
+  despachar,
+  ir,
+  abrirRfq,
+  nome,
+  hoje,
+  filmeRc = false,
+  consumirFilmeRc = () => {},
+}: PropsTela & { abrirRfq: () => void; filmeRc?: boolean; consumirFilmeRc?: () => void }) {
   const a = t.aprovacoes;
   const [aviso, setAviso] = useState(false);
-  /** A animação da aprovação que a pessoa acabou de dar (ou pediu para rever). `fim`: já tocou até o fim. */
-  const [filme, setFilme] = useState<{ tipo: "rc" | "oc"; rever: boolean; fim: boolean } | null>(null);
+  /** A animação da aprovação que a pessoa acabou de dar (ou pediu para rever). `fim`: já tocou até o fim.
+   *  `filmeRc`: a RC acabou de ser aberta e aprovada sozinha, então a do gestor já começa tocando. */
+  const [filme, setFilme] = useState<{ tipo: "rc" | "oc"; rever: boolean; fim: boolean } | null>(
+    filmeRc ? { tipo: "rc", rever: false, fim: false } : null,
+  );
+  /* O pedido vale uma vez: voltar a esta tela depois não toca de novo. */
+  useEffect(() => {
+    if (filmeRc) consumirFilmeRc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só ao montar.
+  }, []);
+  /** Terminada (ou pulada) a animação da RC, a cotação abre: é o passo seguinte do comprador. */
+  const depoisDoFilme = (f: { tipo: "rc" | "oc"; rever: boolean; fim: boolean }) =>
+    f.rever ? setFilme({ ...f, fim: true }) : f.tipo === "oc" ? ir("fecho") : abrirRfq();
   const aprovarSelecao = () => {
     despachar({ tipo: "aprovarSelecao" });
     /* Sem animação não há o que assistir: vai direto ao resumo, como antes. */
@@ -684,8 +704,8 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq, nome, hoje }: Props
             e={e}
             nome={nome}
             hoje={hoje}
-            aoFim={() => (filme.tipo === "oc" && !filme.rever ? ir("fecho") : setFilme({ ...filme, fim: true }))}
-            pular={filme.fim ? undefined : () => (filme.tipo === "oc" && !filme.rever ? ir("fecho") : setFilme(null))}
+            aoFim={() => depoisDoFilme(filme)}
+            pular={filme.fim ? undefined : () => (filme.rever ? setFilme(null) : depoisDoFilme(filme))}
             fechar={() => setFilme(null)}
           />
           {filme.tipo === "oc" ? (
