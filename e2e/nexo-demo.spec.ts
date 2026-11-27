@@ -107,7 +107,18 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await j.getByText("Prévia do convite").click();
   await expect(j.getByText("Convite para cotação RFQ-0142")).toBeVisible();
   await j.getByRole("button", { name: "Enviar 4 convites" }).click();
+  /* O outro lado: o fornecedor recebe o e-mail com o link único, preenche o portal e envia; só então as propostas chegam. */
+  const filme = j.getByRole("region", { name: "Alfa Suprimentos Ltda responde ao convite" });
+  await expect(filme).toContainText("Recebe o e-mail");
+  await expect(filme.getByText("Convite para cotação RFQ-0142")).toBeVisible();
+  await expect(filme.getByText("Abrir o Portal do Fornecedor")).toBeVisible();
+  await expect(j.locator("[data-proposta]")).toHaveCount(0);
+  await expect(filme.getByText("O link abre o Portal do Fornecedor.", { exact: false })).toBeVisible();
+  await filme.getByRole("button", { name: "Pular a animação" }).click();
   await expect(j.locator("[data-proposta]")).toHaveCount(3);
+  await j.getByRole("button", { name: "Rever o fornecedor respondendo" }).click();
+  await expect(j.getByRole("region", { name: "Alfa Suprimentos Ltda responde ao convite" })).toBeVisible();
+  await j.getByRole("button", { name: "Fechar a animação" }).click();
   await j.getByRole("button", { name: "Responder pelo Portal do Fornecedor: Norte Sul Atacado" }).click();
   await expect(j.getByRole("heading", { name: "Portal do Fornecedor" })).toBeVisible();
   await j.getByLabel(/Preço unitário de Notebook/).fill("7000.00");
@@ -177,6 +188,21 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   const csv = await contexto.request.get("/admin/nexo-demo.csv");
   expect(await csv.text()).toContain(empresa);
   await contexto.close();
+});
+
+test("serviço também se cota: a MIA reconhece o pedido e o tipo filtra o catálogo", async ({ page }) => {
+  await entrar(page, `Empresa Servico ${Date.now()}`);
+  await page.getByPlaceholder(/Pergunte à MIA/).fill("/abrir 12 meses de limpeza predial");
+  await page.getByPlaceholder(/Pergunte à MIA/).press("Enter");
+  await expect(page.getByLabel("Item ou serviço 1")).toHaveValue("Limpeza e conservação predial, contrato mensal");
+  await expect(page.getByLabel("Qtd 1")).toHaveValue("12");
+  await expect(page.getByText("Reconhecido pela MIA: Facilities e Serviços · Serviço")).toBeVisible();
+  await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 222.000,00");
+  await page.getByText("+ Adicionar item").click();
+  await page.getByText("Serviço", { exact: true }).click();
+  await page.getByLabel("Item ou serviço 2").focus();
+  for (const nome of ["Vigilância patrimonial desarmada, posto 24 horas", "Consultoria em segurança da informação (hora)", "Treinamento de trabalho em altura (NR-35), turma de 20"]) await expect(page.getByRole("button", { name: nome })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Monitor LED 27 polegadas" })).toHaveCount(0);
 });
 
 test("a MIA devolve a requisição vaga, e o rascunho volta para corrigir", async ({ page }) => {

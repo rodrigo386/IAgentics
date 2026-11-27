@@ -35,6 +35,7 @@ import {
 } from "@/lib/nexo-demo/regras";
 import { OrdemCompra } from "./OrdemCompra";
 import { GuiaJanela } from "./Guia";
+import { FilmeFornecedor } from "./FilmeFornecedor";
 import { Dado, Janela, Selo, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, dataCurta, destaque, linque, rotulo, type Tom } from "./pecas";
 
 /**
@@ -445,8 +446,11 @@ function AbaPropostas({ rfq, despachar, leitura, irPara, abrirPortal }: PropsAba
   const { e } = rfq;
   const [aberto, setAberto] = useState<{ id: string; painel: Painel } | null>(null);
   const [recado, setRecado] = useState<string | null>(null);
+  const [revendo, setRevendo] = useState(false);
   if (!e.convitesEnviados) return <Vazio>{c.propostasVazio}</Vazio>;
   const cs = cotacoes(e);
+  /* Quem aparece na animação: o primeiro que vai responder sozinho (não o que a pessoa respondeu pelo portal). */
+  const doFilme = (e.propostasChegaram ? cs : cotacoes({ ...e, propostasChegaram: true })).find((x) => !x.peloPortal);
   const rc = e.rc!;
   const sem = semProposta(e);
   const menor = cs.reduce((m, x) => (x.cotadas === rc.itens.length && x.totalCentavos < m ? x.totalCentavos : m), Number.POSITIVE_INFINITY);
@@ -461,7 +465,9 @@ function AbaPropostas({ rfq, despachar, leitura, irPara, abrirPortal }: PropsAba
   };
   return (
     <>
-      {!e.propostasChegaram && cs.length === 0 ? (
+      {!leitura && !e.propostasChegaram && doFilme ? (
+        <FilmeFornecedor e={e} numero={rfq.numero} cotacao={doFilme} outros={e.convidados.length - 1} pular={() => despachar({ tipo: "chegarPropostas" })} />
+      ) : !e.propostasChegaram && cs.length === 0 ? (
         <p role="status" className="rounded-lg bg-bg px-4 py-6 text-center text-sm text-fg-muted">
           {leitura ? c.status.convites : c.chegando}
         </p>
@@ -485,6 +491,15 @@ function AbaPropostas({ rfq, despachar, leitura, irPara, abrirPortal }: PropsAba
         <p role="status" className="rounded-lg bg-[#e9f8ef] px-4 py-2.5 text-sm text-[#0b6b3a]">
           {recado}
         </p>
+      ) : null}
+      {!leitura && e.propostasChegaram && doFilme ? (
+        revendo ? (
+          <FilmeFornecedor e={e} numero={rfq.numero} cotacao={doFilme} outros={e.convidados.length - 1} fechar={() => setRevendo(false)} />
+        ) : (
+          <button type="button" onClick={() => setRevendo(true)} className={`${linque} self-start`}>
+            {c.filme.rever}
+          </button>
+        )
       ) : null}
 
       <ul className="flex flex-col gap-3">

@@ -269,6 +269,22 @@ describe("Nexo Demo: os dados fictícios e a operação de exemplo", () => {
     for (const f of FORNECEDORES_IA) expect(f.padrao).toBeTruthy();
   });
 
+  it("o catálogo tem serviços, e a MIA os reconhece em texto livre", () => {
+    const servicos = CATALOGO.filter((i) => i.tipo === "Serviço");
+    expect(servicos.map((i) => i.id)).toEqual(["limpeza", "vigilancia", "consultoria", "treinamento"]);
+    expect(classificar("12 meses de limpeza predial")).toEqual({ item: "limpeza" });
+    expect(classificar("consultoria de pentest")).toEqual({ item: "consultoria" });
+    expect(classificar("curso de NR-35 para a equipe")).toEqual({ item: "treinamento" });
+    /* "segurança" continua sendo a luva só quando há luva: o serviço não rouba o item. */
+    expect(classificar("luva de segurança")).toEqual({ item: "luva" });
+    const r = responder("/abrir 12 meses de limpeza predial", ESTADO_INICIAL);
+    expect(r.preencher).toEqual([{ texto: "Limpeza e conservação predial, contrato mensal", qtd: 12 }]);
+    /* Uma RC só de serviço vai até a ordem de compra. */
+    const rc: Formulario = { ...form, linhas: [{ texto: "limpeza predial", qtd: 12 }, { texto: "vigilância", qtd: 12 }] };
+    const fim = rodar([{ tipo: "abrirRc", form: rc }, { tipo: "aprovarRc" }, { tipo: "convidarTodos" }, { tipo: "enviarConvites" }, { tipo: "chegarPropostas" }, { tipo: "gerarMapa" }, { tipo: "sugerirSelecao" }, { tipo: "concluirSelecao" }, { tipo: "aprovarSelecao" }]);
+    expect(faseDe(fim)).toBe("fim");
+  });
+
   it("o que a MIA preenche é uma requisição válida", () => {
     const p = nexoDemo.preenchimentoMia;
     const e = reduzir(ESTADO_INICIAL, { tipo: "abrirRc", form: { linhas: [...p.linhas], urgencia: p.urgencia, centro: p.centro, necessarioAte: "2026-12-17", justificativa: p.justificativa } });

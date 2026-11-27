@@ -479,6 +479,9 @@ export function insights(e: Estado): { melhor: string[]; outliers: string[]; ris
  * "passo alcançado" do lead (lib/nexo-demo/leads.ts): mexeu na ordem ou no
  * tamanho, mexa em `PASSOS` junto (o teste confere).
  */
+/** Quanto dura a animação do fornecedor respondendo (FilmeFornecedor); as propostas chegam quando ela termina. */
+export const FILME_PROPOSTA_MS = 9000;
+
 export const FASES = ["inicio", "analise", "aprovarRc", "convidar", "mapa", "selecionar", "aprovarSelecao", "fim"] as const;
 export type Fase = (typeof FASES)[number];
 
