@@ -2934,6 +2934,15 @@ export const bolsas = {
     perfisTitulo: "Instagram ou LinkedIn: preencha pelo menos um",
     instagram: "Perfil no Instagram",
     linkedin: "Perfil no LinkedIn",
+    instagramExemplo: "@seuperfil",
+    linkedinExemplo: "seuperfil ou linkedin.com/in/seuperfil",
+    /* Perfil preenchido que não é perfil, apontado no navegador (2026-11-27).
+       Fora de `erros`, que são só os motivos do servidor (lib/eventos.test.ts). */
+    perfilInvalido: {
+      instagram: "O Instagram não parece um perfil. Escreva só o @ (ex.: @seuperfil) ou deixe em branco e informe o LinkedIn.",
+      linkedin: "O LinkedIn não parece um perfil. Cole o endereço (linkedin.com/in/...) ou só o nome de usuário, sem espaços.",
+    },
+    problemaFaltam: (n: number) => (n === 1 ? "Falta 1 caractere" : `Faltam ${n} caracteres`),
     perfisNota: "Informe pelo menos um perfil público. Conferimos no Instagram se você segue a @iagenticsacademy e no seu perfil se publicou o post.",
     problema: "Qual problema do seu dia a dia você quer resolver com IA e/ou métodos ensinados na plataforma em 30 dias?",
     problemaNota: "Até 5 linhas, com um número se puder. Exemplo: \"Levo 3 horas por semana montando o comparativo de cotações do frete. Quero baixar para 30 minutos.\"",

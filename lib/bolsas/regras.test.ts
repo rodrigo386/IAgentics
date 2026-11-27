@@ -78,10 +78,22 @@ describe("perfis", () => {
     expect(normalizarInstagram("ana_b")).toBe("https://www.instagram.com/ana_b");
     expect(normalizarInstagram("https://instagram.com/ana_b/?hl=pt")).toBe("https://www.instagram.com/ana_b");
     expect(normalizarInstagram("https://evil.com/instagram.com/x")).toBeNull();
+    expect(normalizarInstagram("instagram.com/@ana_b")).toBe("https://www.instagram.com/ana_b");
+    expect(normalizarInstagram("https://www.instagram.com/ana_b/reels/")).toBe("https://www.instagram.com/ana_b");
+    expect(normalizarInstagram("https://www.instagram.com/p/ABC123/")).toBeNull();
+    expect(normalizarInstagram("Ana Souza")).toBeNull();
   });
   it("linkedin só perfil ou página", () => {
     expect(normalizarLinkedin("https://br.linkedin.com/in/joao")).toBe("https://www.linkedin.com/in/joao");
     expect(normalizarLinkedin("https://www.linkedin.com/feed/")).toBeNull();
+    expect(normalizarLinkedin("https://www.linkedin.com/in/joao/details/experience/")).toBe("https://www.linkedin.com/in/joao");
+  });
+  it("linkedin pelo nome de usuário sozinho (2026-11-27)", () => {
+    expect(normalizarLinkedin("ana-souza")).toBe("https://www.linkedin.com/in/ana-souza");
+    expect(normalizarLinkedin("in/ana-souza/")).toBe("https://www.linkedin.com/in/ana-souza");
+    expect(normalizarLinkedin("joão-silva-123")).toBe("https://www.linkedin.com/in/joão-silva-123");
+    expect(normalizarLinkedin("Ana Souza")).toBeNull();
+    expect(normalizarLinkedin("https://evil.com/in/ana")).toBeNull();
   });
 });
 

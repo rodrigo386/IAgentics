@@ -58,16 +58,29 @@ const texto = (v: unknown, max = 160) => (typeof v === "string" ? v.trim().repla
 export function normalizarInstagram(v: unknown): string | null {
   const s = texto(v, 200);
   if (!s) return null;
-  const m = s.match(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\/([A-Za-z0-9._]{1,30})\/?(?:\?.*)?$/i) ?? s.match(/^@?([A-Za-z0-9._]{1,30})$/);
+  /* Endereço com caminho depois do perfil (".../ana_b/reels") e "@" depois da
+     barra também valem; link de post (/p/, /reel/...) não é perfil. */
+  const url = s.match(/^(?:https?:\/\/)?(?:www\.|m\.)?instagram\.com\/@?([A-Za-z0-9._]{1,30})(?:[/?#].*)?$/i);
+  if (url && SEM_PERFIL_INSTAGRAM.includes(url[1].toLowerCase())) return null;
+  const m = url ?? s.match(/^@?\s*([A-Za-z0-9._]{1,30})$/);
   return m ? `https://www.instagram.com/${m[1]}` : null;
 }
 
-/** LinkedIn: só o endereço de um perfil (/in/...) ou de uma página. */
+const SEM_PERFIL_INSTAGRAM = ["p", "reel", "reels", "stories", "explore", "tv", "accounts"];
+
+/**
+ * LinkedIn: o endereço de um perfil (/in/...) ou de uma página, ou só o nome
+ * de usuário ("ana-souza", "in/ana-souza"), que vira /in/ (2026-11-27: três
+ * recusas do servidor num dia, com o campo pedindo endereço e o do Instagram
+ * aceitando o nome sozinho).
+ */
 export function normalizarLinkedin(v: unknown): string | null {
   const s = texto(v, 300);
   if (!s) return null;
-  const m = s.match(/^(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/(in|company)\/([^/?#\s]{2,100})\/?(?:[?#].*)?$/i);
-  return m ? `https://www.linkedin.com/${m[1].toLowerCase()}/${m[2]}` : null;
+  const m =
+    s.match(/^(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/(in|company)\/([^/?#\s]{2,100})(?:[/?#].*)?$/i) ??
+    s.match(/^\/?(?:(in|company)\/)?@?([\p{L}\p{N}_%-]{3,100})\/?$/iu);
+  return m ? `https://www.linkedin.com/${(m[1] ?? "in").toLowerCase()}/${m[2]}` : null;
 }
 
 export function validarInscricao(corpo: unknown): { ok: true; dados: InscricaoValida } | { ok: false; motivo: Motivo } {

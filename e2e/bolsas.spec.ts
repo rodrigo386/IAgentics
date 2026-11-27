@@ -127,6 +127,25 @@ test("empresa é opcional e a falta de Instagram e LinkedIn é avisada antes de 
   expect(foi).toBe(false);
 });
 
+/* 2026-11-27: quatro recusas de "perfis" do servidor num dia, sem dizer qual
+   campo. Agora o navegador aponta o campo, e o LinkedIn aceita o nome de
+   usuário sozinho. */
+test("perfil inválido é apontado no campo, e o contador diz quanto falta no problema", async ({ page }) => {
+  await page.goto("/bolsas");
+  await preencher(page, `perfil-campo-${Date.now()}@exemplo-teste.com`);
+  let foi = false;
+  await page.route("**/api/bolsas", (r) => { foi = true; return r.abort(); });
+  await page.getByLabel("Perfil no LinkedIn").fill("Ana Souza");
+  await page.getByRole("button", { name: "Enviar inscrição" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "O LinkedIn não parece um perfil" })).toBeVisible();
+  await expect(page.getByLabel("Perfil no LinkedIn")).toBeFocused();
+  expect(foi).toBe(false);
+
+  const problema = page.getByRole("textbox", { name: /Qual problema/ });
+  await problema.fill("Cotação lenta");
+  await expect(page.getByText("Faltam 7 caracteres")).toBeVisible();
+});
+
 test("o regulamento abre e volta para o desafio", async ({ page }) => {
   await page.goto("/bolsas/regulamento");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Regulamento do Desafio Prova Real");

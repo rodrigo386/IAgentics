@@ -5,6 +5,7 @@ import Link from "next/link";
 import { bolsas } from "@/lib/content";
 import { CAMPOS_BOLSAS, MOTIVOS_BOLSAS } from "@/lib/eventos";
 import { registrarEvento } from "@/lib/eventos-cliente";
+import { PROBLEMA_MIN, normalizarInstagram, normalizarLinkedin } from "@/lib/bolsas/regras";
 
 /**
  * Formulário do Desafio Prova Real (2026-11-03; refeito em 2026-11-18). O servidor valida tudo de
@@ -67,6 +68,17 @@ export function InscricaoForm() {
       setErro(t.erros.perfis);
       (e.currentTarget.elements.namedItem("instagram") as HTMLInputElement | null)?.focus();
       return;
+    }
+    /* Perfil preenchido que o servidor recusaria: diz QUAL campo, aqui mesmo
+       (2026-11-27: quatro recusas de "perfis" do servidor sem dizer o campo). */
+    for (const [nome, normalizar] of [["instagram", normalizarInstagram], ["linkedin", normalizarLinkedin]] as const) {
+      const valor = String(f.get(nome) ?? "").trim();
+      if (valor && !normalizar(valor)) {
+        registrarEvento(`bolsas_bloqueio_${nome}`);
+        setErro(t.perfilInvalido[nome]);
+        (e.currentTarget.elements.namedItem(nome) as HTMLInputElement | null)?.focus();
+        return;
+      }
     }
     setEnviando(true);
     setErro(null);
@@ -140,11 +152,11 @@ export function InscricaoForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5">
             <span className={rotulo}>{t.instagram}</span>
-            <input name="instagram" placeholder="@seuperfil" autoComplete="off" className={campo} />
+            <input name="instagram" placeholder={t.instagramExemplo} autoComplete="off" className={campo} />
           </label>
           <label className="flex flex-col gap-1.5">
             <span className={rotulo}>{t.linkedin}</span>
-            <input name="linkedin" placeholder="linkedin.com/in/seuperfil" autoComplete="off" className={campo} />
+            <input name="linkedin" placeholder={t.linkedinExemplo} autoComplete="off" className={campo} />
           </label>
         </div>
         <p className="text-xs text-fg-muted">
@@ -158,7 +170,7 @@ export function InscricaoForm() {
           name="problema"
           required
           rows={5}
-          minLength={20}
+          minLength={PROBLEMA_MIN}
           maxLength={MAX}
           value={problema}
           onChange={(e) => setProblema(e.target.value)}
@@ -166,7 +178,9 @@ export function InscricaoForm() {
         />
       </label>
       <p className="-mt-2 text-right font-mono text-xs tabular-nums text-fg-muted" aria-live="polite">
-        {problema.length}/{MAX}
+        {problema.trim().length > 0 && problema.trim().length < PROBLEMA_MIN
+          ? t.problemaFaltam(PROBLEMA_MIN - problema.trim().length)
+          : `${problema.length}/${MAX}`}
       </p>
       {/* Isca para robôs: fora da tela e da ordem de tabulação. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
