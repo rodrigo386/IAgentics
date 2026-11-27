@@ -63,7 +63,10 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
         setRfqAberta(null);
       }
     };
-    daUrl();
+    /* A primeira entrada também ganha o #tela: sem ele, voltar até o começo
+       mudava o endereço e deixava a tela anterior na frente. */
+    if (telas.includes(window.location.hash.slice(1) as Tela)) daUrl();
+    else window.history.replaceState(null, "", `#${tela}`);
     window.addEventListener("popstate", daUrl);
     return () => window.removeEventListener("popstate", daUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- a lista de telas é fixa.

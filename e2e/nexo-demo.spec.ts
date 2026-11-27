@@ -230,6 +230,10 @@ test("a operação já existe: lista, Kanban, filtros, cotação de exemplo só 
   /* O botão voltar do navegador anda dentro da demo, e recarregar fica na mesma tela. */
   await page.goBack();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
+  for (let i = 0; i < 4; i++) await page.goBack();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Olá, Ana. Eu sou a MIA.");
+  for (let i = 0; i < 4; i++) await page.goForward();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
   await page.getByRole("button", { name: "Alçada de compra" }).click();
@@ -284,6 +288,7 @@ test("o link do e-mail leva de volta para dentro da demo e some do endereço", a
   await page.goto(`${ROTA}?acesso=${token}`);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Olá, Bruno. Eu sou a MIA.");
   expect(new URL(page.url()).search).toBe("");
+  expect(page.url()).not.toContain("acesso");
   await page.context().clearCookies();
   await page.evaluate(() => localStorage.clear());
   await page.goto(`${ROTA}?acesso=${"b".repeat(43)}`);
