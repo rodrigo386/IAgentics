@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
-import { CODIGO_OC, economiaCentavos, estimadoCentavos, porcento, propostas, reais } from "@/lib/nexo-demo/regras";
-import { Vazio, botao, botaoLinha, cartao, rotulo, type PropsTela } from "./pecas";
+import { NUMERO, cotacoes, economiaCentavos, estimadoCentavos, ordensDeCompra, porcento, reais, rodadaDe } from "@/lib/nexo-demo/regras";
+import { OrdemCompra } from "./OrdemCompra";
+import { Indicador, Vazio, botao, botaoLinha, cartao, type PropsTela } from "./pecas";
 
 /**
  * Fecho do Nexo Demo (2026-11-27, decisão do Rodrigo: "agendar conversa"):
- * o resumo do que a pessoa fez, com os números da PRÓPRIA demonstração, e os
- * caminhos para falar com o time (WhatsApp e o formulário da home).
+ * o resumo do que a pessoa fez, com os números da PRÓPRIA demonstração, a
+ * ordem de compra que saiu dela e os caminhos para falar com o time
+ * (WhatsApp e o formulário da home).
  */
-export function TelaFecho({ e, despachar, ir }: PropsTela) {
+export function TelaFecho({ e, despachar, ir, nome, hoje }: PropsTela) {
   const f = t.fecho;
   if (!e.ocGerada || !e.rc) {
     return (
@@ -24,13 +26,7 @@ export function TelaFecho({ e, despachar, ir }: PropsTela) {
     );
   }
   const economia = economiaCentavos(e);
-  const numeros: [string, string][] = [
-    [f.numeros.oc, CODIGO_OC],
-    [f.numeros.fornecedores, String(e.convidados.length)],
-    [f.numeros.propostas, String(propostas(e).length)],
-    [f.numeros.rodadas, String(e.rodada)],
-    [economia >= 0 ? f.numeros.economia : t.cotacoes.acima, `${reais(Math.abs(economia))} (${porcento(Math.abs(economia) / estimadoCentavos(e.rc))})`],
-  ];
+  const ocs = ordensDeCompra(e);
   return (
     <>
       <header className="flex flex-col gap-3">
@@ -42,12 +38,13 @@ export function TelaFecho({ e, despachar, ir }: PropsTela) {
         <p className="max-w-[64ch] leading-relaxed text-fg-muted">{f.lead}</p>
       </header>
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {numeros.map(([nome, valor], i) => (
-          <div key={nome} className={`${cartao} !p-4 ${i === numeros.length - 1 ? "col-span-2 sm:col-span-1" : ""}`}>
-            <dd className="text-lg font-semibold tabular-nums text-fg">{valor}</dd>
-            <dt className={rotulo}>{nome}</dt>
-          </div>
-        ))}
+        <Indicador nome={f.numeros.oc} valor={ocs.length} />
+        <Indicador nome={f.numeros.fornecedores} valor={e.convidados.length} />
+        <Indicador nome={f.numeros.propostas} valor={cotacoes(e).length} />
+        <Indicador nome={f.numeros.rodadas} valor={rodadaDe(e)} />
+        <div className="col-span-2 sm:col-span-1">
+          <Indicador nome={economia >= 0 ? f.numeros.economia : t.cotacoes.acima} valor={<span className="text-lg">{`${reais(Math.abs(economia))} (${porcento(Math.abs(economia) / estimadoCentavos(e.rc))})`}</span>} />
+        </div>
       </dl>
       <section className="flex flex-col gap-4 rounded-xl bg-[#1a1140] p-6 text-white sm:p-8">
         <h2 className="text-2xl font-semibold tracking-[-0.02em]">{f.ctaTitulo}</h2>
@@ -62,6 +59,9 @@ export function TelaFecho({ e, despachar, ir }: PropsTela) {
           </Link>
         </div>
       </section>
+      {ocs.map((oc) => (
+        <OrdemCompra key={oc.codigo} oc={oc} e={e} numero={NUMERO} hoje={hoje} comprador={nome} solicitante={nome} />
+      ))}
       <section className={`${cartao} flex flex-col gap-3`}>
         <h2 className="text-sm font-semibold text-fg">{f.naoViu}</h2>
         <ul className="grid list-disc gap-1 pl-5 text-sm text-fg sm:grid-cols-2">

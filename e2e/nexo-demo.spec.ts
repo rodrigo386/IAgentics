@@ -39,64 +39,108 @@ test("a entrada mostra o cadastro de cinco campos e fica fora do Google", async 
   await expect(page.getByRole("link", { name: "Política de Privacidade" }).first()).toHaveAttribute("href", "/privacidade");
 });
 
-test("o processo vai da requisição à ordem de compra, lembra onde parou e aparece no painel", async ({ page, browser }) => {
+const janela = (page: Page) => page.getByRole("dialog");
+
+async function abrirRcPelaMia(page: Page) {
+  await guia(page).click();
+  await page.getByRole("button", { name: "Preencher com a MIA" }).click();
+  await page.getByRole("button", { name: "Abrir chamado" }).click();
+  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
+}
+
+test("o processo vai da requisição às ordens de compra, lembra onde parou e aparece no painel", async ({ page, browser }) => {
   const empresa = `Empresa Demo ${Date.now()}`;
   await entrar(page, empresa);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Olá, Ana. Eu sou a MIA.");
 
-  /* Solicitante: a MIA preenche e a RC nasce. */
-  await guia(page).click();
+  /* Solicitante: a MIA entende o pedido escrito e preenche; depois o pedido padrão, com dois itens. */
+  await page.getByPlaceholder(/Pergunte à MIA/).fill("/abrir 20 cadeiras");
+  await page.getByPlaceholder(/Pergunte à MIA/).press("Enter");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nova requisição de compras");
+  await expect(page.getByLabel("Item ou serviço 1")).toHaveValue("Cadeira ergonômica com apoio lombar");
+  await expect(page.getByLabel("Qtd 1")).toHaveValue("20");
   await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeDisabled();
   await page.getByRole("button", { name: "Preencher com a MIA" }).click();
-  await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 72.000,00");
+  await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 85.470,00");
   await page.getByRole("button", { name: "Abrir chamado" }).click();
-  await expect(page.getByRole("heading", { name: "RC-DEMO-0001" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
   await expect(page.getByText("Passo 2 de 8")).toBeVisible();
 
-  /* Comprador: a análise da MIA. */
+  /* Comprador: a análise da MIA abre em janela sobre a fila. */
   await guia(page).click();
-  await page.getByRole("button", { name: "Ver análise" }).click();
-  await expect(page.getByText("Relatório de classificação")).toBeVisible();
-  await expect(page.getByText(/Valor acima da alçada do gestor/)).toBeVisible();
+  await page.getByRole("button", { name: "Ver análise: RC-0142" }).click();
+  await expect(janela(page)).toContainText("Relatório de classificação");
+  await expect(janela(page)).toContainText("será aprovada por: Gerente de Compras");
+  await janela(page).getByRole("button", { name: "Fechar" }).click();
 
   /* Gestor: aprova a RC, que vira cotação. */
   await guia(page).click();
   await page.getByRole("button", { name: "Aprovar", exact: true }).click();
   await expect(page.getByText("Passo 4 de 8")).toBeVisible();
 
-  /* Comprador: convites, propostas, mapa, nova rodada e seleção. */
+  /* Comprador: o guia abre a cotação em janela. Busca com IA, convites, portal do fornecedor. */
   await guia(page).click();
-  await expect(page.getByRole("heading", { name: "RFQ-DEMO-0001" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Enviar 0 convites/ })).toBeDisabled();
-  await page.getByRole("button", { name: "Adicionar todos" }).click();
-  await page.getByRole("button", { name: "Enviar 4 convites" }).click();
-  await expect(page.getByRole("rowheader", { name: "Distribuidora Horizonte" })).toBeVisible();
-  await expect(page.getByRole("rowheader")).toHaveCount(3);
-  await page.getByRole("button", { name: "Gerar mapa comparativo (IA)" }).click();
-  await expect(page.getByRole("heading", { name: "Insights da MIA" })).toBeVisible();
-  await expect(page.getByText(/Norte Sul Atacado foi convidado e não respondeu/)).toBeVisible();
-  await expect(page.getByRole("row", { name: /Distribuidora Horizonte/ })).toContainText("R$ 6.782,40");
-  await page.getByRole("button", { name: "Abrir nova rodada" }).click();
-  await expect(page.getByRole("row", { name: /Distribuidora Horizonte/ })).toContainText("R$ 6.646,75");
-  await page.getByRole("button", { name: "Ir para a seleção" }).click();
-  await expect(page.getByRole("button", { name: "Concluir (enviar para aprovação)" })).toBeDisabled();
-  await page.getByRole("radio", { name: "Distribuidora Horizonte" }).check();
-  await expect(page.getByText("R$ 5.532,50 (7,7%)")).toBeVisible();
-  await page.getByRole("button", { name: "Concluir (enviar para aprovação)" }).click();
+  const j = janela(page);
+  await expect(j.getByRole("heading", { name: "RFQ-0142" })).toBeVisible();
+  await j.getByRole("button", { name: "Busca com IA" }).click();
+  await j.getByRole("button", { name: "Buscar com a MIA" }).click();
+  await expect(j.getByText("A MIA encontrou 2 fornecedores fora da base.")).toBeVisible();
+  await j.getByRole("button", { name: "Cadastro", exact: true }).click();
+  await expect(j.getByRole("button", { name: /Enviar 0 convites/ })).toBeDisabled();
+  await j.getByRole("button", { name: "Adicionar todos" }).click();
+  await j.getByText("Prévia do convite").click();
+  await expect(j.getByText("Convite para cotação RFQ-0142")).toBeVisible();
+  await j.getByRole("button", { name: "Enviar 4 convites" }).click();
+  await expect(j.locator("[data-proposta]")).toHaveCount(3);
+  await j.getByRole("button", { name: "Responder pelo Portal do Fornecedor: Norte Sul Atacado" }).click();
+  await expect(j.getByRole("heading", { name: "Portal do Fornecedor" })).toBeVisible();
+  await j.getByLabel(/Preço unitário de Notebook/).fill("7.000,00");
+  await j.getByLabel(/Preço unitário de Monitor/).fill("1.150,00");
+  await j.getByLabel("Prazo de entrega (dias)").fill("9");
+  await j.getByRole("button", { name: "Enviar proposta" }).click();
+  await expect(j.locator("[data-proposta]")).toHaveCount(4);
+  await expect(j.locator('[data-proposta="nortesul"]')).toContainText("pelo portal");
+  await expect(j.locator('[data-proposta="nortesul"]')).toContainText("R$ 81.500,00");
+  await j.getByRole("button", { name: "Ver histórico: Norte Sul Atacado" }).click();
+  await expect(j.getByText(/Proposta preenchida pelo Portal do Fornecedor/)).toBeVisible();
+
+  /* Mapa com insights, negociação por e-mail e seleção por linha, com o pedido dividido. */
+  await j.getByRole("button", { name: "Gerar mapa comparativo (IA)" }).click();
+  await expect(j.getByRole("heading", { name: "Insights da MIA" })).toBeVisible();
+  await expect(j.locator('[data-celula="notebook:horizonte"]')).toContainText("R$ 6.782,40");
+  await expect(j.locator('[data-celula="notebook:horizonte"]')).toContainText("melhor preço");
+  await expect(j.locator('[data-celula="monitor:prisma"]')).toHaveText("não cotou");
+  await j.getByRole("button", { name: "Negociar por e-mail com todos (4)" }).click();
+  await expect(j.locator('[data-celula="notebook:horizonte"]')).toContainText("R$ 6.646,75");
+  await expect(j.locator('[data-celula="monitor:nortesul"]')).toContainText("R$ 1.115,50");
+  await j.getByRole("button", { name: "Ir para a seleção" }).click();
+  await expect(j.getByRole("button", { name: "Concluir (enviar para aprovação)" })).toBeDisabled();
+  await j.getByRole("button", { name: "Aplicar a sugestão da MIA" }).click();
+  await expect(j.getByText("R$ 7.847,50 (9,2%)")).toBeVisible();
+  await expect(j.getByText("Pedido dividido entre 2 fornecedores")).toBeVisible();
+  await j.getByLabel(/% desc\. Notebook/).fill("5");
+  await j.locator('[data-linha="notebook"]').getByRole("button", { name: "Solicitar ajuste ao fornecedor" }).click();
+  await expect(j.getByText("Distribuidora Horizonte não chega ao que você pediu: o máximo dele é 2,0%, já aplicado.")).toBeVisible();
+  await expect(j.getByText("R$ 9.176,80 (10,7%)")).toBeVisible();
+  await j.getByRole("button", { name: "Concluir (enviar para aprovação)" }).click();
+  await expect(j.getByText("Total: R$ 76.293,20. Aguardando aprovação por alçada: Gerente de Compras.", { exact: false })).toBeVisible();
+  await j.getByRole("button", { name: "Fechar" }).click();
   await expect(page.getByText("Passo 7 de 8")).toBeVisible();
 
-  /* Alçada: aprova, a OC nasce e o fecho leva ao time. */
+  /* Alçada: a tela diz por que a aprovação é sua; aprovada, saem duas OCs. */
   await guia(page).click();
+  await expect(page.getByText("Por que você: o total de R$ 76.293,20 cai na faixa de R$ 10.000,01 a R$ 100.000,00, aprovada por Gerente de Compras.", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Aprovar e gerar a OC" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Da requisição à ordem de compra, sem sair do Nexo.");
-  await expect(page.getByText("OC-DEMO-0001")).toBeVisible();
+  await expect(page.getByRole("article", { name: "Ordem de compra OC-0142-1" })).toContainText("Distribuidora Horizonte");
+  await expect(page.getByRole("article", { name: "Ordem de compra OC-0142-2" })).toContainText("R$ 11.155,00");
   await expect(page.getByRole("link", { name: "Conversar no WhatsApp" })).toHaveAttribute("href", /wa\.me\/5515998714091/);
   await expect(page.getByRole("link", { name: "Enviar uma mensagem" })).toHaveAttribute("href", "/#contato");
 
   /* Voltou depois: continua dentro, no fim do processo. */
   await page.reload();
   await expect(page.getByText("Passo 8 de 8")).toBeVisible();
-  await expect(page.getByText("OC-DEMO-0001")).toBeVisible();
+  await expect(page.getByRole("article", { name: "Ordem de compra OC-0142-1" })).toBeVisible();
 
   /* O painel mostra o cadastro com o passo final. */
   test.skip(!cred, "sem ADMIN_USUARIO/ADMIN_SENHA no .env.local");
@@ -113,14 +157,88 @@ test("o processo vai da requisição à ordem de compra, lembra onde parou e apa
   await contexto.close();
 });
 
-test("sair da demo volta ao cadastro, e o celular mostra o menu em faixa", async ({ page }) => {
+test("a MIA devolve a requisição vaga, e o rascunho volta para corrigir", async ({ page }) => {
+  await entrar(page, "Empresa Devolvida");
+  await page.getByRole("button", { name: "Abrir RC" }).click();
+  await page.getByLabel("Item ou serviço 1").fill("Material para o setor");
+  await expect(page.getByText(/A MIA ainda não reconhece este texto/)).toBeVisible();
+  await page.getByText("Média", { exact: true }).click();
+  await page.getByLabel("Necessário até").fill("2027-03-15");
+  await page.getByLabel("Centro de custo").selectOption("FAC-030 · Facilities");
+  await page.getByRole("button", { name: "Abrir chamado" }).click();
+  await expect(page.getByRole("heading", { name: "A MIA devolveu a requisição" })).toBeVisible();
+  await expect(page.getByText("Inválida — devolvida ao solicitante")).toBeVisible();
+  await expect(page.getByText(/"Material para o setor" não identifica qual item/)).toBeVisible();
+  await expect(page.getByText("Passo 1 de 8")).toBeVisible();
+
+  await page.getByRole("button", { name: "Corrigir no formulário" }).click();
+  await expect(page.getByLabel("Item ou serviço 1")).toHaveValue("Material para o setor");
+  await page.getByLabel("Item ou serviço 1").fill("cadeira");
+  await page.getByRole("button", { name: "Cadeira ergonômica com apoio lombar" }).click();
+  await expect(page.getByText("Reconhecido pela MIA: Administrativo e Escritório · Ativo")).toBeVisible();
+  await page.getByRole("button", { name: "+ Adicionar item" }).click();
+  await page.getByLabel("Item ou serviço 2").fill("resmas de papel sulfite");
+  await page.getByLabel("Qtd 2").fill("12");
+  await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 4.918,00");
+  await page.getByRole("button", { name: "Abrir chamado" }).click();
+  await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
+  await expect(page.getByText("Passo 2 de 8")).toBeVisible();
+});
+
+test("a operação já existe: lista, Kanban, filtros, cotação de exemplo só para ler e os painéis", async ({ page }) => {
+  await entrar(page, "Empresa Operação");
+  await page.getByRole("button", { name: "Cotações e negociação" }).click();
+  await expect(page.getByRole("list", { name: "Cotações (RFQs)" }).getByRole("listitem")).toHaveCount(8);
+  await page.getByLabel("Todos os compradores").selectOption("Marina Prado");
+  await expect(page.getByRole("list", { name: "Cotações (RFQs)" }).getByRole("listitem")).toHaveCount(3);
+  await page.getByRole("button", { name: "Limpar" }).click();
+  await page.getByRole("button", { name: "Kanban" }).click();
+  await expect(page.getByRole("region", { name: "OC gerada" }).getByRole("listitem")).toHaveCount(2);
+
+  await page.getByRole("button", { name: "Abrir RFQ-0128" }).click();
+  const j = janela(page);
+  await expect(j).toContainText("somente leitura");
+  await expect(j.getByRole("article", { name: "Ordem de compra OC-0128-1" })).toBeVisible();
+  await j.getByRole("tab", { name: "Seleção" }).click();
+  await expect(j.getByRole("button", { name: "Aplicar a sugestão da MIA" })).toBeDisabled();
+  await j.getByRole("button", { name: "Fechar" }).click();
+
+  await page.getByRole("button", { name: "Requisições (RCs)" }).click();
+  await page.getByRole("button", { name: "Ver análise: RC-0139" }).click();
+  await expect(janela(page)).toContainText("Inválida — devolvida ao solicitante");
+  await janela(page).getByRole("button", { name: "Fechar" }).click();
+
+  await page.getByRole("button", { name: "Spend", exact: true }).click();
+  await expect(page.getByText("Tail spend")).toBeVisible();
+  /* A MIA acompanha as telas: o botão roxo abre a conversa e ela leva para outra tela. */
+  await page.getByRole("button", { name: "Abrir a MIA" }).click();
+  await page.getByPlaceholder(/Pergunte à MIA/).fill("quem aprova acima de 100 mil?");
+  await page.getByPlaceholder(/Pergunte à MIA/).press("Enter");
+  await expect(page.getByRole("log")).toContainText("Diretoria Financeira");
+  await page.getByPlaceholder(/Pergunte à MIA/).fill("/ir sala de comando");
+  await page.getByPlaceholder(/Pergunte à MIA/).press("Enter");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
+  await page.getByRole("button", { name: "Alçada de compra" }).click();
+  await expect(page.getByRole("rowheader", { name: "acima de R$ 100.000,00" })).toBeVisible();
+  await page.getByRole("button", { name: "Base de fornecedores" }).click();
+  await expect(page.getByRole("heading", { name: /Alfa Suprimentos Ltda/ })).toBeVisible();
+});
+
+test("sair da demo volta ao cadastro, e o celular não ganha rolagem de lado", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await entrar(page, "Empresa Celular");
-  await expect(page.getByRole("button", { name: "Cotações e negociação" })).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.getByRole("button", { name: "Abrir RC" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nova requisição de compras");
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const semRolagem = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+  expect(await semRolagem()).toBe(true);
+  await abrirRcPelaMia(page);
+  expect(await semRolagem()).toBe(true);
+  await page.getByRole("button", { name: "Cotações e negociação" }).click();
+  await page.getByRole("button", { name: "Abrir RFQ-0137" }).click();
+  await expect(janela(page).getByRole("heading", { name: "RFQ-0137" })).toBeVisible();
+  await janela(page).getByRole("tab", { name: "Mapa" }).click();
+  expect(await semRolagem()).toBe(true);
+  await janela(page).getByRole("button", { name: "Fechar" }).click();
+  await page.getByRole("button", { name: "Spend", exact: true }).click();
+  expect(await semRolagem()).toBe(true);
   await page.getByRole("button", { name: "Sair da demo" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Teste o Nexo com as suas mãos.");
 });
