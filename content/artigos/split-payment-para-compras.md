@@ -1,7 +1,7 @@
 ---
 titulo: "Split payment: o que muda para quem compra"
 tituloSeo: "Split payment na Reforma: o que muda em Compras | IAgentics"
-descricao: "No split payment, o IBS e a CBS são separados no pagamento ao fornecedor. Veja como funciona pela LC 214, o que muda no crédito e no fluxo de Compras."
+descricao: "No split payment, o IBS e a CBS são separados no pagamento ao fornecedor. Veja como funciona pela LC 214, quando começa, o que muda no crédito e no fluxo de Compras."
 slug: "split-payment-para-compras"
 data: 2026-11-19
 autor: "Rodrigo Costa"
@@ -18,6 +18,8 @@ faq:
     resposta: "O crédito de quem compra depende de o tributo do fornecedor ter sido extinto, por exemplo pelo recolhimento no split payment (LC 214, art. 47). Quando o pagamento não passa pelo split nem pelo recolhimento do próprio comprador, o crédito depende do destaque correto na nota (art. 48)."
   - pergunta: "A empresa compradora pode recolher o IBS e a CBS no lugar do fornecedor?"
     resposta: "Pode, se estiver no regime regular e o meio de pagamento não permitir a separação automática: a LC 214, art. 36, permite que o adquirente pague o IBS e a CBS da operação, exclusivamente por meio do recolhimento."
+  - pergunta: "Quando o split payment começa a valer?"
+    resposta: "A cobrança efetiva de CBS e IBS começa em janeiro de 2027, mas o split payment não estará disponível nessa data: segundo a Fazenda, em notícia de agosto de 2026, o sistema é complexo, o setor financeiro pediu mais prazo e o novo cronograma não foi divulgado. Confira o calendário atual na Receita Federal e no Comitê Gestor do IBS."
 ---
 
 Hoje o imposto sobre o consumo passa pelo caixa do fornecedor: a empresa
@@ -29,6 +31,18 @@ liquidado, a parte dos tributos é separada e vai direto para o governo.
 Para Compras e para o Contas a Pagar, o que sai do caixa continua o mesmo. O
 fluxo muda, e o crédito da sua empresa passa a depender do que acontece no
 pagamento.
+
+## Quando o split payment começa
+
+A cobrança efetiva da CBS e do IBS começa em janeiro de 2027, mas o split
+payment não estará pronto nessa data. Segundo a Fazenda, em notícia de
+[agosto de 2026](https://convergenciadigital.com.br/governo/receita-atende-instituicoes-financeiras-e-split-payment-fica-fora-do-inicio-da-reforma-tributaria/),
+o mecanismo é uma das ferramentas de maior complexidade técnica da reforma, o
+sistema financeiro pediu mais prazo e o novo cronograma ainda não foi
+divulgado. Enquanto o split não existe, o recolhimento segue por outras
+modalidades previstas na regulamentação, inclusive o recolhimento pelo próprio
+comprador (art. 36, abaixo). Confira o calendário atual na Receita Federal e no
+Comitê Gestor do IBS antes de planejar o fluxo de pagamentos.
 
 ## Como funciona, pela lei
 
@@ -67,15 +81,17 @@ pode voltar como pedido de antecipação ou de prazo menor na negociação.
 
 ## Checklist para Compras e Contas a Pagar
 
-1. Mapear por qual meio cada fornecedor recebe (boleto, Pix, transferência) e
+1. Acompanhar o cronograma do split payment e definir, com o Financeiro, quem
+   recolhe o IBS e a CBS enquanto ele não existe.
+2. Mapear por qual meio cada fornecedor recebe (boleto, Pix, transferência) e
    se o pagamento vai passar pela separação automática.
-2. Garantir que o pagamento leve a referência da nota fiscal, que é o que liga
+3. Garantir que o pagamento leve a referência da nota fiscal, que é o que liga
    o pagamento ao tributo separado.
-3. Conferir IBS, CBS e cClassTrib da nota antes de liberar o pagamento, não
+4. Conferir IBS, CBS e cClassTrib da nota antes de liberar o pagamento, não
    depois.
-4. Revisar, com o Financeiro, os pedidos de antecipação que fornecedores
+5. Revisar, com o Financeiro, os pedidos de antecipação que fornecedores
    pequenos devem trazer.
-5. Comparar as cotações pelo custo líquido, que já desconta o crédito: faça a
+6. Comparar as cotações pelo custo líquido, que já desconta o crédito: faça a
    conta na [calculadora de custo líquido da Reforma Tributária](/reforma-tributaria-compras).
 
 <!-- faq -->
