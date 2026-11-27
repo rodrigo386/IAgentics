@@ -19,6 +19,9 @@ export const botaoMia = "inline-flex items-center justify-center gap-2 rounded-l
 export const linque = "text-sm font-medium text-accent hover:underline";
 export const rotulo = "text-[11px] font-medium uppercase tracking-[0.08em] text-fg-muted";
 export const campo = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none focus-visible:border-accent";
+/** O botão que o guia manda clicar agora: anel que pulsa (globals.css). `destaque(cond)` liga só quando é a vez dele. */
+export const proximo = "nexo-demo-proximo";
+export const destaque = (vez: boolean) => (vez ? proximo : "");
 export const secao = "text-[11px] font-semibold uppercase tracking-[0.08em] text-accent";
 
 const TONS = {

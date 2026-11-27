@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Sparkle, X } from "@phosphor-icons/react";
 import { CATALOGO, CENTROS, FORNECEDORES, RCS_NA_FILA, URGENCIAS } from "@/lib/nexo-demo/dados";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
@@ -31,7 +31,7 @@ import {
   type LinhaForm,
   type Requisicao,
 } from "@/lib/nexo-demo/regras";
-import { Dado, Janela, Lista, Selo, TOM_URGENCIA, TituloTela, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, cartao, dataCurta, linque, rotulo, secao, type PropsTela, type Tom } from "./pecas";
+import { Dado, Janela, Lista, Selo, TOM_URGENCIA, TituloTela, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, cartao, dataCurta, destaque, linque, rotulo, secao, type PropsTela, type Tom } from "./pecas";
 
 /**
  * Telas do lado da requisição no Nexo Demo (2026-11-27): a abertura da RC
@@ -74,13 +74,36 @@ function formDoPrefill(prefill: Prefill, hoje: Date): Formulario {
   return prefill ? { ...VAZIO, linhas: prefill } : VAZIO;
 }
 
-export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { prefill: Prefill }) {
+export function TelaAbrirRc({ e, despachar, ir, hoje, prefill, consumirPrefill }: PropsTela & { prefill: Prefill; consumirPrefill: () => void }) {
   const r = t.rc;
   const [form, setForm] = useState<Formulario>(() => formDoPrefill(prefill, hoje));
-  const [pelaMia, setPelaMia] = useState(prefill === "padrao");
+  /** Quantas vezes a MIA preencheu o pedido padrão: 0 = nenhuma. Cada vez refaz o clarão dos campos e o aviso. */
+  const [vezMia, setVezMia] = useState(prefill === "padrao" ? 1 : 0);
   const [tipo, setTipo] = useState<string | null>(null);
   const [ativa, setAtiva] = useState<number | null>(null);
-  const [corrigindo, setCorrigindo] = useState(false);
+  /* Quem chega com o formulário preenchido pela MIA vê o formulário, mesmo
+     com uma devolução anterior guardada (antes a MIA dizia "preenchi" e a
+     tela mostrava a devolução). */
+  const [corrigindo, setCorrigindo] = useState(prefill !== null);
+  const abrirBotao = useRef<HTMLButtonElement>(null);
+  /* O preenchimento precisa ser VISTO (2026-11-27, relato do Rodrigo: "o
+     botão preencher com a MIA não está funcionando"): no celular o resumo e o
+     Abrir chamado ficam longe do botão, e com o formulário já preenchido o
+     clique não mudava nada na tela. Agora os campos piscam e a tela vai até o
+     botão seguinte. */
+  const mostrarAbrir = () =>
+    window.requestAnimationFrame(() => {
+      const b = abrirBotao.current;
+      if (!b) return;
+      const { top, bottom } = b.getBoundingClientRect();
+      if (top < 120 || bottom > window.innerHeight - 24) b.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      b.focus({ preventScroll: true });
+    });
+  useEffect(() => {
+    if (prefill === "padrao") mostrarAbrir();
+    consumirPrefill();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só ao montar: o pedido da MIA vale uma vez.
+  }, []);
 
   if (e.rc) {
     return (
@@ -136,6 +159,8 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
   }
 
   const faltas = faltasDoForm(form, isoEm(hoje, 0));
+  const emBranco = form.linhas.every((l) => l.texto.trim() === "") && !form.urgencia && !form.necessarioAte && !form.centro;
+  const clarao = vezMia > 0 ? "nexo-demo-preenchido" : "";
   const total = estimadoDoForm(form.linhas);
   const linha = (i: number, parte: Partial<LinhaForm>) => setForm({ ...form, linhas: form.linhas.map((l, j) => (j === i ? { ...l, ...parte } : l)) });
   const enviar = () => {
@@ -158,17 +183,19 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
             type="button"
             onClick={() => {
               setForm(formDoPrefill("padrao", hoje));
-              setPelaMia(true);
+              setVezMia((n) => n + 1);
+              mostrarAbrir();
             }}
-            className={botaoMia}
+            className={`${botaoMia} ${destaque(emBranco)}`}
           >
             <Sparkle size={16} weight="fill" aria-hidden="true" />
             {r.preencherMia}
           </button>
         }
       />
-      {pelaMia ? (
-        <p role="status" className="rounded-lg bg-[#f4f1ff] px-4 py-3 text-sm text-fg">
+      {vezMia > 0 ? (
+        <p key={vezMia} role="status" className="nexo-demo-chega flex items-start gap-2 rounded-lg border border-[#5b21e6]/25 bg-[#f4f1ff] px-4 py-3 text-sm text-fg">
+          <Sparkle size={16} weight="fill" className="mt-0.5 shrink-0 text-accent-text" aria-hidden="true" />
           {t.mia.r.abrirPadrao}
         </p>
       ) : null}
@@ -212,7 +239,7 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
             <p className="text-xs text-fg-muted">{r.tipoAjuda}</p>
           </fieldset>
 
-          <div className={`${cartao} flex flex-col gap-4`}>
+          <div key={`itens-${vezMia}`} className={`${cartao} ${clarao} flex flex-col gap-4`}>
             <p className="flex items-center gap-2 text-sm font-semibold text-fg">
               <Numero n={2} /> {r.passo2}
             </p>
@@ -292,7 +319,7 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
             </button>
           </div>
 
-          <div className={`${cartao} flex flex-col gap-4`}>
+          <div key={`entrega-${vezMia}`} className={`${cartao} ${clarao} flex flex-col gap-4`}>
             <p className="flex items-center gap-2 text-sm font-semibold text-fg">
               <Numero n={3} /> {r.passo3}
             </p>
@@ -366,14 +393,14 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
             </div>
           ) : null}
           <div className="flex items-center gap-3 pt-1">
-            <button type="submit" disabled={faltas.length > 0} className={`${botao} flex-1`}>
+            <button ref={abrirBotao} type="submit" disabled={faltas.length > 0} className={`${botao} flex-1 ${destaque(faltas.length === 0)}`}>
               {r.abrir}
             </button>
             <button
               type="button"
               onClick={() => {
                 setForm(VAZIO);
-                setPelaMia(false);
+                setVezMia(0);
               }}
               className={linque}
             >
@@ -553,7 +580,7 @@ export function TelaRequisicoes({ e, despachar, nome, hoje }: PropsTela) {
                     setAberta(r);
                     if (r.sua) despachar({ tipo: "verAnalise" });
                   }}
-                  className={`${botao} mt-auto self-end`}
+                  className={`${botao} mt-auto self-end ${destaque(Boolean(r.sua) && !e.analiseVista)}`}
                   aria-label={`${q.verAnalise}: ${codigo}`}
                 >
                   {q.verAnalise}
@@ -671,7 +698,7 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
                 {a.verAlcada}
               </button>
             </p>
-            <button type="button" onClick={() => despachar({ tipo: "aprovarSelecao" })} className={`${botaoVerde} self-start`}>
+            <button type="button" onClick={() => despachar({ tipo: "aprovarSelecao" })} className={`${botaoVerde} self-start nexo-demo-proximo`}>
               <Check size={16} weight="bold" aria-hidden="true" />
               {a.aprovarSelecao}
             </button>
@@ -702,7 +729,7 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
                   despachar({ tipo: "aprovarRc" });
                   setAviso(false);
                 }}
-                className={botaoVerde}
+                className={`${botaoVerde} nexo-demo-proximo`}
               >
                 <Check size={16} weight="bold" aria-hidden="true" />
                 {a.aprovar}
@@ -723,7 +750,7 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
             {e.rcAprovada && !e.convitesEnviados ? (
               <div role="status" className="flex flex-wrap items-center gap-3 text-sm text-fg">
                 <span>{a.rcAprovada}</span>
-                <button type="button" onClick={abrirRfq} className={botaoLinha}>
+                <button type="button" onClick={abrirRfq} className={`${botaoLinha} nexo-demo-proximo`}>
                   {t.cotacoes.abrir(codigoRfq())}
                 </button>
               </div>

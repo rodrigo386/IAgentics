@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, ArrowsClockwise, ChatCircleDots, SignOut } from "@phosphor-icons/react";
+import { ChatCircleDots, SignOut } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
 import { responder } from "@/lib/nexo-demo/mia";
 import { FASES, NUMERO, faseDe, reduzir, type Acao, type Estado, type Tela } from "@/lib/nexo-demo/regras";
@@ -11,6 +11,7 @@ import { TelaAbrirRc, TelaAprovacoes, TelaMinhas, TelaRequisicoes, type Prefill 
 import { TelaCotacoes } from "./TelaCotacoes";
 import { TelaAlcada, TelaFornecedores, TelaSala, TelaSpend } from "./TelasPaineis";
 import { TelaFecho } from "./TelaFecho";
+import { Guia } from "./Guia";
 import { botao, botaoLinha } from "./pecas";
 
 /**
@@ -91,12 +92,16 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
     }
     if (a.tipo === "aprovarSelecao") ir("fecho");
   };
+  /** Devolve se a resposta levou a pessoa a uma tela: o painel flutuante fecha para não cobrir o que a MIA fez. */
   const perguntar = (texto: string) => {
     const r = responder(texto, e);
     setMensagens((ms) => [...ms, { de: "voce", texto }, { de: "mia", texto: r.texto, bloco: r.bloco }]);
     if (r.preencher) setPrefill((p) => ({ chave: p.chave + 1, valor: r.preencher! }));
     if (r.ir) ir(r.ir);
+    return Boolean(r.ir);
   };
+  /* O pedido da MIA vale uma vez: o formulário o consome ao montar, senão voltar à tela preencheria de novo. */
+  const consumirPrefill = () => setPrefill((p) => (p.valor === null ? p : { chave: p.chave, valor: null }));
 
   const g = t.guia.fases[fase];
   const noDestino = tela === g.tela && (g.tela !== "cotacoes" || rfqAberta === NUMERO);
@@ -161,32 +166,12 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
             ))}
           </nav>
 
-          {/* O guia: papel da vez, o que fazer e o botão que leva à tela certa. */}
-          <div role="status" className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-[#f4f1ff] px-4 py-3 sm:px-6">
-            <span className="rounded-full bg-accent-text px-2.5 py-0.5 text-xs font-medium text-white">{t.guia.rotulo(FASES.indexOf(fase) + 1, FASES.length)}</span>
-            <p className="min-w-0 flex-1 basis-60 text-sm text-fg">
-              <strong className="font-semibold">{g.papel}.</strong> {g.texto}
-            </p>
-            <div className="flex gap-2">
-              {noDestino ? null : (
-                <button type="button" onClick={() => (g.tela === "cotacoes" ? abrirMinhaRfq() : ir(g.tela as Tela))} className={`${botao} !py-2`} data-guia>
-                  {t.guia.ir}
-                  <ArrowRight size={14} weight="bold" aria-hidden="true" />
-                </button>
-              )}
-              {e.rc ? (
-                <button type="button" onClick={() => despachar({ tipo: "reiniciar" })} className={`${botaoLinha} !py-2`}>
-                  <ArrowsClockwise size={14} aria-hidden="true" />
-                  {t.app.reiniciar}
-                </button>
-              ) : null}
-            </div>
-          </div>
+          <Guia e={e} noDestino={noDestino} irDestino={() => (g.tela === "cotacoes" ? abrirMinhaRfq() : ir(g.tela as Tela))} reiniciar={() => despachar({ tipo: "reiniciar" })} />
 
           <main id="conteudo" ref={conteudo} tabIndex={-1} className="flex-1 px-4 pb-28 pt-6 outline-none sm:px-6 sm:pt-8">
             <div className={`mx-auto flex flex-col gap-5 ${tela === "cotacoes" || tela === "requisicoes" ? "max-w-[1160px]" : "max-w-[980px]"}`}>
               {tela === "mia" ? <TelaMia nome={primeiroNome} {...mia} /> : null}
-              {tela === "abrir" ? <TelaAbrirRc key={prefill.chave} {...props} prefill={prefill.valor} /> : null}
+              {tela === "abrir" ? <TelaAbrirRc key={prefill.chave} {...props} prefill={prefill.valor} consumirPrefill={consumirPrefill} /> : null}
               {tela === "minhas" ? <TelaMinhas {...props} /> : null}
               {tela === "aprovacoes" ? <TelaAprovacoes {...props} abrirRfq={abrirMinhaRfq} /> : null}
               {tela === "requisicoes" ? <TelaRequisicoes {...props} /> : null}

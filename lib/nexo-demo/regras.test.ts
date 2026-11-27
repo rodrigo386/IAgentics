@@ -3,6 +3,7 @@ import { ALCADAS, CATALOGO, CENTROS, FORNECEDORES, FORNECEDORES_IA, RCS_NA_FILA,
 import { nexoDemo } from "./textos";
 import { responder } from "./mia";
 import {
+  proximaAcao,
   ESTADO_INICIAL,
   FASES,
   PASSOS,
@@ -42,6 +43,32 @@ describe("Nexo Demo: o processo do começo ao fim", () => {
   it("cada fase do guia tem texto, tela e um passo no painel", () => {
     expect(PASSOS).toHaveLength(FASES.length);
     for (const f of FASES) expect(nexoDemo.guia.fases[f].texto.length).toBeGreaterThan(10);
+  });
+
+  it("o guia sabe o próximo clique em cada ponto do processo, e todo clique tem texto", () => {
+    const ordem: string[] = [proximaAcao(ESTADO_INICIAL).acao];
+    let e = ESTADO_INICIAL;
+    const passos: Acao[] = [{ tipo: "abrirRc", form }, { tipo: "verAnalise" }, { tipo: "aprovarRc" }, { tipo: "convidarTodos" }, { tipo: "enviarConvites" }, { tipo: "chegarPropostas" }, { tipo: "gerarMapa" }, { tipo: "sugerirSelecao" }, { tipo: "concluirSelecao" }, { tipo: "aprovarSelecao" }];
+    for (const a of passos) {
+      e = reduzir(e, a);
+      ordem.push(proximaAcao(e).acao);
+    }
+    expect(ordem).toEqual(["abrirRc", "verAnalise", "aprovarRc", "escolherFornecedores", "enviarConvites", "aguardarPropostas", "gerarMapa", "escolherVencedores", "concluirSelecao", "aprovarSelecao", "fim"]);
+    /* O botão da vez mora numa aba da janela da cotação só enquanto se cota. */
+    expect(proximaAcao(rodar(ateOMapa.slice(0, 3))).aba).toBe("fornecedores");
+    expect(proximaAcao(rodar(ateOMapa.slice(0, 6))).aba).toBe("propostas");
+    expect(proximaAcao(rodar(ateOMapa)).aba).toBe("selecao");
+    expect(proximaAcao(ESTADO_INICIAL).aba).toBeUndefined();
+    for (const f of FASES) expect(nexoDemo.guia.fases[f].nome.length).toBeGreaterThan(3);
+    for (const texto of Object.values(nexoDemo.guia.acoes)) expect(texto).not.toMatch(/—|–/);
+    /* Os botões citados em "Agora" existem com esse nome nas telas. */
+    expect(nexoDemo.guia.acoes.abrirRc).toContain(nexoDemo.rc.abrir);
+    expect(nexoDemo.guia.acoes.abrirRc).toContain(nexoDemo.rc.preencherMia);
+    expect(nexoDemo.guia.acoes.verAnalise).toContain(nexoDemo.requisicoes.verAnalise);
+    expect(nexoDemo.guia.acoes.gerarMapa).toContain(nexoDemo.cotacoes.gerarMapa);
+    expect(nexoDemo.guia.acoes.escolherVencedores).toContain(nexoDemo.cotacoes.sugerir);
+    expect(nexoDemo.guia.acoes.concluirSelecao).toContain(nexoDemo.cotacoes.concluir);
+    expect(nexoDemo.guia.acoes.aprovarSelecao).toContain(nexoDemo.aprovacoes.aprovarSelecao);
   });
 
   it("percorre as fases na ordem, da requisição às ordens de compra", () => {

@@ -1947,3 +1947,35 @@ dialog.gaveta.gaveta-centro[open] {
     animation: none;
   }
 }
+
+/* O botão que o guia manda clicar agora (2026-11-27): um anel violeta que
+   pulsa. Sem animação o anel fica parado, que já diz qual é o botão. */
+@keyframes nexo-demo-proximo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgb(91 33 230 / 0.9);
+  }
+  50% {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 9px rgb(91 33 230 / 0.18);
+  }
+}
+.nexo-demo-proximo:not(:disabled) {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgb(91 33 230 / 0.9);
+  animation: nexo-demo-proximo 1.6s ease-in-out infinite;
+}
+/* O campo que a MIA acabou de preencher: um clarão violeta que some. */
+@keyframes nexo-demo-preenchido {
+  from {
+    box-shadow: 0 0 0 3px rgb(91 33 230 / 0.55);
+    background-color: #f4f1ff;
+  }
+}
+.nexo-demo-preenchido {
+  animation: nexo-demo-preenchido 1.4s ease-out backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nexo-demo-proximo:not(:disabled),
+  .nexo-demo-preenchido {
+    animation: none;
+  }
+}

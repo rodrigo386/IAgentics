@@ -492,6 +492,37 @@ export function faseDe(e: Estado): Fase {
   return e.analiseVista ? "aprovarRc" : "analise";
 }
 
+/**
+ * O próximo clique da pessoa, mais fino que a fase: é o que o guia escreve em
+ * "Agora" e o botão que as telas destacam (2026-11-27, pedido do Rodrigo:
+ * "deixando claro onde ele está e o que falta"). `aba` é a aba da janela da
+ * cotação em que o botão mora, quando mora lá.
+ */
+export type AcaoGuia = "abrirRc" | "verAnalise" | "aprovarRc" | "escolherFornecedores" | "enviarConvites" | "aguardarPropostas" | "responderPortal" | "gerarMapa" | "escolherVencedores" | "concluirSelecao" | "aprovarSelecao" | "fim";
+export type AbaGuia = "fornecedores" | "propostas" | "selecao";
+
+export function proximaAcao(e: Estado): { acao: AcaoGuia; aba?: AbaGuia } {
+  switch (faseDe(e)) {
+    case "inicio":
+      return { acao: "abrirRc" };
+    case "analise":
+      return { acao: "verAnalise" };
+    case "aprovarRc":
+      return { acao: "aprovarRc" };
+    case "convidar":
+      return { acao: e.convidados.length < 2 ? "escolherFornecedores" : "enviarConvites", aba: "fornecedores" };
+    case "mapa":
+      if (cotacoes(e).length > 0) return { acao: "gerarMapa", aba: "propostas" };
+      return { acao: e.propostasChegaram ? "responderPortal" : "aguardarPropostas", aba: "propostas" };
+    case "selecionar":
+      return { acao: selecaoCompleta(e) ? "concluirSelecao" : "escolherVencedores", aba: "selecao" };
+    case "aprovarSelecao":
+      return { acao: "aprovarSelecao" };
+    case "fim":
+      return { acao: "fim" };
+  }
+}
+
 /** O que o painel mostra para cada passo alcançado (índice = índice da fase). */
 export const PASSOS = [
   "Entrou na demo",

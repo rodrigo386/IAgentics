@@ -23,7 +23,7 @@ export function todasAsRfqs(e: Estado, nome: string, hoje: Date): Rfq[] {
 
 const COLUNAS: StatusRfq[][] = [["setup"], ["convites", "aguardando"], ["propostas"], ["aprovacao"], ["concluida"]];
 
-export function TelaCotacoes({ e, despachar, nome, hoje, aberta, abrir }: PropsTela & { aberta: string | null; abrir: (numero: string | null) => void }) {
+export function TelaCotacoes({ e, despachar, ir, nome, hoje, aberta, abrir }: PropsTela & { aberta: string | null; abrir: (numero: string | null) => void }) {
   const [visao, setVisao] = useState<keyof typeof c.visoes>("lista");
   const [busca, setBusca] = useState("");
   const [status, setStatus] = useState("");
@@ -156,7 +156,7 @@ export function TelaCotacoes({ e, despachar, nome, hoje, aberta, abrir }: PropsT
         </div>
       )}
 
-      {selecionada ? <DetalheRfq key={selecionada.numero} rfq={selecionada} despachar={selecionada.sua ? despachar : () => {}} leitura={!selecionada.sua} hoje={hoje} fechar={() => abrir(null)} /> : null}
+      {selecionada ? <DetalheRfq key={selecionada.numero} rfq={selecionada} despachar={selecionada.sua ? despachar : () => {}} leitura={!selecionada.sua} hoje={hoje} fechar={() => abrir(null)} sair={ir} /> : null}
     </>
   );
 }

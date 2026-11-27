@@ -34,7 +34,8 @@ import {
   type Estado,
 } from "@/lib/nexo-demo/regras";
 import { OrdemCompra } from "./OrdemCompra";
-import { Dado, Janela, Selo, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, dataCurta, linque, rotulo, type Tom } from "./pecas";
+import { GuiaJanela } from "./Guia";
+import { Dado, Janela, Selo, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, dataCurta, destaque, linque, rotulo, type Tom } from "./pecas";
 
 /**
  * O detalhe da cotação no Nexo Demo (2026-11-27): a janela que abre sobre a
@@ -52,7 +53,7 @@ export const TOM_RFQ: Record<string, Tom> = { setup: "ambar", convites: "azul", 
 const etapaDe = (e: Estado) => (e.ocGerada ? 5 : e.selecaoEnviada ? 2 : e.convitesEnviados ? 1 : 0);
 export const abaDaVez = (e: Estado): Aba => (e.ocGerada ? "oc" : e.selecaoEnviada ? "selecao" : e.mapaGerado ? "mapa" : e.convitesEnviados ? "propostas" : "fornecedores");
 
-export function DetalheRfq({ rfq, despachar, leitura, hoje, fechar }: Props & { fechar: () => void }) {
+export function DetalheRfq({ rfq, despachar, leitura, hoje, fechar, sair }: Props & { fechar: () => void; sair: (para: "aprovacoes" | "fecho") => void }) {
   const { e } = rfq;
   const [aba, setAba] = useState<Aba>(abaDaVez(e));
   /** O fornecedor cujo portal está aberto (a pessoa responde no lugar dele). */
@@ -73,7 +74,11 @@ export function DetalheRfq({ rfq, despachar, leitura, hoje, fechar }: Props & { 
       }
       fechar={fechar}
     >
-      {leitura ? <p className="rounded-lg bg-[#fdf0d5] px-4 py-2.5 text-sm text-[#8a5200]">{t.app.somenteLeitura}</p> : null}
+      {leitura ? (
+        <p className="rounded-lg bg-[#fdf0d5] px-4 py-2.5 text-sm text-[#8a5200]">{t.app.somenteLeitura}</p>
+      ) : portal ? null : (
+        <GuiaJanela e={e} aba={aba} irAba={setAba} sair={sair} nomeAba={(a) => c.abas[a as Aba]} />
+      )}
       <dl className="grid grid-cols-2 gap-4 rounded-lg bg-bg p-4 sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-4">
           <dt className={rotulo}>{c.cabecalho.itens}</dt>
@@ -252,7 +257,7 @@ function AbaFornecedores({ rfq, despachar, leitura, irPara, abrirPortal }: Props
           <>
             <div className="flex flex-wrap items-center gap-3">
               <input value={filtro} onChange={(ev) => setFiltro(ev.target.value)} placeholder={c.filtroNome} aria-label={c.filtroNome} className={`${campo} max-w-sm`} />
-              <button type="button" disabled={leitura} onClick={() => despachar({ tipo: "convidarTodos" })} className={linque}>
+              <button type="button" disabled={leitura} onClick={() => despachar({ tipo: "convidarTodos" })} className={`${linque} rounded px-1 ${destaque(!leitura && !e.convitesEnviados && e.convidados.length < 2)}`}>
                 {c.adicionarTodos}
               </button>
             </div>
@@ -348,7 +353,7 @@ function AbaFornecedores({ rfq, despachar, leitura, irPara, abrirPortal }: Props
             despachar({ tipo: "enviarConvites" });
             irPara("propostas");
           }}
-          className={botao}
+          className={`${botao} ${destaque(!leitura && !e.convitesEnviados && e.convidados.length >= 2)}`}
         >
           {c.enviarConvites(e.convidados.length)}
         </button>
@@ -589,7 +594,7 @@ function AbaPropostas({ rfq, despachar, leitura, irPara, abrirPortal }: PropsAba
               despachar({ tipo: "gerarMapa" });
               irPara("mapa");
             }}
-            className={e.mapaGerado ? botaoLinha : botaoMia}
+            className={e.mapaGerado ? botaoLinha : `${botaoMia} ${destaque(!leitura)}`}
           >
             <Sparkle size={16} weight="fill" aria-hidden="true" />
             {e.mapaGerado ? c.abas.mapa : c.gerarMapa}
@@ -797,7 +802,7 @@ function AbaSelecao({ rfq, despachar, leitura, irPara }: PropsAba) {
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-fg">{c.selecaoTitulo}</h3>
-        <button type="button" disabled={travada} onClick={() => despachar({ tipo: "sugerirSelecao" })} className={`${botaoMia} !py-2`}>
+        <button type="button" disabled={travada} onClick={() => despachar({ tipo: "sugerirSelecao" })} className={`${botaoMia} !py-2 ${destaque(!travada && !completa)}`}>
           <Sparkle size={14} weight="fill" aria-hidden="true" />
           {c.sugerir}
         </button>
@@ -903,7 +908,7 @@ function AbaSelecao({ rfq, despachar, leitura, irPara }: PropsAba) {
           ) : null
         ) : (
           <div className="flex flex-col items-end gap-1">
-            <button type="button" disabled={leitura || !completa} onClick={() => despachar({ tipo: "concluirSelecao" })} className={botaoVerde}>
+            <button type="button" disabled={leitura || !completa} onClick={() => despachar({ tipo: "concluirSelecao" })} className={`${botaoVerde} ${destaque(!leitura && completa)}`}>
               {c.concluir}
             </button>
             {!completa ? <p className="text-xs text-fg-muted">{c.escolha}</p> : null}

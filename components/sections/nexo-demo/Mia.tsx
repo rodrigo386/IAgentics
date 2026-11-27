@@ -14,7 +14,7 @@ import { Barra, Selo, TOM_URGENCIA, cartao, type PropsTela } from "./pecas";
  * lib/nexo-demo/mia.ts (regras, no navegador); aqui é só a tela.
  */
 export type Mensagem = { de: "voce" | "mia"; texto: string; bloco?: Bloco };
-export type PropsMia = { e: Estado; mensagens: Mensagem[]; perguntar: (texto: string) => void };
+export type PropsMia = { e: Estado; mensagens: Mensagem[]; perguntar: (texto: string) => boolean };
 
 const m = t.mia;
 
@@ -210,7 +210,11 @@ export function MiaFlutuante(mia: PropsMia) {
               <X size={16} aria-hidden="true" />
             </button>
           </div>
-          <ChatMia {...mia} compacto />
+          <ChatMia {...mia} perguntar={(texto) => {
+            const levou = mia.perguntar(texto);
+            if (levou) setAberta(false);
+            return levou;
+          }} compacto />
         </section>
       ) : null}
       <button

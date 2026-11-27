@@ -60,14 +60,26 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await expect(page.getByLabel("Item ou serviço 1")).toHaveValue("Cadeira ergonômica com apoio lombar");
   await expect(page.getByLabel("Qtd 1")).toHaveValue("20");
   await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeDisabled();
+  /* O guia: a trilha marca onde a pessoa está, "Agora" diz o clique e o botão da vez é o destacado. */
+  const trilha = page.getByRole("region", { name: "Os passos da demonstração" });
+  await expect(trilha.locator('[aria-current="step"]:visible')).toContainText("Requisição (você está aqui)");
+  await expect(trilha).toContainText("Faltam 7 passos");
+  await expect(trilha).toContainText("Agora: Preencha a requisição e clique em Abrir chamado.");
+  await expect(page.locator(".nexo-demo-proximo:visible")).toHaveCount(0);
   await page.getByRole("button", { name: "Preencher com a MIA" }).click();
   await expect(page.getByLabel("Resumo da requisição")).toContainText("R$ 85.470,00");
+  await expect(page.getByText("Preenchi a requisição com um pedido comum da operação", { exact: false })).toBeVisible();
+  await expect(page.locator(".nexo-demo-proximo:visible")).toHaveText("Abrir chamado");
+  await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeFocused();
   await page.getByRole("button", { name: "Abrir chamado" }).click();
   await expect(page.getByRole("heading", { name: "RC-0142" })).toBeVisible();
   await expect(page.getByText("Passo 2 de 8")).toBeVisible();
+  await expect(trilha.locator('[aria-current="step"]:visible')).toContainText("Análise da MIA (você está aqui)");
+  await expect(trilha.locator("li:visible").first()).toHaveText("Requisição (feito)");
 
   /* Comprador: a análise da MIA abre em janela sobre a fila. */
   await guia(page).click();
+  await expect(page.locator(".nexo-demo-proximo:visible")).toHaveAccessibleName("Ver análise: RC-0142");
   await page.getByRole("button", { name: "Ver análise: RC-0142" }).click();
   await expect(janela(page)).toContainText("Relatório de classificação");
   await expect(janela(page)).toContainText("será aprovada por: Gerente de Compras");
@@ -87,7 +99,11 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await expect(j.getByText("A MIA encontrou 2 fornecedores fora da base.")).toBeVisible();
   await j.getByRole("button", { name: "Cadastro", exact: true }).click();
   await expect(j.getByRole("button", { name: /Enviar 0 convites/ })).toBeDisabled();
+  /* A janela cobre o guia da página: o "Agora" vai dentro dela, e o botão da vez pulsa. */
+  await expect(j.getByText("Agora: Escolha pelo menos dois fornecedores.", { exact: false })).toBeVisible();
+  await expect(j.locator(".nexo-demo-proximo")).toHaveText("Adicionar todos");
   await j.getByRole("button", { name: "Adicionar todos" }).click();
+  await expect(j.locator(".nexo-demo-proximo")).toHaveText("Enviar 4 convites");
   await j.getByText("Prévia do convite").click();
   await expect(j.getByText("Convite para cotação RFQ-0142")).toBeVisible();
   await j.getByRole("button", { name: "Enviar 4 convites" }).click();
@@ -113,7 +129,8 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await j.getByRole("button", { name: "Negociar por e-mail com todos (4)" }).click();
   await expect(j.locator('[data-celula="notebook:horizonte"]')).toContainText("R$ 6.646,75");
   await expect(j.locator('[data-celula="monitor:nortesul"]')).toContainText("R$ 1.115,50");
-  await j.getByRole("button", { name: "Ir para a seleção" }).click();
+  await expect(j.getByText("Agora: Na aba Seleção, escolha o vencedor de cada item.", { exact: false })).toBeVisible();
+  await j.getByRole("button", { name: "Ir para a aba Seleção" }).click();
   await expect(j.getByRole("button", { name: "Concluir (enviar para aprovação)" })).toBeDisabled();
   await j.getByRole("button", { name: "Aplicar a sugestão da MIA" }).click();
   await expect(j.getByText("R$ 7.847,50 (9,2%)")).toBeVisible();
@@ -127,11 +144,13 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await expect(j.getByText("R$ 9.176,80 (10,7%)")).toBeVisible();
   await j.getByRole("button", { name: "Concluir (enviar para aprovação)" }).click();
   await expect(j.getByText("Total: R$ 76.293,20. Aguardando aprovação por alçada: Gerente de Compras.", { exact: false })).toBeVisible();
-  await j.getByRole("button", { name: "Fechar" }).click();
+  /* O passo seguinte é fora da janela: o guia de dentro leva até lá. */
+  await j.getByRole("button", { name: "Ir para Minhas aprovações" }).click();
+  await expect(j).toHaveCount(0);
   await expect(page.getByText("Passo 7 de 8")).toBeVisible();
+  await expect(page.getByText("Falta 1 passo")).toBeVisible();
 
   /* Alçada: a tela diz por que a aprovação é sua; aprovada, saem duas OCs. */
-  await guia(page).click();
   await expect(page.getByText("Por que você: o total de R$ 76.293,20 cai na faixa de R$ 10.000,01 a R$ 100.000,00, aprovada por Gerente de Compras.", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Aprovar e gerar a OC" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Da requisição à ordem de compra, sem sair do Nexo.");

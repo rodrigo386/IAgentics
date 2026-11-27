@@ -122,19 +122,50 @@ export const nexoDemo = {
     somenteLeitura: "Cotação da operação de exemplo: somente leitura. A sua é a que o guia indica.",
   },
 
-  /** O guia no topo: diz o papel da vez e leva à tela certa. Um por fase (lib/nexo-demo/regras.ts). */
+  /**
+   * O guia no topo (refeito em 2026-11-27, pedido do Rodrigo: "uma forma mais
+   * intuitiva de guiar o usuário pelo fluxo, deixando claro onde ele está e o
+   * que falta"): a trilha dos oito passos (`nome`), o papel da vez e, em
+   * "Agora", o clique seguinte (`acoes`, um por `AcaoGuia` de regras.ts).
+   * Os nomes de botão citados em `acoes` são os rótulos das telas: mudou o
+   * rótulo, mude aqui.
+   */
   guia: {
     rotulo: (n: number, total: number) => `Passo ${n} de ${total}`,
     ir: "Ir para a tela",
+    trilha: "Os passos da demonstração",
+    feito: "feito",
+    aqui: "você está aqui",
+    faltam: (n: number) => (n === 0 ? "Processo concluído" : n === 1 ? "Falta 1 passo" : `Faltam ${n} passos`),
+    verPassos: "Ver os passos",
+    agora: "Agora",
+    naTela: "Você está na tela certa.",
+    irAba: (aba: string) => `Ir para a aba ${aba}`,
+    irAprovacoes: "Ir para Minhas aprovações",
+    verResumo: "Ver o resumo",
     fases: {
-      inicio: { papel: "Você é o solicitante", texto: "Abra uma requisição de compra. Escreva o que precisa ou peça à MIA.", tela: "abrir" },
-      analise: { papel: "Você é o comprador", texto: "A MIA já classificou a requisição. Veja a análise dela.", tela: "requisicoes" },
-      aprovarRc: { papel: "Você é o gestor", texto: "A requisição espera a sua aprovação.", tela: "aprovacoes" },
-      convidar: { papel: "Você é o comprador", texto: "A RC virou cotação. Encontre e convide os fornecedores.", tela: "cotacoes" },
-      mapa: { papel: "Você é o comprador", texto: "Acompanhe as propostas, veja o portal do fornecedor e gere o mapa comparativo.", tela: "cotacoes" },
-      selecionar: { papel: "Você é o comprador", texto: "Negocie por e-mail, escolha o vencedor de cada linha e conclua a seleção.", tela: "cotacoes" },
-      aprovarSelecao: { papel: "Você é o aprovador da alçada", texto: "A seleção dos vencedores espera a sua aprovação.", tela: "aprovacoes" },
-      fim: { papel: "Processo concluído", texto: "A ordem de compra foi gerada e enviada ao ERP.", tela: "fecho" },
+      inicio: { nome: "Requisição", papel: "Você é o solicitante", texto: "Abra uma requisição de compra. Escreva o que precisa ou peça à MIA.", tela: "abrir" },
+      analise: { nome: "Análise da MIA", papel: "Você é o comprador", texto: "A MIA já classificou a requisição. Veja a análise dela.", tela: "requisicoes" },
+      aprovarRc: { nome: "Aprovação da RC", papel: "Você é o gestor", texto: "A requisição espera a sua aprovação.", tela: "aprovacoes" },
+      convidar: { nome: "Convites", papel: "Você é o comprador", texto: "A RC virou cotação. Encontre e convide os fornecedores.", tela: "cotacoes" },
+      mapa: { nome: "Propostas e mapa", papel: "Você é o comprador", texto: "Acompanhe as propostas, veja o portal do fornecedor e gere o mapa comparativo.", tela: "cotacoes" },
+      selecionar: { nome: "Seleção", papel: "Você é o comprador", texto: "Negocie por e-mail, escolha o vencedor de cada linha e conclua a seleção.", tela: "cotacoes" },
+      aprovarSelecao: { nome: "Aprovação final", papel: "Você é o aprovador da alçada", texto: "A seleção dos vencedores espera a sua aprovação.", tela: "aprovacoes" },
+      fim: { nome: "Ordem de compra", papel: "Processo concluído", texto: "A ordem de compra foi gerada e enviada ao ERP.", tela: "fecho" },
+    },
+    acoes: {
+      abrirRc: "Preencha a requisição e clique em Abrir chamado. O botão Preencher com a MIA preenche tudo por você.",
+      verAnalise: "Clique em Ver análise no cartão marcado como Sua requisição.",
+      aprovarRc: "Confira a requisição e clique em Aprovar.",
+      escolherFornecedores: "Escolha pelo menos dois fornecedores. Adicionar todos convida a base homologada inteira.",
+      enviarConvites: "Os fornecedores estão na caixa de convites. Clique em Enviar convites, no fim da aba.",
+      aguardarPropostas: "Convites enviados. As propostas chegam em instantes.",
+      responderPortal: "Nenhum convidado respondeu. Abra o Portal do Fornecedor e responda no lugar de um deles.",
+      gerarMapa: "As propostas chegaram. Clique em Gerar mapa comparativo (IA).",
+      escolherVencedores: "Na aba Seleção, escolha o vencedor de cada item. Aplicar a sugestão da MIA escolhe o menor preço de cada um.",
+      concluirSelecao: "Vencedores escolhidos. Clique em Concluir (enviar para aprovação).",
+      aprovarSelecao: "Confira os vencedores e clique em Aprovar e gerar a OC.",
+      fim: "A ordem de compra foi gerada e enviada ao ERP. Veja o resumo do que você fez.",
     },
   },
 
@@ -165,7 +196,7 @@ export const nexoDemo = {
       saudacao: "Oi! Posso abrir uma requisição, mostrar as cotações em andamento ou montar um gráfico de spend. O que você precisa?",
       naoEntendi: "Ainda não sei responder isso na demonstração. O que eu sei fazer aqui:",
       abrirCom: (qtd: number, item: string) => `Preenchi a requisição com ${qtd} × ${item}. Confira os dados, complete a entrega e clique em Abrir chamado.`,
-      abrirPadrao: "Preenchi a requisição com um pedido comum da operação. Confira à direita e clique em Abrir chamado.",
+      abrirPadrao: "Preenchi a requisição com um pedido comum da operação: dois itens, urgência, data e centro de custo. Confira o resumo e clique em Abrir chamado.",
       abrirFora: (texto: string) => `Não encontrei "${texto}" no catálogo da demonstração. Abri o formulário: escolha um item nas sugestões.`,
       jaAberta: (codigo: string) => `A demonstração acompanha uma requisição por vez, e a ${codigo} já está em andamento. Quer ver o status dela?`,
       statusSem: "Você ainda não abriu nenhuma requisição. Quer que eu preencha uma?",
