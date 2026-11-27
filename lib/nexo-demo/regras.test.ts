@@ -98,6 +98,8 @@ describe("Nexo Demo: a requisição e a classificação da MIA", () => {
   it("recusa formulário incompleto, soma linhas do mesmo item e não abre segunda requisição", () => {
     expect(faltasDoForm({})).toEqual(["item", "urgencia", "data", "centro"]);
     expect(faltasDoForm({ ...form, linhas: [{ texto: "luva", qtd: 0 }] })).toEqual(["qtd"]);
+    expect(faltasDoForm(form, "2026-12-20")).toEqual([]);
+    expect(faltasDoForm(form, "2026-12-21")).toEqual(["dataPassada"]);
     expect(faltasDoForm({ ...form, linhas: Array(4).fill({ texto: "luva", qtd: 1 }) })).toEqual(["item"]);
     expect(reduzir(ESTADO_INICIAL, { tipo: "abrirRc", form: { ...form, urgencia: "" } })).toBe(ESTADO_INICIAL);
     const dupla = reduzir(ESTADO_INICIAL, { tipo: "abrirRc", form: { ...form, linhas: [{ texto: "luva", qtd: 5 }, { texto: "luvas de segurança", qtd: 7 }] } });
@@ -201,7 +203,8 @@ describe("Nexo Demo: seleção, alçada e ordem de compra", () => {
     expect(preco(e, "horizonte", "notebook")).toBe(664_675);
     expect(cotacoes(e, false).find((c) => c.fornecedor === "horizonte")!.linhas.notebook!.unitarioCentavos).toBe(678_240);
     expect(reduzir(e, { tipo: "ajustar", item: "notebook", pct: 0 })).toBe(e);
-    expect(reduzir(e, { tipo: "ajustar", item: "notebook", pct: 21 })).toBe(e);
+    expect(reduzir(e, { tipo: "ajustar", item: "notebook", pct: 101 })).toBe(e);
+    expect(reduzir(e, { tipo: "ajustar", item: "notebook", pct: 50 }).ajustes).toEqual({ notebook: 2 });
     expect(reduzir(e, { tipo: "selecionar", item: "notebook", fornecedor: "alfa" }).ajustes).toEqual({});
   });
 
@@ -278,6 +281,10 @@ describe("Nexo Demo: os dados fictícios e a operação de exemplo", () => {
     expect(centavosDe("12,5")).toBe(1_250);
     expect(centavosDe("abc")).toBeNaN();
     expect(centavosDe("1,234")).toBeNaN();
+    expect(centavosDe("1300.50")).toBe(130_050);
+    expect(centavosDe("1300.5")).toBe(130_050);
+    expect(centavosDe("1.300")).toBe(130_000);
+    expect(centavosDe("1.300,50")).toBe(130_050);
   });
 });
 
@@ -306,6 +313,7 @@ describe("Nexo Demo: a MIA por regras", () => {
     expect(responder("/ir cotações", vazio).ir).toBe("cotacoes");
     expect(responder("me leva para a sala de comando", vazio).ir).toBe("sala");
     expect(responder("/saving", vazio).texto).toContain("economia no ano");
+    expect(responder("tem alguma cotação atrasada?", vazio)).toMatchObject({ bloco: "atrasadas", texto: `${SEMENTES.filter((s) => s.ate !== "oc" && s.diasAberto > 10).length} cotações passaram de 10 dias em aberto:` });
   });
 
   it("diz o que sabe quando não entende, e cada atalho da tela tem resposta", () => {

@@ -22,7 +22,8 @@ export const codigoRfq = (n: string = NUMERO) => `RFQ-${n}`;
 export const codigoOc = (n: string, i: number) => `OC-${n}-${i + 1}`;
 export const QTD_MAX = 9999;
 export const LINHAS_MAX = 3;
-export const AJUSTE_MAX = 20;
+/** Pedido de ajuste aceita qualquer percentual até este; o fornecedor responde com o teto dele. */
+export const AJUSTE_MAX = 100;
 
 export type Tela = "mia" | "abrir" | "minhas" | "aprovacoes" | "requisicoes" | "cotacoes" | "spend" | "sala" | "fornecedores" | "alcada" | "fecho";
 
@@ -142,16 +143,21 @@ export function classificar(texto: string): { item: string } | { motivo: "vaga" 
   return palavras.length < 3 || palavras.some((p) => GENERICAS.includes(p)) ? { motivo: "vaga" } : { motivo: "fora" };
 }
 
-export type Falta = "item" | "qtd" | "urgencia" | "data" | "centro";
+export type Falta = "item" | "qtd" | "urgencia" | "data" | "dataPassada" | "centro";
 
-/** O que falta no formulário, na ordem do resumo. */
-export function faltasDoForm(f: Partial<Formulario>): Falta[] {
+/**
+ * O que falta no formulário, na ordem do resumo. Com `hojeIso` (a tela passa),
+ * data anterior a hoje também conta: achado do teste de uso de 2026-11-27,
+ * o campo aceitava "2020-01-01" digitado.
+ */
+export function faltasDoForm(f: Partial<Formulario>, hojeIso?: string): Falta[] {
   const faltas: Falta[] = [];
   const linhas = f.linhas ?? [];
   if (linhas.length === 0 || linhas.length > LINHAS_MAX || linhas.some((l) => l.texto.trim().length < 2)) faltas.push("item");
   if (linhas.some((l) => !Number.isInteger(l.qtd) || l.qtd < 1 || l.qtd > QTD_MAX)) faltas.push("qtd");
   if (!f.urgencia || !(URGENCIAS as readonly string[]).includes(f.urgencia)) faltas.push("urgencia");
   if (!f.necessarioAte || !/^\d{4}-\d{2}-\d{2}$/.test(f.necessarioAte)) faltas.push("data");
+  else if (hojeIso && f.necessarioAte < hojeIso) faltas.push("dataPassada");
   if (!f.centro || !(CENTROS as readonly string[]).includes(f.centro)) faltas.push("centro");
   return faltas;
 }
@@ -584,8 +590,13 @@ export function sugestaoPortal(e: Estado, id: string): RespostaPortal {
   return { precos, prazoDias: prazoDias || 10 };
 }
 
-/** "6.782,40" → 678240. Devolve NaN para o que não é preço. */
+/**
+ * "6.782,40" → 678240. Devolve NaN para o que não é preço. Ponto seguido de
+ * um ou dois dígitos no fim, sem vírgula, é decimal ("1300.50"): no teste de
+ * uso de 2026-11-27 ele era lido como milhar e o preço saía cem vezes maior.
+ */
 export function centavosDe(texto: string): number {
-  const limpo = texto.trim().replace(/^R\$\s*/i, "").replace(/\./g, "").replace(",", ".");
+  const cru = texto.trim().replace(/^R\$\s*/i, "");
+  const limpo = /^\d+\.\d{1,2}$/.test(cru) ? cru : cru.replace(/\./g, "").replace(",", ".");
   return /^\d+(\.\d{1,2})?$/.test(limpo) ? Math.round(Number(limpo) * 100) : Number.NaN;
 }

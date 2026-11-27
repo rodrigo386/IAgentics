@@ -9,7 +9,7 @@ import { codigoRc, classificar, economiaCentavos, faseDe, itemDoCatalogo, milhoe
  * e sem custo por uso). Reconhece os comandos com "/" e as mesmas intenções
  * escritas com palavras comuns.
  */
-export type Bloco = "ajuda" | "grafico" | "rcs" | "cotacoes" | "fornecedores" | "alcada";
+export type Bloco = "ajuda" | "grafico" | "rcs" | "cotacoes" | "atrasadas" | "fornecedores" | "alcada";
 export type RespostaMia = { texto: string; bloco?: Bloco; ir?: Tela; preencher?: LinhaForm[] | "padrao" };
 
 const t = nexoDemo.mia;
@@ -71,6 +71,7 @@ export function responder(entrada: string, e: Estado): RespostaMia {
   if (comando === "abrir" || (!comando && tem("abrir uma req", "abrir req", "nova req", "quero abrir", "preciso de", "preciso comprar", "quero comprar", "comprar ", "solicitar "))) return abrir(resto, e);
   if (comando === "status" || (!comando && tem("status", "andamento", "onde esta", "como esta"))) return status(e);
   if (comando === "rcs" || (!comando && tem("minhas rc", "rcs", "requisic"))) return e.rc ? { texto: t.r.rcs, bloco: "rcs" } : { texto: t.r.rcsVazio };
+  if (comando === "atrasadas" || (!comando && tem("atras", "parada", "demorando", "mais antiga"))) return { texto: t.r.atrasadas(SEMENTES.filter((s) => s.ate !== "oc" && s.diasAberto > 10).length), bloco: "atrasadas" };
   if (comando === "cotacoes" || (!comando && tem("cotac", "rfq"))) {
     const criticas = SEMENTES.filter((s) => s.urgencia === "Crítica" && s.ate !== "oc").length;
     const abertas = SEMENTES.filter((s) => s.ate !== "oc").length + (e.rcAprovada && !e.ocGerada ? 1 : 0);

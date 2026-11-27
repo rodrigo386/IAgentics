@@ -135,7 +135,7 @@ export function TelaAbrirRc({ e, despachar, ir, hoje, prefill }: PropsTela & { p
     );
   }
 
-  const faltas = faltasDoForm(form);
+  const faltas = faltasDoForm(form, isoEm(hoje, 0));
   const total = estimadoDoForm(form.linhas);
   const linha = (i: number, parte: Partial<LinhaForm>) => setForm({ ...form, linhas: form.linhas.map((l, j) => (j === i ? { ...l, ...parte } : l)) });
   const enviar = () => {

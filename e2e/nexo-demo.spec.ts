@@ -94,7 +94,7 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await expect(j.locator("[data-proposta]")).toHaveCount(3);
   await j.getByRole("button", { name: "Responder pelo Portal do Fornecedor: Norte Sul Atacado" }).click();
   await expect(j.getByRole("heading", { name: "Portal do Fornecedor" })).toBeVisible();
-  await j.getByLabel(/Preço unitário de Notebook/).fill("7.000,00");
+  await j.getByLabel(/Preço unitário de Notebook/).fill("7000.00");
   await j.getByLabel(/Preço unitário de Monitor/).fill("1.150,00");
   await j.getByLabel("Prazo de entrega (dias)").fill("9");
   await j.getByRole("button", { name: "Enviar proposta" }).click();
@@ -118,7 +118,10 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await j.getByRole("button", { name: "Aplicar a sugestão da MIA" }).click();
   await expect(j.getByText("R$ 7.847,50 (9,2%)")).toBeVisible();
   await expect(j.getByText("Pedido dividido entre 2 fornecedores")).toBeVisible();
-  await j.getByLabel(/% desc\. Notebook/).fill("5");
+  await j.getByLabel(/% desc\. Notebook/).fill("abc");
+  await j.locator('[data-linha="notebook"]').getByRole("button", { name: "Solicitar ajuste ao fornecedor" }).click();
+  await expect(j.getByText("Informe o desconto em %, maior que zero.")).toBeVisible();
+  await j.getByLabel(/% desc\. Notebook/).fill("50");
   await j.locator('[data-linha="notebook"]').getByRole("button", { name: "Solicitar ajuste ao fornecedor" }).click();
   await expect(j.getByText("Distribuidora Horizonte não chega ao que você pediu: o máximo dele é 2,0%, já aplicado.")).toBeVisible();
   await expect(j.getByText("R$ 9.176,80 (10,7%)")).toBeVisible();
@@ -163,8 +166,12 @@ test("a MIA devolve a requisição vaga, e o rascunho volta para corrigir", asyn
   await page.getByLabel("Item ou serviço 1").fill("Material para o setor");
   await expect(page.getByText(/A MIA ainda não reconhece este texto/)).toBeVisible();
   await page.getByText("Média", { exact: true }).click();
-  await page.getByLabel("Necessário até").fill("2027-03-15");
+  /* Data que já passou não abre chamado (achado do teste de uso). */
+  await page.getByLabel("Necessário até").fill("2020-01-01");
   await page.getByLabel("Centro de custo").selectOption("FAC-030 · Facilities");
+  await expect(page.getByText("A data necessária já passou")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Abrir chamado" })).toBeDisabled();
+  await page.getByLabel("Necessário até").fill("2027-03-15");
   await page.getByRole("button", { name: "Abrir chamado" }).click();
   await expect(page.getByRole("heading", { name: "A MIA devolveu a requisição" })).toBeVisible();
   await expect(page.getByText("Inválida — devolvida ao solicitante")).toBeVisible();
@@ -220,6 +227,12 @@ test("a operação já existe: lista, Kanban, filtros, cotação de exemplo só 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
   await page.getByRole("button", { name: "Alçada de compra" }).click();
   await expect(page.getByRole("rowheader", { name: "acima de R$ 100.000,00" })).toBeVisible();
+  /* O botão voltar do navegador anda dentro da demo, e recarregar fica na mesma tela. */
+  await page.goBack();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
+  await page.reload();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sala de comando");
+  await page.getByRole("button", { name: "Alçada de compra" }).click();
   await page.getByRole("button", { name: "Base de fornecedores" }).click();
   await expect(page.getByRole("heading", { name: /Alfa Suprimentos Ltda/ })).toBeVisible();
 });

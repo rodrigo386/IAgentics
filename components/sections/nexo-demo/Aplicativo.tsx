@@ -25,6 +25,7 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
   const [e, despacharBase] = useReducer(reduzir, inicial);
   const fase = faseDe(e);
   const [tela, setTela] = useState<Tela>(fase === "fim" ? "fecho" : fase === "inicio" ? "mia" : (t.guia.fases[fase].tela as Tela));
+  const telas = t.app.menu.flatMap((m) => m.itens.map((i) => i.id as Tela)).concat("fecho");
   /** A cotação aberta em janela (o número), ou nenhuma. */
   const [rfqAberta, setRfqAberta] = useState<string | null>(null);
   /** O que a MIA mandou preencher no formulário; a chave remonta o formulário a cada pedido. */
@@ -51,7 +52,25 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
     return () => window.clearTimeout(id);
   }, [e.convitesEnviados, e.propostasChegaram]);
 
+  /* Cada tela é uma entrada no histórico do navegador (#tela): o botão voltar
+     anda DENTRO da demo, e recarregar volta à mesma tela. Achado do teste de
+     uso de 2026-11-27: voltar tirava a pessoa da demonstração. */
+  useEffect(() => {
+    const daUrl = () => {
+      const h = window.location.hash.slice(1) as Tela;
+      if (telas.includes(h)) {
+        setTela(h);
+        setRfqAberta(null);
+      }
+    };
+    daUrl();
+    window.addEventListener("popstate", daUrl);
+    return () => window.removeEventListener("popstate", daUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- a lista de telas é fixa.
+  }, []);
+
   const ir = (destino: Tela) => {
+    if (destino !== tela) window.history.pushState(null, "", `#${destino}`);
     setTela(destino);
     setRfqAberta(null);
     conteudo.current?.focus({ preventScroll: true });
@@ -98,7 +117,13 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
             <span className="hidden sm:inline">{t.app.falar}</span>
             <span className="sr-only sm:hidden">{t.app.falar}</span>
           </a>
-          <button type="button" onClick={sair} className={`${botaoLinha} !px-3 !py-2`} aria-label={t.app.sair} title={t.app.sair}>
+          <button
+            type="button"
+            onClick={() => {
+              window.history.replaceState(null, "", window.location.pathname);
+              sair();
+            }}
+            className={`${botaoLinha} !px-3 !py-2`} aria-label={t.app.sair} title={t.app.sair}>
             <SignOut size={16} aria-hidden="true" />
           </button>
         </div>

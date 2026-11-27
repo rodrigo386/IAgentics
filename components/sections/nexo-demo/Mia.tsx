@@ -52,11 +52,11 @@ function BlocoMia({ bloco, e }: { bloco: Bloco; e: Estado }) {
       </div>
     );
   }
-  if (bloco === "cotacoes") {
+  if (bloco === "cotacoes" || bloco === "atrasadas") {
     return (
       <ul className="flex flex-col gap-1.5 text-sm">
         {[...SEMENTES]
-          .filter((s) => s.ate !== "oc")
+          .filter((s) => s.ate !== "oc" && (bloco === "cotacoes" || s.diasAberto > 10))
           .sort((a, b) => b.diasAberto - a.diasAberto)
           .slice(0, 4)
           .map((s) => (

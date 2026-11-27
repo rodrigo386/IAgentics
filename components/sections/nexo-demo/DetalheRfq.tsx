@@ -784,6 +784,7 @@ function AbaSelecao({ rfq, despachar, leitura, irPara }: PropsAba) {
   const { e } = rfq;
   /** O desconto que a pessoa pediu em cada linha (para dizer se o fornecedor aceitou tudo ou só parte). */
   const [pedidos, setPedidos] = useState<Record<string, number>>({});
+  const [invalido, setInvalido] = useState<string | null>(null);
   if (!e.mapaGerado) return <Vazio>{c.selecaoVazia}</Vazio>;
   const rc = e.rc!;
   const cs = cotacoes(e);
@@ -842,7 +843,9 @@ function AbaSelecao({ rfq, despachar, leitura, irPara }: PropsAba) {
                 onSubmit={(ev) => {
                   ev.preventDefault();
                   const pct = Number(String(new FormData(ev.currentTarget).get("pct")).replace(",", "."));
-                  if (!(pct > 0) || pct > AJUSTE_MAX) return;
+                  const ok = pct > 0 && pct <= AJUSTE_MAX;
+                  setInvalido(ok ? null : l.item);
+                  if (!ok) return;
                   setPedidos({ ...pedidos, [l.item]: pct });
                   despachar({ tipo: "ajustar", item: l.item, pct });
                 }}
@@ -862,7 +865,11 @@ function AbaSelecao({ rfq, despachar, leitura, irPara }: PropsAba) {
                 <button type="submit" disabled={travada} className={botaoLinha}>
                   {c.solicitar}
                 </button>
-                {aceito ? (
+                {invalido === l.item ? (
+                  <p role="alert" className="basis-full text-xs text-[#a1201a]">
+                    {c.ajusteInvalido}
+                  </p>
+                ) : aceito ? (
                   <p role="status" className="basis-full text-xs text-[#0b6b3a]">
                     {pedido && pedido > aceito ? c.ajusteParcial(escolhido.nome, porcento(aceito / 100)) : c.ajusteAceito(escolhido.nome, porcento(aceito / 100))}
                   </p>
