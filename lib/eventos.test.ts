@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { bolsas } from "./content";
+import { bolsas, reforma } from "./content";
 import { admin } from "./content-admin";
-import { CAMPOS_BOLSAS, EVENTOS_BOLSAS, EVENTOS_CURSOS, eventoValido, MOTIVOS_BOLSAS } from "./eventos";
+import { CAMPOS_BOLSAS, EVENTOS_BOLSAS, EVENTOS_CURSOS, EVENTOS_REFORMA, eventoValido, MOTIVOS_BOLSAS, MOTIVOS_REFORMA } from "./eventos";
 
 describe("eventoValido", () => {
   it("aceita só a lista fechada", () => {
@@ -28,5 +28,18 @@ describe("eventos da /bolsas (2026-11-23)", () => {
     const daBolsas = admin.bolsas.dentro.etapas.flatMap((e) => e.eventos);
     expect(daBolsas.every((e) => (EVENTOS_BOLSAS as readonly string[]).includes(e))).toBe(true);
     expect(EVENTOS_CURSOS.some((e) => e.startsWith("bolsas_"))).toBe(false);
+  });
+});
+
+describe("eventos da calculadora da Reforma (2026-11-27)", () => {
+  it("são aceitos pelo endpoint e têm prefixo próprio", () => {
+    expect(eventoValido("reforma_calculo")).toBe(true);
+    expect(eventoValido("reforma_erro_email")).toBe(true);
+    expect(eventoValido("reforma_erro_empresa")).toBe(false);
+    expect(EVENTOS_REFORMA.every((e) => e.startsWith("reforma_"))).toBe(true);
+    expect(EVENTOS_CURSOS.some((e) => e.startsWith("reforma_"))).toBe(false);
+  });
+  it("os motivos medidos são mensagens que o formulário sabe mostrar", () => {
+    for (const m of MOTIVOS_REFORMA) expect(reforma.lead.erros[m], m).toBeTruthy();
   });
 });

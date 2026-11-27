@@ -107,7 +107,7 @@ export const privacidade: Traducao<typeof pt.privacidade> = {
         {
           termo: "What happens on the courses and Challenge pages",
           texto:
-            "On the courses and Prova Real Challenge pages, we count a few actions to learn where the page needs improvement: how many times someone scrolls halfway or to the end, clicks subscribe or join, starts or submits the form, is taken to the invoice or completes the sign-up. On the Challenge form, we also count which required field stopped the submission and why a sign-up was refused (for example, an invalid e-mail). Each action only adds one to the day's total: we do not keep who did it, what was typed, or anything that identifies you or your browser.",
+            "On the courses, Prova Real Challenge and Tax Reform calculator pages, we count a few actions to learn where the page needs improvement: how many times someone scrolls halfway or to the end, clicks subscribe, join or compare quotes, builds a comparison (without keeping the values), starts or submits the form, is taken to the invoice or completes the sign-up. On the Challenge form, we also count which required field stopped the submission and why a sign-up was refused (for example, an invalid e-mail). Each action only adds one to the day's total: we do not keep who did it, what was typed, or anything that identifies you or your browser.",
         },
         {
           termo: "Google Analytics",

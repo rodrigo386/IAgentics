@@ -215,7 +215,7 @@ export function lerCenario(v: unknown): Cenario | null {
 }
 
 export type Contato = { nome: string; email: string; empresa: string; cargo: string; avisarAliquotas: boolean };
-export type MotivoContato = "nome" | "email" | "empresa" | "consentimento" | "cenario";
+export type MotivoContato = "nome" | "email" | "consentimento" | "cenario";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -225,10 +225,11 @@ export function validarPedido(
   const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
   const nome = texto(o.nome, 120);
   const email = texto(o.email, 160).toLowerCase();
+  /* Empresa é opcional desde 2026-11-27 (1 pedido em ~210 visitas; a trava ficou fora da /bolsas em 23/11).
+     Vazia, grava "": a coluna é NOT NULL e o painel já mostra só o que existe. */
   const empresa = texto(o.empresa, 120);
   if (nome.length < 2) return { ok: false, motivo: "nome" };
   if (!EMAIL.test(email)) return { ok: false, motivo: "email" };
-  if (empresa.length < 2) return { ok: false, motivo: "empresa" };
   if (o.consentimento !== true) return { ok: false, motivo: "consentimento" };
   const cenario = lerCenario(o.cenario);
   if (!cenario) return { ok: false, motivo: "cenario" };

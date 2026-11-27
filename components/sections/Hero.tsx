@@ -70,7 +70,7 @@ export function Hero() {
               style={{ animationDelay: "240ms" }}
             />
 
-            <p className="hero-fade mt-8 max-w-[52ch] text-base leading-relaxed text-fg-muted sm:text-lg" style={{ animationDelay: "300ms" }}>
+            <p className="hero-slide mt-8 max-w-[52ch] text-base leading-relaxed text-fg-muted sm:text-lg">
               {hero.subtext}
             </p>
 

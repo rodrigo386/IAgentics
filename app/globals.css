@@ -197,6 +197,12 @@
   }
 }
 
+@keyframes hero-slide-in {
+  from {
+    transform: translate3d(0, 16px, 0);
+  }
+}
+
 @keyframes reveal-in {
   from {
     opacity: 0;
@@ -215,6 +221,12 @@
 
   .hero-fade {
     animation: hero-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  /* Só desliza, sem partir de opacity 0: o texto já está visível na primeira
+     pintura e pode ser o LCP sem esperar a animação. */
+  .hero-slide {
+    animation: hero-slide-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 
   /* Scroll-driven reveal. Where `view()` is unsupported the rule never applies and

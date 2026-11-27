@@ -308,6 +308,29 @@ export function nexoServicoJsonLd(t: { titulo: string; descricao: string }, ling
 }
 
 /**
+ * A calculadora da Reforma Tributária (2026-11-27): WebApplication gratuita,
+ * para o buscador e as IAs entenderem a página como ferramenta. O FAQPage
+ * continua saindo do mesmo `reforma.faq` que a página mostra.
+ */
+export function calculadoraJsonLd(t: { nome: string; descricao: string; caminho: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: t.nome,
+    description: t.descricao,
+    url: absoluta(t.caminho),
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Qualquer, no navegador",
+    browserRequirements: "Requer JavaScript",
+    inLanguage: "pt-BR",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+    provider: { "@type": "Organization", "@id": ORGANIZACAO_ID, name: site.name, url: site.url },
+    areaServed: { "@type": "Country", name: "Brasil" },
+  };
+}
+
+/**
  * A assinatura da plataforma Solution, na /cursos (2026-11-24): Product com a
  * Offer mensal. O preço sai do MESMO valor que o checkout cobra
  * (VALOR_ASSINATURA_CENTAVOS), passado pela página; o nome e a descrição, do

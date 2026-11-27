@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, CircleNotch, Plus, X } from "@phosphor-icons/react";
 import { consultaNcm, reforma } from "@/lib/content";
+import { registrarEvento } from "@/lib/eventos-cliente";
+import type { MOTIVOS_REFORMA } from "@/lib/eventos";
 import {
   ANOS,
   CBS_REFERENCIA,
@@ -82,6 +84,15 @@ export function Calculadora() {
   }, []);
 
   const conta = cenario ? calcular(cenario) : null;
+
+  /* Primeira comparação com resultado nesta visita (evento sem nenhum valor digitado). */
+  const calculou = useRef(false);
+  useEffect(() => {
+    if (cenario && !calculou.current) {
+      calculou.current = true;
+      registrarEvento("reforma_calculo");
+    }
+  }, [cenario]);
   const muda = (i: number, k: keyof Linha, v: string) => setLinhas((ls) => ls.map((q, j) => (j === i ? { ...q, [k]: v } : q)));
 
   return (
@@ -314,26 +325,37 @@ function PedirPorEmail({ cenario }: { cenario: Cenario | null }) {
   const [d, setD] = useState({ nome: "", email: "", empresa: "", cargo: "", consentimento: false, avisarAliquotas: false, site: "" });
   const [estado, setEstado] = useState<Envio>("parado");
   const [erro, setErro] = useState<string | null>(null);
+  const iniciou = useRef(false);
+
+  /* Todo erro do pedido vira também um evento, para saber o que trava (sem o que foi digitado). */
+  const falhar = (m: (typeof MOTIVOS_REFORMA)[number]) => {
+    registrarEvento(`reforma_erro_${m}` as const);
+    setErro(l.erros[m]);
+  };
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     setErro(null);
-    if (!cenario) return setErro(l.erros.cenario);
-    if (d.nome.trim().length < 2) return setErro(l.erros.nome);
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) return setErro(l.erros.email);
-    if (d.empresa.trim().length < 2) return setErro(l.erros.empresa);
-    if (!d.consentimento) return setErro(l.erros.consentimento);
+    if (!cenario) return falhar("cenario");
+    if (d.nome.trim().length < 2) return falhar("nome");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) return falhar("email");
+    if (!d.consentimento) return falhar("consentimento");
+    registrarEvento("reforma_formulario_envio");
     setEstado("enviando");
     try {
       const r = await fetch("/api/reforma", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...d, cenario }) });
       const j = (await r.json().catch(() => ({}))) as { enviado?: boolean; error?: string };
-      if (r.ok) return setEstado(j.enviado ? "ok" : "okSemEmail");
+      if (r.ok) {
+        registrarEvento("reforma_formulario_ok");
+        return setEstado(j.enviado ? "ok" : "okSemEmail");
+      }
       setEstado("parado");
-      const motivo = j.error as keyof typeof l.erros | undefined;
-      setErro(r.status === 429 ? l.erros.limite : motivo && motivo in l.erros ? l.erros[motivo] : l.erros.falha);
+      const motivos = ["cenario", "nome", "email", "consentimento"] as const;
+      const motivo = motivos.find((m) => m === j.error);
+      falhar(r.status === 429 ? "limite" : (motivo ?? "falha"));
     } catch {
       setEstado("parado");
-      setErro(l.erros.falha);
+      falhar("falha");
     }
   }
 
@@ -356,7 +378,17 @@ function PedirPorEmail({ cenario }: { cenario: Cenario | null }) {
   );
 
   return (
-    <form onSubmit={enviar} noValidate className="flex flex-col gap-5 border border-line p-6 sm:p-8" aria-labelledby="lead-titulo">
+    <form
+      onSubmit={enviar}
+      onFocusCapture={() => {
+        if (iniciou.current) return;
+        iniciou.current = true;
+        registrarEvento("reforma_formulario_inicio");
+      }}
+      noValidate
+      className="flex flex-col gap-5 border border-line p-6 sm:p-8"
+      aria-labelledby="lead-titulo"
+    >
       <div className="flex flex-col gap-2">
         <h2 id="lead-titulo" className="text-xl font-medium tracking-[-0.02em] text-fg">
           {l.titulo}
@@ -366,7 +398,7 @@ function PedirPorEmail({ cenario }: { cenario: Cenario | null }) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {texto("nome", "text", "name")}
         {texto("email", "email", "email")}
-        {texto("empresa", "text", "organization")}
+        {texto("empresa", "text", "organization", l.opcional)}
         {texto("cargo", "text", "organization-title", l.opcional)}
       </div>
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">

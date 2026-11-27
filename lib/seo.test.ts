@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { site } from "@/lib/content";
-import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, faqJsonLd, websiteJsonLd, trilhaDaPagina, nexoServicoJsonLd, assinaturaJsonLd, ORGANIZACAO_ID } from "@/lib/seo";
+import { ROTAS_SITEMAP, organizacaoJsonLd, academyJsonLd, faqJsonLd, websiteJsonLd, trilhaDaPagina, nexoServicoJsonLd, assinaturaJsonLd, calculadoraJsonLd, ORGANIZACAO_ID } from "@/lib/seo";
 import { nav, cursos, PRECO_MENSAL } from "@/lib/content";
 import { VALOR_ASSINATURA_CENTAVOS } from "@/lib/assinatura/regras";
 import { nexoPage, academy, spendLab } from "@/lib/content";
@@ -67,6 +67,17 @@ describe("JSON-LD do site, das trilhas, do Nexo e da assinatura (2026-11-24)", (
     expect(dados.offers.priceCurrency).toBe("BRL");
     expect(dados.offers.priceSpecification.referenceQuantity.unitCode).toBe("MON");
     expect(dados.image.startsWith("https://iagentics.com.br/")).toBe(true);
+  });
+});
+
+describe("JSON-LD da calculadora da Reforma", () => {
+  it("é uma WebApplication gratuita, da organização", () => {
+    const dados = calculadoraJsonLd({ nome: "n", descricao: "d", caminho: "/reforma-tributaria-compras" });
+    expect(dados["@type"]).toBe("WebApplication");
+    expect(dados.isAccessibleForFree).toBe(true);
+    expect(dados.offers.price).toBe("0");
+    expect(dados.url).toBe("https://iagentics.com.br/reforma-tributaria-compras");
+    expect(dados.provider["@id"]).toBe(ORGANIZACAO_ID);
   });
 });
 

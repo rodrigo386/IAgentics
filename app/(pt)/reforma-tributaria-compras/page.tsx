@@ -9,7 +9,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { consultaNcm, reforma } from "@/lib/content";
 import { artigoPorSlug } from "@/lib/artigos";
 import { ANOS, ROTA_REFORMA, aliquotasDoAno, pct } from "@/lib/reforma";
-import { faqJsonLd, ogDaPagina } from "@/lib/seo";
+import { calculadoraJsonLd, faqJsonLd, ogDaPagina } from "@/lib/seo";
+import { MEDICAO_REFORMA, MedidorPagina } from "@/components/site/MedidorPagina";
 
 /**
  * Calculadora da Reforma Tributária para Compras. Nasceu como prévia em
@@ -31,6 +32,9 @@ export default function Page() {
   const artigos = leituras.slugs.map((s) => artigoPorSlug(s)).filter((a) => a !== undefined);
   return (
     <>
+      <JsonLd
+        dados={calculadoraJsonLd({ nome: reforma.meta.titulo.split(" | ")[0], descricao: reforma.meta.descricao, caminho: ROTA_REFORMA })}
+      />
       <JsonLd dados={faqJsonLd(faq)} />
       <Nav />
       <main id="conteudo" className="pt-16">
@@ -62,6 +66,7 @@ export default function Page() {
                 </dl>
                 <div>
                   <a
+                    id="cta-reforma"
                     href="#calculadora"
                     className="group inline-flex items-center gap-2 rounded-control bg-accent px-7 py-3.5 font-medium text-accent-on transition-[background-color,transform] duration-200 hover:bg-accent-hover active:scale-[0.98]"
                   >
@@ -222,6 +227,7 @@ export default function Page() {
           </div>
         </section>
       </main>
+      <MedidorPagina medicao={MEDICAO_REFORMA} />
       <Footer />
     </>
   );

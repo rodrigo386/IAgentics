@@ -37,9 +37,28 @@ export const EVENTOS_BOLSAS = [
   ...MOTIVOS_BOLSAS.map((m) => `bolsas_erro_${m}` as const), // o servidor recusou por este motivo
 ] as const;
 
-export const EVENTOS = [...EVENTOS_CURSOS, ...EVENTOS_BOLSAS] as const;
+/** Motivos com que o pedido do comparativo da calculadora é barrado, no navegador
+ *  ou no servidor (as chaves de reforma.lead.erros que o formulário usa). */
+export const MOTIVOS_REFORMA = ["cenario", "nome", "email", "consentimento", "limite", "falha"] as const;
+
+/** A calculadora da Reforma Tributária (/reforma-tributaria-compras), medida desde
+ *  2026-11-27: de 210 visitas em 30 dias saiu 1 pedido de comparativo, e sem estes
+ *  eventos não dá para saber em que etapa as pessoas saem. */
+export const EVENTOS_REFORMA = [
+  "reforma_rolagem_50",
+  "reforma_rolagem_100",
+  "reforma_cta_topo", // "Comparar cotações" da capa (#cta-reforma)
+  "reforma_calculo", // montou uma comparação com resultado (uma vez por visita)
+  "reforma_formulario_inicio", // tocou num campo do pedido por e-mail
+  "reforma_formulario_envio", // o pedido saiu do navegador para o servidor
+  "reforma_formulario_ok", // pedido registrado
+  ...MOTIVOS_REFORMA.map((m) => `reforma_erro_${m}` as const), // o pedido foi barrado por este motivo
+] as const;
+
+export const EVENTOS = [...EVENTOS_CURSOS, ...EVENTOS_BOLSAS, ...EVENTOS_REFORMA] as const;
 export type EventoCursos = (typeof EVENTOS_CURSOS)[number];
 export type EventoBolsas = (typeof EVENTOS_BOLSAS)[number];
+export type EventoReforma = (typeof EVENTOS_REFORMA)[number];
 export type Evento = (typeof EVENTOS)[number];
 
 export function eventoValido(e: unknown): e is Evento {

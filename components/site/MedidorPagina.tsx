@@ -15,8 +15,8 @@ export type Medicao = {
   fim: Evento;
   /** Seletor do botão do topo e o evento do clique. */
   topo: [string, Evento];
-  /** Seletor do botão fixo e o evento do clique. */
-  fixo: [string, Evento];
+  /** Seletor do botão fixo e o evento do clique (a calculadora não tem botão fixo). */
+  fixo?: [string, Evento];
 };
 
 export const MEDICAO_CURSOS: Medicao = { metade: "rolagem_50", fim: "rolagem_100", topo: ["#cta-hero", "cta_topo"], fixo: ["#barra-assinar a", "cta_fixo"] };
@@ -26,6 +26,8 @@ export const MEDICAO_BOLSAS: Medicao = {
   topo: ["#cta-bolsas", "bolsas_cta_topo"],
   fixo: ["#barra-bolsas a", "bolsas_cta_fixo"],
 };
+
+export const MEDICAO_REFORMA: Medicao = { metade: "reforma_rolagem_50", fim: "reforma_rolagem_100", topo: ["#cta-reforma", "reforma_cta_topo"] };
 
 export function MedidorPagina({ medicao }: { medicao: Medicao }) {
   useEffect(() => {
@@ -45,7 +47,7 @@ export function MedidorPagina({ medicao }: { medicao: Medicao }) {
     const aoClicar = (ev: MouseEvent) => {
       const alvo = ev.target as Element | null;
       if (alvo?.closest(medicao.topo[0])) registrarEvento(medicao.topo[1]);
-      else if (alvo?.closest(medicao.fixo[0])) registrarEvento(medicao.fixo[1]);
+      else if (medicao.fixo && alvo?.closest(medicao.fixo[0])) registrarEvento(medicao.fixo[1]);
     };
     window.addEventListener("scroll", aoRolar, { passive: true });
     document.addEventListener("click", aoClicar);

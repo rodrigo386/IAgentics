@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { admin as t } from "@/lib/content-admin";
 import Link from "next/link";
 import { listarLeads } from "@/lib/reforma-leads";
+import { funilInterno } from "@/lib/admin/cursos";
+import { EVENTOS_REFORMA, MOTIVOS_REFORMA } from "@/lib/eventos";
 import type { Cenario } from "@/lib/reforma";
 import { Cartao } from "@/components/admin/Cartao";
 import { MarcadorInterno } from "@/components/admin/MarcadorInterno";
@@ -46,7 +48,7 @@ function variacao(atual: number, anterior: number): string {
 export default async function PaginaAdmin({ searchParams }: { searchParams: Promise<{ vendas?: string }> }) {
   const modo = (await searchParams).vendas === "teste" ? "teste" : "real";
 
-  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas, listaAssinaturas, leads] =
+  const [visitas, porDia, porRota, lista, pessoas, conv, entradas, porOrigem, porEntrada, listaVendas, somaVendas, listaAssinaturas, leads, funilReforma] =
     await Promise.all([
       resumoVisitas(),
       visitasPorDia(30),
@@ -61,6 +63,7 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
       resumoVendas(modo),
       listarAssinaturas(),
       listarLeads(),
+      funilInterno({ de: "2026-11-27", ate: hojeSP() }, "/reforma-tributaria-compras", EVENTOS_REFORMA),
     ]);
 
   const pico = Math.max(1, ...porDia.map((d) => d.visitas));
@@ -452,6 +455,26 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
           <Cartao rotulo={t.reforma.total} valor={numero.format(leads.length)} />
           <Cartao rotulo={t.reforma.avisar} valor={numero.format(leads.filter((l) => l.avisarAliquotasEm).length)} />
           <Cartao rotulo={t.reforma.semEmail} valor={numero.format(leads.filter((l) => !l.emailEnviadoEm).length)} />
+        </div>
+        <div className="flex flex-col gap-3">
+          <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{t.reforma.funil.titulo}</h3>
+          {funilReforma.inicio ? (
+            <>
+              <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                <Cartao rotulo={t.reforma.funil.visitas} valor={numero.format(funilReforma.visitas)} nota={t.reforma.funil.desde(funilReforma.inicio)} />
+                <Cartao rotulo={t.reforma.funil.calcularam} valor={numero.format(funilReforma.totais.reforma_calculo ?? 0)} />
+                <Cartao rotulo={t.reforma.funil.comecaram} valor={numero.format(funilReforma.totais.reforma_formulario_inicio ?? 0)} />
+                <Cartao rotulo={t.reforma.funil.enviaram} valor={numero.format(funilReforma.totais.reforma_formulario_envio ?? 0)} />
+                <Cartao rotulo={t.reforma.funil.pedidos} valor={numero.format(funilReforma.totais.reforma_formulario_ok ?? 0)} />
+                <Cartao
+                  rotulo={t.reforma.funil.barrados}
+                  valor={numero.format(MOTIVOS_REFORMA.reduce((soma, m) => soma + (funilReforma.totais[`reforma_erro_${m}`] ?? 0), 0))}
+                />
+              </div>
+            </>
+          ) : (
+            <p className="text-fg-muted">{t.reforma.funil.semDados}</p>
+          )}
         </div>
         {leads.length === 0 ? (
           <p className="text-fg-muted">{t.reforma.nenhum}</p>

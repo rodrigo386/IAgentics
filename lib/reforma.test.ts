@@ -93,6 +93,11 @@ describe("validação do pedido", () => {
     const v = validarPedido({ nome: "Ana", email: "Ana@Empresa.com.br", empresa: "ACME", consentimento: true, cenario: { ...cenario, cotacoes: [{ regime: "regular", valor: 1300 }] } });
     expect(v.ok && v.contato.email).toBe("ana@empresa.com.br");
   });
+  it("aceita o pedido sem empresa e grava vazio", () => {
+    const v = validarPedido({ nome: "Ana", email: "ana@x.com", consentimento: true, cenario: { ...cenario, cotacoes: [{ regime: "regular", valor: 1300 }] } });
+    expect(v.ok && v.contato.empresa).toBe("");
+    expect(v.ok && v.contato.nome).toBe("Ana");
+  });
   it("recusa sem consentimento, e-mail inválido ou cenário fora da régua", () => {
     expect(validarPedido({ nome: "Ana", email: "ana@x.com", empresa: "ACME", cenario })).toEqual({ ok: false, motivo: "consentimento" });
     expect(validarPedido({ nome: "Ana", email: "ana", empresa: "ACME", consentimento: true, cenario })).toEqual({ ok: false, motivo: "email" });

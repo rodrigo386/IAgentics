@@ -123,7 +123,7 @@ export const privacidade = {
         {
           termo: "Calculadora da Reforma Tributária",
           texto:
-            "Enquanto você calcula, nada sai do seu navegador. Se você pedir o comparativo por e-mail, recebemos seu nome, e-mail de trabalho, empresa, cargo (se informar), o cenário que você calculou e a data da sua autorização, e, se marcar, o pedido de aviso sobre as alíquotas. Servem para enviar o comparativo e para a IAgentics falar com você sobre Compras e Reforma Tributária, e ficam gravados no nosso banco de dados.",
+            "Enquanto você calcula, nada sai do seu navegador. Se você pedir o comparativo por e-mail, recebemos seu nome, e-mail de trabalho, empresa e cargo (se informar), o cenário que você calculou e a data da sua autorização, e, se marcar, o pedido de aviso sobre as alíquotas. Servem para enviar o comparativo e para a IAgentics falar com você sobre Compras e Reforma Tributária, e ficam gravados no nosso banco de dados.",
         },
         {
           termo: "Lista de espera e compras avulsas anteriores",
@@ -143,7 +143,7 @@ export const privacidade = {
         {
           termo: "O que acontece nas páginas de cursos e do Desafio",
           texto:
-            "Nas páginas de cursos e do Desafio Prova Real, contamos algumas ações para saber onde a página precisa melhorar: quantas vezes alguém rola até a metade ou até o fim, clica em assinar ou em participar, começa ou envia o formulário, é levado à fatura ou conclui a inscrição. No formulário do Desafio, contamos também qual campo obrigatório impediu o envio e o motivo de uma inscrição recusada (por exemplo, e-mail inválido). Cada ação vira só mais um no total do dia: não guardamos quem fez, o que foi digitado, nem nada que identifique você ou o seu navegador.",
+            "Nas páginas de cursos, do Desafio Prova Real e da calculadora da Reforma Tributária, contamos algumas ações para saber onde a página precisa melhorar: quantas vezes alguém rola até a metade ou até o fim, clica em assinar, em participar ou em comparar cotações, monta uma comparação (sem guardar os valores), começa ou envia o formulário, é levado à fatura ou conclui a inscrição. No formulário do Desafio, contamos também qual campo obrigatório impediu o envio e o motivo de uma inscrição recusada (por exemplo, e-mail inválido). Cada ação vira só mais um no total do dia: não guardamos quem fez, o que foi digitado, nem nada que identifique você ou o seu navegador.",
         },
         {
           termo: "Google Analytics",
