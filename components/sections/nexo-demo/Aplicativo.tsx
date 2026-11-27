@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ChatCircleDots, SignOut } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
 import { responder } from "@/lib/nexo-demo/mia";
-import { FASES, FILME_PROPOSTA_MS, NUMERO, cotacoes, faseDe, reduzir, type Acao, type Estado, type Tela } from "@/lib/nexo-demo/regras";
+import { FASES, FILME_PROPOSTA_MS, NUMERO, duracaoReal, cotacoes, faseDe, reduzir, type Acao, type Estado, type Tela } from "@/lib/nexo-demo/regras";
 import { MiaFlutuante, TelaMia, type Mensagem } from "./Mia";
 import { TelaAbrirRc, TelaAprovacoes, TelaMinhas, TelaRequisicoes, type Prefill } from "./TelasRequisicao";
 import { TelaCotacoes } from "./TelaCotacoes";
@@ -52,7 +52,7 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
     /* Com alguém para responder, espera a animação do fornecedor (FilmeFornecedor, que tem "Pular"); sem animação ou sem resposta a caminho, não há o que esperar. */
     const parado = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const vemProposta = cotacoes({ ...e, propostasChegaram: true }).length > 0;
-    const id = window.setTimeout(() => despacharBase({ tipo: "chegarPropostas" }), parado ? 0 : vemProposta ? FILME_PROPOSTA_MS : 1400);
+    const id = window.setTimeout(() => despacharBase({ tipo: "chegarPropostas" }), parado ? 0 : vemProposta ? duracaoReal(FILME_PROPOSTA_MS) : 1400);
     return () => window.clearTimeout(id);
   }, [e.convitesEnviados, e.propostasChegaram]);
 

@@ -483,6 +483,14 @@ export function insights(e: Estado): { melhor: string[]; outliers: string[]; ris
 export const FILME_PROPOSTA_MS = 9000;
 /** Quanto dura a animação de cada aprovação (FilmeAprovacao): a do gestor na RC e a da alçada na OC. */
 export const FILME_APROVACAO_MS = 7600;
+/**
+ * Quanto as animações andam mais devagar que o roteiro de cima (2026-11-27,
+ * pedido do Rodrigo: "um pouco mais lentas para facilitar a leitura"). Os
+ * tempos dos filmes continuam escritos no ritmo original; o relógio de cada
+ * um anda por este fator, e quem espera um filme acabar usa `duracaoReal`.
+ */
+export const RITMO_FILME = 1.5;
+export const duracaoReal = (ms: number) => Math.round(ms * RITMO_FILME);
 
 export const FASES = ["inicio", "analise", "aprovarRc", "convidar", "mapa", "selecionar", "aprovarSelecao", "fim"] as const;
 export type Fase = (typeof FASES)[number];

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, EnvelopeSimple, X } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
-import { FILME_APROVACAO_MS, alcadaDe, codigoRc, codigoRfq, economiaCentavos, estimadoCentavos, itemDoCatalogo, ordensDeCompra, reais, totalSelecionado, type Estado } from "@/lib/nexo-demo/regras";
+import { FILME_APROVACAO_MS, RITMO_FILME, alcadaDe, codigoRc, codigoRfq, economiaCentavos, estimadoCentavos, itemDoCatalogo, ordensDeCompra, reais, totalSelecionado, type Estado } from "@/lib/nexo-demo/regras";
 import { Selo, TOM_URGENCIA, botaoLinha, rotulo, secao } from "./pecas";
 
 /**
@@ -33,7 +33,7 @@ export function FilmeAprovacao({ tipo, e, nome, hoje, aoFim, pular, fechar }: { 
     if (parado) return;
     const inicio = performance.now();
     const id = window.setInterval(() => {
-      const agora = performance.now() - inicio;
+      const agora = (performance.now() - inicio) / RITMO_FILME;
       setMs(agora);
       if (agora >= FILME_APROVACAO_MS) {
         window.clearInterval(id);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, EnvelopeSimple, LinkSimple, X } from "@phosphor-icons/react";
 import { nexoDemo as t } from "@/lib/nexo-demo/textos";
-import { FILME_PROPOSTA_MS, codigoRfq, fornecedorDe, itemDoCatalogo, reais, type Cotacao, type Estado } from "@/lib/nexo-demo/regras";
+import { FILME_PROPOSTA_MS, RITMO_FILME, codigoRfq, fornecedorDe, itemDoCatalogo, reais, type Cotacao, type Estado } from "@/lib/nexo-demo/regras";
 import { botaoLinha, rotulo, secao } from "./pecas";
 
 /**
@@ -31,7 +31,7 @@ export function FilmeFornecedor({ e, numero, cotacao, outros, pular, fechar }: {
     if (parado) return;
     const inicio = performance.now();
     const id = window.setInterval(() => {
-      const agora = performance.now() - inicio;
+      const agora = (performance.now() - inicio) / RITMO_FILME;
       setMs(agora);
       if (agora >= FILME_PROPOSTA_MS) window.clearInterval(id);
     }, 70);
