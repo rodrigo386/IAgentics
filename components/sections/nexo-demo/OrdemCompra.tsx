@@ -78,6 +78,10 @@ export function OrdemCompra({ oc, e, numero, hoje, comprador, solicitante }: { o
           </tfoot>
         </table>
       </div>
+      {/* No celular a tabela rola de lado e o total fica fora da tela: repete aqui. */}
+      <p className="flex items-baseline justify-between gap-3 rounded-lg bg-bg px-3 py-2.5 text-sm font-semibold text-fg sm:hidden" aria-hidden="true">
+        {o.total} <span className="text-base tabular-nums">{reais(oc.totalCentavos)}</span>
+      </p>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <h4 className={rotulo}>{o.aprovadores}</h4>
