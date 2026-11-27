@@ -89,6 +89,13 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   await guia(page).click();
   await page.getByRole("button", { name: "Aprovar", exact: true }).click();
   await expect(page.getByText("Passo 4 de 8")).toBeVisible();
+  /* A aprovação vista de fora: o gestor recebe o pedido, aprova e a RC vira cotação. */
+  const filmeRc = page.getByRole("region", { name: "Gestor da área aprova a requisição" });
+  await expect(filmeRc.getByText("RC-0142 aguarda a sua aprovação")).toBeVisible();
+  await expect(filmeRc.getByText("por Ana, Gestor da área, hoje às", { exact: false })).toBeVisible();
+  await expect(filmeRc.getByText("RC-0142 virou a cotação RFQ-0142.")).toBeVisible({ timeout: 8000 });
+  await filmeRc.getByRole("button", { name: "Fechar a animação" }).click();
+  await expect(page.getByRole("button", { name: "Rever a aprovação do gestor" })).toBeVisible();
 
   /* Comprador: o guia abre a cotação em janela. Busca com IA, convites, portal do fornecedor. */
   await guia(page).click();
@@ -164,6 +171,11 @@ test("o processo vai da requisição às ordens de compra, lembra onde parou e a
   /* Alçada: a tela diz por que a aprovação é sua; aprovada, saem duas OCs. */
   await expect(page.getByText("Por que você: o total de R$ 76.293,20 cai na faixa de R$ 10.000,01 a R$ 100.000,00, aprovada por Gerente de Compras.", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Aprovar e gerar a OC" }).click();
+  /* A alçada vista de fora: recebe a seleção, aprova e as OCs saem; o fim da animação leva ao resumo. */
+  const filmeOc = page.getByRole("region", { name: "Gerente de Compras aprova e a ordem de compra sai" });
+  await expect(filmeOc.getByText("Seleção da RFQ-0142 aguarda a sua aprovação")).toBeVisible();
+  await expect(filmeOc.getByText("OC-0142-1 gerada para Distribuidora Horizonte", { exact: false })).toBeVisible({ timeout: 8000 });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Da requisição à ordem de compra, sem sair do Nexo.", { timeout: 8000 });
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Da requisição à ordem de compra, sem sair do Nexo.");
   await expect(page.getByRole("article", { name: "Ordem de compra OC-0142-1" })).toContainText("Distribuidora Horizonte");
   await expect(page.getByRole("article", { name: "Ordem de compra OC-0142-2" })).toContainText("R$ 11.155,00");

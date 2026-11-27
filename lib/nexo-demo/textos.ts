@@ -334,6 +334,47 @@ export const nexoDemo = {
     rcAprovada: "RC aprovada. Ela virou uma cotação na fila do comprador.",
     porQue: (total: string, faixa: string, aprovador: string) => `Por que você: o total de ${total} cai na faixa ${faixa}, aprovada por ${aprovador}.`,
     verAlcada: "Ver a regra de alçada",
+    /**
+     * As duas aprovações vistas de fora (FilmeAprovacao): a do gestor na
+     * requisição e a do aprovador da alçada na seleção, que gera a OC. Cada
+     * uma em três cenas (`passos` e `legendas` na mesma ordem).
+     */
+    filme: {
+      sobre: "O que acabou de acontecer",
+      quem: (nome: string, papel: string) => `Na demonstração, ${nome} faz o papel de ${papel}.`,
+      caixaDe: (papel: string) => `Caixa de entrada · ${papel}`,
+      endereco: "nexo.example/aprovacoes",
+      abrir: "Abrir a aprovação",
+      aprovada: "Aprovada",
+      seloAprovada: "Aprovada",
+      assinatura: (nome: string, papel: string, hora: string) => `por ${nome}, ${papel}, hoje às ${hora}`,
+      reverRc: "Rever a aprovação do gestor",
+      reverOc: "Rever a aprovação da ordem de compra",
+      verOcs: "Ver as ordens de compra",
+      rc: {
+        titulo: (papel: string) => `${papel} aprova a requisição`,
+        passos: ["Recebe o pedido", "Aprova", "Vira cotação"],
+        assunto: (rc: string) => `${rc} aguarda a sua aprovação`,
+        corpo: (solicitante: string, itens: string, valor: string, centro: string) => `${solicitante} pediu: ${itens}. Valor estimado de ${valor}, no centro de custo ${centro}.`,
+        resumo: (valor: string, centro: string) => `Estimado: ${valor} · Centro de custo: ${centro}`,
+        botao: "Aprovar",
+        legendas: ["O gestor da área recebe o pedido do solicitante por e-mail, já com o valor estimado.", "Ele confere e aprova. Fica registrado quem aprovou, em que papel e a que horas.", "A requisição aprovada vira cotação e o solicitante fica sabendo."],
+        depois: (rc: string, rfq: string) => [`O solicitante foi avisado por e-mail: ${rc} aprovada.`, `${rc} virou a cotação ${rfq}.`, `${rfq} entrou na fila do comprador da categoria.`],
+        descricao: (nome: string, papel: string, rc: string, valor: string) => `${papel} recebe por e-mail o pedido de aprovação da ${rc}, de ${valor} estimados, e aprova. A aprovação fica registrada em nome de ${nome}, o solicitante é avisado e a requisição vira cotação.`,
+      },
+      oc: {
+        titulo: (papel: string) => `${papel} aprova e a ordem de compra sai`,
+        passos: ["Recebe a seleção", "Aprova", "OC gerada"],
+        assunto: (rfq: string) => `Seleção da ${rfq} aguarda a sua aprovação`,
+        corpo: (valor: string, faixa: string, aprovador: string) => `O comprador escolheu os vencedores. Total de ${valor}, na faixa ${faixa}: a alçada é de ${aprovador}.`,
+        resumo: (valor: string, rotulo: string, economia: string) => `Total: ${valor} · ${rotulo}: ${economia}`,
+        botao: "Aprovar e gerar a OC",
+        legendas: ["O aprovador da alçada recebe a seleção dos vencedores, com o total e a faixa de valor.", "Ele confere os vencedores e aprova. A aprovação entra no documento da ordem de compra.", "Uma ordem de compra por fornecedor vencedor, enviada ao ERP e a cada fornecedor."],
+        ordem: (oc: string, fornecedor: string, valor: string) => `${oc} gerada para ${fornecedor}: ${valor}.`,
+        depois: ["Ordens de compra enviadas ao ERP, com protocolo.", "Os fornecedores vencedores e o solicitante foram avisados por e-mail."],
+        descricao: (nome: string, papel: string, rfq: string, valor: string) => `${papel} recebe por e-mail a seleção dos vencedores da ${rfq}, no total de ${valor}, e aprova. A aprovação fica registrada em nome de ${nome}, as ordens de compra são geradas, enviadas ao ERP e os fornecedores são avisados.`,
+      },
+    },
   },
 
   cotacoes: {

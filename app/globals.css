@@ -1975,6 +1975,22 @@ dialog.gaveta.gaveta-centro[open] {
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgb(91 33 230 / 0.9);
   animation: nexo-demo-proximo 1.6s ease-in-out infinite;
 }
+/* O carimbo "Aprovada" das animações de aprovação: cai sobre o cartão. */
+@keyframes nexo-demo-carimbo {
+  from {
+    opacity: 0;
+    transform: scale(1.9) rotate(-10deg);
+  }
+}
+.nexo-demo-carimbo {
+  transform: rotate(-3deg);
+  animation: nexo-demo-carimbo 0.35s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nexo-demo-carimbo {
+    animation: none;
+  }
+}
 /* O campo que a MIA acabou de preencher: um clarão violeta que some. */
 @keyframes nexo-demo-preenchido {
   from {

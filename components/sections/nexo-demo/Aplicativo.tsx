@@ -93,7 +93,7 @@ export function Aplicativo({ acesso, inicial, sair, guardar }: { acesso: Acesso;
       setMensagens([]);
       ir("mia");
     }
-    if (a.tipo === "aprovarSelecao") ir("fecho");
+    /* Aprovada a seleção, a tela de aprovações mostra a animação da alçada e só então leva ao resumo (TelaAprovacoes). */
   };
   /** Devolve se a resposta levou a pessoa a uma tela: o painel flutuante fecha para não cobrir o que a MIA fez. */
   const perguntar = (texto: string) => {

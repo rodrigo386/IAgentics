@@ -31,6 +31,7 @@ import {
   type LinhaForm,
   type Requisicao,
 } from "@/lib/nexo-demo/regras";
+import { FilmeAprovacao } from "./FilmeAprovacao";
 import { Dado, Janela, Lista, Selo, TOM_URGENCIA, TituloTela, Vazio, botao, botaoLinha, botaoMia, botaoVerde, campo, cartao, dataCurta, destaque, linque, rotulo, secao, type PropsTela, type Tom } from "./pecas";
 
 /**
@@ -655,9 +656,17 @@ function Relatorio({ r, e, hoje, fechar }: { r: NaFila; e: Estado; hoje: Date; f
 
 /* ---------- Minhas aprovações ---------- */
 
-export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abrirRfq: () => void }) {
+export function TelaAprovacoes({ e, despachar, ir, abrirRfq, nome, hoje }: PropsTela & { abrirRfq: () => void }) {
   const a = t.aprovacoes;
   const [aviso, setAviso] = useState(false);
+  /** A animação da aprovação que a pessoa acabou de dar (ou pediu para rever). `fim`: já tocou até o fim. */
+  const [filme, setFilme] = useState<{ tipo: "rc" | "oc"; rever: boolean; fim: boolean } | null>(null);
+  const aprovarSelecao = () => {
+    despachar({ tipo: "aprovarSelecao" });
+    /* Sem animação não há o que assistir: vai direto ao resumo, como antes. */
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) ir("fecho");
+    else setFilme({ tipo: "oc", rever: false, fim: false });
+  };
   const selecaoPendente = e.selecaoEnviada && !e.ocGerada;
   const rcPendente = e.rc && !e.rcAprovada;
   const economia = economiaCentavos(e);
@@ -667,6 +676,25 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
   return (
     <>
       <TituloTela titulo={a.titulo} sub={a.sub} />
+      {filme && e.rc && (filme.tipo === "rc" ? e.rcAprovada : e.ocGerada) ? (
+        <>
+          <FilmeAprovacao
+            key={`${filme.tipo}-${filme.rever}`}
+            tipo={filme.tipo}
+            e={e}
+            nome={nome}
+            hoje={hoje}
+            aoFim={() => (filme.tipo === "oc" && !filme.rever ? ir("fecho") : setFilme({ ...filme, fim: true }))}
+            pular={filme.fim ? undefined : () => (filme.tipo === "oc" && !filme.rever ? ir("fecho") : setFilme(null))}
+            fechar={() => setFilme(null)}
+          />
+          {filme.tipo === "oc" ? (
+            <button type="button" onClick={() => ir("fecho")} className={`${botao} self-start`}>
+              {a.filme.verOcs}
+            </button>
+          ) : null}
+        </>
+      ) : null}
       <section className={`${cartao} flex flex-col gap-3`}>
         <div>
           <h2 className="text-sm font-semibold text-fg">{a.selecoes}</h2>
@@ -698,13 +726,20 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
                 {a.verAlcada}
               </button>
             </p>
-            <button type="button" onClick={() => despachar({ tipo: "aprovarSelecao" })} className={`${botaoVerde} self-start nexo-demo-proximo`}>
+            <button type="button" onClick={aprovarSelecao} className={`${botaoVerde} self-start nexo-demo-proximo`}>
               <Check size={16} weight="bold" aria-hidden="true" />
               {a.aprovarSelecao}
             </button>
           </div>
         ) : (
-          <Vazio>{a.selecoesVazio}</Vazio>
+          <>
+            <Vazio>{a.selecoesVazio}</Vazio>
+            {e.ocGerada && filme?.tipo !== "oc" ? (
+              <button type="button" onClick={() => setFilme({ tipo: "oc", rever: true, fim: false })} className={`${linque} self-start`}>
+                {a.filme.reverOc}
+              </button>
+            ) : null}
+          </>
         )}
       </section>
 
@@ -728,6 +763,7 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
                 onClick={() => {
                   despachar({ tipo: "aprovarRc" });
                   setAviso(false);
+                  setFilme({ tipo: "rc", rever: false, fim: false });
                 }}
                 className={`${botaoVerde} nexo-demo-proximo`}
               >
@@ -747,6 +783,11 @@ export function TelaAprovacoes({ e, despachar, ir, abrirRfq }: PropsTela & { abr
         ) : (
           <>
             <Vazio>{a.rcsVazio}</Vazio>
+            {e.rcAprovada && filme?.tipo !== "rc" ? (
+              <button type="button" onClick={() => setFilme({ tipo: "rc", rever: true, fim: false })} className={`${linque} self-start`}>
+                {a.filme.reverRc}
+              </button>
+            ) : null}
             {e.rcAprovada && !e.convitesEnviados ? (
               <div role="status" className="flex flex-wrap items-center gap-3 text-sm text-fg">
                 <span>{a.rcAprovada}</span>

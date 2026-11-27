@@ -481,6 +481,8 @@ export function insights(e: Estado): { melhor: string[]; outliers: string[]; ris
  */
 /** Quanto dura a animação do fornecedor respondendo (FilmeFornecedor); as propostas chegam quando ela termina. */
 export const FILME_PROPOSTA_MS = 9000;
+/** Quanto dura a animação de cada aprovação (FilmeAprovacao): a do gestor na RC e a da alçada na OC. */
+export const FILME_APROVACAO_MS = 7600;
 
 export const FASES = ["inicio", "analise", "aprovarRc", "convidar", "mapa", "selecionar", "aprovarSelecao", "fim"] as const;
 export type Fase = (typeof FASES)[number];
