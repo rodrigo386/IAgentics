@@ -2305,16 +2305,18 @@ export const cursos = {
   /** "Para quem é" (2026-11-25, plano de SEO e conversão da /cursos): quatro
    *  áreas, cada uma com os cursos da vitrine que falam com ela, pelo NOME
    *  exato (o teste confere que cada nome existe na vitrine). Nada de ementa:
-   *  o que se diz de cada curso é o título. */
+   *  o que se diz de cada curso é o título.
+   *  Ordem (2026-11-27): primeiro as áreas com todos os cursos publicados
+   *  (Dados, Marketing); Compras, que ainda tem cursos "em breve", vem depois. */
   paraQuem: {
     eyebrow: "Para quem é",
     titulo: "Escolha pela sua área e comece pelo curso que resolve o seu dia",
     emBreve: "em breve",
     areas: [
       {
-        nome: "Compras e Supply",
-        texto: "Para quem negocia com fornecedores, cota e acompanha contratos e quer trazer IA para a rotina de Compras.",
-        cursos: ["Estratégias de Negociação", "Gestão de Compras e Fornecedores com IA", "Strategic Sourcing 4.0", "Fundamentos de Compras"],
+        nome: "Dados e Tecnologia",
+        texto: "Para quem monta relatórios e painéis, cuida de dados de clientes e quer começar com IA aplicada aos negócios.",
+        cursos: ["Fundamentos de IA para Negócios", "Power BI na Prática", "Data Visualization", "LGPD: Lei Geral de Proteção de Dados"],
       },
       {
         nome: "Marketing e Vendas",
@@ -2322,9 +2324,9 @@ export const cursos = {
         cursos: ["Marketing com IA", "Pesquisa de Marketing", "Inteligência de Mercado", "Pitch de Vendas"],
       },
       {
-        nome: "Dados e Tecnologia",
-        texto: "Para quem monta relatórios e painéis, cuida de dados de clientes e quer começar com IA aplicada aos negócios.",
-        cursos: ["Fundamentos de IA para Negócios", "Power BI na Prática", "Data Visualization", "LGPD: Lei Geral de Proteção de Dados"],
+        nome: "Compras e Supply",
+        texto: "Para quem negocia com fornecedores, cota e acompanha contratos e quer trazer IA para a rotina de Compras.",
+        cursos: ["Estratégias de Negociação", "Gestão de Compras e Fornecedores com IA", "Strategic Sourcing 4.0", "Fundamentos de Compras"],
       },
       {
         nome: "Liderança e Gestão",
