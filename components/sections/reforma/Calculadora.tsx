@@ -295,6 +295,13 @@ export function Calculadora() {
                     {t.anual}: <b className="font-mono font-medium">{reais(conta.diferencaAnual)}</b>
                   </p>
                 ) : null}
+                <div className="flex flex-col gap-3 border-t border-line pt-5">
+                  <a href="#pedir-comparativo" onClick={() => registrarEvento("reforma_cta_resultado")} className={`${botao} justify-center`}>
+                    <span>{t.pedirCta}</span>
+                    <ArrowDown size={17} className="transition-transform duration-300 group-hover:translate-y-0.5" />
+                  </a>
+                  <p className="text-sm leading-relaxed text-fg-muted">{t.pedirNota}</p>
+                </div>
               </>
             )}
           </section>
@@ -386,7 +393,8 @@ function PedirPorEmail({ cenario }: { cenario: Cenario | null }) {
         registrarEvento("reforma_formulario_inicio");
       }}
       noValidate
-      className="flex flex-col gap-5 border border-line p-6 sm:p-8"
+      id="pedir-comparativo"
+      className="flex scroll-mt-24 flex-col gap-5 border border-line p-6 sm:p-8"
       aria-labelledby="lead-titulo"
     >
       <div className="flex flex-col gap-2">

@@ -49,6 +49,7 @@ export const EVENTOS_REFORMA = [
   "reforma_rolagem_100",
   "reforma_cta_topo", // "Comparar cotações" da capa (#cta-reforma)
   "reforma_calculo", // montou uma comparação com resultado (uma vez por visita)
+  "reforma_cta_resultado", // clicou em "Receber por e-mail" logo abaixo do resultado
   "reforma_formulario_inicio", // tocou num campo do pedido por e-mail
   "reforma_formulario_envio", // o pedido saiu do navegador para o servidor
   "reforma_formulario_ok", // pedido registrado

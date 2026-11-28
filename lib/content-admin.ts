@@ -145,6 +145,7 @@ export const admin = {
       desde: (dia: string) => `Visitas contadas desde ${dia}.`,
       visitas: "Visitas",
       calcularam: "Montaram uma comparação",
+      clicaramCta: "Clicaram em receber por e-mail",
       comecaram: "Começaram o formulário",
       enviaram: "Enviaram o pedido",
       pedidos: "Pedidos registrados",

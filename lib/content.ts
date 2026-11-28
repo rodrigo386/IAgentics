@@ -3212,6 +3212,8 @@ export const reforma = {
     melhor: "Melhor custo líquido",
     empate: "Para empatar com a melhor do regime regular, a nota deste fornecedor teria de ser de até",
     semPercentual: "Sem o percentual do Simples, o crédito ficou em zero.",
+    pedirCta: "Receber este comparativo por e-mail",
+    pedirNota: "Com o checklist de sete perguntas para fazer ao fornecedor do Simples antes de fechar.",
     anual: "Diferença entre a melhor e a pior no ano",
     preencha: "Preencha o total da nota de pelo menos uma cotação para ver o resultado.",
     avisoTransicao:

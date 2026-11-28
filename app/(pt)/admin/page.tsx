@@ -460,9 +460,10 @@ export default async function PaginaAdmin({ searchParams }: { searchParams: Prom
           <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">{t.reforma.funil.titulo}</h3>
           {funilReforma.inicio ? (
             <>
-              <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-7">
                 <Cartao rotulo={t.reforma.funil.visitas} valor={numero.format(funilReforma.visitas)} nota={t.reforma.funil.desde(funilReforma.inicio)} />
                 <Cartao rotulo={t.reforma.funil.calcularam} valor={numero.format(funilReforma.totais.reforma_calculo ?? 0)} />
+                <Cartao rotulo={t.reforma.funil.clicaramCta} valor={numero.format(funilReforma.totais.reforma_cta_resultado ?? 0)} />
                 <Cartao rotulo={t.reforma.funil.comecaram} valor={numero.format(funilReforma.totais.reforma_formulario_inicio ?? 0)} />
                 <Cartao rotulo={t.reforma.funil.enviaram} valor={numero.format(funilReforma.totais.reforma_formulario_envio ?? 0)} />
                 <Cartao rotulo={t.reforma.funil.pedidos} valor={numero.format(funilReforma.totais.reforma_formulario_ok ?? 0)} />
